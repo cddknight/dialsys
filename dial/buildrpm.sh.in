@@ -7,9 +7,9 @@ then
 	exit 1
 fi
 
-if [ -d $HOME/project/source/rpmbuild ]
+if [ -d $HOME/gitroot/rpmbuild ]
 then
-    DIR=$HOME/project/source/rpmbuild
+    DIR=$HOME/gitroot/rpmbuild
 elif [ -d $HOME/trunk/source/rpmbuild ]
 then
     DIR=$HOME/trunk/source/rpmbuild
