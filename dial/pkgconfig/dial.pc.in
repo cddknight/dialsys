@@ -1,0 +1,15 @@
+# pkg-config source file
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: dirutils
+Description: Library to help display dials.
+Version: @VERSION@
+Requires:
+Conflicts:
+Libs: -L${libdir} -ldial
+Cflags: -I${includedir}
+

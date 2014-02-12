@@ -1,0 +1,67 @@
+Summary: Library to display a clock or a dial
+Name: @PACKAGE@
+Version: @VERSION@
+Release: @REVISION@%{?dist}
+License: GPLv2
+URL: http://www.tzclock.org
+Packager: Chris Knight <chris@theknight.co.uk>
+Group: Applications/Productivity
+Source: http://www.tzclock.org/releases/%{name}-%{version}.tar.bz2
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRequires: pkgconfig desktop-file-utils 
+BuildRequires: @REQUIRES@
+
+%description
+This package contains necessary library files for libdial applications.
+
+%package devel
+Summary: libdial development files
+Provides: libdial-devel
+BuildArch: noarch
+Group: Development/Libraries
+
+%description devel
+This package contains necessary header files for libdial development.
+
+%prep
+%setup -q
+
+%build
+%configure 
+make CDEBUGFLAGS="$RPM_OPT_FLAGS" CXXDEBUGFLAGS="$RPM_OPT_FLAGS"
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_libdir}
+mkdir -p $RPM_BUILD_ROOT%{_libdir}/pkgconfig
+mkdir -p $RPM_BUILD_ROOT%{_includedir}
+install -s -m 755 .libs/libdial.so.@VERSION@ $RPM_BUILD_ROOT%{_libdir}/libdial.so.@VERSION@
+install -m 644 pkgconfig/dial.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/dial.pc
+install -m 644 dialsys.h $RPM_BUILD_ROOT%{_includedir}/dialsys.h
+ln -s libdial.so.@VERSION@ $RPM_BUILD_ROOT%{_libdir}/libdial.so.1
+ln -s libdial.so.1 $RPM_BUILD_ROOT%{_libdir}/libdial.so
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_libdir}/libdial.so*
+
+%files devel
+%{_libdir}/pkgconfig/dial.pc
+%{_includedir}/dialsys.h
+
+%doc COPYING AUTHORS
+
+%changelog
+* Sat Dec 14 2013 Chris Knight <chris@theknight.co.uk> 1.0.2-1
+- Change to allow pointer to save function on init.
+
+* Mon Oct 29 2012 Chris Knight <chris@theknight.co.uk> 1.0.1-1
+- Change to newer version of the colours.
+
+* Thu May  3 2012 Chris Knight <chris@theknight.co.uk> 1.0.0-1
+- First development version of the library.
+

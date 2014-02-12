@@ -1,0 +1,20 @@
+Source: @PACKAGE@
+Priority: extra
+Maintainer: Chris Knight <chris@vboxdebian.theknight.home>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev
+Standards-Version: 3.9.3
+Section: libs
+Homepage: www.theknight.co.uk
+
+Package: @PACKAGE@-dev
+Section: libdevel
+Architecture: any
+Depends: @PACKAGE@ (= ${binary:Version})
+Description: Dial consists of a general porpose dial library.
+
+Package: @PACKAGE@
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Dial consists of a general porpose dial library.
+

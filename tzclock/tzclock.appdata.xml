@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Chris Knight <chris@theknight.co.uk> -->
+<application>
+ <id type="desktop">txclock.desktop</id>
+ <licence>GPL</licence>
+ <name>Timezone Clock</name>
+ <summary>Show time around the world</summary>
+ <description>
+  <p>
+   Expand this description later.
+  </p>
+  <p>Example list:</p>
+  <ul>
+   <li>First item</li>
+   <li>Second item</li>
+  </ul>
+  <p>
+   Expand this description later.
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default" width="800" height="600">http://theknight.co.uk/image/screenShot.svg</screenshot>
+ </screenshots>
+ <url type="homepage">http://www.tzclock.org</url>
+ <updatecontact>chris@theknight.co.uk</updatecontact>
+ <project_group>TZCLOCK</project_group>
+</application>

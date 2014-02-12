@@ -1,0 +1,2 @@
+shlibs:Depends=libatk1.0-0 (>= 1.12.4), libc6 (>= 2.3), libcairo-gobject2 (>= 1.10.0), libcairo2 (>= 1.2.4), libdial, libgdk-pixbuf2.0-0 (>= 2.22.0), libglib2.0-0 (>= 2.16.0), libgtk-3-0 (>= 3.0.0), libpango1.0-0 (>= 1.14.0)
+misc:Depends=

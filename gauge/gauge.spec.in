@@ -1,0 +1,57 @@
+Summary: Cairo Gauge to display values read from your PC
+Name: @PACKAGE@
+Version: @VERSION@
+Release: @REVISION@%{?dist}
+License: GPLv2
+URL: http://www.@PACKAGE@.org
+Packager: Chris Knight <chris@theknight.co.uk>
+Group: Applications/Productivity
+Source: http://www.tzclock.org/releases/%{name}-%{version}.tar.bz2
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRequires: pkgconfig desktop-file-utils 
+BuildRequires: @REQUIRES@
+BuildRequires: lm_sensors-devel curl-devel
+
+%description
+GTK/Cairo Gauge.
+
+%prep
+%setup -q
+
+%build
+%configure 
+make CDEBUGFLAGS="$RPM_OPT_FLAGS" CXXDEBUGFLAGS="$RPM_OPT_FLAGS"
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_bindir}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+install -p -m 755 @PACKAGE_NAME@ $RPM_BUILD_ROOT%{_bindir}/@PACKAGE_NAME@
+install -p -m 644 icons/scalable/@PACKAGE@.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
+install -p -m 644 icons/128x128/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
+install -p -m 644 icons/48x48/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
+desktop-file-install --vendor="" --dir=${RPM_BUILD_ROOT}%{_datadir}/applications @PACKAGE_NAME@.desktop
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_bindir}/@PACKAGE_NAME@
+%{_datadir}/applications/@PACKAGE_NAME@.desktop
+%{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
+%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
+%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
+
+%doc COPYING AUTHORS
+
+%changelog
+* Thu Nov 17 2011 Chris Knight <chris@theknight.co.uk> 2.0.1-1
+- Lots of work porting to GTK3 for Gnome 3 desktops.
+
+* Tue Mar 09 2010 Chris Knight <chris@theknight.co.uk> 1.0.0-1
+- Made suggested changes to the spec file

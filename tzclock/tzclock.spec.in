@@ -1,0 +1,133 @@
+Summary: Cairo Clock to display the time around the world
+Name: @PACKAGE@
+Version: @VERSION@
+Release: @REVISION@%{?dist}
+License: GPLv2
+URL: http://www.@PACKAGE@.org
+Packager: Chris Knight <chris@theknight.co.uk>
+Group: Applications/Productivity
+Source: http://www.@PACKAGE@.org/releases/%{name}-%{version}.tar.bz2
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRequires: pkgconfig desktop-file-utils
+BuildRequires: @REQUIRES@
+
+%description
+GTK/Cairo Clock that can display the time around the world.  It supports 
+multiple faces showing different time zones.  There is also a stopwatch 
+that is accurate to a tenth of a second.  Plus many other nice features
+for you to discover.
+
+%prep
+%setup -q
+
+%build
+%configure 
+make CDEBUGFLAGS="$RPM_OPT_FLAGS" CXXDEBUGFLAGS="$RPM_OPT_FLAGS"
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT%{_bindir}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/appdata
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
+mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
+install -p -m 755 @PACKAGE@ $RPM_BUILD_ROOT%{_bindir}/@PACKAGE@
+install -p -m 755 screenSize $RPM_BUILD_ROOT%{_bindir}/screenSize
+install -p -m 644 icons/scalable/@PACKAGE@.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
+install -p -m 644 icons/128x128/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
+install -p -m 644 icons/48x48/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
+install -p -m 644 @PACKAGE@.man $RPM_BUILD_ROOT%{_mandir}/man1/@PACKAGE@.1
+install -p -m 644 @PACKAGE@.appdata.xml ${RPM_BUILD_ROOT}%{_datadir}/appdata/@PACKAGE@.appdata.xml
+desktop-file-install --vendor="" --dir=${RPM_BUILD_ROOT}%{_datadir}/applications @PACKAGE@.desktop
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_bindir}/@PACKAGE@
+%{_bindir}/screenSize
+%{_datadir}/applications/@PACKAGE@.desktop
+%{_datadir}/appdata/@PACKAGE@.appdata.xml
+%{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
+%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
+%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
+%{_mandir}/man1/@PACKAGE@.1.*
+
+%doc COPYING AUTHORS
+
+%changelog
+* Thu Nov 17 2011 Chris Knight <chris@theknight.co.uk> 3.0.1-1
+- Lots of work porting to GTK3 for Gnome 3 desktops.
+
+* Wed Feb 24 2010 Chris Knight <chris@theknight.co.uk> 2.7.7-1
+- Bug fix with GMT offsets and Alarm when no second hand is shown.
+
+* Wed Nov 11 2009 Chris Knight <chris@theknight.co.uk> 2.7.6-1
+- Added new clock hand styles available from the command line.
+
+* Wed Jul 22 2009 Chris Knight <chris@theknight.co.uk> 2.7.5-1
+- Added colour config and alarm command execute.
+
+* Wed Feb 25 2009 Chris Knight <chris@theknight.co.uk> 2.7.4-1
+- Ready for release on new distros, some performance gains.
+
+* Thu Nov 13 2008 Chris Knight <chris@theknight.co.uk> 2.7.3-3
+- Changes to help the suse build system, only build Cairo Clock.
+
+* Thu Nov 6 2008 Chris Knight <chris@theknight.co.uk> 2.7.3-2
+- Fixes to the spec file.
+
+* Tue Sep 23 2008 Chris Knight <chris@theknight.co.uk> 2.7.3-1
+- Bug fixing.
+
+* Fri Sep 12 2008 Chris Knight <chris@theknight.co.uk> 2.7.2-2
+- Font sizing and numbers on the face.
+
+* Fri May 16 2008 Chris Knight <chris@theknight.co.uk> 2.7.1-1
+- Added a save preferences option.
+
+* Fri Apr 11 2008 Chris Knight <chris@theknight.co.uk> 2.6.1-2
+- Fixed a few warnings.
+
+* Thu Apr 10 2008 Chris Knight <chris@theknight.co.uk> 2.6.1-1
+- Read zone.tab and use pango to display the text.
+
+* Tue Dec 11 2007 Chris Knight <chris@theknight.co.uk> 2.5.6-1
+- Small fix to man page and new timezone information.
+
+* Mon Oct 29 2007 Chris Knight <chris@theknight.co.uk> 2.5.5-1
+- Prepare a new build, removed tool tips.
+
+* Mon Oct 1 2007 Chris Knight <chris@theknight.co.uk> 2.5.4-5
+- Packaging fixes, preserve dates, vendor fedora, default attr.
+
+* Mon Oct 1 2007 Chris Knight <chris@theknight.co.uk> 2.5.4-4
+- Changed Makefile.am to put the defines into the *_CPPFLAGS.
+
+* Sun Sep 30 2007 Chris Knight <chris@theknight.co.uk> 2.5.4-3
+- Removed the -s from the TzClock install so that debuginfo is generated.
+
+* Fri Sep 28 2007 Chris Knight <chris@theknight.co.uk> 2.5.4-2
+- Fixed comments in the source files to reflect GPLv2 Licence.
+
+* Wed Sep 19 2007 Chris Knight <chris@theknight.co.uk> 2.5.4-1
+- Bug fixes before a new release, including changes to the about page.
+
+* Mon Sep 10 2007 Chris Knight <chris@theknight.co.uk> 2.5.3-6
+- Changed the script to build different version for each distro.
+
+* Fri Sep 07 2007 Chris Knight <chris@theknight.co.uk> 2.5.3-5
+- Added a man file to help with the command line options.
+
+* Thu Sep 06 2007 Chris Knight <chris@theknight.co.uk> 2.5.3-4
+- Removed unnecessary macros from spec file
+
+* Wed Sep 05 2007 Chris Knight <chris@theknight.co.uk> 2.5.3-3
+- Add a TzClock.desktop and a TzClock.svg
+
+* Wed Sep 05 2007 Chris Knight <chris@theknight.co.uk> 2.5.3-2
+- Made suggested changes to the spec file

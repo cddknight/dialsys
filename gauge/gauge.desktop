@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+GenericName=Gauge
+Name=Gauge
+Name[en_CA]=Gauge
+Name[en_GB]=Gauge
+Comment=Display Stuff
+Comment[en_CA]=Display Stuff
+Comment[en_GB]=Display Stuff
+Exec=gauge
+Icon=/usr/share/icons/hicolor/scalable/apps/gauge.svg
+Terminal=false
+Type=Application
+Categories=System;Monitor;

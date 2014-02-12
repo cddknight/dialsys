@@ -1,0 +1,15 @@
+#!/bin/bash
+set -x
+
+rm -f @PACKAGE@-@VERSION@.tar.bz2
+make dist-bzip2
+
+cd ..
+rm -rf @PACKAGE@_@VERSION@*
+rm -rf @PACKAGE@-dev_@VERSION@*
+tar xjf dial/@PACKAGE@-@VERSION@.tar.bz2
+cd @PACKAGE@-@VERSION@
+
+cp -r ../dial/debian .
+dpkg-buildpackage
+

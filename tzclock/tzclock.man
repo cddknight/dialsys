@@ -1,0 +1,263 @@
+.TH TzClock 1 "11 Nov 2009"
+.SH NAME
+TzClock - Display the time around the world
+.SH SYNOPSIS
+.B TzClock 
+[\fIOPTION\fR]...
+.SH DESCRIPTION
+.B TzClock
+can display the time around the world.  It supports multiple faces showing 
+different time zones.  There is also a stopwatch that is accurate to a tenth 
+of a second.  Plus many other nice features for you to discover.
+.SS Options
+.TP
+.B -a
+Toggle always on top.
+.TP
+.B -A
+\fIhh:mm:msg\fR Set the alarm message to be shown at the specified time. For 
+example: -A17:30:"Time to go home"
+.TP
+.B -b
+Toggle showing the small second hand.
+.TP
+.B -B
+Toggle showing the second hand bounce.
+.TP
+.B -c
+\fInnn#RRGGBB\fR Change one of the clock colours. Details of the codes can be 
+found below. For example: -cfce#1267FF
+.TP
+.B -C
+\fIconfig.file\fR Specify the configuration file to use. This file should be in 
+your home directory.  The default file is: .tzclockrc
+.TP
+.B -d
+\fInnn:format\fR Change one of the date formats. The format is the same as the 
+date command with some extras.  Details of the codes can be found below. For 
+example: -dftl:"%*"
+.TP
+.B -f
+\fIface\fR Select the face, for future settings, the faces are numbered left to 
+right, top to bottom.  Some settings like timezone only effect one face so it 
+is necessary to select the face first.
+.TP
+.B -F
+\fIfont\fR Select the font to use on the clock face.
+.TP
+.B -h
+Switch off the second hand.
+.TP
+.B -H
+\fI<name>:s:l:t\fR Set the hand style, the name can be: hour, minute, second, 
+sub_second, stopwatch or alarm. (s) The style is a number from [0-5] althought not
+all the syles are defined. (l) The length of the hand from the centre.  (t) The 
+length of the tail in the other direction to the hand.
+0 Quadratic (default), 1 Triangle, 2 Rectangle, 3 Pointer, 4 Arrow, 5 Simple line.
+.TP
+.B -i
+Use the clock icon from the current theme.
+.TP
+.B -l
+Toggle locking the screen position, stop drag and drop.
+.TP
+.B -m
+\fIts\fR Set the marker type and step, default -m13. (t) the marker type, (s) The step 
+controls which hours have markers.
+0 No markers, 1 Triangles (default), 2 Circles, 3 Latin digits, 4 Roman numerals.
+.TP
+.B -n
+\fIcnum\fR or \fIrnum\fR Set the number of columns and rows. Note the maximum 
+number of clocks is 36 with no more than 10 in a line. For example: -nc5 -nr3
+.TP
+.B -o
+\fIcity\fR Specify you own city name for a timezone.
+.TP
+.B -q
+Quick time setting, no smooth scrolling.
+.TP
+.B -s
+\fIsize\fR Set the size of each clock, the size is rounded to a multiple of 64.
+.TP
+.B -S
+Enable the stopwatch.
+.TP
+.B -w
+Put on all work-spaces.
+.TP
+.B -x
+\fIposn\fR Set the X screen position.
+.TP
+.B -y
+\fIposn\fR Set the Y screen position. Note, both X and Y must be set.
+.TP
+.B -z
+\fIzone\fR Select timezone to display. For example: -zLondon
+.TP
+.B -24
+Show a 24 hour clock.
+.TP
+.B -?
+Show command line help information.
+.SH COLOURS
+In order to change one of the colours you need to enter the colours code. See
+details of the -c option.
+.TP
+.B cbf
+Clock outer border when the face has focus.
+.TP
+.B cbn
+Clock outer border when the face does not have focus.
+.TP
+.B cbi
+Clock inner border.
+.TP
+.B fce
+Main clock face colour.
+.TP
+.B fsw
+Stopwatch face colour.
+.TP
+.B txt
+Colour of the text.
+.TP
+.B cbf
+Clock border when focused.
+.TP
+.B cbn
+Clock border not focused.
+.TP
+.B cbi
+Clock border inner circle.
+.TP
+.B fce
+Clock face colour.
+.TP
+.B fsw
+Stopwatch dial colour.
+.TP
+.B txt
+Information text colour.
+.TP
+.B hrh
+Hour hand outer colour.
+.TP
+.B hhf
+Hour hand fill colour.
+.TP
+.B mnh
+Minute hand outer colour.
+.TP
+.B mhf
+Minute hand fill colour.
+.TP
+.B sch
+Second hand outer colour.
+.TP
+.B shf
+Second hand fill colour.
+.TP
+.B alh
+Alarm hand outer colour.
+.TP
+.B ahf
+Alarm hand fill colour.
+.TP
+.B swh
+Stopwatch hand outer colour.
+.TP
+.B swf
+Stopwatch hand fill colour.
+.TP
+.B hrm
+Hour marker colour.
+.TP
+.B mnm
+Minute marker colour.
+.TP
+.B swm
+Stopwatch marker colour.
+.TP
+.B qum
+Quarter marker colour.
+.TP
+.B qmf
+Quarter marker fill colour.
+.SH DATES
+In order to change the format of one of the dates you need its code.
+.TP
+.B ftl
+Clock top in local-time.
+.TP
+.B ftz
+Clock top for timezone.
+.TP
+.B stl
+Stopwatch top in local-time.
+.TP
+.B stz
+Stopwatch top for timezone.
+.TP
+.B fbl
+Clock bottom in local-time.
+.TP
+.B fbz
+Clock bottom for timezone.
+.TP
+.B sbl
+Stopwatch bottom in local-time.
+.TP
+.B sbz
+Stopwatch bottom for timezone.
+.TP
+.B wtl
+Window title in local-time.
+.TP
+.B wtz
+Window title for timezone.
+.TP
+.B cbl
+Copy date time in local-time.
+.TP
+.B cbz
+Copy date time for timezone.
+.TP
+.B cdl
+Copy date in local-time.
+.TP
+.B cdz
+Copy date for timezone.
+.TP
+.B ctl
+Copy time in local-time.
+.TP
+.B ctz
+Copy time for timezone.   
+.SH DATE FORMAT
+To specify a date format you can use the same format as the date command.  This way your
+locale information will be used. In addition to the date commands the are a few extra defined
+for the TzClock.
+.TP
+.B %#
+Time zone city, upper-cased and wrapped.
+.TP
+.B %*
+Time zone city.
+.TP
+.B %@
+Time zone area.
+.TP
+.B %&
+Stopwatch time: h:mm:ss.hh.
+.SH EXAMPLE
+Here is an example showing the command line for displaying four clocks showing different time
+zones. With changes to one of the colours and one of the dates.
+
+TzClock -l -nr2 -nc2 -f1 -u -f2 -h -u -z"Moscow" -f3 -h -u -z"London" -f4 -h -u -z"New York" -s128 -ccbn"#000000" -x100 -y200 -dwtl:"%H:%M, %a. %-d %b."
+.SH AUTHOR
+Written by Chris Knight.
+.SH REPORTING BUGS
+Report bugs to <chris@theknight.co.uk>.
+.SH "SEE ALSO"
+date(1)
+

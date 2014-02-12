@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+GenericName=TimezoneClock
+Name=TimezoneClock
+Name[en_CA]=TimezoneClock
+Name[en_GB]=TimezoneClock
+Comment=Display the time around the world
+Comment[en_CA]=Display the time around the world
+Comment[en_GB]=Display the time around the world
+Exec=tzclock
+Icon=/usr/share/icons/hicolor/scalable/apps/tzclock.svg
+Terminal=false
+Type=Application
+Categories=Utility;Clock;
