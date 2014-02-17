@@ -627,7 +627,10 @@ static void processWeatherKey (int readLevel, const char *name, char *value)
 	else if (observations == 0 && readLevel <= FORECAST_NUM && strcmp (name, "title") == 0)
 	{
 		if (value)
+		{
+			myWeather.forecast[readLevel].evening = 1;
 			splitOutForcastTitle (value, readLevel);
+		}
 	}
 	else if (observations == 1 && readLevel == 0 && strcmp (name, "pubDate") == 0)
 	{
@@ -816,7 +819,6 @@ void updateWeatherInfo ()
 	if (time (NULL) >= myWeather.nextUpdate)
 	{
 		myWeather.updateTime[0] = 0;
-		for (i = 0; i < FORECAST_NUM; ++i) myWeather.forecast[i].evening = 1;
 
 		observations = 1;
 		doUpdateWeatherInfo (weatherOBSURL);
@@ -1089,12 +1091,12 @@ void readWeatherValues (int face)
 			setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n%0.1f%s", 
 					myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
 					myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Location</b>: %s\n<b>Maximum</b>: %0.1f%s\n"
-					"<b>Minimum</b>: %0.1f%s\n<b>Wind</b>: %s %0.1f%s\n<b>Summary</b>: %s\n"
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Location</b>: %s\n<b>Minimum</b>: %0.1f%s\n"
+					"<b>Maximum</b>: %0.1f%s\n<b>Wind</b>: %s %0.1f%s\n<b>Summary</b>: %s\n"
 					"<b>Sunrise</b>: %s\n<b>Sunset</b>: %s\n<b>Update</b>: %s"),
 					myWeather.queryName, 
-					myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText, 
 					myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText, 
+					myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText, 
 					myWeather.forecast[i].winddirPoint, 					
 					myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText, 
 					myWeather.forecast[i].weatherDesc,
