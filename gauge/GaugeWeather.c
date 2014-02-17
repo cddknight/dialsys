@@ -501,6 +501,10 @@ void splitOutDescription (char *value, int level)
 	char buffers[2][81];
 	
 	buffers[0][0] = buffers[1][0] = 0;
+	if (!observations)
+	{
+		myWeather.forecast[level - 1].evening = 1;
+	}
 	while (1)
 	{
 		if (value[i] == ':' && b == 0)
@@ -627,10 +631,7 @@ static void processWeatherKey (int readLevel, const char *name, char *value)
 	else if (observations == 0 && readLevel <= FORECAST_NUM && strcmp (name, "title") == 0)
 	{
 		if (value)
-		{
-			myWeather.forecast[readLevel].evening = 1;
 			splitOutForcastTitle (value, readLevel);
-		}
 	}
 	else if (observations == 1 && readLevel == 0 && strcmp (name, "pubDate") == 0)
 	{
