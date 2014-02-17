@@ -2030,7 +2030,7 @@ void loadConfig (int *posX, int *posY)
  */
 char *shortenWords (char *inString, char *outString, int max)
 {
-	int words, i, j, k, curWord;
+	int words, j, k, curWord;
 	char lastChar = 0;
 	
 	if (max > 80) max = 80;

@@ -816,7 +816,6 @@ void doUpdateWeatherInfo (char *weatherURL)
  */
 void updateWeatherInfo ()
 {
-	int i = 0;
 	if (time (NULL) >= myWeather.nextUpdate)
 	{
 		myWeather.updateTime[0] = 0;
