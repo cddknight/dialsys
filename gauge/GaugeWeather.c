@@ -715,18 +715,15 @@ int gzipInflate (Bytef *compressedBytes, int compressedSize, Bytef *uncompressed
 	strm.zfree = Z_NULL;
 
 	if (inflateInit2 (&strm, (16 + MAX_WBITS)) != Z_OK)
-	{
 		return 0;
-	}
 
 	int err = inflate(&strm, Z_SYNC_FLUSH);
 	if (err == Z_STREAM_END)
 		done = true;
 
 	if (inflateEnd(&strm) != Z_OK)
-	{
 		return 0;
-	}
+
 	return (done ? strm.total_out : 0);
 }
 
@@ -748,10 +745,10 @@ static void processBuffer(char *buffer, size_t size)
 	xmlNode *rootElement = NULL;
 	xmlChar *xmlBuffer = NULL;
 
-	printf("Init: %0X:%0X %c%c\n", buffer[0], buffer[1],
+/*	printf("Init: %0X:%0X %c%c\n", buffer[0], buffer[1],
 		   buffer[0] > ' ' && buffer[0] < 127 ? buffer[0] : '-',
 		   buffer[1] > ' ' && buffer[1] < 127 ? buffer[1] : '-');
-
+*/
 	if (size > 10 && buffer[0] == '\037' && buffer[1] == '\213')
 	{
 		int retn = 0;
@@ -759,16 +756,15 @@ static void processBuffer(char *buffer, size_t size)
 		if (tempBuff == NULL)
 			return;
 			
-		retn = gzipInflate (buffer, size, tempBuff, 8000);
-		if (retn == 0)
+		if ((retn = gzipInflate (buffer, size, tempBuff, 8000)) == 0)
 		{
 			free(tempBuff);
 			return;
 		}			
-		printf("Unpk: %0X:%0X %c%c\n", (unsigned int)tempBuff[0], (unsigned int)tempBuff[1],
+/*		printf("Unpk: %0X:%0X %c%c\n", (unsigned int)tempBuff[0], (unsigned int)tempBuff[1],
 			   tempBuff[0] > ' ' && tempBuff[0] < 127 ? tempBuff[0] : '-',
 			   tempBuff[1] > ' ' && tempBuff[1] < 127 ? tempBuff[1] : '-');
-					   
+*/					   
 		tempBuff[retn] = 0;
 		xmlBuffer = xmlCharStrndup(tempBuff, retn);
 		free(tempBuff);
