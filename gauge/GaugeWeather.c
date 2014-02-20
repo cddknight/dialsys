@@ -752,11 +752,11 @@ static void processBuffer(char *buffer, size_t size)
 	if (size > 10 && buffer[0] == '\037' && buffer[1] == '\213')
 	{
 		int retn = 0;
-		unsigned char *tempBuff = (unsigned char *)malloc(8001);
+		char *tempBuff = (char *)malloc(8001);
 		if (tempBuff == NULL)
 			return;
 			
-		if ((retn = gzipInflate (buffer, size, tempBuff, 8000)) == 0)
+		if ((retn = gzipInflate ((Bytef *)buffer, size, (Bytef *)tempBuff, 8000)) == 0)
 		{
 			free(tempBuff);
 			return;
