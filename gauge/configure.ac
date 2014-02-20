@@ -14,9 +14,9 @@ AM_PROG_CC_C_O
 REQUIRES=""
 
 # Checks for libraries.
-PKG_CHECK_MODULES([DEPS], [gtk+-3.0 libcurl libxml-2.0 dial],
+PKG_CHECK_MODULES([DEPS], [gtk+-3.0 libcurl libxml-2.0 zlib dial],
 	[REQUIRES="gtk3-devel"], 
-	[PKG_CHECK_MODULES([DEPS], [gtk+-2.0 >= 2.10.0 libgnomeui-2.0 libcurl libxml-2.0 dial],
+	[PKG_CHECK_MODULES([DEPS], [gtk+-2.0 >= 2.10.0 libgnomeui-2.0 libcurl libxml-2.0 zlib dial],
 		[REQUIRES="gtk2-devel cairo-devel libgnomeui-devel"])])
 AC_CHECK_LIB(sensors, sensors_init, [DEPS_LIBS="$DEPS_LIBS -lsensors"]) 
 AC_CHECK_LIB(m, lrint, [DEPS_LIBS="$DEPS_LIBS -lm"]) 
