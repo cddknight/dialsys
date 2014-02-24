@@ -3,8 +3,8 @@
 #
 AC_PREREQ(2.59)
 AC_INIT(gauge, 2.1.5, chris@theknight.co.uk)
-AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([Gauge.c])
+AM_INIT_AUTOMAKE([subdir-objects])
+AC_CONFIG_SRCDIR([src/Gauge.c])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
