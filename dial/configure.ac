@@ -4,7 +4,7 @@
 AC_PREREQ(2.59)
 AC_INIT(libdial, 1.0.2, chris@theknight.co.uk)
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([DialDisplay.c])
+AC_CONFIG_SRCDIR([src/DialDisplay.c])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
