@@ -38,7 +38,7 @@ mkdir -p $RPM_BUILD_ROOT%{_libdir}/pkgconfig
 mkdir -p $RPM_BUILD_ROOT%{_includedir}
 install -s -m 755 .libs/libdial.so.@VERSION@ $RPM_BUILD_ROOT%{_libdir}/libdial.so.@VERSION@
 install -m 644 pkgconfig/dial.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/dial.pc
-install -m 644 dialsys.h $RPM_BUILD_ROOT%{_includedir}/dialsys.h
+install -m 644 src/dialsys.h $RPM_BUILD_ROOT%{_includedir}/dialsys.h
 ln -s libdial.so.@VERSION@ $RPM_BUILD_ROOT%{_libdir}/libdial.so.1
 ln -s libdial.so.1 $RPM_BUILD_ROOT%{_libdir}/libdial.so
 
