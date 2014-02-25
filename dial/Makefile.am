@@ -5,7 +5,7 @@ libdial_la_LDFLAGS = -version-info 1:3
 AM_CPPFLAGS = $(DEPS_CFLAGS)
 LIBS = $(DEPS_LIBS)
 EXTRA_DIST = COPYING AUTHORS
-nobase_include_HEADERS = src/dialsys.h
+include_HEADERS = src/dialsys.h
 pkgconfigdir = $(libdir)/pkgconfig
 nodist_pkgconfig_DATA = pkgconfig/dial.pc
 
