@@ -547,8 +547,8 @@ void splitOutDescription(char *value, int level)
 					else
 					{
 						myWeather.forecast[level - 1].windspeedmph = atoi(&buffers[1][0]);
-						myWeather.forecast[level - 1].windspeedKmph =
-							myWeather.windspeedmph * 1.609344;
+						myWeather.forecast[level - 1].windspeedKmph = 
+							myWeather.forecast[level - 1].windspeedmph * 1.609344;
 					}
 				}
 				else if (strcmp(&buffers[0][0], "Pressure") == 0)
