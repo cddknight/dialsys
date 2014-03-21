@@ -1176,7 +1176,7 @@ void readWeatherValues(int face)
 						"Min");
 			setFaceString(faceSetting, FACESTR_TIP, 0,
 						_("<b>Location</b>: %s\n"
-						"<b>Summary</b>: %s\n<b>"
+						"<b>Summary</b>: %s\n"
 					 	"<b>Temp Min</b>: %0.1f%s\n"
 					  	"<b>Pressure</b>: %0.2f%s\n"
 					  	"<b>Wind</b>: %s, %0.1f%s\n"
@@ -1199,11 +1199,11 @@ void readWeatherValues(int face)
 						myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText);
 			setFaceString(faceSetting, FACESTR_TIP, 0,
 						_("<b>Location</b>: %s\n"
-						"<b>Summary</b>: %s\n<b>"
+						"<b>Summary</b>: %s\n"
 						"<b>Temp Min</b>: %0.1f%s, <b>Max</b>: %0.1f%s\n"
 						"<b>Pressure</b>: %0.2f%s\n"
 						"<b>Wind</b>: %s, %0.1f%s\n"
-						"Sun Rise</b>: %s, <b>Set</b>: %s\n"
+						"<b>Sun Rise</b>: %s, <b>Set</b>: %s\n"
 						"<b>Update</b>: %s"),
 						myWeather.queryName, 
 						myWeather.forecast[i].weatherDesc,
