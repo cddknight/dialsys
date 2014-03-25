@@ -17,7 +17,6 @@ This package contains necessary library files for libdial applications.
 %package devel
 Summary: libdial development files
 Provides: libdial-devel
-BuildArch: noarch
 Group: Development/Libraries
 
 %description devel
