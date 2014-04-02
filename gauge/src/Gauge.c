@@ -2089,14 +2089,14 @@ char *shortenWords (char *inString, char *outString, int max)
  */
 void vSetFaceString (FACE_SETTINGS *faceSetting, int str, int shorten, char *format, va_list arg_ptr)
 {
-	char buff[512];
+	char buff[1025];
 
 	if (str >= 0 && str < FACESTR_COUNT)
 	{
-		vsnprintf (buff, 510, format, arg_ptr);
+		vsnprintf (buff, 1024, format, arg_ptr);
 		if (shorten)
 		{
-			char buff2[512];
+			char buff2[1025];
 			shortenWords (buff, buff2, shorten);
 			strcpy (buff, wrapText (buff2, 1));
 		}

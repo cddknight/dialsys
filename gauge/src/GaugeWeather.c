@@ -135,10 +135,12 @@ typedef struct {
 	int humidity;
 	int visibility;
 	char visView[21];
+	char pollution[21];
 	char sunrise[21];
 	char sunset[21];
 	int pressure;
-
+	int uvRisk;
+	
 	double showTempMax;
 	double showTempMin;
 	double showWindSpeed;
@@ -529,12 +531,16 @@ void splitOutDescription(char *value, int level)
 				}
 				else if (strcmp(&buffers[0][0], "Maximum Temperature") == 0)
 				{
-					myWeather.forecast[level - 1].tempMaxC = atoi(&buffers[1][0]);
-					myWeather.forecast[level - 1].evening = 0;
+					if (!observations)
+					{
+						myWeather.forecast[level - 1].tempMaxC = atoi(&buffers[1][0]);
+						myWeather.forecast[level - 1].evening = 0;
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Minimum Temperature") == 0)
 				{
-					myWeather.forecast[level - 1].tempMinC = atoi(&buffers[1][0]);
+					if (!observations)
+						myWeather.forecast[level - 1].tempMinC = atoi(&buffers[1][0]);
 				}
 				else if (strcmp(&buffers[0][0], "Wind Speed") == 0)
 				{
@@ -582,13 +588,25 @@ void splitOutDescription(char *value, int level)
 					else
 						strncpy(myWeather.forecast[level - 1].visView, &buffers[1][0], 20);
 				}
+				else if (strcmp(&buffers[0][0], "Pollution") == 0)
+				{
+					if (!observations)
+						strncpy(myWeather.forecast[level - 1].pollution, &buffers[1][0], 20);
+				}
+				else if (strcmp(&buffers[0][0], "UV Risk") == 0)
+				{
+					if (!observations)
+						myWeather.forecast[level - 1].uvRisk = atoi(&buffers[1][0]);
+				}
 				else if (strcmp(&buffers[0][0], "Sunrise") == 0)
 				{
-					strncpy(myWeather.forecast[level - 1].sunrise, &buffers[1][0], 20);
+					if (!observations)
+						strncpy(myWeather.forecast[level - 1].sunrise, &buffers[1][0], 20);
 				}
 				else if (strcmp(&buffers[0][0], "Sunset") == 0)
 				{
-					strncpy(myWeather.forecast[level - 1].sunset, &buffers[1][0], 20);
+					if (!observations)
+						strncpy(myWeather.forecast[level - 1].sunset, &buffers[1][0], 20);
 				}
 			}
 			buffers[b = 0][c = 0] = 0;
@@ -1203,6 +1221,7 @@ void readWeatherValues(int face)
 						"<b>Temp Min</b>: %0.1f%s, <b>Max</b>: %0.1f%s\n"
 						"<b>Pressure</b>: %0.2f%s\n"
 						"<b>Wind</b>: %s, %0.1f%s\n"
+						"<b>Pollution</b>: %s, <b>UV Risk</b>: %d\n"
 						"<b>Sun Rise</b>: %s, <b>Set</b>: %s\n"
 						"<b>Update</b>: %s"),
 						myWeather.queryName, 
@@ -1212,6 +1231,7 @@ void readWeatherValues(int face)
 						myWeather.forecast[i].showPressure, pressureUnits[myWeather.pUnits].pressureText,
 						myWeather.forecast[i].winddirPoint, 
 						myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText, 
+						myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 						myWeather.forecast[i].sunrise, myWeather.forecast[i].sunset,
 						myWeather.updateTime);
 			faceSetting->secondValue = myWeather.forecast[i].showTempMax;

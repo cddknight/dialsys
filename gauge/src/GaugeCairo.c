@@ -195,7 +195,9 @@ void clockExpose (GtkWidget *widget)
 			if (face == toolTipFace)
 			{
 				if (faceSettings[face] -> text[FACESTR_TIP])
+				{
 					gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
+				}
 			}
 #endif
 			++face;			
@@ -228,7 +230,9 @@ void clockExpose (cairo_t *cr)
 			if (face == toolTipFace)
 			{
 				if (faceSettings[face] -> text[FACESTR_TIP])
+				{
 					gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
+				}
 			}
 			++face;			
 		}
