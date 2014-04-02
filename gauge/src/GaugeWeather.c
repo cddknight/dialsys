@@ -1198,6 +1198,7 @@ void readWeatherValues(int face)
 					 	"<b>Temp Min</b>: %0.1f%s\n"
 					  	"<b>Pressure</b>: %0.2f%s\n"
 					  	"<b>Wind</b>: %s, %0.1f%s\n"
+						"<b>Pollution</b>: %s, <b>UV Risk</b>: %d\n"
 					  	"<b>Sun Set</b>: %s\n"
 					  	"<b>Update</b>: %s"),
 						myWeather.queryName, 
@@ -1206,6 +1207,7 @@ void readWeatherValues(int face)
 						myWeather.forecast[i].showPressure, pressureUnits[myWeather.pUnits].pressureText,
 						myWeather.forecast[i].winddirPoint, 
 						myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText, 
+						myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 						myWeather.forecast[i].sunset,
 						myWeather.updateTime);
 			faceSetting->secondValue = DONT_SHOW;
