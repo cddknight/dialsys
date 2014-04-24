@@ -472,7 +472,7 @@ int buildAreaInfo (void *areaInfoList)
 int parseZone (void)
 {
 	FILE *inFile;
-	int retn = 0, i;
+	int retn = 0;
 	char inBuffer[161], area[41], subArea[41], city[41];
 	void *areaInfoList;
 	
