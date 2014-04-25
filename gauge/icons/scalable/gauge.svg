@@ -55,15 +55,15 @@
 </symbol>
 </g>
 <linearGradient id="linear0" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="192" y2="192" >
-<stop offset="0" style="stop-color:rgb(6.27451%,12.54902%,21.960784%);stop-opacity:1;"/>
-<stop offset="1" style="stop-color:rgb(18.823531%,37.647063%,65.882355%);stop-opacity:1;"/>
+<stop offset="0" style="stop-color:rgb(3.137255%,9.411765%,20.392157%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(9.411766%,28.235295%,61.176473%);stop-opacity:1;"/>
 </linearGradient>
 <linearGradient id="linear1" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="192" y2="192" >
-<stop offset="0" style="stop-color:rgb(18.823531%,37.647063%,65.882355%);stop-opacity:1;"/>
-<stop offset="1" style="stop-color:rgb(6.27451%,12.54902%,21.960784%);stop-opacity:1;"/>
+<stop offset="0" style="stop-color:rgb(9.411766%,28.235295%,61.176473%);stop-opacity:1;"/>
+<stop offset="1" style="stop-color:rgb(3.137255%,9.411765%,20.392157%);stop-opacity:1;"/>
 </linearGradient>
 </defs>
-<g id="surface4390">
+<g id="surface4835">
 <path style=" stroke:none;fill-rule:nonzero;fill:rgb(43.137255%,43.137255%,43.137255%);fill-opacity:1;" d="M 192 96 C 192 149.019531 149.019531 192 96 192 C 42.980469 192 0 149.019531 0 96 C 0 42.980469 42.980469 0 96 0 C 149.019531 0 192 42.980469 192 96 "/>
 <path style=" stroke:none;fill-rule:nonzero;fill:url(#linear0);" d="M 189 96 C 189 147.363281 147.363281 189 96 189 C 44.636719 189 3 147.363281 3 96 C 3 44.636719 44.636719 3 96 3 C 147.363281 3 189 44.636719 189 96 "/>
 <path style=" stroke:none;fill-rule:nonzero;fill:url(#linear1);" d="M 183 96 C 183 144.046875 144.046875 183 96 183 C 47.953125 183 9 144.046875 9 96 C 9 47.953125 47.953125 9 96 9 C 144.046875 9 183 47.953125 183 96 "/>
