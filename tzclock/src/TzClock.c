@@ -2637,7 +2637,7 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
 	 * Final windows configuration.                                                                   *
 	 *------------------------------------------------------------------------------------------------*/
-	drawingArea = dialInit (mainWindow, updateClock, &colourNames[0], 0, NULL);
+	drawingArea = dialInit (mainWindow, updateClock, &colourNames[0], 0, dialSave);
 	
 	/*------------------------------------------------------------------------------------------------*
 	 * This is the first time we can do this because we check the screen size in this routine.        *
