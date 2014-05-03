@@ -60,6 +60,19 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING AUTHORS
 
 %changelog
+%changelog
+* Fri May 2 2014 Chris Knight <chris@theknight.co.uk> 3.0.5-1
+- Fixed problems with the ocean time zones.
+
+* Sun Dec 29 2013 Chris Knight <chris@theknight.co.uk> 3.0.4-1
+- Compile clean on Fedora 20, added gradient to face.
+
+* Thu Nov 15 2012 Chris Knight <chris@theknight.co.uk> 3.0.3-1
+- Under GTK3 support the GdkRGBA colour system.
+
+* Wed Jun 20 2012 Chris Knight <chris@theknight.co.uk> 3.0.2-1
+- Back port to GTK2 and markered text for translation.
+
 * Thu Nov 17 2011 Chris Knight <chris@theknight.co.uk> 3.0.1-1
 - Lots of work porting to GTK3 for Gnome 3 desktops.
 
