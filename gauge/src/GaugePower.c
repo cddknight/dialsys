@@ -203,6 +203,16 @@ void readPowerMeterInfo ()
 	}
 }
 
+void getPowerStr (double reading, char *buffer)
+{
+	if (reading == -1)
+		strcpy (buffer, "Unknown");
+	else if (reading >= 1000)
+		sprintf (buffer, "%0.1fKW", reading / 1000);
+	else
+		sprintf (buffer, "%0.0fW", reading);
+}
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  R E A D  P O W E R  M E T E R  V A L U E S                                                                        *
@@ -217,6 +227,8 @@ void readPowerMeterInfo ()
 void readPowerMeterValues (int face)
 {
 	FACE_SETTINGS *faceSetting = faceSettings[face];
+	char powerStr[8][41];
+	int i;
 
 	if (faceSetting -> faceFlags & FACE_REDRAW)
 	{
@@ -233,13 +245,20 @@ void readPowerMeterValues (int face)
 		faceSetting -> nextUpdate = 30;
 	}
 
+	for (i = 0; i < 8; ++i)
+		getPowerStr (myPowerReading[i], &powerStr[i][0]);
+
 	setFaceString (faceSetting, FACESTR_TOP, 0, "Power Meter");
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Current</b>: %0.0fW\n<b>Maximum</b>: %0.0fW\n"
-			"<b>Minimum</b>: %0.0fW\n<b>Hour Average</b>: %0.0fW\n<b>Day Average</b>: %0.0fW"), 
-			myPowerReading[0], myPowerReading[1], myPowerReading[2], myPowerReading[3], myPowerReading[4]);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %0.0fW, Day Average: %0.0fW"),
-			myPowerReading[0], myPowerReading[4]);
-	setFaceString (faceSetting, FACESTR_BOT, 0, "%0.0fW\n(%0.0fW)", myPowerReading[0], myPowerReading[4]);
+	setFaceString (faceSetting, FACESTR_TIP, 0, 
+			_("<b>Current</b>: %s\n"
+			"<b>Maximum</b>: %s\n"
+			"<b>Minimum</b>: %s\n"
+			"<b>Hour Average</b>: %s\n"
+			"<b>Day Average</b>: %s"), 
+			powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5]);
+	setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Hour Average: %s"),
+			powerStr[0], powerStr[4]);
+	setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[4]);
 	faceSetting -> firstValue = myPowerReading[0] / 1000;
 	faceSetting -> secondValue = myPowerReading[4] / 1000;
 }
