@@ -149,7 +149,7 @@ void readPowerMeterValues (int face)
 	else if (!faceSetting -> nextUpdate)
 	{
 		readPowerMeterInfo ();
-		faceSetting -> nextUpdate = 60;
+		faceSetting -> nextUpdate = 30;
 	}
 
 	setFaceString (faceSetting, FACESTR_TOP, 0, "Power Meter");
