@@ -290,11 +290,12 @@ MENU_DESC gaugeMenuDesc[] =
 	{	__("Hard Disk"),		NULL,					harddiskMenuDesc,	0,	NULL,	0,	1	},	/*	03	*/
 	{	__("Memory"),			NULL,					memoryMenuDesc,		0,	NULL,	0,	1	},	/*	04	*/
 	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*	05	*/
-	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*	06	*/
-	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*	07	*/
-	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*	08	*/
-	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*	09	*/
-	{	NULL,					NULL,					NULL,				0	}					/*	10	*/
+	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*	06	*/
+	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*	07	*/
+	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*	08	*/
+	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*	09	*/
+	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*	10	*/
+	{	NULL,					NULL,					NULL,				0	}					/*	11	*/
 };
 
 MENU_DESC prefMenuDesc[] =
@@ -395,6 +396,8 @@ char locationSearch[41] = "London";
 char locationKey[41] = "2643743";
 char thermoServer[41] = "tinyone";
 int thermoPort = 303030;
+char powerServer[41] = "littleone";
+int powerPort = 3030;
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -949,6 +952,11 @@ clockTickCallback (gpointer data)
 				readThermometerValues (face);
 				break;
 #endif
+#ifdef GAUGE_HAS_POWER
+			case FACE_TYPE_POWER:
+				readPowerMeterValues (face);
+				break;
+#endif
 			default:
 				/*------------------------------------------------------------------------------------*
 				 * Used for drawing the icon on the about box.                                        *
@@ -1402,6 +1410,30 @@ thermometerCallback (guint data)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  T H E R M O M E T E R  C A L L B A C K                                                                            *
+ *  ======================================                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  @brief Function to turn on the power meter gauge.
+ *  @param data Which gauge to display.
+ *  @result None.
+ */
+void
+powerMeterCallback (guint data)
+{
+#ifdef GAUGE_HAS_POWER
+	gaugeReset (currentFace, FACE_TYPE_POWER, data);
+	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_HOT_COLD);
+	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
+	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
+	faceSettings[currentFace] -> faceScaleMin = 0;
+	faceSettings[currentFace] -> faceScaleMax = 10;
+#endif
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  C O N F I G  S A V E  C A L L B A C K                                                                             *
  *  =====================================                                                                             *
  *                                                                                                                    *
@@ -1440,6 +1472,8 @@ void configSaveCallback (guint data)
 	configSetValue ("location_search", locationSearch);
 	configSetValue ("thermo_server", thermoServer);
 	configSetIntValue ("thermo_port", thermoPort);	
+	configSetValue ("power_server", powerServer);
+	configSetIntValue ("power_port", powerPort);	
 
 	for (i = 2; i < MAX__COLOURS; i++)
 	{
@@ -1976,8 +2010,8 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("Weather_scales", (int *)&weatherScales);
 	configGetValue ("location_key", locationKey, 40);
 	configGetValue ("location_search", locationSearch, 40);
-	configGetValue ("thermo_server", thermoServer, 40);
-	configGetIntValue ("thermo_port", &thermoPort);
+	configGetValue ("power_server", powerServer, 40);
+	configGetIntValue ("power_port", &powerPort);
 
 	for (i = 2; i < MAX__COLOURS; i++)
 	{
@@ -2236,7 +2270,11 @@ main (int argc, char *argv[])
 			thermometerCallback (faceSettings[i] -> faceSubType);
 			break;
 #endif
-
+#ifdef GAUGE_HAS_POWER
+		case FACE_TYPE_POWER:
+			powerMeterCallback (faceSettings[i] -> faceSubType);
+			break;
+#endif
 #ifdef GAUGE_HAS_WEATHER
 		case FACE_TYPE_WEATHER:
 			weatherCallback (faceSettings[i] -> faceSubType);
@@ -2337,6 +2375,9 @@ main (int argc, char *argv[])
 #endif
 #ifdef GAUGE_HAS_THERMO
 	readThermometerInit();
+#endif
+#ifdef GAUGE_HAS_POWER
+	readPowerMeterInit();
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
