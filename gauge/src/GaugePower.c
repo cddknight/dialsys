@@ -203,6 +203,18 @@ void readPowerMeterInfo ()
 	}
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  G E T  P O W E R  S T R                                                                                           *
+ *  =======================                                                                                           *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  @brief Convert a reading into a string.
+ *  @param reading Reading taken from meter.
+ *  @param buffer Buffer for output string.
+ *  @result None.
+ */
 void getPowerStr (double reading, char *buffer)
 {
 	if (reading == -1)
