@@ -82,9 +82,9 @@ void readThermometerInfo ()
 	char buffer[256] = "", addr[20];
 	int clientSock = -1, bytesRead = 0;
 	
-	if (GetAddressFromName ("tinyone", addr))
+	if (GetAddressFromName (thermoServer, addr))
 	{
-		clientSock = ConnectClientSocket (addr, 303030);
+		clientSock = ConnectClientSocket (addr, thermoPort);
 	}
 	if (SocketValid (clientSock))
 	{

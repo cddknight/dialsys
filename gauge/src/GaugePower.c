@@ -39,7 +39,7 @@ extern MENU_DESC gaugeMenuDesc[];
 extern char powerServer[];
 extern int powerPort;
 
-double myPowerReading[5] = { 0, 0, 0, 0, 0 };
+double myPowerReading[8];
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -82,9 +82,9 @@ void readPowerMeterInfo ()
 	char buffer[256] = "", addr[20];
 	int clientSock = -1, bytesRead = 0;
 	
-	if (GetAddressFromName ("tinyone", addr))
+	if (GetAddressFromName (powerServer, addr))
 	{
-		clientSock = ConnectClientSocket (addr, 303030);
+		clientSock = ConnectClientSocket (addr, powerPort);
 	}
 	if (SocketValid (clientSock))
 	{
@@ -111,7 +111,7 @@ void readPowerMeterInfo ()
 			}
 			else if (buffer[i] == ',')
 			{
-				if (field < 5)
+				if (field < 8)
 				{
 					myPowerReading[field] = atof (string);
 				}
