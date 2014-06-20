@@ -260,7 +260,7 @@ void readPowerMeterValues (int face)
 	for (i = 0; i < 8; ++i)
 		getPowerStr (myPowerReading[i], &powerStr[i][0]);
 
-	setFaceString (faceSetting, FACESTR_TOP, 0, "Power Meter");
+	setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
 	setFaceString (faceSetting, FACESTR_TIP, 0, 
 			_("<b>Current</b>: %s\n"
 			"<b>Maximum</b>: %s\n"
