@@ -153,14 +153,14 @@ void readPowerMeterValues (int face)
 	}
 
 	setFaceString (faceSetting, FACESTR_TOP, 0, "Power Meter");
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Current</b>: %0.0fW\n<b>Max</b>: %0.0fW\n"
-			"<b>Min</b>: %0.0fW\n<b>Hour</b>: %0.0fW\n<b>Day</b>: %0.0fW"), 
+	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Current</b>: %0.0fW\n<b>Maximum</b>: %0.0fW\n"
+			"<b>Minimum</b>: %0.0fW\n<b>Hour Average</b>: %0.0fW\n<b>Day Average</b>: %0.0fW"), 
 			myPowerReading[0], myPowerReading[1], myPowerReading[2], myPowerReading[3], myPowerReading[4]);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %0.0fW, Hour: %0.0fW"),
-			myPowerReading[0], myPowerReading[1]);
-	setFaceString (faceSetting, FACESTR_BOT, 0, "%0.0fW", myPowerReading[0]);
+	setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %0.0fW, Day Average: %0.0fW"),
+			myPowerReading[0], myPowerReading[4]);
+	setFaceString (faceSetting, FACESTR_BOT, 0, "%0.0fW\n(%0.0fW)", myPowerReading[0], myPowerReading[4]);
 	faceSetting -> firstValue = myPowerReading[0] / 1000;
-	faceSetting -> secondValue = myPowerReading[1] / 1000;
+	faceSetting -> secondValue = myPowerReading[4] / 1000;
 }
 
 #endif
