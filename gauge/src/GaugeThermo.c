@@ -27,6 +27,8 @@
 #include <time.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #include "config.h"
 #include "socket.h"
@@ -69,6 +71,105 @@ void readThermometerInit (void)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  P R O C E S S  P O W E R  K E Y                                                                                   *
+ *  ===============================                                                                                   *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  @brief Process each of the fields in the XML.
+ *  @param readLevel 0 current, 1 today, 2 tomorrow.
+ *  @param name Name of the field.
+ *  @param value Value of the field.
+ *  @result None.
+ */
+static void processThermoKey (int readLevel, const char *name, char *value)
+{
+	if (readLevel == 1 && strcmp (name, "outside") == 0)
+		myThermoReading[0] = atof (value);
+	if (readLevel == 1 && strcmp (name, "inside") == 0)
+		myThermoReading[1] = atof (value);
+	if (readLevel == 1 && strcmp (name, "pressure") == 0)
+		myThermoReading[2] = atof (value);
+	if (readLevel == 1 && strcmp (name, "light") == 0)
+		myThermoReading[3] = atof (value);
+	if (readLevel == 1 && strcmp (name, "humidity") == 0)
+		myThermoReading[4] = atof (value);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P R O C E S S  E L E M E N T  N A M E S                                                                           *
+ *  =======================================                                                                           *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  @brief Process each of the elements in the file.
+ *  @param doc Document to read.
+ *  @param aNode Current node.
+ *  @param readLevel 0 current, 1 today, 2 tomorrow.
+ *  @result None.
+ */
+static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
+{
+	xmlChar *key;
+    xmlNode *curNode = NULL;
+
+    for (curNode = aNode; curNode; curNode = curNode->next) 
+    {
+        if (curNode->type == XML_ELEMENT_NODE) 
+        {
+			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"sensors"))) 
+			{
+				++readLevel;
+			}
+			else
+			{
+				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
+				processThermoKey (readLevel, (const char *)curNode -> name, (char *)key);
+		    	xmlFree (key);
+		    }
+        }
+        processElementNames (doc, curNode->children, readLevel);
+    }
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P R O C E S S  B U F F E R                                                                                        *
+ *  ==========================                                                                                        *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  @brief Process the down loaded buffer.
+ *  @param buffer Buffer to process.
+ *  @param size Size of the buffer.
+ *  @result None.
+ */
+static void processBuffer (char *buffer, size_t size)
+{
+	xmlDoc *doc = NULL;
+	xmlNode *rootElement = NULL;
+	xmlChar *xmlBuffer = NULL;
+
+	xmlBuffer = xmlCharStrndup (buffer, size);
+	doc = xmlParseDoc (xmlBuffer);
+
+	if (doc != NULL)
+	{
+		rootElement = xmlDocGetRootElement (doc);
+		processElementNames (doc, rootElement, 0);
+		xmlFreeDoc (doc);
+	}
+	else
+	{
+		printf ("error: could not parse memory\n");
+		printf ("BUFF[%d] [[[%s]]]\n", size, buffer);
+	}
+	xmlCleanupParser ();
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  R E A D  T H E R M O M E T E R  I N F O                                                                           *
  *  =======================================                                                                           *
  *                                                                                                                    *
@@ -79,7 +180,7 @@ void readThermometerInit (void)
  */
 void readThermometerInfo ()
 {
-	char buffer[256] = "", addr[20];
+	char buffer[512] = "", addr[20];
 	int clientSock = -1, bytesRead = 0;
 	
 	if (GetAddressFromName (thermoServer, addr))
@@ -88,37 +189,12 @@ void readThermometerInfo ()
 	}
 	if (SocketValid (clientSock))
 	{
-		bytesRead = RecvSocket (clientSock, buffer, 255);
+		bytesRead = RecvSocket (clientSock, buffer, 511);
 		CloseSocket (&clientSock);
 	}
 	if (bytesRead)
 	{
-		char string[41] = "";
-		int i = 0, let = 0, field = 0;
-
-		buffer[bytesRead] = 0;
-		while (buffer[i])
-		{
-			if ((buffer[i] >= '0' && buffer[i] <= '9') || buffer[i] == '.' || buffer[i] == '-')
-			{
-				string[let] = buffer[i];
-				string[++let] = 0;
-			}
-			else if (buffer[i] == ':')
-			{
-				field = atoi (string);
-				string[let = 0] = 0;
-			}
-			else if (buffer[i] == ',')
-			{
-				if (field < 5)
-				{
-					myThermoReading[field] = atof (string);
-				}
-				string[let = 0] = 0;
-			}
-			++i;
-		}		
+		processBuffer (buffer, bytesRead);
 	}
 }
 

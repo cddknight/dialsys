@@ -395,7 +395,7 @@ unsigned int weatherScales;
 char locationSearch[41] = "London";
 char locationKey[41] = "2643743";
 char thermoServer[41] = "tinyone";
-int thermoPort = 303030;
+int thermoPort = 30302;
 char powerServer[41] = "littleone";
 int powerPort = 3030;
 
@@ -2010,6 +2010,8 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("Weather_scales", (int *)&weatherScales);
 	configGetValue ("location_key", locationKey, 40);
 	configGetValue ("location_search", locationSearch, 40);
+	configGetValue ("thermo_server", thermoServer, 40);
+	configGetIntValue ("thermo_port", &thermoPort);
 	configGetValue ("power_server", powerServer, 40);
 	configGetIntValue ("power_port", &powerPort);
 
