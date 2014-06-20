@@ -62,7 +62,7 @@ void readPowerMeterInit (void)
 	}
 	if (SocketValid (clientSock))
 	{
-		gaugeMenuDesc[MENU_GAUGE_THERMO].disable = 0;
+		gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
 		CloseSocket (&clientSock);
 	}
 }
