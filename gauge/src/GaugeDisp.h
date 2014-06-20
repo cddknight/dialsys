@@ -48,6 +48,7 @@
 #define GAUGE_HAS_WEATHER
 #define GAUGE_HAS_TIDE
 #define GAUGE_HAS_THERMO
+#define GAUGE_HAS_POWER
 //#define GAUGE_IS_DECORATED
 
 /*----------------------------------------------------------------------------------------------------*
@@ -106,10 +107,11 @@
 #define MENU_GAUGE_HARDDISK	3
 #define MENU_GAUGE_MEMORY	4
 #define MENU_GAUGE_NETWORK	5
-#define MENU_GAUGE_SENSOR	6
-#define MENU_GAUGE_THERMO	7
-#define MENU_GAUGE_TIDE		8
-#define MENU_GAUGE_WEATHER	9
+#define MENU_GAUGE_POWER	6
+#define MENU_GAUGE_SENSOR	7
+#define MENU_GAUGE_THERMO	8
+#define MENU_GAUGE_TIDE		9
+#define MENU_GAUGE_WEATHER	10
 
 #define MENU_PREF_ONTOP		0
 #define MENU_PREF_STUCK		1
@@ -184,6 +186,7 @@ FACE_SETTINGS;
 #define FACE_TYPE_TIDE			8
 #define FACE_TYPE_HARDDISK		9
 #define FACE_TYPE_THERMO		10
+#define FACE_TYPE_POWER			11
 
 #define LOCATION_COUNT			6
 
@@ -216,6 +219,7 @@ void weatherCallback		(guint data);
 void weatherSettings		(guint data);
 void tideSettings			(guint data);
 void thermometerCallback	(guint data);
+void powerMeterCallback		(guint data);
 void configSaveCallback		(guint data);
 void dialSaveCallback		(guint data);
 void gaugeReset				(int face, int type, int subType);
@@ -254,5 +258,7 @@ void readWeatherInit (void);
 void readWeatherValues (int face);
 void readThermometerInit (void);
 void readThermometerValues (int face);
+void readPowerMeterInit (void);
+void readPowerMeterValues (int face);
 void weatherGetMaxMin (FACE_SETTINGS *faceSetting);
 
