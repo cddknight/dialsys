@@ -157,18 +157,22 @@ static void processBuffer (char *buffer, size_t size)
 	xmlChar *xmlBuffer = NULL;
 
 	xmlBuffer = xmlCharStrndup (buffer, size);
-	doc = xmlParseDoc (xmlBuffer);
+	if (xmlBuffer != NULL)
+	{
+		doc = xmlParseDoc (xmlBuffer);
 
-	if (doc != NULL)
-	{
-		rootElement = xmlDocGetRootElement (doc);
-		processElementNames (doc, rootElement, 0);
-		xmlFreeDoc (doc);
-	}
-	else
-	{
-		printf ("error: could not parse memory\n");
-		printf ("BUFF[%d] [[[%s]]]\n", size, buffer);
+		if (doc != NULL)
+		{
+			rootElement = xmlDocGetRootElement (doc);
+			processElementNames (doc, rootElement, 0);
+			xmlFreeDoc (doc);
+		}
+		else
+		{
+			printf ("error: could not parse memory\n");
+			printf ("BUFF[%d] [[[%s]]]\n", size, buffer);
+		}
+		xmlFree (xmlBuffer);
 	}
 	xmlCleanupParser ();
 }
