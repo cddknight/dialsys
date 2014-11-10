@@ -758,15 +758,15 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the hour spinner                                                                           *
 	 *------------------------------------------------------------------------------------------------*/	
+	label = gtk_label_new (_("Hour :"));
 #if GTK_MAJOR_VERSION == 2
 	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 #else
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 #endif
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
-
-	label = gtk_label_new (_("Hour :"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
 	adj = (GtkAdjustment *) gtk_adjustment_new 
@@ -781,15 +781,15 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the minute spinner                                                                         *
 	 *------------------------------------------------------------------------------------------------*/	
+	label = gtk_label_new (_("Min :"));
 #if GTK_MAJOR_VERSION == 2
 	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 #else
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 #endif
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 5);
-
-	label = gtk_label_new (_("Min :"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
 	adj = (GtkAdjustment *) gtk_adjustment_new
@@ -804,15 +804,15 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the message entry                                                                          *
 	 *------------------------------------------------------------------------------------------------*/	
+	label = gtk_label_new (_("Show message :"));
 #if GTK_MAJOR_VERSION == 2
 	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 #else
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 #endif
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
-
-	label = gtk_label_new (_("Show message :"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX(vbox2), label, FALSE, TRUE, 0);
 
 	entry1 = gtk_entry_new ();
@@ -822,7 +822,11 @@ alarmCallback (guint data)
     gtk_box_pack_start (GTK_BOX(vbox2), entry1, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Run command :"));
+#if GTK_MAJOR_VERSION == 2
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+#else
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+#endif
 	gtk_box_pack_start (GTK_BOX(vbox2), label, FALSE, TRUE, 0);
 
 	entry2 = gtk_entry_new ();
