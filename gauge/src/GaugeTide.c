@@ -36,6 +36,7 @@ extern FACE_SETTINGS *faceSettings[];
 extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 extern time_t hightideTime;
+extern GtkWindow *mainWindow;
 
 struct MemoryStruct 
 {
@@ -550,7 +551,7 @@ void tideSettings (guint data)
 	GtkWidget *grid;
 #endif
 
-	dialog = gtk_dialog_new_with_buttons ("Tide Settings", NULL,
+	dialog = gtk_dialog_new_with_buttons ("Tide Settings", mainWindow,
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 						_("Close"), 
@@ -588,14 +589,14 @@ void tideSettings (guint data)
 	grid = gtk_grid_new ();
 	
 	label = gtk_label_new (_("RSS feed from: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 1, 1, 1);
 	label = gtk_label_new (_("http://www.tidetimes.org.uk/"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 2, 1, 1, 1);
 
 	label = gtk_label_new (_("Location feed: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 2, 1, 1);
 	entry = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);

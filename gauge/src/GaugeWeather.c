@@ -1431,15 +1431,15 @@ void weatherSettings(guint data)
 	grid = gtk_grid_new();
 
 	label = gtk_label_new(_("Weather from: "));
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 1, 1, 1, 1);
 	label = gtk_label_new(_("http://www.bbc.co.uk/weather/"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 2, 1, 1, 1);
 
 
 	label = gtk_label_new(_("Location code: "));
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 1, 2, 1, 1);
 	entryKey = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(entryKey), 30);
@@ -1447,7 +1447,7 @@ void weatherSettings(guint data)
 	gtk_grid_attach(GTK_GRID(grid), entryKey, 2, 2, 1, 1);
 
 	label = gtk_label_new("Temperature: ");
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 1, 3, 1, 1);
 	comboBox = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBox), _("Centigrade"));
@@ -1457,7 +1457,7 @@ void weatherSettings(guint data)
 	gtk_grid_attach(GTK_GRID(grid), comboBox, 2, 3, 1, 1);
 
 	label = gtk_label_new("Pressure: ");
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 1, 4, 1, 1);
 	comboBox = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBox), _("Milli Bars"));
@@ -1468,7 +1468,7 @@ void weatherSettings(guint data)
 	gtk_grid_attach(GTK_GRID(grid), comboBox, 2, 4, 1, 1);
 
 	label = gtk_label_new("Wind speed: ");
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 1, 5, 1, 1);
 	comboBox = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(comboBox), _("Kilometres Per Hour"));
