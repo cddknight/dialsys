@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(TzClock, 3.1.5, chris@theknight.co.uk)
+AC_INIT(TzClock, 3.1.6, chris@theknight.co.uk)
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/TzClock.c])
 AC_CONFIG_HEADER([config.h])
@@ -34,7 +34,7 @@ AC_STRUCT_TM
 # Checks for library functions.
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([nl_langinfo])
-REVISION=1
+REVISION=2
 AC_SUBST([REVISION])
 
 AC_CONFIG_FILES([Makefile tzclock.spec])
