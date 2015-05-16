@@ -68,6 +68,7 @@ extern char tideURL[];
 static char *lineSep = "<br/>";
 static int myUpdateID = 100;
 static time_t tideDuration = 22357;
+static char removePrefix[] = "Tide Times & Heights for ";
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -210,10 +211,10 @@ void processLocationDate (char *line)
  */
 int processDescription (xmlChar *description)
 {
-	char lines[6][101];
+	char lines[6][81];
 	int inLine = 0, outLine = 0, i = 0, j = 0, k = 0, level = 0;
 
-	memset (&lines[0][0], 0, 6 * 101);
+	memset (&lines[0][0], 0, 6 * 81);
 	
 	while (description[i] && outLine < 5)
 	{
@@ -229,7 +230,7 @@ int processDescription (xmlChar *description)
 		{
 			if (lineSep[++k] == 0)
 			{
-				if (++inLine > 1 && j)
+				if (j)
 				{
 					++outLine;
 					k = 0;
@@ -238,10 +239,15 @@ int processDescription (xmlChar *description)
 				lines[outLine][0] = 0;
 			}
 		}
-		else if (inLine && j < 100 && level == 0 && description[i] != '>')
+		else if (j < 100 && level == 0 && description[i] != '>')
 		{
 			lines[outLine][j] = description[i];
 			lines[outLine][++j] = 0;
+			if (j == strlen (removePrefix))
+			{
+				if (strcmp (lines[outLine], removePrefix) == 0)
+					lines[outLine][j = 0] = 0;
+			}
 		}
 		++i;
 	}
@@ -249,8 +255,10 @@ int processDescription (xmlChar *description)
 	{
 		processLocationDate (lines[0]);
 		for (i = 1; i < outLine; ++i)
+		{
 			if (processTideTime (lines[i]))
 				break;
+		}
 	}
 	return outLine;
 }
