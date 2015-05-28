@@ -60,7 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING AUTHORS
 
 %changelog
-%changelog
+* Fri May 19 2015 Chris Knight <chris@theknight.co.uk> 3.0.6-1
+- Fixed build problems with the latest GTK/GDK APIs.
+
 * Fri May 2 2014 Chris Knight <chris@theknight.co.uk> 3.0.5-1
 - Fixed problems with the ocean time zones.
 

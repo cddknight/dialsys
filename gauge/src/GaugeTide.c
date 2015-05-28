@@ -212,7 +212,7 @@ void processLocationDate (char *line)
 int processDescription (xmlChar *description)
 {
 	char lines[6][81];
-	int inLine = 0, outLine = 0, i = 0, j = 0, k = 0, level = 0;
+	int outLine = 0, i = 0, j = 0, k = 0, level = 0;
 
 	memset (&lines[0][0], 0, 6 * 81);
 	

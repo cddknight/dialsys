@@ -90,7 +90,7 @@ static char *speedName[] =
  *  @param scale scale to work on.
  *  @result Number of shifts in the scale.
  */
-int getScaleShiftCount (scale)
+int getScaleShiftCount (int scale)
 {
 	int retn = 0;
 	while (scale >= 10)
