@@ -890,7 +890,7 @@ aboutCallback (guint data)
 			"artists", artists,
 			"authors", authors,
 			"comments", comment,
-			"copyright", "Copyright © 2005 - 2014 Chris Knight <chris@theknight.co.uk>",
+			"copyright", "Copyright © 2005 - 2015 Chris Knight <chris@theknight.co.uk>",
 			"logo", defaultIcon,
 			"version", verString,
 			"website", "http://www.TzClock.org/",
