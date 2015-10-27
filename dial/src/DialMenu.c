@@ -33,11 +33,11 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Create the menu .
- *  @param createMenuDesc Create a menu, read from template.
- *  @param accelGroup Create a menu.
- *  @param bar Is this to be a menubar.
- *  @result None.
+ *  \brief Create the menu .
+ *  \param createMenuDesc Create a menu, read from template.
+ *  \param accelGroup Create a menu.
+ *  \param bar Is this to be a menubar.
+ *  \result None.
  */
 GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int bar)
 {

@@ -392,12 +392,11 @@ static gboolean focusInEvent 		(GtkWidget *widget, GdkEventFocus *event, gpointe
 static gboolean focusOutEvent 		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
 
 unsigned int weatherScales;
-char locationSearch[41] = "London";
 char locationKey[41] = "2643743";
 char thermoServer[41] = "tinyone";
 int thermoPort = 30302;
 char powerServer[41] = "littleone";
-int powerPort = 3030;
+int powerPort = 30303;
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -406,11 +405,11 @@ int powerPort = 3030;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Tell them how to run the program.
- *  @param outFile Handle to output to.
- *  @param format Format string.
- *  @param ... Extra parameters.
- *  @result None.
+ *  \brief Tell them how to run the program.
+ *  \param outFile Handle to output to.
+ *  \param format Format string.
+ *  \param ... Extra parameters.
+ *  \result None.
  */
 void
 howTo (FILE * outFile, char *format, ...)
@@ -466,9 +465,9 @@ howTo (FILE * outFile, char *format, ...)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called on selecting quit on the menu.
- *  @param data Data from the memnu.
- *  @result None.
+ *  \brief Called on selecting quit on the menu.
+ *  \param data Data from the memnu.
+ *  \result None.
  */
 void
 quitCallback (guint data)
@@ -483,14 +482,18 @@ quitCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to change the always on top flag.
- *  @param data Data from the memnu.
- *  @result None.
+ *  \brief Called to change the always on top flag.
+ *  \param data Data from the memnu.
+ *  \result None.
  */
 void
 onTopCallback (guint data)
 {
-	if (data) alwaysOnTop = !alwaysOnTop;
+	if (data) 
+	{
+		alwaysOnTop = !alwaysOnTop;
+		configSetBoolValue ("always_on_top", alwaysOnTop);
+	}
 	gtk_window_set_keep_above (GTK_WINDOW (mainWindow), alwaysOnTop != 0);
 }
 
@@ -501,15 +504,18 @@ onTopCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to put the app on all the work spaces.
- *  @param data Data from the menu.
- *  @result None.
+ *  \brief Called to put the app on all the work spaces.
+ *  \param data Data from the menu.
+ *  \result None.
  */
 void 
 stickCallback (guint data)
 {
-	if (data) stuckOnAll = !stuckOnAll;
-
+	if (data) 
+	{
+		stuckOnAll = !stuckOnAll;
+		configSetBoolValue ("on_all_desktops", stuckOnAll);
+	}
 	if (stuckOnAll)
 		gtk_window_stick (GTK_WINDOW (mainWindow));
 	else
@@ -523,15 +529,19 @@ stickCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to lock the current position.
- *  @param data Data from the menu.
- *  @result None.
+ *  \brief Called to lock the current position.
+ *  \param data Data from the menu.
+ *  \result None.
  */
 void
 lockCallback (guint data)
 {
 	prefMenuDesc[MENU_PREF_LOCK].disable = 0;
-	if (data) lockMove = !lockMove;
+	if (data) 
+	{
+		lockMove = !lockMove;
+		configSetBoolValue ("locked_position", lockMove);
+	}
 }
 
 /**********************************************************************************************************************
@@ -541,9 +551,9 @@ lockCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to display the about box.
- *  @param data Data from the menu.
- *  @result None.
+ *  \brief Called to display the about box.
+ *  \param data Data from the menu.
+ *  \result None.
  */
 void
 aboutCallback (guint data)
@@ -578,10 +588,10 @@ aboutCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Wrap a line of text.
- *  @param inText Line to wrap.
- *  @param top Is this the top or bottom of the gauge.
- *  @result Pointer to static wrapped line.
+ *  \brief Wrap a line of text.
+ *  \param inText Line to wrap.
+ *  \param top Is this the top or bottom of the gauge.
+ *  \result Pointer to static wrapped line.
  */
 char *wrapText (char *inText, char top)
 {
@@ -639,8 +649,8 @@ char *wrapText (char *inText, char top)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief enable and disable some options.
- *  @result None.
+ *  \brief enable and disable some options.
+ *  \result None.
  */
 void prepareForPopup (void)
 {
@@ -670,10 +680,10 @@ void prepareForPopup (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Someone clicked on the window.
- *  @param widget What was clicked on.
- *  @param event Type of click.
- *  @result None.
+ *  \brief Someone clicked on the window.
+ *  \param widget What was clicked on.
+ *  \param event Type of click.
+ *  \result None.
  */
 gboolean
 windowClickCallback (GtkWidget * widget, GdkEventButton * event)
@@ -718,10 +728,10 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Someone pressed a key.
- *  @param widget What called.
- *  @param event What key was pressed.
- *  @result None.
+ *  \brief Someone pressed a key.
+ *  \param widget What called.
+ *  \param event What key was pressed.
+ *  \result None.
  */
 gboolean
 windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
@@ -814,10 +824,10 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Slowly move from one value to another.
- *  @param oldValue Starting here.
- *  @param newValue Move to here.
- *  @result New value.
+ *  \brief Slowly move from one value to another.
+ *  \param oldValue Starting here.
+ *  \param newValue Move to here.
+ *  \result New value.
  */
 int slideValues (int oldValue, int newValue)
 {
@@ -843,9 +853,9 @@ int slideValues (int oldValue, int newValue)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the values to show on the face.
- *  @param faceSetting Which face are we working on.
- *  @result Update if an update is needed.
+ *  \brief Calculate the values to show on the face.
+ *  \param faceSetting Which face are we working on.
+ *  \result Update if an update is needed.
  */
 int calcShowValues (FACE_SETTINGS *faceSetting)
 {
@@ -893,9 +903,9 @@ int calcShowValues (FACE_SETTINGS *faceSetting)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief The timer when off.
- *  @param data Not used.
- *  @result None.
+ *  \brief The timer when off.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean
 clockTickCallback (gpointer data)
@@ -995,11 +1005,11 @@ clockTickCallback (gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief The window came in to focus.
- *  @param widget The window.
- *  @param event The event that brought the window into focus.
- *  @param data Not used.
- *  @result None.
+ *  \brief The window came in to focus.
+ *  \param widget The window.
+ *  \param event The event that brought the window into focus.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean 
 focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
@@ -1016,11 +1026,11 @@ focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief The window when out of focus.
- *  @param widget The window.
- *  @param event The event that took the window out of focus.
- *  @param data Not used.
- *  @result None.
+ *  \brief The window when out of focus.
+ *  \param widget The window.
+ *  \param event The event that took the window out of focus.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean 
 focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
@@ -1037,9 +1047,11 @@ focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Reset the max and Min values.
- *  @param savedMaxMin Pointer to the max and min structure to reset.
- *  @result None.
+ *  \brief Reset the max and Min values.
+ *  \param savedMaxMin Pointer to the max and min structure to reset.
+ *  \param count Number of values to save.
+ *  \param interval Interval between updates.
+ *  \result None.
  */
 void maxMinReset (SAVED_MAX_MIN *savedMaxMin, int count, int interval)
 {
@@ -1063,14 +1075,16 @@ void maxMinReset (SAVED_MAX_MIN *savedMaxMin, int count, int interval)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Reset the values on the Gauge.
- *  @param face Which Gauge to reset.
- *  @param type New gauge type.
- *  @param subType New gauge sub-type.
- *  @result None.
+ *  \brief Reset the values on the Gauge.
+ *  \param face Which Gauge to reset.
+ *  \param type New gauge type.
+ *  \param subType New gauge sub-type.
+ *  \result None.
  */
 void gaugeReset (int face, int type, int subType)
 {
+	char value[81];
+
 	faceSettings[face] -> showFaceType = type;
 	faceSettings[face] -> faceSubType = subType;
 	faceSettings[face] -> nextUpdate = 0;
@@ -1089,6 +1103,11 @@ void gaugeReset (int face, int type, int subType)
 	faceSettings[face] -> faceFlags = FACE_REDRAW;
 	faceSettings[face] -> faceScaleMin = 0;
 	faceSettings[face] -> faceScaleMax = 100;
+
+	sprintf (value, "show_face_type_%d", face + 1);
+	configSetIntValue (value, type);
+	sprintf (value, "face_sub_type_%d", face + 1);
+	configSetIntValue (value, subType);
 }
 
 /**********************************************************************************************************************
@@ -1098,9 +1117,9 @@ void gaugeReset (int face, int type, int subType)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Display The CPU load.
- *  @param data What to show.
- *  @result None.
+ *  \brief Display The CPU load.
+ *  \param data What to show.
+ *  \result None.
  */
 void
 loadCallback (guint data)
@@ -1150,9 +1169,9 @@ loadCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called from the menu to select memory gauge.
- *  @param data Which memory gauge.
- *  @result None.
+ *  \brief Called from the menu to select memory gauge.
+ *  \param data Which memory gauge.
+ *  \result None.
  */
 void
 memoryCallback (guint data)
@@ -1176,9 +1195,9 @@ memoryCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called from the menu to select battery gauge.
- *  @param data Not used.
- *  @result None.
+ *  \brief Called from the menu to select battery gauge.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 batteryCallback (guint data)
@@ -1194,9 +1213,9 @@ batteryCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call to set the gauge to entropy mode.
- *  @param data Not used.
- *  @result None.
+ *  \brief Call to set the gauge to entropy mode.
+ *  \param data Not used.
+ *  \result None.
  */
 void 
 entropyCallback (guint data)
@@ -1214,9 +1233,9 @@ entropyCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call to set the gauge to tide clock mode.
- *  @param data Not used.
- *  @result None.
+ *  \brief Call to set the gauge to tide clock mode.
+ *  \param data Not used.
+ *  \result None.
  */
 void 
 tideCallback (guint data)
@@ -1231,9 +1250,9 @@ tideCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called when network is selected on the menu.
- *  @param data What to monitor.
- *  @result None.
+ *  \brief Called when network is selected on the menu.
+ *  \param data What to monitor.
+ *  \result None.
  */
 void
 networkCallback (guint data)
@@ -1269,9 +1288,9 @@ networkCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to setup the hard drive gauge.
- *  @param data Which gauge to show.
- *  @result None.
+ *  \brief Called to setup the hard drive gauge.
+ *  \param data Which gauge to show.
+ *  \result None.
  */
 void harddiskCallback (guint data)
 {
@@ -1321,9 +1340,9 @@ void harddiskCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Tempature sensor option selected from the menu.
- *  @param data Which option was selected.
- *  @result None.
+ *  \brief Tempature sensor option selected from the menu.
+ *  \param data Which option was selected.
+ *  \result None.
  */
 void
 sensorTempCallback (guint data)
@@ -1345,9 +1364,9 @@ sensorTempCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Fan sensor option selected from the menu.
- *  @param data Which option was selected.
- *  @result None.
+ *  \brief Fan sensor option selected from the menu.
+ *  \param data Which option was selected.
+ *  \result None.
  */
 void
 sensorFanCallback (guint data)
@@ -1369,9 +1388,9 @@ sensorFanCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Weather option selected from the menu.
- *  @param data Which option was selected.
- *  @result None.
+ *  \brief Weather option selected from the menu.
+ *  \param data Which option was selected.
+ *  \result None.
  */
 void
 weatherCallback (guint data)
@@ -1390,9 +1409,9 @@ weatherCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Function to turn on the thermometer gauge.
- *  @param data Which gauge to display.
- *  @result None.
+ *  \brief Function to turn on the thermometer gauge.
+ *  \param data Which gauge to display.
+ *  \result None.
  */
 void
 thermometerCallback (guint data)
@@ -1409,14 +1428,14 @@ thermometerCallback (guint data)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  T H E R M O M E T E R  C A L L B A C K                                                                            *
- *  ======================================                                                                            *
+ *  P O W E R  M E T E R  C A L L B A C K                                                                             *
+ *  =====================================                                                                             *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Function to turn on the power meter gauge.
- *  @param data Which gauge to display.
- *  @result None.
+ *  \brief Function to turn on the power meter gauge.
+ *  \param data Which gauge to display.
+ *  \result None.
  */
 void
 powerMeterCallback (guint data)
@@ -1438,9 +1457,9 @@ powerMeterCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save the configuration.
- *  @param data Not used.
- *  @result None.
+ *  \brief Save the configuration.
+ *  \param data Not used.
+ *  \result None.
  */
 void configSaveCallback (guint data)
 {
@@ -1449,58 +1468,17 @@ void configSaveCallback (guint data)
 	char configPath[1024], value[81];
 
 	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
-	
-	configSetIntValue ("always_on_top", alwaysOnTop);
-	configSetIntValue ("on_all_desktops", stuckOnAll);
-	configSetIntValue ("locked_position", lockMove);
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("current_face", currentFace);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);
 	configSetIntValue ("x_pos", posX);
 	configSetIntValue ("y_pos", posY);
-	configSetValue ("font_name", fontName);
-	configSetIntValue ("hightide_time", hightideTime);
-	configSetValue ("tide_info_url", tideURL);
-	configSetIntValue ("Weather_scales", weatherScales);
-	configSetValue ("location_key", locationKey);
-	configSetValue ("location_search", locationSearch);
-	configSetValue ("thermo_server", thermoServer);
-	configSetIntValue ("thermo_port", thermoPort);	
-	configSetValue ("power_server", powerServer);
-	configSetIntValue ("power_port", powerPort);	
-
-	for (i = 2; i < MAX__COLOURS; i++)
+	configSetIntValue ("current_face", currentFace);
+	
+	if (home)
 	{
-		sprintf (value, "colour_%s", colourNames[i].shortName);
-		configSetValue (value, colourNames[i].defColour);
+		strcpy (configPath, home);
+		strcat (configPath, "/");
+		strcat (configPath, configFile);
+		configSave (configPath);
 	}
-	for (i = 0; i < HAND_COUNT; i++)
-	{
-		sprintf (value, "%s_hand_style", handNames[i]);
-		configSetIntValue (value, handStyle[i].style);
-		sprintf (value, "%s_hand_length", handNames[i]);
-		configSetIntValue (value, handStyle[i].length);
-		sprintf (value, "%s_hand_tail", handNames[i]);
-		configSetIntValue (value, handStyle[i].tail);
-		sprintf (value, "%s_hand_fill", handNames[i]);
-		configSetIntValue (value, handStyle[i].fillIn);
-	}
-	for (i = 0; i < (faceWidth * faceHeight); i++)
-	{
-		sprintf (value, "show_face_type_%d", i + 1);
-		configSetIntValue (value, faceSettings[i] -> showFaceType);
-		sprintf (value, "face_sub_type_%d", i + 1);
-		configSetIntValue (value, faceSettings[i] -> faceSubType);
-	}
-	strcpy (configPath, home);
-	strcat (configPath, "/");
-	strcat (configPath, configFile);
-	configSave (configPath);
 }
 
 #if GTK_MAJOR_VERSION == 2
@@ -1511,11 +1489,11 @@ void configSaveCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief The window is exposed.
- *  @param widget Not used.
- *  @param event Not used.
- *  @param data Not used.
- *  @result None.
+ *  \brief The window is exposed.
+ *  \param widget Not used.
+ *  \param event Not used.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean
 exposeCallback (GtkWidget *widget, GdkEventExpose* event, gpointer data)
@@ -1531,11 +1509,11 @@ exposeCallback (GtkWidget *widget, GdkEventExpose* event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Handle a draw call back to display the gauge.
- *  @param widget Which widget.
- *  @param cr Cairo handle to use.
- *  @param data Not used.
- *  @result None.
+ *  \brief Handle a draw call back to display the gauge.
+ *  \param widget Which widget.
+ *  \param cr Cairo handle to use.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean
 drawCallback (GtkWidget *widget, cairo_t *cr, gpointer data)
@@ -1552,11 +1530,11 @@ drawCallback (GtkWidget *widget, cairo_t *cr, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Track the mouse so the tooltip matches the face.
- *  @param widget Owner widget.
- *  @param event Move move event.
- *  @param data Not used.
- *  @result TRUE.
+ *  \brief Track the mouse so the tooltip matches the face.
+ *  \param widget Owner widget.
+ *  \param event Move move event.
+ *  \param data Not used.
+ *  \result TRUE.
  */
 gboolean
 userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
@@ -1581,10 +1559,10 @@ userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save a new value in the max min buffer.
- *  @param faceSetting Which face is this for.
- *  @param firstValue Get the max and min from weather units settings.
- *  @result 1 if a paint is needed bacuase value changed.
+ *  \brief Save a new value in the max min buffer.
+ *  \param faceSetting Which face is this for.
+ *  \param firstValue Get the max and min from weather units settings.
+ *  \result 1 if a paint is needed bacuase value changed.
  */
 static int updateMaxMinValues (FACE_SETTINGS *faceSetting, int firstValue)
 {
@@ -1649,13 +1627,35 @@ static int updateMaxMinValues (FACE_SETTINGS *faceSetting, int firstValue)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  D E F A U L T  G A U G E                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set in config default values used by dial library.
+ *  \result None.
+ */
+void defaultGauge (void)
+{
+	configSetIntValue ("number_cols", faceWidth);
+	configSetIntValue ("number_rows", faceHeight);
+	configSetIntValue ("face_size", faceSize);
+	configSetIntValue ("marker_type", markerType);
+	configSetIntValue ("marker_step", markerStep);
+	configSetIntValue ("opacity", faceOpacity);
+	configSetIntValue ("gradient", faceGradient);
+	configSetValue ("font_name", fontName);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  U P D A T E  G A U G E                                                                                            *
  *  ======================                                                                                            *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call back called when a gauge setting is changed by the dial system.
- *  @result None.
+ *  \brief Call back called when a gauge setting is changed by the dial system.
+ *  \result None.
  */
 void updateGauge (void)
 {
@@ -1688,14 +1688,15 @@ void updateGauge (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read a clolour from the command line.
- *  @param fromColour Command line.
- *  @result True colour.
+ *  \brief Read a clolour from the command line.
+ *  \param fromColour Command line.
+ *  \result True colour.
  */
 int loadColour (char *fromColour)
 {
 	int i, colour = -1;
-	
+	char value[81];
+
 	if (strlen (fromColour) > 3)
 	{
 		for (i = 2; i < MAX__COLOURS; i++)
@@ -1709,6 +1710,8 @@ int loadColour (char *fromColour)
 		if (colour != -1)
 		{
 			strncpy (colourNames[colour].defColour, &fromColour[3], 60);
+			sprintf (value, "colour_%s", colourNames[colour].shortName);
+			configSetValue (value, colourNames[colour].defColour);
 			return 1;
 		}
 	}
@@ -1722,14 +1725,14 @@ int loadColour (char *fromColour)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the setting for the hand from the command line.
- *  @param buff Command line settings.
- *  @result None.
+ *  \brief Read the setting for the hand from the command line.
+ *  \param buff Command line settings.
+ *  \result None.
  */
 void loadHandInfo (char *buff)
 {
 	int style = 0, length = 0, tail = 0, i = 0, j = 0, m = 0;
-	char hand[41];
+	char hand[41], value[81];
 		
 	while (buff[i] && m < 4)
 	{
@@ -1769,6 +1772,15 @@ void loadHandInfo (char *buff)
 				handStyle[i].length = length;
 				handStyle[i].tail = tail;
 				handStyle[i].fillIn = 1;
+
+				sprintf (value, "%s_hand_style", handNames[i]);
+				configSetIntValue (value, handStyle[i].style);
+				sprintf (value, "%s_hand_length", handNames[i]);
+				configSetIntValue (value, handStyle[i].length);
+				sprintf (value, "%s_hand_tail", handNames[i]);
+				configSetIntValue (value, handStyle[i].tail);
+				sprintf (value, "%s_hand_fill", handNames[i]);
+				configSetBoolValue (value, handStyle[i].fillIn);
 			}
 			break;
 		}
@@ -1782,12 +1794,12 @@ void loadHandInfo (char *buff)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process parameters on the command line.
- *  @param argc Number of args.
- *  @param argv The Args themselves.
- *  @param posX Screen position X.
- *  @param posY Screen position Y.
- *  @result None.
+ *  \brief Process parameters on the command line.
+ *  \param argc Number of args.
+ *  \param argv The Args themselves.
+ *  \param posX Screen position X.
+ *  \param posY Screen position Y.
+ *  \result None.
  */
 void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 {
@@ -1801,6 +1813,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			{
 			case 'a':							/* Set the clock always on top */
 				alwaysOnTop = !alwaysOnTop;
+				configSetBoolValue ("always_on_top", alwaysOnTop);
 				break;
 			case 'C':							/* Specify config file, done in main */
 				break;
@@ -1822,6 +1835,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'F':							/* Select the font to be used */
 				strncpy (fontName, &argv[i][2], 99);
+				configSetValue ("font_name", fontName);
 				break;
 			case 'g':
 				faceGradient = atoi (&argv[i][2]);
@@ -1834,6 +1848,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'l':							/* Lock the clocks position */
 				lockMove = !lockMove;
+				configSetBoolValue ("locked_position", lockMove);
 				break;
 			case 'm':							/* What to show at 12, 3, 6, 9 */
 				if (argv[i][2] >= '0' && argv[i][2] <= '9')
@@ -1842,6 +1857,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					if (argv[i][3] >= '1' && argv[i][3] <= '9')
 						markerStep = (argv[i][3] - '0');
 				}
+				configSetIntValue ("marker_type", markerType);
+				configSetIntValue ("marker_step", markerStep);
 				break;
 			case 'n':							/* Set the number of ... */
 				switch (argv[i][2])
@@ -1879,6 +1896,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'O':
 				faceOpacity = atoi (&argv[i][2]);
+				configSetIntValue ("opacity", faceOpacity);
 				break;
 			case 's':							/* Select the faceSize of the clock */
 				faceSize = atoi (&argv[i][2]);
@@ -1892,6 +1910,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'w':							/* Show on all workspaces */
 				stuckOnAll = !stuckOnAll;
+				configSetBoolValue ("on_all_desktops", stuckOnAll);
 				break;
 			case 'x':							/* Set the x position for the clock */
 				if (argv[i][2] == 'c')
@@ -1943,10 +1962,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Load the config from file.
- *  @param posX Screen position X.
- *  @param posY Screen position Y.
- *  @result None.
+ *  \brief Load the config from file.
+ *  \param posX Screen position X.
+ *  \param posY Screen position Y.
+ *  \result None.
  */
 void loadConfig (int *posX, int *posY)
 {
@@ -1954,36 +1973,6 @@ void loadConfig (int *posX, int *posY)
 	char *home = getenv ("HOME");
 	char configPath[1024], value[81], tempName[81];
 	
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);	
-	configSetValue ("font_name", fontName);
-	configSetIntValue ("x_pos", *posX);
-	configSetIntValue ("y_pos", *posY);
-	configSetIntValue ("hightide_time", hightideTime);
-	configSetValue ("tide_info_url", tideURL);
-
-	for (i = 2; i < MAX__COLOURS; i++)
-	{
-		sprintf (value, "colour_%s", colourNames[i].shortName);
-		configSetValue (value, colourNames[i].defColour);
-	}
-	for (i = 0; i < HAND_COUNT; i++)
-	{
-		sprintf (value, "%s_hand_style", handNames[i]);
-		configSetIntValue (value, handStyle[i].style);
-		sprintf (value, "%s_hand_length", handNames[i]);
-		configSetIntValue (value, handStyle[i].length);
-		sprintf (value, "%s_hand_tail", handNames[i]);
-		configSetIntValue (value, handStyle[i].tail);
-		sprintf (value, "%s_hand_fill", handNames[i]);
-		configSetIntValue (value, handStyle[i].fillIn);
-	}
-
 	configLoad ("/etc/gaugerc");
 	strcpy (configPath, home);
 	strcat (configPath, "/");
@@ -2008,7 +1997,6 @@ void loadConfig (int *posX, int *posY)
 	configGetValue ("tide_info_url", tideURL, 100);
 	configGetIntValue ("Weather_scales", (int *)&weatherScales);
 	configGetValue ("location_key", locationKey, 40);
-	configGetValue ("location_search", locationSearch, 40);
 	configGetValue ("thermo_server", thermoServer, 40);
 	configGetIntValue ("thermo_port", &thermoPort);
 	configGetValue ("power_server", powerServer, 40);
@@ -2057,11 +2045,11 @@ void loadConfig (int *posX, int *posY)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Function to make strings fit the display.
- *  @param inString String to convert.
- *  @param outString Output the string here.
- *  @param max Display space.
- *  @result Pointer to the changed string.
+ *  \brief Function to make strings fit the display.
+ *  \param inString String to convert.
+ *  \param outString Output the string here.
+ *  \param max Display space.
+ *  \result Pointer to the changed string.
  */
 char *shortenWords (char *inString, char *outString, int max)
 {
@@ -2115,12 +2103,13 @@ char *shortenWords (char *inString, char *outString, int max)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save a string in to one of the positions on the face.
- *  @param faceSetting Which face to save to.
- *  @param str Which string is being set.
- *  @param format Format of the string.
- *  @param arg_ptr Pointer to the arguments.
- *  @result None.
+ *  \brief Save a string in to one of the positions on the face.
+ *  \param faceSetting Which face to save to.
+ *  \param str Which string is being set.
+ *  \param shorten Should words be made shorter to fit.
+ *  \param format Format of the string.
+ *  \param arg_ptr Pointer to the arguments.
+ *  \result None.
  */
 void vSetFaceString (FACE_SETTINGS *faceSetting, int str, int shorten, char *format, va_list arg_ptr)
 {
@@ -2162,12 +2151,13 @@ void vSetFaceString (FACE_SETTINGS *faceSetting, int str, int shorten, char *for
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save a string in to one of the positions on the face.
- *  @param faceSetting Which face to save to.
- *  @param str Which string is being set.
- *  @param format Format of the string.
- *  @param ... Varible argument list.
- *  @result None.
+ *  \brief Save a string in to one of the positions on the face.
+ *  \param faceSetting Which face to save to.
+ *  \param str Which string is being set.
+ *  \param shorten Should words be made shorter to fit.
+ *  \param format Format of the string.
+ *  \param ... Varible argument list.
+ *  \result None.
  */
 void setFaceString (FACE_SETTINGS *faceSetting, int str, int shorten, char *format, ...)
 {
@@ -2185,10 +2175,10 @@ void setFaceString (FACE_SETTINGS *faceSetting, int str, int shorten, char *form
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief The program starts here.
- *  @param argc The number of arguments passed to the program.
- *  @param argv Pointers to the arguments passed to the program.
- *  @result 0 (zero) if all process OK.
+ *  \brief The program starts here.
+ *  \param argc The number of arguments passed to the program.
+ *  \param argv Pointers to the arguments passed to the program.
+ *  \result 0 (zero) if all process OK.
  */
 int
 main (int argc, char *argv[])
@@ -2221,6 +2211,7 @@ main (int argc, char *argv[])
 			}
 		}
 	}
+	defaultGauge();
 	loadConfig (&posX, &posY);
 	processCommandLine (argc, argv, &posX, &posY);
 	

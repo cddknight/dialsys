@@ -67,7 +67,8 @@ struct {
 	char tempUnit;
 	int tempMin, tempMax;
 	char *tempText;
-} tempUnits[] =
+} 
+tempUnits[] =
 {
 	{
 	0, -10, 40, "\302\260C"},
@@ -79,30 +80,25 @@ struct {
 	char speedUnit;
 	int speedMin, speedMax;
 	char *speedText;
-} speedUnits[] =
+} 
+speedUnits[] =
 {
-	{
-	0, 0, 100, "kph"},
-	{
-	1, 0, 25, "mps"},
-	{
-	2, 0, 50, "mph"},
-	{
-	3, 0, 50, "knots"}
+	{0, 0, 100, "kph"},
+	{1, 0, 25, "mps"},
+	{2, 0, 50, "mph"},
+	{3, 0, 50, "knots"}
 };
 
 struct {
 	char pressureUnit;
 	int pressureMin, pressureMax;
 	char *pressureText;
-} pressureUnits[] =
+} 
+pressureUnits[] =
 {
-	{
-	0, 95, 105, "mb"},
-	{
-	1, 700, 800, "mmHg"},
-	{
-	2, 28, 31, "inHg"}
+	{0, 95, 105, "mb"},
+	{1, 700, 800, "mmHg"},
+	{2, 28, 31, "inHg"}
 };
 
 struct MemoryStruct {
@@ -188,11 +184,11 @@ weatherInfo myWeather;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Update the change between two weather values.
- *  @param val Which value.
- *  @param newVal The new value just read.
- *  @param oldVal The old value shown.
- *  @result The new value.
+ *  \brief Update the change between two weather values.
+ *  \param val Which value.
+ *  \param newVal The new value just read.
+ *  \param oldVal The old value shown.
+ *  \result The new value.
  */
 int updateChange(int val, int newVal, int oldVal)
 {
@@ -226,9 +222,9 @@ int updateChange(int val, int newVal, int oldVal)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert between temp scales.
- *  @param temp Temp in C.
- *  @result Temp in other scale.
+ *  \brief Convert between temp scales.
+ *  \param temp Temp in C.
+ *  \result Temp in other scale.
  */
 double changeTemp(double temp)
 {
@@ -245,9 +241,9 @@ double changeTemp(double temp)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert between speed scales.
- *  @param speed Speed in kph.
- *  @result Speed in other scale.
+ *  \brief Convert between speed scales.
+ *  \param speed Speed in kph.
+ *  \result Speed in other scale.
  */
 double changeSpeed(double speed)
 {
@@ -267,9 +263,9 @@ double changeSpeed(double speed)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert between pressure scales.
- *  @param press Pressure in milli-bars.
- *  @result Pressure in other scale.
+ *  \brief Convert between pressure scales.
+ *  \param press Pressure in milli-bars.
+ *  \result Pressure in other scale.
  */
 double changePressure(int press)
 {
@@ -288,8 +284,8 @@ double changePressure(int press)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called once at the program start and find the location.
- *  @result None 0 all is OK.
+ *  \brief Called once at the program start and find the location.
+ *  \result None 0 all is OK.
  */
 void readWeatherInit(void)
 {
@@ -312,12 +308,12 @@ void readWeatherInit(void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called by curl to write memory in to a buffer.
- *  @param ptr Data to save.
- *  @param size Amount of data to save.
- *  @param nmemb number of elements.
- *  @param data Pointer to buffer.
- *  @result Amount we saved.
+ *  \brief Called by curl to write memory in to a buffer.
+ *  \param ptr Data to save.
+ *  \param size Amount of data to save.
+ *  \param nmemb number of elements.
+ *  \param data Pointer to buffer.
+ *  \result Amount we saved.
  */
 static size_t writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
 {
@@ -353,9 +349,9 @@ static size_t writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert a 2013-02-13 into a day of week number.
- *  @param dateStr Sring to convert.
- *  @result Day of week Sundoy = 0.
+ *  \brief Convert a 2013-02-13 into a day of week number.
+ *  \param dateStr Sring to convert.
+ *  \result Day of week Sundoy = 0.
  */
 int getDayOfWeek(char *dateStr)
 {
@@ -394,9 +390,9 @@ int getDayOfWeek(char *dateStr)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Split out any info.
- *  @param value Value read for the obs title.
- *  @result None.
+ *  \brief Split out any info.
+ *  \param value Value read for the obs title.
+ *  \result None.
  */
 void splitOutTitle(char *value)
 {
@@ -433,10 +429,10 @@ void splitOutTitle(char *value)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Split out any info.
- *  @param value Value read for the forecast title.
- *  @param level Level of the title.
- *  @result None.
+ *  \brief Split out any info.
+ *  \param value Value read for the forecast title.
+ *  \param level Level of the title.
+ *  \result None.
  */
 void splitOutForcastTitle(char *value, int level)
 {
@@ -493,10 +489,10 @@ void splitOutForcastTitle(char *value, int level)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Split out any info.
- *  @param value Value of the description.
- *  @param level Level of the description.
- *  @result None.
+ *  \brief Split out any info.
+ *  \param value Value of the description.
+ *  \param level Level of the description.
+ *  \result None.
  */
 void splitOutDescription(char *value, int level)
 {
@@ -632,11 +628,11 @@ void splitOutDescription(char *value, int level)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process each of the fields in the XML.
- *  @param readLevel 0 current, 1 today, 2 tomorrow.
- *  @param name Name of the field.
- *  @param value Value of the field.
- *  @result None.
+ *  \brief Process each of the fields in the XML.
+ *  \param readLevel 0 current, 1 today, 2 tomorrow.
+ *  \param name Name of the field.
+ *  \param value Value of the field.
+ *  \result None.
  */
 static void processWeatherKey(int readLevel, const char *name, char *value)
 {
@@ -675,11 +671,11 @@ static void processWeatherKey(int readLevel, const char *name, char *value)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process each of the elements in the file.
- *  @param doc Document to read.
- *  @param aNode Current node.
- *  @param readLevel 0 current, 1 today, 2 tomorrow.
- *  @result None.
+ *  \brief Process each of the elements in the file.
+ *  \param doc Document to read.
+ *  \param aNode Current node.
+ *  \param readLevel 0 current, 1 today, 2 tomorrow.
+ *  \result None.
  */
 static void processElementNames(xmlDoc * doc, xmlNode * aNode, int readLevel)
 {
@@ -712,12 +708,12 @@ static void processElementNames(xmlDoc * doc, xmlNode * aNode, int readLevel)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Inflate a compress buffer.
- *  @param compressedBytes Buffer to inflate.
- *  @param compressedSize Size of the input buffer.
- *  @param uncompressedBytes Save the inflated data here.
- *  @param uncompressedSize Size of the inflated beffer.
- *  @result Number of output bytes, 0 on error.
+ *  \brief Inflate a compress buffer.
+ *  \param compressedBytes Buffer to inflate.
+ *  \param compressedSize Size of the input buffer.
+ *  \param uncompressedBytes Save the inflated data here.
+ *  \param uncompressedSize Size of the inflated beffer.
+ *  \result Number of output bytes, 0 on error.
  */
 int gzipInflate (Bytef *compressedBytes, int compressedSize, Bytef *uncompressedBytes, int uncompressedSize)
 {
@@ -752,10 +748,10 @@ int gzipInflate (Bytef *compressedBytes, int compressedSize, Bytef *uncompressed
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process the down loaded buffer.
- *  @param buffer Buffer to process.
- *  @param size Size of the buffer.
- *  @result None.
+ *  \brief Process the down loaded buffer.
+ *  \param buffer Buffer to process.
+ *  \param size Size of the buffer.
+ *  \result None.
  */
 static void processBuffer(char *buffer, size_t size)
 {
@@ -818,8 +814,8 @@ static void processBuffer(char *buffer, size_t size)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert the metric value to what the user selected.
- *  @result None.
+ *  \brief Convert the metric value to what the user selected.
+ *  \result None.
  */
 static void fixupShowValues()
 {
@@ -861,9 +857,9 @@ static void fixupShowValues()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Send a request for the weather at the current location.
- *  @param weatherURL Called for each for the pages to read.
- *  @result None.
+ *  \brief Send a request for the weather at the current location.
+ *  \param weatherURL Called for each for the pages to read.
+ *  \result None.
  */
 void doUpdateWeatherInfo(char *weatherURL)
 {
@@ -913,8 +909,8 @@ void doUpdateWeatherInfo(char *weatherURL)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Update the weather information.
- *  @result None.
+ *  \brief Update the weather information.
+ *  \result None.
  */
 void updateWeatherInfo()
 {
@@ -949,9 +945,9 @@ void updateWeatherInfo()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get amx and min from the weather unit settings.
- *  @param faceSetting What face is this for.
- *  @result None.
+ *  \brief Get amx and min from the weather unit settings.
+ *  \param faceSetting What face is this for.
+ *  \result None.
  */
 void weatherGetMaxMin(FACE_SETTINGS * faceSetting)
 {
@@ -996,9 +992,9 @@ void weatherGetMaxMin(FACE_SETTINGS * faceSetting)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Display an error message.
- *  @param message Message to display.
- *  @result None.
+ *  \brief Display an error message.
+ *  \param message Message to display.
+ *  \result None.
  */
 void showErrorMessage(char *message)
 {
@@ -1020,9 +1016,9 @@ void showErrorMessage(char *message)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the value to show on the face.
- *  @param face Which face to display on.
- *  @result None zero if the face should be re-shown.
+ *  \brief Calculate the value to show on the face.
+ *  \param face Which face to display on.
+ *  \result None zero if the face should be re-shown.
  */
 void readWeatherValues(int face)
 {
@@ -1261,8 +1257,8 @@ void readWeatherValues(int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Reset all the weather gauges.
- *  @result None.
+ *  \brief Reset all the weather gauges.
+ *  \result None.
  */
 void weatherGaugeReset()
 {
@@ -1292,10 +1288,10 @@ void weatherGaugeReset()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call back from a unit change.
- *  @param comboBox Which box changed.
- *  @param data Whick option it was.
- *  @result None.
+ *  \brief Call back from a unit change.
+ *  \param comboBox Which box changed.
+ *  \param data Whick option it was.
+ *  \result None.
  */
 void weatherComboCallback(GtkWidget * comboBox, gpointer data)
 {
@@ -1320,6 +1316,7 @@ void weatherComboCallback(GtkWidget * comboBox, gpointer data)
 		weatherScales |= (sel << 8);
 		break;
 	}
+	configSetIntValue ("Weather_scales", weatherScales);
 	weatherGaugeReset();
 }
 
@@ -1332,9 +1329,9 @@ void weatherComboCallback(GtkWidget * comboBox, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Show a dialog and get the weather settings.
- *  @param data Not used.
- *  @result None.
+ *  \brief Show a dialog and get the weather settings.
+ *  \param data Not used.
+ *  \result None.
  */
 void weatherSettings(guint data)
 {
@@ -1491,6 +1488,7 @@ void weatherSettings(guint data)
 	if (strcmp(saveText, locationKey) != 0)
 	{
 		strncpy(locationKey, saveText, 40);
+		configSetValue ("location_key", locationKey);
 		textUpdate = 1;
 	}
 	if (textUpdate)
@@ -1511,8 +1509,8 @@ void weatherSettings(guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save the current weather.
- *  @result None.
+ *  \brief Save the current weather.
+ *  \result None.
  */
 void saveCurrentWeather(void)
 {

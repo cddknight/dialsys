@@ -49,8 +49,8 @@ double myPowerReading[8];
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called once at the program start to find the devices.
- *  @result None 0 all is OK.
+ *  \brief Called once at the program start to find the devices.
+ *  \result None 0 all is OK.
  */
 void readPowerMeterInit (void)
 {
@@ -75,11 +75,11 @@ void readPowerMeterInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process each of the fields in the XML.
- *  @param readLevel 0 current, 1 today, 2 tomorrow.
- *  @param name Name of the field.
- *  @param value Value of the field.
- *  @result None.
+ *  \brief Process each of the fields in the XML.
+ *  \param readLevel 0 current, 1 today, 2 tomorrow.
+ *  \param name Name of the field.
+ *  \param value Value of the field.
+ *  \result None.
  */
 static void processPowerKey (int readLevel, const char *name, char *value)
 {
@@ -108,11 +108,11 @@ static void processPowerKey (int readLevel, const char *name, char *value)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process each of the elements in the file.
- *  @param doc Document to read.
- *  @param aNode Current node.
- *  @param readLevel 0 current, 1 today, 2 tomorrow.
- *  @result None.
+ *  \brief Process each of the elements in the file.
+ *  \param doc Document to read.
+ *  \param aNode Current node.
+ *  \param readLevel 0 current, 1 today, 2 tomorrow.
+ *  \result None.
  */
 static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 {
@@ -145,10 +145,10 @@ static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process the down loaded buffer.
- *  @param buffer Buffer to process.
- *  @param size Size of the buffer.
- *  @result None.
+ *  \brief Process the down loaded buffer.
+ *  \param buffer Buffer to process.
+ *  \param size Size of the buffer.
+ *  \result None.
  */
 static void processBuffer (char *buffer, size_t size)
 {
@@ -184,8 +184,8 @@ static void processBuffer (char *buffer, size_t size)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the current tempature from the powermeter.
- *  @result None.
+ *  \brief Read the current tempature from the powermeter.
+ *  \result None.
  */
 void readPowerMeterInfo ()
 {
@@ -214,10 +214,10 @@ void readPowerMeterInfo ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert a reading into a string.
- *  @param reading Reading taken from meter.
- *  @param buffer Buffer for output string.
- *  @result None.
+ *  \brief Convert a reading into a string.
+ *  \param reading Reading taken from meter.
+ *  \param buffer Buffer for output string.
+ *  \result None.
  */
 void getPowerStr (double reading, char *buffer)
 {
@@ -236,9 +236,9 @@ void getPowerStr (double reading, char *buffer)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the value to show on the face.
- *  @param face Which face to display on.
- *  @result None zero if the face should be re-shown.
+ *  \brief Calculate the value to show on the face.
+ *  \param face Which face to display on.
+ *  \result None zero if the face should be re-shown.
  */
 void readPowerMeterValues (int face)
 {

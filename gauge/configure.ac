@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(gauge, 2.1.6, chris@theknight.co.uk)
+AC_INIT(gauge, 2.1.7, chris@theknight.co.uk)
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/Gauge.c])
 AC_CONFIG_HEADER([config.h])

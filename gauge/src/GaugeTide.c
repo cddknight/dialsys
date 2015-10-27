@@ -77,9 +77,9 @@ static char removePrefix[] = "Tide Times & Heights for ";
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Extract parts from: (01:23 - Low Tide (1.
- *  @param line Line read from page.
- *  @result 1 if all OK.
+ *  \brief Extract parts from: (01:23 - Low Tide (1.
+ *  \param line Line read from page.
+ *  \result 1 if all OK.
  */
 int processTideTime (char *line)
 {
@@ -125,9 +125,9 @@ int processTideTime (char *line)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert a month string into a number.
- *  @param mon Month to find.
- *  @result Number of the month.
+ *  \brief Convert a month string into a number.
+ *  \param mon Month to find.
+ *  \result Number of the month.
  */
 int getMonth (char *mon)
 {
@@ -148,9 +148,9 @@ int getMonth (char *mon)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process the line: (Grovehurst Jetty on 8th July 2011).
- *  @param line Line read from the page.
- *  @result None.
+ *  \brief Process the line: (Grovehurst Jetty on 8th July 2011).
+ *  \param line Line read from the page.
+ *  \result None.
  */
 void processLocationDate (char *line)
 {
@@ -205,9 +205,9 @@ void processLocationDate (char *line)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process a descripsion breaking in to parts at <br>.
- *  @param description Description read fron the page.
- *  @result Number of parts found.
+ *  \brief Process a descripsion breaking in to parts at <br>.
+ *  \param description Description read fron the page.
+ *  \result Number of parts found.
  */
 int processDescription (xmlChar *description)
 {
@@ -270,12 +270,12 @@ int processDescription (xmlChar *description)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called back by curl to write page to memoy.
- *  @param ptr Pointer to the data.
- *  @param size Size of the data.
- *  @param nmemb Size of the data parts.
- *  @param data Pointer to my data structure.
- *  @result Total size.
+ *  \brief Called back by curl to write page to memoy.
+ *  \param ptr Pointer to the data.
+ *  \param size Size of the data.
+ *  \param nmemb Size of the data parts.
+ *  \param data Pointer to my data structure.
+ *  \result Total size.
  */
 static size_t
 writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
@@ -300,10 +300,10 @@ writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call by libxml for each of the elements.
- *  @param doc xmldoc handle.
- *  @param aNode Xml node pointer.
- *  @result None.
+ *  \brief Call by libxml for each of the elements.
+ *  \param doc xmldoc handle.
+ *  \param aNode Xml node pointer.
+ *  \result None.
  */
 static void
 processElementNames (xmlDoc *doc, xmlNode * aNode)
@@ -333,10 +333,10 @@ processElementNames (xmlDoc *doc, xmlNode * aNode)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Process the xml memory buffer in libxml.
- *  @param buffer Buffer to process.
- *  @param size Size of the buffer.
- *  @result None.
+ *  \brief Process the xml memory buffer in libxml.
+ *  \param buffer Buffer to process.
+ *  \param size Size of the buffer.
+ *  \result None.
  */
 static void processBuffer (char *buffer, size_t size)
 {
@@ -372,8 +372,8 @@ static void processBuffer (char *buffer, size_t size)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the tide times using curl.
- *  @result None.
+ *  \brief Get the tide times using curl.
+ *  \result None.
  */
 void getTideTimes () 
 {
@@ -450,8 +450,8 @@ void getTideTimes ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Init function if needed, not used.
- *  @result None.
+ *  \brief Init function if needed, not used.
+ *  \result None.
  */
 void readTideInit (void)
 {
@@ -467,9 +467,9 @@ void readTideInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the state of the tide at the current location.
- *  @param face Face to display on.
- *  @result Values save to the face.
+ *  \brief Calculate the state of the tide at the current location.
+ *  \param face Face to display on.
+ *  \result Values save to the face.
  */
 void readTideValues (int face)
 {
@@ -540,9 +540,9 @@ void readTideValues (int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Settings for the tide gauge.
- *  @param data Passed from the menu.
- *  @result None.
+ *  \brief Settings for the tide gauge.
+ *  \param data Passed from the menu.
+ *  \result None.
  */
 void tideSettings (guint data)
 {
@@ -622,6 +622,7 @@ void tideSettings (guint data)
 	if (strcmp (saveText, tideURL) != 0)
 	{
 		strncpy (tideURL, saveText, 128);
+		configSetValue ("tide_info_url", tideURL);
 		textUpdate = 1;
 	}
 	if (textUpdate)

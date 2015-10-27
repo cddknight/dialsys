@@ -59,8 +59,8 @@ static int myUpdateID = 100;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called on program start to init the gauge.
- *  @result None.
+ *  \brief Called on program start to init the gauge.
+ *  \result None.
  */
 void readBatteryInit (void)
 {
@@ -76,9 +76,9 @@ void readBatteryInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the state of the battery.
- *  @param face Which face is this for.
- *  @result None.
+ *  \brief Read the state of the battery.
+ *  \param face Which face is this for.
+ *  \result None.
  */
 void readBatteryValues (int face)
 {
@@ -137,8 +137,8 @@ void readBatteryValues (int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Search battery directory for batteries.
- *  @result Number of lines read, it should be 3.
+ *  \brief Search battery directory for batteries.
+ *  \result Number of lines read, it should be 3.
  */
 static int readBatteryDir ()
 {
@@ -179,9 +179,9 @@ static int readBatteryDir ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read from proc the state of the battery.
- *  @param fileName Which files to read.
- *  @result Number of values read.
+ *  \brief Read from proc the state of the battery.
+ *  \param fileName Which files to read.
+ *  \result Number of values read.
  */
 static int readBattery (char *fileName)
 {

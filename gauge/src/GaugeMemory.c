@@ -61,8 +61,8 @@ static char *name[] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called on program start to init the gauge.
- *  @result None.
+ *  \brief Called on program start to init the gauge.
+ *  \result None.
  */
 void readMemoryInit (void)
 {
@@ -76,9 +76,9 @@ void readMemoryInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the state of the memory.
- *  @param face Which face is this for.
- *  @result None.
+ *  \brief Read the state of the memory.
+ *  \param face Which face is this for.
+ *  \result None.
  */
 void readMemoryValues (int face)
 {
@@ -153,8 +153,8 @@ void readMemoryValues (int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read from proc the state of the memory.
- *  @result Number of values read.
+ *  \brief Read from proc the state of the memory.
+ *  \result Number of values read.
  */
 int readMemInfo ()
 {

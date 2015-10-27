@@ -45,8 +45,8 @@ static int myEntropyAvail = 0;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Initialise the gauge.
- *  @result None.
+ *  \brief Initialise the gauge.
+ *  \result None.
  */
 void readEntropyInit (void)
 {
@@ -61,9 +61,9 @@ void readEntropyInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the current entropy value.
- *  @param face Which face is this for.
- *  @result None.
+ *  \brief Read the current entropy value.
+ *  \param face Which face is this for.
+ *  \result None.
  */
 void readEntropyValues (int face)
 {
@@ -97,10 +97,10 @@ void readEntropyValues (int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read a value from a file.
- *  @param filename Name of the file to read .
- *  @param defValue Default value if the file could not be read.
- *  @result Value read from the file.
+ *  \brief Read a value from a file.
+ *  \param filename Name of the file to read .
+ *  \param defValue Default value if the file could not be read.
+ *  \result Value read from the file.
  */
 static int readEntropyFile (char *filename, int defValue)
 {

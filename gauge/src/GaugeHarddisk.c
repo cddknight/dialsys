@@ -73,10 +73,10 @@ DISK_INFO diskActivity[MAX_DISKS + 1] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert a mount point into a short name.
- *  @param disk The number of the disk drive.
- *  @param fullName Full partition name.
- *  @result None.
+ *  \brief Convert a mount point into a short name.
+ *  \param disk The number of the disk drive.
+ *  \param fullName Full partition name.
+ *  \result None.
  */
 void tidyPartitionName (int disk, char *fullName)
 {
@@ -108,8 +108,8 @@ void tidyPartitionName (int disk, char *fullName)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the partition names from the system.
- *  @result None.
+ *  \brief Read the partition names from the system.
+ *  \result None.
  */
 void readPartitionNames()
 {
@@ -179,11 +179,11 @@ void readPartitionNames()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the free space for a disk.
- *  @param disk Disk to calculate for.
- *  @param partTotal Return the total partition size.
- *  @param partSize Return the used size.
- *  @result Percent of disk used.
+ *  \brief Calculate the free space for a disk.
+ *  \param disk Disk to calculate for.
+ *  \param partTotal Return the total partition size.
+ *  \param partSize Return the used size.
+ *  \result Percent of disk used.
  */
 float getPartitionFreeSpace (int disk, unsigned long long *partTotal, unsigned long long *partSize)
 {
@@ -216,9 +216,9 @@ float getPartitionFreeSpace (int disk, unsigned long long *partTotal, unsigned l
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the best scale for this gauge.
- *  @param values Values to scale.
- *  @result None (saved in structure).
+ *  \brief Calculate the best scale for this gauge.
+ *  \param values Values to scale.
+ *  \result None (saved in structure).
  */
 void setActivityScale (struct diskValues *values)
 {
@@ -243,8 +243,8 @@ void setActivityScale (struct diskValues *values)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the number of sectors read.
- *  @result None.
+ *  \brief Read the number of sectors read.
+ *  \result None.
  */
 void readActivityValues()
 {
@@ -348,8 +348,8 @@ void readActivityValues()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call at application start to read the fstab and get disk names.
- *  @result None.
+ *  \brief Call at application start to read the fstab and get disk names.
+ *  \result None.
  */
 void readHarddiskInit (void)
 {
@@ -364,10 +364,10 @@ void readHarddiskInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert a size in to a string.
- *  @param partSize Size to convert.
- *  @param sizeStr String to sve it in.
- *  @result Pointer to the string.
+ *  \brief Convert a size in to a string.
+ *  \param partSize Size to convert.
+ *  \param sizeStr String to sve it in.
+ *  \result Pointer to the string.
  */
 char *sizeToString (unsigned long long partSize, char *sizeStr)
 {
@@ -397,9 +397,9 @@ char *sizeToString (unsigned long long partSize, char *sizeStr)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the values to show on the gauge.
- *  @param face Not used.
- *  @result None.
+ *  \brief Calculate the values to show on the gauge.
+ *  \param face Not used.
+ *  \result None.
  */
 void readHarddiskValues (int face)
 {

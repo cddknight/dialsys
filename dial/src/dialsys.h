@@ -107,7 +107,8 @@ void dialHotCold		(int size, int colFill, int cold);
 void dialDrawHand		(int angle, HAND_STYLE *handStyle);
 void dialDrawMark		(int angle, int size, int colFill, int colOut, char *text);
 void dialDrawText		(int posn, char *string1, int colour);
-void drawCircleGradient (int size, int colFill, int style);
+void dialCircleGradient (int size, int colFill, int style);
+void dialSquareGradient (int size, int colFill, int style);
 
 void dialDrawMinuteX	(int posX, int posY, int size, int len, int angle, int colour);
 void dialDrawCircleX	(int posX, int posY, int size, int colFill, int colOut);
@@ -116,7 +117,8 @@ void dialHotColdX		(int posX, int posY, int size, int colFill, int cold);
 void dialDrawHandX		(int posX, int posY, int angle, HAND_STYLE *handStyle);
 void dialDrawMarkX		(int posX, int posY, int angle, int size, int colFill, int colOut, char *text);
 void dialDrawTextX		(int posX, int posY, char *string1, int colour, int scale);
-void drawCircleGradientX (int posX, int posY, int size, int colFill, int style);
+void dialCircleGradientX (int posX, int posY, int size, int colFill, int style);
+void dialSquareGradientX (int posX, int posY, int size, int colFill, int style);
 
 int dialSin 			(int number, int angle);
 int dialCos 			(int number, int angle);

@@ -86,9 +86,9 @@ static char *speedName[] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Work out how many shifts have been done.
- *  @param scale scale to work on.
- *  @result Number of shifts in the scale.
+ *  \brief Work out how many shifts have been done.
+ *  \param scale scale to work on.
+ *  \result Number of shifts in the scale.
  */
 int getScaleShiftCount (int scale)
 {
@@ -108,9 +108,9 @@ int getScaleShiftCount (int scale)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the best scale for this gauge.
- *  @param values Values to scale.
- *  @result None (saved in structure).
+ *  \brief Calculate the best scale for this gauge.
+ *  \param values Values to scale.
+ *  \result None (saved in structure).
  */
 void setDeviceScale (struct devValues *values)
 {
@@ -135,8 +135,8 @@ void setDeviceScale (struct devValues *values)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the number of sectors read.
- *  @result None.
+ *  \brief Read the number of sectors read.
+ *  \result None.
  */
 void readDeviceValues()
 {
@@ -240,8 +240,8 @@ void readDeviceValues()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call at prog start, read initial values.
- *  @result None.
+ *  \brief Call at prog start, read initial values.
+ *  \result None.
  */
 void readNetworkInit (void)
 {
@@ -255,9 +255,9 @@ void readNetworkInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read values for the face.
- *  @param face Save them on the face.
- *  @result None.
+ *  \brief Read values for the face.
+ *  \param face Save them on the face.
+ *  \result None.
  */
 void readNetworkValues (int face)
 {

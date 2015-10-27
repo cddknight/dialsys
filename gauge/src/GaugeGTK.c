@@ -64,8 +64,8 @@ static int fontSizes[16] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Make a mask for the window.
- *  @result None.
+ *  \brief Make a mask for the window.
+ *  \result None.
  */
 void makeWindowMask ()
 {
@@ -110,16 +110,16 @@ void makeWindowMask ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a minute marker.
- *  @param widget What to draw on.
- *  @param gc GDK context.
- *  @param posX Position X.
- *  @param posY Position Y.
- *  @param size Size.
- *  @param len Length.
- *  @param angle Angle.
- *  @param colour Colour.
- *  @result None.
+ *  \brief Draw a minute marker.
+ *  \param widget What to draw on.
+ *  \param gc GDK context.
+ *  \param posX Position X.
+ *  \param posY Position Y.
+ *  \param size Size.
+ *  \param len Length.
+ *  \param angle Angle.
+ *  \param colour Colour.
+ *  \result None.
  */
 void drawMinute (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, int len, int angle,
 		int colour)
@@ -154,15 +154,15 @@ void drawMinute (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, in
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Drame a circle.
- *  @param widget What to draw on.
- *  @param gc GDK context.
- *  @param posX Position X.
- *  @param posY Position Y.
- *  @param size Size.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @result None.
+ *  \brief Drame a circle.
+ *  \param widget What to draw on.
+ *  \param gc GDK context.
+ *  \param posX Position X.
+ *  \param posY Position Y.
+ *  \param size Size.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \result None.
  */
 void drawCircle (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, int colFill, int colOut)
 {
@@ -195,14 +195,14 @@ void drawCircle (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, in
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a hand.
- *  @param widget What to draw on.
- *  @param gc GDK context.
- *  @param posX Position X.
- *  @param posY Position Y.
- *  @param angle Angle.
- *  @param handStyle The hand style.
- *  @result None.
+ *  \brief Draw a hand.
+ *  \param widget What to draw on.
+ *  \param gc GDK context.
+ *  \param posX Position X.
+ *  \param posY Position Y.
+ *  \param angle Angle.
+ *  \param handStyle The hand style.
+ *  \result None.
  */
 void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND_STYLE *handStyle)
 {
@@ -326,19 +326,19 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a morker.
- *  @param widget What to draw on.
- *  @param gc GDK context.
- *  @param posX Position X.
- *  @param posY Position Y.
- *  @param angle Angle.
- *  @param size Size.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @param hour Poistion.
- *  @param faceMin Min value .
- *  @param faceMax Max Value.
- *  @result None.
+ *  \brief Draw a morker.
+ *  \param widget What to draw on.
+ *  \param gc GDK context.
+ *  \param posX Position X.
+ *  \param posY Position Y.
+ *  \param angle Angle.
+ *  \param size Size.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \param hour Poistion.
+ *  \param faceMin Min value .
+ *  \param faceMax Max Value.
+ *  \result None.
  */
 void drawMark (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, int size, 
 		int colFill, int colOut, int hour, int faceMin, int faceMax)
@@ -403,9 +403,9 @@ void drawMark (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, int 
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the font size from a font def.
- *  @param fontName String to read the size from.
- *  @result The font size.
+ *  \brief Get the font size from a font def.
+ *  \param fontName String to read the size from.
+ *  \result The font size.
  */
 int getFontSize (char *fontName)
 {
@@ -432,15 +432,15 @@ int getFontSize (char *fontName)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Display text.
- *  @param widget GTK context.
- *  @param gc GDK context.
- *  @param posX Position X.
- *  @param posY Position Y.
- *  @param dispString String to display.
- *  @param colour Colour.
- *  @param scale Size.
- *  @result None.
+ *  \brief Display text.
+ *  \param widget GTK context.
+ *  \param gc GDK context.
+ *  \param posX Position X.
+ *  \param posY Position Y.
+ *  \param dispString String to display.
+ *  \param colour Colour.
+ *  \param scale Size.
+ *  \result None.
  */
 void drawText (GtkWidget * widget, GdkGC *gc, int posX, int posY, char *dispString, int colour, int scale)
 {
@@ -475,13 +475,13 @@ void drawText (GtkWidget * widget, GdkGC *gc, int posX, int posY, char *dispStri
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw the gauge face.
- *  @param widget What to draw on.
- *  @param gc GDK context.
- *  @param face Which face.
- *  @param posX Position X.
- *  @param posY Position Y.
- *  @result None.
+ *  \brief Draw the gauge face.
+ *  \param widget What to draw on.
+ *  \param gc GDK context.
+ *  \param face Which face.
+ *  \param posX Position X.
+ *  \param posY Position Y.
+ *  \result None.
  */
 gboolean 
 drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
@@ -582,9 +582,9 @@ drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to display the clock.
- *  @param widget What to draw on.
- *  @result None.
+ *  \brief Called to display the clock.
+ *  \param widget What to draw on.
+ *  \result None.
  */
 void clockExpose (GtkWidget * widget)
 {

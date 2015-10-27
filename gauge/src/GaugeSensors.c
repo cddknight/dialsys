@@ -59,8 +59,8 @@ static int initSensorsOK = 0;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Look for sensors and enable the menus if found.
- *  @result None.
+ *  \brief Look for sensors and enable the menus if found.
+ *  \result None.
  */
 void findSensors ()
 {
@@ -115,8 +115,8 @@ void findSensors ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called at program start to init sensor reading.
- *  @result None.
+ *  \brief Called at program start to init sensor reading.
+ *  \result None.
  */
 void readSensorInit (void)
 {
@@ -142,9 +142,9 @@ void readSensorInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the sensor values for the the face.
- *  @param face Which face the reading is for.
- *  @result Non zero then display.
+ *  \brief Read the sensor values for the the face.
+ *  \param face Which face the reading is for.
+ *  \result Non zero then display.
  */
 void readSensorValues (int face)
 {

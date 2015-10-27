@@ -63,8 +63,8 @@ char *name[8] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Initalise the CPU tables.
- *  @result None.
+ *  \brief Initalise the CPU tables.
+ *  \result None.
  */
 void readCPUInit (void)
 {
@@ -84,9 +84,9 @@ void readCPUInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the current CPU value.
- *  @param face Which face is it for.
- *  @result 1 if the display has been updated.
+ *  \brief Read the current CPU value.
+ *  \param face Which face is it for.
+ *  \result 1 if the display has been updated.
  */
 void readCPUValues (int face)
 {
@@ -182,9 +182,9 @@ void readCPUValues (int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Which processor to read from.
- *  @param procNumber Which processor to read from.
- *  @result none.
+ *  \brief Which processor to read from.
+ *  \param procNumber Which processor to read from.
+ *  \result none.
  */
 void readCPULoad (int procNumber)
 {
@@ -210,10 +210,10 @@ void readCPULoad (int procNumber)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Open the /proc/stat file and read the CPU status.
- *  @param stats Where to read the stats to.
- *  @param procNumber Which processor to read from.
- *  @result Number of words read.
+ *  \brief Open the /proc/stat file and read the CPU status.
+ *  \param stats Where to read the stats to.
+ *  \param procNumber Which processor to read from.
+ *  \result Number of words read.
  */
 int readStats (unsigned long *stats, int procNumber)
 {
@@ -278,9 +278,9 @@ int readStats (unsigned long *stats, int procNumber)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the load averages from the proc directory.
- *  @param readAvs Save the read averages here.
- *  @result Number of values read.
+ *  \brief Read the load averages from the proc directory.
+ *  \param readAvs Save the read averages here.
+ *  \result Number of values read.
  */
 int readAverage (float readAvs[])
 {
@@ -304,8 +304,8 @@ int readAverage (float readAvs[])
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the cpuinfo clock speed.
- *  @result None.
+ *  \brief Read the cpuinfo clock speed.
+ *  \result None.
  */
 int readClockRates ()
 {

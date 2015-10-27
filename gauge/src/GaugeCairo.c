@@ -44,9 +44,9 @@ extern GtkWidget *drawingArea;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Remove extra zeros on the end of floating numbers.
- *  @param tempBuff String containing the number.
- *  @result Pointer to the number.
+ *  \brief Remove extra zeros on the end of floating numbers.
+ *  \param tempBuff String containing the number.
+ *  \result Pointer to the number.
  */
 char *removeExtra (char *tempBuff)
 {
@@ -75,13 +75,13 @@ char *removeExtra (char *tempBuff)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw the gauge face.
- *  @param cr Cairo handle.
- *  @param face Which face to draw.
- *  @param posX Corner position X.
- *  @param posY Corner position Y.
- *  @param circ Should background be a circle or a square.
- *  @result None.
+ *  \brief Draw the gauge face.
+ *  \param cr Cairo handle.
+ *  \param face Which face to draw.
+ *  \param posX Corner position X.
+ *  \param posY Corner position Y.
+ *  \param circ Should background be a circle or a square.
+ *  \result None.
  */
 gboolean 
 drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
@@ -96,11 +96,18 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 
 	col = (weHaveFocus && face == currentFace) ? FACE1_COLOUR : FACE2_COLOUR;
 	if (circ)
-		dialDrawCircle (64, col, -1);
+	{
+		dialCircleGradient (64, col, 1);
+//		dialDrawCircle (64, col, -1);
+	}
 	else
-		dialDrawSquare (64, col, -1);
-	drawCircleGradient (62, FACE3_COLOUR, 0);
-	drawCircleGradient (58,FACE4_COLOUR, 1);
+	{
+		dialSquareGradient (64, col, 0);
+//		dialDrawSquare (64, col, -1);
+	}
+
+	dialCircleGradient (62, FACE3_COLOUR, 0);
+	dialCircleGradient (58, FACE4_COLOUR, 1);
 
 //	dialDrawCircle (62, FACE3_COLOUR, -1);
 //	dialDrawCircle (60, FACE4_COLOUR, -1);
@@ -172,9 +179,9 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call when the gauge needs to be drawn.
- *  @param widget .
- *  @result None.
+ *  \brief Call when the gauge needs to be drawn.
+ *  \param widget .
+ *  \result None.
  */
 void clockExpose (GtkWidget *widget)
 {
@@ -211,6 +218,17 @@ void clockExpose (GtkWidget *widget)
 	cr = NULL;	
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C L O C K  E X P O S E                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief .
+ *  \param cr .
+ *  \result .
+ */
 #else
 
 void clockExpose (cairo_t *cr)
@@ -248,9 +266,9 @@ void clockExpose (cairo_t *cr)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save the display to a file.
- *  @param fileName Name of the file to save the SVG in.
- *  @result None.
+ *  \brief Save the display to a file.
+ *  \param fileName Name of the file to save the SVG in.
+ *  \result None.
  */
 int dialSave(char *fileName) 
 {

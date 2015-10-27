@@ -314,11 +314,11 @@ static gboolean drawCallback 		(GtkWidget *widget, cairo_t *cr, gpointer data);
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param outFile .
- *  @param format .
- *  @param ... .
- *  @result .
+ *  \brief How to use the clock.
+ *  \param outFile Where to send the output.
+ *  \param format Used to decode the application name.
+ *  \param ... Extra parameters.
+ *  \result None.
  */
 void
 howTo (FILE * outFile, char *format, ...)
@@ -414,13 +414,13 @@ howTo (FILE * outFile, char *format, ...)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param timeZone .
- *  @param area .
- *  @param city .
- *  @param display .
- *  @param doUpper .
- *  @result .
+ *  \brief Split the time in to it's parts.
+ *  \param timeZone Timezone to split.
+ *  \param area Area name.
+ *  \param city City name.
+ *  \param display String to display.
+ *  \param doUpper Show display be uppercase.
+ *  \result None.
  */
 static void
 splitTimeZone (char *timeZone, char *area, char *city, char *display, int doUpper)
@@ -489,9 +489,9 @@ splitTimeZone (char *timeZone, char *area, char *city, char *display, int doUppe
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Called when the app is asked to quit.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 quitCallback (guint data)
@@ -506,9 +506,9 @@ quitCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Copy to the clipboard.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 copyCallback (guint data)
@@ -553,13 +553,14 @@ copyCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Set the timezone to use.
+ *  \param data Which timezone to set.
+ *  \result None.
  */
 void
 setTimeZoneCallback (guint data)
 {
+	char value[81];
 	int timeZone = (int) data;
 	
 	faceSettings[currentFace] -> currentTZ = timeZones[timeZone].value;
@@ -567,6 +568,8 @@ setTimeZoneCallback (guint data)
 			faceSettings[currentFace] -> currentTZCity, faceSettings[currentFace] -> currentTZDisp,
 			faceSettings[currentFace] -> upperCity);
 
+	sprintf (value, "timezone_city_%d", currentFace + 1);
+	configSetValue (value, faceSettings[currentFace] -> currentTZCity);
 	lastTime = -1;
 }
 
@@ -577,14 +580,18 @@ setTimeZoneCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Set the on top flag.
+ *  \param data Is this from the menu.
+ *  \result None.
  */
 void
 onTopCallback (guint data)
 {
-	if (data) alwaysOnTop = !alwaysOnTop;
+	if (data) 
+	{
+		alwaysOnTop = !alwaysOnTop;
+		configSetBoolValue ("always_on_top", alwaysOnTop);
+	}
 	gtk_window_set_keep_above (GTK_WINDOW (mainWindow), alwaysOnTop);
 }
 
@@ -595,15 +602,18 @@ onTopCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Set the stick flage.
+ *  \param data Is this from the menu.
+ *  \result None.
  */
 void 
 stickCallback (guint data)
 {
-	if (data) stuckOnAll = !stuckOnAll;
-	
+	if (data) 
+	{
+		stuckOnAll = !stuckOnAll;
+		configSetBoolValue ("on_all_desktops", stuckOnAll);
+	}
 	if (stuckOnAll)
 		gtk_window_stick (GTK_WINDOW (mainWindow));
 	else
@@ -617,15 +627,19 @@ stickCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Set the lock flag.
+ *  \param data Is this from the menu.
+ *  \result None.
  */
 void
 lockCallback (guint data)
 {
 	prefMenuDesc[MENU_PREF_LOCK].disable = 0;
-	if (data) lockMove = !lockMove;
+	if (data) 
+	{
+		lockMove = !lockMove;
+		configSetBoolValue ("locked_position", lockMove);
+	}
 }
 
 /**********************************************************************************************************************
@@ -635,9 +649,9 @@ lockCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Display a calendar.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 calendarCallback (guint data)
@@ -695,9 +709,9 @@ calendarCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Set the angle of the alarm hand on a given face.
- *  @param face Face the calculate the alarm angle for.
- *  @result None.
+ *  \brief Set the angle of the alarm hand on a given face.
+ *  \param face Face the calculate the alarm angle for.
+ *  \result None.
  */
 void alarmSetAngle (int face)
 {
@@ -715,13 +729,14 @@ void alarmSetAngle (int face)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Set the alarm time.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 alarmCallback (guint data)
 {
+	char value[81];
 	GtkWidget *dialog;
 	GtkWidget *entry1, *entry2;
 	GtkWidget *label, *check;
@@ -851,6 +866,17 @@ alarmCallback (guint data)
 		faceSettings[currentFace] -> alarmInfo.alarmMin  = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
 		faceSettings[currentFace] -> alarmInfo.showAlarm = (faceSettings[currentFace] -> alarmInfo.message[0] != 0);
 		faceSettings[currentFace] -> alarmInfo.onlyWeekdays = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
+
+		sprintf (value, "alarm_hour_%d", currentFace + 1);
+		configSetIntValue (value, faceSettings[currentFace] -> alarmInfo.alarmHour);
+		sprintf (value, "alarm_min_%d", currentFace + 1);
+		configSetIntValue (value, faceSettings[currentFace] -> alarmInfo.alarmMin);
+		sprintf (value, "alarm_message_%d", currentFace + 1);
+		configSetValue (value, faceSettings[currentFace] -> alarmInfo.message);
+		sprintf (value, "alarm_command_%d", currentFace + 1);
+		configSetValue (value, faceSettings[currentFace] -> alarmInfo.command);
+		sprintf (value, "alarm_only_weekdays_%d", currentFace + 1);
+		configSetBoolValue (value, faceSettings[currentFace] -> alarmInfo.onlyWeekdays);
 		alarmSetAngle (currentFace);
 		lastTime = -1;
 	}
@@ -864,9 +890,9 @@ alarmCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Display the about dialog.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 aboutCallback (guint data)
@@ -904,8 +930,8 @@ aboutCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @result .
+ *  \brief Prepare the menus before showing them.
+ *  \result None.
  */
 void prepareForPopup (void)
 {
@@ -941,10 +967,10 @@ void prepareForPopup (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param widget .
- *  @param event .
- *  @result .
+ *  \brief Called on button press.
+ *  \param widget Window.
+ *  \param event Button.
+ *  \result Processed or not.
  */
 gboolean
 windowClickCallback (GtkWidget * widget, GdkEventButton * event)
@@ -989,10 +1015,10 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param widget .
- *  @param event .
- *  @result .
+ *  \brief Called on key press.
+ *  \param widget Window.
+ *  \param event Key pressed.
+ *  \result Processed or not.
  */
 gboolean
 windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
@@ -1085,12 +1111,12 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param face .
- *  @param faceSetting .
- *  @param tm .
- *  @param t .
- *  @result .
+ *  \brief Calculate the positions of the hands.
+ *  \param face Which clock face.
+ *  \param faceSetting Settings for the face.
+ *  \param tm Current time.
+ *  \param t Current second.
+ *  \result True if changed.
  */
 int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_t t)
 {
@@ -1259,9 +1285,9 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Called on the timer to update the face.
+ *  \param data Not used.
+ *  \result Always true.
  */
 gboolean
 clockTickCallback (gpointer data)
@@ -1314,11 +1340,11 @@ clockTickCallback (gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param widget .
- *  @param event .
- *  @param data .
- *  @result .
+ *  \brief Clock gained focus.
+ *  \param widget Not used.
+ *  \param event not used.
+ *  \param data not used.
+ *  \result True.
  */
 gboolean 
 focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
@@ -1335,11 +1361,11 @@ focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param widget .
- *  @param event .
- *  @param data .
- *  @result .
+ *  \brief Clock lost focus.
+ *  \param widget not used.
+ *  \param event not used.
+ *  \param data not used.
+ *  \result True.
  */
 gboolean 
 focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
@@ -1356,11 +1382,11 @@ focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Track the mouse so the tooltip matches the face.
- *  @param widget Owner widget.
- *  @param event Move move event.
- *  @param data Not used.
- *  @result TRUE.
+ *  \brief Track the mouse so the tooltip matches the face.
+ *  \param widget Owner widget.
+ *  \param event Move move event.
+ *  \param data Not used.
+ *  \result TRUE.
  */
 gboolean
 userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
@@ -1385,14 +1411,18 @@ userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Callback for show seconds menu.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 showSecondsCallback (guint data)
 {
+	char value[81];
+
 	faceSettings[currentFace] -> showSeconds = !faceSettings[currentFace] -> showSeconds;
+	sprintf (value, "show_seconds_%d", currentFace + 1);
+	configSetBoolValue (value, faceSettings[currentFace] -> showSeconds);
 	faceSettings[currentFace] -> updateFace = true;
 }
 
@@ -1403,14 +1433,18 @@ showSecondsCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Callback for sub seconds menu.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 subSecondCallback (guint data)
 {
+	char value[81];
+
 	faceSettings[currentFace] -> subSecond = !faceSettings[currentFace] -> subSecond;
+	sprintf (value, "sub_second_%d", currentFace + 1);
+	configSetBoolValue (value, faceSettings[currentFace] -> subSecond);
 	faceSettings[currentFace] -> updateFace = true;
 }
 
@@ -1421,14 +1455,18 @@ subSecondCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Callback for stop watch menu.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 stopwatchCallback (guint data)
 {
+	char value[81];
+
 	faceSettings[currentFace] -> stopwatch = !faceSettings[currentFace] -> stopwatch;
+	sprintf (value, "stopwatch_%d", currentFace + 1);
+	configGetBoolValue (value, &faceSettings[currentFace] -> stopwatch);
 	faceSettings[currentFace] -> swStartTime = -1;
 	faceSettings[currentFace] -> swRunTime = 0;
 	faceSettings[currentFace] -> updateFace = true;
@@ -1442,9 +1480,9 @@ stopwatchCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Callback for stop watch start menu.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 swStartCallback (guint data)
@@ -1489,9 +1527,9 @@ swStartCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Callback for stop watch reset menu.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 swResetCallback (guint data)
@@ -1519,9 +1557,9 @@ swResetCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param data .
- *  @result .
+ *  \brief Callback for save settings menu.
+ *  \param data Not used.
+ *  \result None.
  */
 void configSaveCallback (guint data)
 {
@@ -1530,73 +1568,10 @@ void configSaveCallback (guint data)
 	char configPath[1024], value[81];
 
 	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
-	
-	configSetBoolValue ("always_on_top", alwaysOnTop);
-	configSetBoolValue ("on_all_desktops", stuckOnAll);
-	configSetBoolValue ("locked_position", lockMove);
-	configSetBoolValue ("fast_setting", fastSetting);
-	configSetBoolValue ("bounce_seconds", showBounceSec);
-
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("current_face", currentFace);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);
 	configSetIntValue ("x_pos", posX);
 	configSetIntValue ("y_pos", posY);
-	configSetValue ("font_name", fontName);
-
-	for (i = 2; i < MAX__COLOURS; i++)
-	{
-		sprintf (value, "colour_%s", colourNames[i].shortName);
-		configSetValue (value, colourNames[i].defColour);
-	}
-	for (i = 0; i < TXT_COUNT; i++)
-	{
-		sprintf (value, "text_format_%s", nameFormats[i]);
-		configSetValue (value, displayString[i]);
-	}
-	for (i = 0; i < HAND_COUNT; i++)
-	{
-		sprintf (value, "%s_hand_style", handNames[i]);
-		configSetIntValue (value, handStyle[i].style);
-		sprintf (value, "%s_hand_length", handNames[i]);
-		configSetIntValue (value, handStyle[i].length);
-		sprintf (value, "%s_hand_tail", handNames[i]);
-		configSetIntValue (value, handStyle[i].tail);
-		sprintf (value, "%s_hand_fill", handNames[i]);
-		configSetBoolValue (value, handStyle[i].fillIn);
-	}
-	for (i = 0; i < (faceWidth * faceHeight); i++)
-	{
-		sprintf (value, "alarm_hour_%d", i + 1);
-		configSetIntValue (value, faceSettings[i] -> alarmInfo.alarmHour);
-		sprintf (value, "alarm_min_%d", i + 1);
-		configSetIntValue (value, faceSettings[i] -> alarmInfo.alarmMin);
-		sprintf (value, "alarm_message_%d", i + 1);
-		configSetValue (value, faceSettings[i] -> alarmInfo.message);
-		sprintf (value, "alarm_command_%d", i + 1);
-		configSetValue (value, faceSettings[i] -> alarmInfo.command);
-		sprintf (value, "alarm_only_weekdays_%d", i + 1);
-		configSetBoolValue (value, faceSettings[i] -> alarmInfo.onlyWeekdays);
-		sprintf (value, "stopwatch_%d", i + 1);
-		configSetBoolValue (value, faceSettings[i] -> stopwatch);
-		sprintf (value, "sub_second_%d", i + 1);
-		configSetBoolValue (value, faceSettings[i] -> subSecond);
-		sprintf (value, "show_seconds_%d", i + 1);
-		configSetBoolValue (value, faceSettings[i] -> showSeconds);
-		sprintf (value, "show_24_hour_%d", i + 1);
-		configSetBoolValue (value, faceSettings[i] -> show24Hour);
-		sprintf (value, "uppercase_city_%d", i + 1);
-		configSetBoolValue (value, faceSettings[i] -> upperCity);
-		sprintf (value, "overwrite_city_%d", i + 1);
-		configSetValue (value, faceSettings[i] -> overwriteMesg);
-		sprintf (value, "timezone_city_%d", i + 1);
-		configSetValue (value, faceSettings[i] -> currentTZCity);
-	}
+	configSetIntValue ("current_face", currentFace);
+	
 	if (home)
 	{
 		strcpy (configPath, home);
@@ -1613,9 +1588,9 @@ void configSaveCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param faceSetting .
- *  @result .
+ *  \brief Get the time on the stopwatch.
+ *  \param faceSetting Face settings .
+ *  \result time to show.
  */
 int 
 getStopwatchTime (FACE_SETTINGS *faceSetting)
@@ -1645,13 +1620,13 @@ getStopwatchTime (FACE_SETTINGS *faceSetting)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param addBuffer .
- *  @param maxSize .
- *  @param stringNumber .
- *  @param face .
- *  @param timeNow .
- *  @result .
+ *  \brief Get one of the strings to display on the face.
+ *  \param addBuffer Save to here.
+ *  \param maxSize Size of the buffer.
+ *  \param stringNumber Which string.
+ *  \param face Which face.
+ *  \param timeNow Current time.
+ *  \result Pointer to add buffer.
  */
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow)
 {
@@ -1754,11 +1729,11 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief The window is exposed.
- *  @param widget Not used.
- *  @param event Not used.
- *  @param data Not used.
- *  @result None.
+ *  \brief The window is exposed.
+ *  \param widget Not used.
+ *  \param event Not used.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean
 exposeCallback (GtkWidget *widget, GdkEventExpose* event, gpointer data)
@@ -1774,11 +1749,11 @@ exposeCallback (GtkWidget *widget, GdkEventExpose* event, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Handle a draw call back to display the gauge.
- *  @param widget Which widget.
- *  @param cr Cairo handle to use.
- *  @param data Not used.
- *  @result None.
+ *  \brief Handle a draw call back to display the gauge.
+ *  \param widget Which widget.
+ *  \param cr Cairo handle to use.
+ *  \param data Not used.
+ *  \result None.
  */
 gboolean
 drawCallback (GtkWidget *widget, cairo_t *cr, gpointer data)
@@ -1795,10 +1770,10 @@ drawCallback (GtkWidget *widget, cairo_t *cr, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param command .
- *  @param message .
- *  @result .
+ *  \brief On the alarm run a command.
+ *  \param command Command to run.
+ *  \param message Extra message passed on command line.
+ *  \result None.
  */
 void execCommand (char *command, char *message)
 {
@@ -1846,11 +1821,11 @@ void execCommand (char *command, char *message)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Calculate the local time for a clock face.
- *  @param faceSetting .
- *  @param t The time in secs from 1970.
- *  @param tm Put the time here.
- *  @result None.
+ *  \brief Calculate the local time for a clock face.
+ *  \param faceSetting Face settings.
+ *  \param t The time in secs from 1970.
+ *  \param tm Put the time here.
+ *  \result None.
  */
 void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm)
 {
@@ -1881,9 +1856,9 @@ void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to destroy the alarm dialog.
- *  @param widget Which dialog.
- *  @result None.
+ *  \brief Called to destroy the alarm dialog.
+ *  \param widget Which dialog.
+ *  \result None.
  */
 void alarmDialogDestroy (GtkWidget *widget)
 {
@@ -1909,10 +1884,10 @@ void alarmDialogDestroy (GtkWidget *widget)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param faceSetting .
- *  @param tm .
- *  @result .
+ *  \brief Check to see if alarm should go off.
+ *  \param faceSetting Face settings.
+ *  \param tm Current time.
+ *  \result None.
  */
 void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 {
@@ -1983,6 +1958,38 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 	}
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D E F A U L T  C L O C K                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set in config default values used by dial library.
+ *  \result None.
+ */
+void defaultClock (void)
+{
+	configSetIntValue ("number_cols", faceWidth);
+	configSetIntValue ("number_rows", faceHeight);
+	configSetIntValue ("face_size", faceSize);
+	configSetIntValue ("marker_type", markerType);
+	configSetIntValue ("marker_step", markerStep);
+	configSetIntValue ("opacity", faceOpacity);
+	configSetIntValue ("gradient", faceGradient);
+	configSetValue ("font_name", fontName);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  U P D A T E  C L O C K                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Called by dial library when settings change.
+ *  \result None.
+ */
 void updateClock (void)
 {
 	int i;
@@ -2014,13 +2021,14 @@ void updateClock (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param fromColour .
- *  @result .
+ *  \brief Load new colour values.
+ *  \param fromColour String colour description.
+ *  \result 1 if good.
  */
 int loadColour (char *fromColour)
 {
 	int i, colour = -1;
+	char value[81];
 	
 	if (strlen (fromColour) > 3)
 	{
@@ -2035,6 +2043,8 @@ int loadColour (char *fromColour)
 		if (colour != -1)
 		{
 			strncpy (colourNames[colour].defColour, &fromColour[3], 60);
+			sprintf (value, "colour_%s", colourNames[colour].shortName);
+			configSetValue (value, colourNames[colour].defColour);
 			return 1;
 		}
 	}
@@ -2048,14 +2058,14 @@ int loadColour (char *fromColour)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param newFormat .
- *  @result .
+ *  \brief Load a new date format.
+ *  \param newFormat New format description.
+ *  \result None.
  */
 void loadDateFormat (char *newFormat)
 {
 	int i = 0, j = 0, format = -1;
-	char foundStr[81];
+	char foundStr[81], value[81];
 
 	if (strlen (newFormat) >= 4)
 	{
@@ -2080,6 +2090,8 @@ void loadDateFormat (char *newFormat)
 					foundStr[j] = 0;
 				}
 				strcpy (displayString[format], foundStr);
+				sprintf (value, "text_format_%s", nameFormats[format]);
+				configSetValue (value, displayString[format]);
 				return;
 			}
 		}
@@ -2095,10 +2107,10 @@ void loadDateFormat (char *newFormat)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param face .
- *  @param buff .
- *  @result .
+ *  \brief Load a new alarm config.
+ *  \param face Which face is this for.
+ *  \param buff Config to load.
+ *  \result None.
  */
 void loadAlarmInfo (int face, char *buff)
 {
@@ -2144,14 +2156,14 @@ void loadAlarmInfo (int face, char *buff)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read the setting for the hand from the command line.
- *  @param buff Command line settings.
- *  @result None.
+ *  \brief Read the setting for the hand from the command line.
+ *  \param buff Command line settings.
+ *  \result None.
  */
 void loadHandInfo (char *buff)
 {
 	int style = 0, length = 0, tail = 0, i = 0, j = 0, m = 0;
-	char hand[41];
+	char hand[41], value[81];
 		
 	while (buff[i] && m < 4)
 	{
@@ -2191,6 +2203,15 @@ void loadHandInfo (char *buff)
 				handStyle[i].length = length;
 				handStyle[i].tail = tail;
 				handStyle[i].fillIn = 1;
+
+				sprintf (value, "%s_hand_style", handNames[i]);
+				configSetIntValue (value, handStyle[i].style);
+				sprintf (value, "%s_hand_length", handNames[i]);
+				configSetIntValue (value, handStyle[i].length);
+				sprintf (value, "%s_hand_tail", handNames[i]);
+				configSetIntValue (value, handStyle[i].tail);
+				sprintf (value, "%s_hand_fill", handNames[i]);
+				configSetBoolValue (value, handStyle[i].fillIn);
 			}
 			break;
 		}
@@ -2204,17 +2225,17 @@ void loadHandInfo (char *buff)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param argc .
- *  @param argv .
- *  @param posX .
- *  @param posY .
- *  @result .
+ *  \brief Process the options on the command line.
+ *  \param argc Arg count.
+ *  \param argv Arg values.
+ *  \param posX Clock X position.
+ *  \param posY Clock Y position.
+ *  \result None.
  */
 void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 {
 	int i, j, face = 0, invalidOption = 0;
-	char cityName[41];
+	char cityName[41], value[81];
 
 	for (i = 1; i < argc; i++)
 	{
@@ -2227,12 +2248,16 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'a':							/* Set the clock always on top */
 				alwaysOnTop = !alwaysOnTop;
+				configSetBoolValue ("always_on_top", alwaysOnTop);
 				break;
 			case 'B':
 				showBounceSec = !showBounceSec;
+				configSetBoolValue ("bounce_seconds", showBounceSec);
 				break;
 			case 'b':							/* Select sub-second hand */
 				faceSettings[face] -> subSecond = !faceSettings[face] -> subSecond;
+				sprintf (value, "sub_second_%d", face + 1);
+				configSetBoolValue (value, faceSettings[face] -> subSecond);
 				break;
 			case 'C':							/* Specify config file, done in main */
 				break;
@@ -2257,6 +2282,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'F':							/* Select the font to be used */
 				strncpy (fontName, &argv[i][2], 99);
+				configSetValue ("font_name", fontName);
 				break;
 			case 'g':
 				faceGradient = atoi (&argv[i][2]);
@@ -2266,12 +2292,15 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'h':							/* Select sub-second hand */
 				faceSettings[face] -> showSeconds = !faceSettings[face] -> showSeconds;
+				sprintf (value, "show_seconds_%d", face + 1);
+				configSetBoolValue (value, faceSettings[face] -> showSeconds);
 				break;
 			case 'H':							/* Set the hand style, length and tail */
 				loadHandInfo (&argv[i][2]);
 				break;
 			case 'l':							/* Lock the clocks position */
 				lockMove = !lockMove;
+				configSetBoolValue ("locked_position", lockMove);
 				break;
 			case 'm':							/* What to show at 12, 3, 6, 9 */
 				if (argv[i][2] >= '0' && argv[i][2] <= '9')
@@ -2280,6 +2309,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					if (argv[i][3] >= '1' && argv[i][3] <= '9')
 						markerStep = (argv[i][3] - '0');
 				}
+				configSetIntValue ("marker_type", markerType);
+				configSetIntValue ("marker_step", markerStep);
 				break;
 			case 'n':							/* Set the number of ... */
 				switch (argv[i][2])
@@ -2319,15 +2350,23 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				strcpy (cityName, "x/");
 				strncat (cityName, &argv[i][2], 25);
 				splitTimeZone (cityName, NULL, NULL, faceSettings[face] -> overwriteMesg, 0);
+				sprintf (value, "overwrite_city_%d", face + 1);
+				configSetValue (value, faceSettings[face] -> overwriteMesg);
 				break;
 			case 'O':
 				faceOpacity = atoi (&argv[i][2]);
+				if (faceOpacity < 0) faceOpacity = 0;
+				if (faceOpacity > 100) faceOpacity = 100;
+				configSetIntValue ("opacity", faceOpacity);
 				break;
 			case 'q':							/* Quick time setting */
 				fastSetting = !fastSetting;
+				configSetBoolValue ("fast_setting", fastSetting);
 				break;
 			case 'S':							/* Enable the stopwatch */
 				faceSettings[face] -> stopwatch = !faceSettings[face] -> stopwatch;
+				sprintf (value, "stopwatch_%d", face + 1);
+				configSetBoolValue (value, faceSettings[face] -> stopwatch);
 				break;
 			case 's':							/* Select the faceSize of the clock */
 				faceSize = atoi (&argv[i][2]);
@@ -2338,12 +2377,15 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'u':							/* Uppercase the city name */
 				faceSettings[face] -> upperCity = !faceSettings[face] -> upperCity;
+				sprintf (value, "uppercase_city_%d", face + 1);
+				configSetBoolValue (value, faceSettings[face] -> upperCity);
 				break;
 			case 'V':
 				allowSaveDisp = !allowSaveDisp;
 				break;
 			case 'w':							/* Show on all workspaces */
 				stuckOnAll = !stuckOnAll;
+				configSetBoolValue ("on_all_desktops", stuckOnAll);
 				break;
 			case 'x':							/* Set the x position for the clock */
 				if (argv[i][2] == 'c')
@@ -2388,6 +2430,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				if (argv[i][2] == '4')
 				{
 					faceSettings[face] -> show24Hour = !faceSettings[face] -> show24Hour;
+					sprintf (value, "show_24_hour_%d", face + 1);
+					configSetBoolValue (value, faceSettings[face] -> show24Hour);
 				}
 				else
 				{
@@ -2420,10 +2464,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param posX .
- *  @param posY .
- *  @result .
+ *  \brief Load the config file.
+ *  \param posX Clock X position.
+ *  \param posY Clock Y position.
+ *  \result None.
  */
 void loadConfig (int *posX, int *posY)
 {
@@ -2431,44 +2475,6 @@ void loadConfig (int *posX, int *posY)
 	char *home = getenv ("HOME");
 	char configPath[1024], value[81], tempName[81];
 	
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);	
-	configSetIntValue ("gradient", faceGradient);	
-	configSetValue ("font_name", fontName);
-	configSetIntValue ("x_pos", *posX);
-	configSetIntValue ("y_pos", *posY);
-
-	for (i = 2; i < MAX__COLOURS; i++)
-	{
-		sprintf (value, "colour_%s", colourNames[i].shortName);
-		configSetValue (value, colourNames[i].defColour);
-	}
-	for (i = 0; i < TXT_COUNT; i++)
-	{
-		sprintf (value, "text_format_%s", nameFormats[i]);
-		configSetValue (value, displayString[i]);
-	}
-	for (i = 0; i < HAND_COUNT; i++)
-	{
-		sprintf (value, "%s_hand_style", handNames[i]);
-		configSetIntValue (value, handStyle[i].style);
-		sprintf (value, "%s_hand_length", handNames[i]);
-		configSetIntValue (value, handStyle[i].length);
-		sprintf (value, "%s_hand_tail", handNames[i]);
-		configSetIntValue (value, handStyle[i].tail);
-		sprintf (value, "%s_hand_fill", handNames[i]);
-		configSetBoolValue (value, handStyle[i].fillIn);
-	}
-	for (i = 0; i < MAX_FACES; i++)
-	{
-		sprintf (value, "show_seconds_%d", i + 1);
-		configSetIntValue (value, 1);
-	}
-
 	configLoad ("/etc/tzclockrc");
 	strcpy (configPath, home);
 	strcat (configPath, "/");
@@ -2570,10 +2576,10 @@ void loadConfig (int *posX, int *posY)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param argc .
- *  @param argv .
- *  @result .
+ *  \brief Start of the program.
+ *  \param argc Arg count.
+ *  \param argv Arg values.
+ *  \result None.
  */
 int
 main (int argc, char *argv[])
@@ -2608,6 +2614,7 @@ main (int argc, char *argv[])
 	}
 	
 	parseZone ();
+	defaultClock ();
 	loadConfig (&posX, &posY);
 	processCommandLine (argc, argv, &posX, &posY);
 	mainMenuDesc[0].subMenuDesc = timeZoneMenu;

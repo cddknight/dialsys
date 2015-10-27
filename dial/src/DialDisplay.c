@@ -72,22 +72,23 @@ void dialFillSinCosTables (int start);
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Intalize the dail display system.
- *  @param mainWindowIn Main window to use.
- *  @param updatevoid Function to call on update.
- *  @param colourDetails Colours to use on the display.
- *  @param start Offse of zero on the dial (0 = 12:00).
- *  @result A drawingArea used by the face.
+ *  \brief Intalize the dail display system.
+ *  \param mainWindowIn Main window to use.
+ *  \param updatevoid Function to call on update.
+ *  \param colourDetails Colours to use on the display.
+ *  \param start Offse of zero on the dial (0 = 12:00).
+ *  \param dialSave Pointer to the dial save function.
+ *  \result A drawingArea used by the face.
  */
 GtkWidget *dialInit (GtkWindow *mainWindowIn, void(*update)(void), COLOUR_DETAILS *colourDetails, int start, void *dialSave)
 {
 	mainWindow = mainWindowIn;
 	UpdateFunc = update;
 	dialColours = colourDetails;
-	dialMaxColours = dialCreateColours();
 	dialFillSinCosTables (start);
 	DialSave = dialSave;
 	
+	dialMaxColours = dialCreateColours();
 	configGetIntValue ("face_size", &dialSize);
 	configGetIntValue ("number_cols", &dialWidth);
 	configGetIntValue ("number_rows", &dialHeight);
@@ -111,11 +112,11 @@ GtkWidget *dialInit (GtkWindow *mainWindowIn, void(*update)(void), COLOUR_DETAIL
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Start the drawing of a dial.
- *  @param cr Cairo context saved for later.
- *  @param posX X position of the gauge.
- *  @param posY Y position of the gauge.
- *  @result None.
+ *  \brief Start the drawing of a dial.
+ *  \param cr Cairo context saved for later.
+ *  \param posX X position of the gauge.
+ *  \param posY Y position of the gauge.
+ *  \result None.
  */
 void dialDrawStart (cairo_t *cr, int posX, int posY)
 {
@@ -137,8 +138,8 @@ void dialDrawStart (cairo_t *cr, int posX, int posY)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Finish the drawing of a dial.
- *  @result None.
+ *  \brief Finish the drawing of a dial.
+ *  \result None.
  */
 void dialDrawFinish ()
 {
@@ -168,6 +169,17 @@ GdkRGBA *dialColour (int i)
 	return &dialColours[i].dialColour;
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  S E T  C O L O U R                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set the colour to use
+ *  \param i Which colour to set
+ *  \result None
+ */
 void dialSetColour (int i)
 {
 #if GTK_MAJOR_VERSION == 2
@@ -184,8 +196,8 @@ void dialSetColour (int i)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Create a mask for the dials.
- *  @result None.
+ *  \brief Create a mask for the dials.
+ *  \result None.
  */
 void dialWindowMask (void)
 {
@@ -266,12 +278,12 @@ void dialWindowMask (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a small minute marker.
- *  @param size Size of the marker.
- *  @param len Length of the marker.
- *  @param angle Angle of the marker.
- *  @param colour colour of the marker.
- *  @result None.
+ *  \brief Draw a small minute marker.
+ *  \param size Size of the marker.
+ *  \param len Length of the marker.
+ *  \param angle Angle of the marker.
+ *  \param colour colour of the marker.
+ *  \result None.
  */
 void dialDrawMinute (int size, int len, int angle, int colour)
 {
@@ -285,14 +297,14 @@ void dialDrawMinute (int size, int len, int angle, int colour)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a small minute marker.
- *  @param posX Centre position.
- *  @param posY Centre position.
- *  @param size Size of the marker.
- *  @param len Length of the marker.
- *  @param angle Angle of the marker.
- *  @param colour colour of the marker.
- *  @result None.
+ *  \brief Draw a small minute marker.
+ *  \param posX Centre position.
+ *  \param posY Centre position.
+ *  \param size Size of the marker.
+ *  \param len Length of the marker.
+ *  \param angle Angle of the marker.
+ *  \param colour colour of the marker.
+ *  \result None.
  */
 void dialDrawMinuteX (int posX, int posY, int size, int len, int angle, int colour)
 {
@@ -328,11 +340,11 @@ void dialDrawMinuteX (int posX, int posY, int size, int len, int angle, int colo
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a circle on the dial.
- *  @param size Size of the marker.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @result None.
+ *  \brief Draw a circle on the dial.
+ *  \param size Size of the marker.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \result None.
  */
 void dialDrawCircle (int size, int colFill, int colOut)
 {
@@ -346,13 +358,13 @@ void dialDrawCircle (int size, int colFill, int colOut)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a circle on the dial.
- *  @param posX Centre position.
- *  @param posY Centre position.
- *  @param size Size of the marker.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @result None.
+ *  \brief Draw a circle on the dial.
+ *  \param posX Centre position.
+ *  \param posY Centre position.
+ *  \param size Size of the marker.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \result None.
  */
 void dialDrawCircleX (int posX, int posY, int size, int colFill, int colOut)
 {
@@ -374,28 +386,40 @@ void dialDrawCircleX (int posX, int posY, int size, int colFill, int colOut)
 	}
 }
 
-void drawCircleGradient (int size, int colFill, int style)
-{
-	drawCircleGradientX (saveCentreX, saveCentreY, size, colFill, style);
-}
-
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  D R A W  C I R C L E  G R A D I E N T                                                                             *
+ *  D I A L  C I R C L E  G R A D I E N T                                                                             *
  *  =====================================                                                                             *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param cr .
- *  @param posX .
- *  @param posY .
- *  @param size .
- *  @param colFill .
- *  @param style .
- *  @result .
+ *  \brief Draw a circle with a gradient colour.
+ *  \param size Size of the circle.
+ *  \param colFill Colour to fill it with.
+ *  \param style Direction of the gradent.
+ *  \result None.
  */
-void drawCircleGradientX (int posX, int posY, int size, int colFill, int style)
+void dialCircleGradient (int size, int colFill, int style)
+{
+	dialCircleGradientX (saveCentreX, saveCentreY, size, colFill, style);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  C I R C L E  G R A D I E N T  X                                                                          *
+ *  ========================================                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Draw a circle with a gradient colour.
+ *  \param posX Centre location of the circle.
+ *  \param posY Centre location of the circle.
+ *  \param size Size of the circle.
+ *  \param colFill Colour to fill it with.
+ *  \param style Direction of the gradent.
+ *  \result None.
+ */
+void dialCircleGradientX (int posX, int posY, int size, int colFill, int style)
 {
 	cairo_pattern_t *pat;
 	int patSize = (dialSize >> 1) + (posX > posY ? posX : posY), i;
@@ -439,16 +463,93 @@ void drawCircleGradientX (int posX, int posY, int size, int colFill, int style)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  D I A L  S Q U A R E  G R A D I E N T                                                                             *
+ *  =====================================                                                                             *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Draw a square with a gradient colour.
+ *  \param size Size of the square.
+ *  \param colFill Colour to fill it with.
+ *  \param style Direction of the gradent.
+ *  \result None.
+ */
+void dialSquareGradient (int size, int colFill, int style)
+{
+	dialSquareGradientX (savePosX, savePosY, size, colFill, style);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  S Q U A R E  G R A D I E N T  X                                                                          *
+ *  ========================================                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Draw a square with a gradient colour.
+ *  \param posX Top left corner position X.
+ *  \param posY Top left corner position Y.
+ *  \param size Size of the square.
+ *  \param colFill Colour to fill it with.
+ *  \param style Direction of the gradient.
+ *  \result None.
+ */
+void dialSquareGradientX (int posX, int posY, int size, int colFill, int style)
+{
+	cairo_pattern_t *pat;
+	int trueSize = (dialSize * size) >> 6;
+	int patSize = dialSize + (posX > posY ? posX : posY), i;
+	int x = posX / dialSize, y = posY / dialSize, j = x + y, k = patSize / dialSize;
+	float gradL = (float)(100 - dialGradient) / 100.0;
+	float gradH = (float)(100 + dialGradient) / 100.0;
+	float x1, x2, col[3][3];
+
+#if GTK_MAJOR_VERSION == 2
+	col[0][0] = (float)dialColour(colFill) -> red / 65535.0;
+	col[1][0] = (float)dialColour(colFill) -> green / 65535.0;
+	col[2][0] = (float)dialColour(colFill) -> blue / 65535.0;
+#else
+	col[0][0] = dialColour(colFill) -> red;
+	col[1][0] = dialColour(colFill) -> green;
+	col[2][0] = dialColour(colFill) -> blue;
+#endif
+
+	for (i = 0; i < 3; ++i)
+	{
+		col[i][1] = col[i][0] * (style ? gradH : gradL);
+		if (col[i][1] > 1) col[i][1] = 1;
+		col[i][2] = col[i][0] * (style ? gradL : gradH);
+		if (col[i][2] > 1) col[i][2] = 1;
+	}
+	pat = cairo_pattern_create_linear (0.0, 0.0, patSize, patSize);
+	
+	x1 = j;
+	x1 /= (2 * k);
+	x2 = x1 + ((float)1 / k);
+	
+	cairo_pattern_add_color_stop_rgb (pat, x1, col[0][1], col[1][1], col[2][1]);
+	cairo_pattern_add_color_stop_rgb (pat, x2, col[0][2], col[1][2], col[2][2]);
+	cairo_rectangle (saveCairo, posX, posY, trueSize, trueSize);
+	cairo_set_source(saveCairo, pat);
+//	dialSetColour (colFill);
+	cairo_fill (saveCairo);
+	cairo_stroke (saveCairo);
+
+	cairo_pattern_destroy (pat);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  D I A L  H O T  C O L D                                                                                           *
  *  =======================                                                                                           *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Display Hot and cold markers.
- *  @param size Radius of the marker.
- *  @param colFill Colour of the marker.
- *  @param cold Hot or Cold, 1 = cold.
- *  @result None.
+ *  \brief Display Hot and cold markers.
+ *  \param size Radius of the marker.
+ *  \param colFill Colour of the marker.
+ *  \param cold Hot or Cold, 1 = cold.
+ *  \result None.
  */
 void dialHotCold (int size, int colFill, int cold)
 {
@@ -462,13 +563,13 @@ void dialHotCold (int size, int colFill, int cold)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Display Hot and cold markers.
- *  @param posX Centre posision.
- *  @param posY Centre posision.
- *  @param size Radius of the marker.
- *  @param colFill Colour of the marker.
- *  @param cold Hot or Cold, 1 = cold.
- *  @result None.
+ *  \brief Display Hot and cold markers.
+ *  \param posX Centre posision.
+ *  \param posY Centre posision.
+ *  \param size Radius of the marker.
+ *  \param colFill Colour of the marker.
+ *  \param cold Hot or Cold, 1 = cold.
+ *  \result None.
  */
 void dialHotColdX (int posX, int posY, int size, int colFill, int cold)
 {
@@ -490,11 +591,11 @@ void dialHotColdX (int posX, int posY, int size, int colFill, int cold)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a square on the dial.
- *  @param size Size of the marker.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @result None.
+ *  \brief Draw a square on the dial.
+ *  \param size Size of the marker.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \result None.
  */
 void dialDrawSquare (int size, int colFill, int colOut)
 {
@@ -508,13 +609,13 @@ void dialDrawSquare (int size, int colFill, int colOut)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a square on the dial.
- *  @param posX Centre position.
- *  @param posY Centre position.
- *  @param size Size of the marker.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @result None.
+ *  \brief Draw a square on the dial.
+ *  \param posX Centre position.
+ *  \param posY Centre position.
+ *  \param size Size of the marker.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \result None.
  */
 void dialDrawSquareX (int posX, int posY, int size, int colFill, int colOut)
 {
@@ -543,10 +644,10 @@ void dialDrawSquareX (int posX, int posY, int size, int colFill, int colOut)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a hand on the dial.
- *  @param angle Angle of the hand.
- *  @param handStyle Style structure of the hand.
- *  @result None.
+ *  \brief Draw a hand on the dial.
+ *  \param angle Angle of the hand.
+ *  \param handStyle Style structure of the hand.
+ *  \result None.
  */
 void dialDrawHand (int angle, HAND_STYLE *handStyle)
 {
@@ -560,12 +661,12 @@ void dialDrawHand (int angle, HAND_STYLE *handStyle)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a hand on the dial.
- *  @param posX Centre position.
- *  @param posY Centre position.
- *  @param angle Angle of the hand.
- *  @param handStyle Style structure of the hand.
- *  @result None.
+ *  \brief Draw a hand on the dial.
+ *  \param posX Centre position.
+ *  \param posY Centre position.
+ *  \param angle Angle of the hand.
+ *  \param handStyle Style structure of the hand.
+ *  \result None.
  */
 void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 {
@@ -718,13 +819,13 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a shaped marker on the dial.
- *  @param angle Angle of the marker.
- *  @param size Size of the marker.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @param text Text to display on the mark.
- *  @result None.
+ *  \brief Draw a shaped marker on the dial.
+ *  \param angle Angle of the marker.
+ *  \param size Size of the marker.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \param text Text to display on the mark.
+ *  \result None.
  */
 void dialDrawMark (int angle, int size, int colFill, int colOut, char *text)
 {
@@ -738,15 +839,15 @@ void dialDrawMark (int angle, int size, int colFill, int colOut, char *text)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw a shaped marker on the dial.
- *  @param posX Centre position.
- *  @param posY Centre position.
- *  @param angle Angle of the marker.
- *  @param size Size of the marker.
- *  @param colFill Fill colour.
- *  @param colOut Outline colour.
- *  @param text Text to display on the mark.
- *  @result None.
+ *  \brief Draw a shaped marker on the dial.
+ *  \param posX Centre position.
+ *  \param posY Centre position.
+ *  \param angle Angle of the marker.
+ *  \param size Size of the marker.
+ *  \param colFill Fill colour.
+ *  \param colOut Outline colour.
+ *  \param text Text to display on the mark.
+ *  \result None.
  */
 void dialDrawMarkX (int posX, int posY, int angle, int size, int colFill, int colOut, char *text)
 {
@@ -809,9 +910,9 @@ void dialDrawMarkX (int posX, int posY, int angle, int size, int colFill, int co
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the font size from a font def.
- *  @param fontName String to read the size from.
- *  @result The font size.
+ *  \brief Get the font size from a font def.
+ *  \param fontName String to read the size from.
+ *  \result The font size.
  */
 float dialGetFontSize (char *fontName)
 {
@@ -839,11 +940,11 @@ float dialGetFontSize (char *fontName)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw text on the dial.
- *  @param posn Top or Bottom of the dial.
- *  @param string1 Text to display.
- *  @param colour Text colour.
- *  @result None.
+ *  \brief Draw text on the dial.
+ *  \param posn Top or Bottom of the dial.
+ *  \param string1 Text to display.
+ *  \param colour Text colour.
+ *  \result None.
  */
 void dialDrawText (int posn, char *string1, int colour)
 {
@@ -867,13 +968,13 @@ void dialDrawText (int posn, char *string1, int colour)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Draw text on the dial.
- *  @param posX Centre position.
- *  @param posY Centre position.
- *  @param string1 Text to display.
- *  @param colour Text colour.
- *  @param scale Scale factor.
- *  @result None.
+ *  \brief Draw text on the dial.
+ *  \param posX Centre position.
+ *  \param posY Centre position.
+ *  \param string1 Text to display.
+ *  \param colour Text colour.
+ *  \param scale Scale factor.
+ *  \result None.
  */
 void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
 {
@@ -916,9 +1017,9 @@ void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Function to handle changes to the fonts.
- *  @param data Not used.
- *  @result None.
+ *  \brief Function to handle changes to the fonts.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 dialFontCallback (guint data)
@@ -972,10 +1073,10 @@ dialFontCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Drop down to pick a colour to change.
- *  @param comboBox Combobox for the list.
- *  @param data Not sure.
- *  @result None.
+ *  \brief Drop down to pick a colour to change.
+ *  \param comboBox Combobox for the list.
+ *  \param data Not sure.
+ *  \result None.
  */
 void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
 {
@@ -999,9 +1100,9 @@ void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Display a dialog to pick the colour to change.
- *  @param data Not used.
- *  @result None.
+ *  \brief Display a dialog to pick the colour to change.
+ *  \param data Not used.
+ *  \result None.
  */
 void
 dialColourCallback (guint data)
@@ -1112,8 +1213,8 @@ dialColourCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Convert the config colours into real colours.
- *  @result None.
+ *  \brief Convert the config colours into real colours.
+ *  \result None.
  */
 int
 dialCreateColours ()
@@ -1143,9 +1244,9 @@ dialCreateColours ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Fill the sin and cos tables.
- *  @param start Starting position .
- *  @result None.
+ *  \brief Fill the sin and cos tables.
+ *  \param start Starting position .
+ *  \result None.
  */
 void dialFillSinCosTables (int start)
 {
@@ -1162,16 +1263,15 @@ void dialFillSinCosTables (int start)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  D I A L  S I N  C O S                                                                                             *
- *  =====================                                                                                             *
+ *  D I A L  S I N                                                                                                    *
+ *  ==============                                                                                                    *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the sin value from the table.
- *  @param number Not sure.
- *  @param angle Angle to read.
- *  @param useCos Use COS or SIN table.
- *  @result Value.
+ *  \brief Get the sin value from the table.
+ *  \param number Not sure.
+ *  \param angle Angle to read.
+ *  \result Value.
  */
 int dialSin (int number, int angle)
 {
@@ -1183,16 +1283,15 @@ int dialSin (int number, int angle)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  D I A L  S I N  C O S                                                                                             *
- *  =====================                                                                                             *
+ *  D I A L  C O S                                                                                                    *
+ *  ==============                                                                                                    *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the cos value from the table.
- *  @param number Not sure.
- *  @param angle Angle to read.
- *  @param useCos Use COS or SIN table.
- *  @result Value.
+ *  \brief Get the cos value from the table.
+ *  \param number Not sure.
+ *  \param angle Angle to read.
+ *  \result Value.
  */
 int dialCos (int number, int angle)
 {
@@ -1209,8 +1308,8 @@ int dialCos (int number, int angle)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Check the new face size is OK.
- *  @result None.
+ *  \brief Check the new face size is OK.
+ *  \result None.
  */
 void dialFixFaceSize (void)
 {
@@ -1245,9 +1344,9 @@ void dialFixFaceSize (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Zoom in or out of the dial.
- *  @param data In or out.
- *  @result None.
+ *  \brief Zoom in or out of the dial.
+ *  \param data In or out.
+ *  \result None.
  */
 void
 dialZoomCallback (guint data)
@@ -1280,9 +1379,9 @@ dialZoomCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Select the type of marker to use.
- *  @param data Any data.
- *  @result None.
+ *  \brief Select the type of marker to use.
+ *  \param data Any data.
+ *  \result None.
  */
 void
 dialMarkerCallback (guint data)
@@ -1299,9 +1398,9 @@ dialMarkerCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief How often to draw the hour markers.
- *  @param data Change the step value.
- *  @result None.
+ *  \brief How often to draw the hour markers.
+ *  \param data Change the step value.
+ *  \result None.
  */
 void
 dialStepCallback (guint data)
@@ -1318,9 +1417,9 @@ dialStepCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Add or delete a column or row.
- *  @param data What to do.
- *  @result None.
+ *  \brief Add or delete a column or row.
+ *  \param data What to do.
+ *  \result None.
  */
 void
 dialAddDelCallback (guint data)
@@ -1360,9 +1459,9 @@ dialAddDelCallback (guint data)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Called to save an SVG copy of the face (-V to enable).
- *  @param data Not used.
- *  @result None.
+ *  \brief Called to save an SVG copy of the face (-V to enable).
+ *  \param data Not used.
+ *  \result None.
  */
 void dialSaveCallback (guint data)
 {

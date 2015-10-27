@@ -78,9 +78,9 @@ QUEUE_HEADER;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Lock the queue.
- *  @param myQueue Handle to lock.
- *  @result None.
+ *  \brief Lock the queue.
+ *  \param myQueue Handle to lock.
+ *  \result None.
  */
 static void queueLock (QUEUE_HEADER *myQueue)
 {
@@ -104,9 +104,9 @@ static void queueLock (QUEUE_HEADER *myQueue)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Unlock the queue.
- *  @param myQueue Handle to unlock.
- *  @result None.
+ *  \brief Unlock the queue.
+ *  \param myQueue Handle to unlock.
+ *  \result None.
  */
 static void queueUnLock (QUEUE_HEADER *myQueue)
 {
@@ -130,8 +130,8 @@ static void queueUnLock (QUEUE_HEADER *myQueue)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Create a queue.
- *  @result A void pointer (handle) to the queue.
+ *  \brief Create a queue.
+ *  \result A void pointer (handle) to the queue.
  */
 void *queueCreate ()
 {
@@ -167,9 +167,9 @@ void *queueCreate ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Delete the queue.
- *  @param queueHandle Handle to delete.
- *  @result None.
+ *  \brief Delete the queue.
+ *  \param queueHandle Handle to delete.
+ *  \result None.
  */
 void queueDelete (void *queueHandle)
 {
@@ -199,9 +199,9 @@ void queueDelete (void *queueHandle)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the first item from the queue.
- *  @param queueHandle Handle to get from.
- *  @result What was saved on the queue.
+ *  \brief Get the first item from the queue.
+ *  \param queueHandle Handle to get from.
+ *  \result What was saved on the queue.
  */
 void *queueGet (void *queueHandle)
 {
@@ -235,10 +235,10 @@ void *queueGet (void *queueHandle)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Put something on the queue.
- *  @param queueHandle Hangle to save to.
- *  @param putData Thing to put on the queue.
- *  @result None.
+ *  \brief Put something on the queue.
+ *  \param queueHandle Hangle to save to.
+ *  \param putData Thing to put on the queue.
+ *  \result None.
  */
 void queuePut (void *queueHandle, void *putData)
 {
@@ -272,10 +272,10 @@ void queuePut (void *queueHandle, void *putData)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Put something on the start of the queue.
- *  @param queueHandle Hangle to save to.
- *  @param putData Thing to put on the queue.
- *  @result None.
+ *  \brief Put something on the start of the queue.
+ *  \param queueHandle Hangle to save to.
+ *  \param putData Thing to put on the queue.
+ *  \result None.
  */
 void queuePush (void *queueHandle, void *putData)
 {
@@ -309,11 +309,11 @@ void queuePush (void *queueHandle, void *putData)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Put something on the queue in sorted order.
- *  @param queueHandle Hangle to save to.
- *  @param putData Thing to put on the queue.
- *  @param item2 Function used to sort the queue.
- *  @result None.
+ *  \brief Put something on the queue in sorted order.
+ *  \param queueHandle Hangle to save to.
+ *  \param putData Thing to put on the queue.
+ *  \param item2 Function used to sort the queue.
+ *  \result None.
  */
 void queuePutSort (void *queueHandle, void *putData, 
 		int(*Compare)(void *item1, void *item2))
@@ -375,10 +375,10 @@ void queuePutSort (void *queueHandle, void *putData,
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Read something on the queue (it is not removed).
- *  @param queueHandle Handle to read from.
- *  @param item Item number to read.
- *  @result What was save on the queue.
+ *  \brief Read something on the queue (it is not removed).
+ *  \param queueHandle Handle to read from.
+ *  \param item Item number to read.
+ *  \result What was save on the queue.
  */
 void *queueRead (void *queueHandle, int item)
 {
@@ -406,10 +406,10 @@ void *queueRead (void *queueHandle, int item)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Set a user data field on the queue.
- *  @param queueHandle Hangle to save to.
- *  @param setData What to save.
- *  @result None.
+ *  \brief Set a user data field on the queue.
+ *  \param queueHandle Hangle to save to.
+ *  \param setData What to save.
+ *  \result None.
  */
 void queueSetFreeData (void *queueHandle, unsigned long setData)
 {
@@ -426,9 +426,9 @@ void queueSetFreeData (void *queueHandle, unsigned long setData)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get a user data field on the queue.
- *  @param queueHandle Handle of the queue.
- *  @result What was saved.
+ *  \brief Get a user data field on the queue.
+ *  \param queueHandle Handle of the queue.
+ *  \result What was saved.
  */
 unsigned long queueGetFreeData (void *queueHandle)
 {
@@ -448,9 +448,9 @@ unsigned long queueGetFreeData (void *queueHandle)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the number of items on the queue.
- *  @param queueHandle Handle of the queue.
- *  @result Number of items.
+ *  \brief Get the number of items on the queue.
+ *  \param queueHandle Handle of the queue.
+ *  \result Number of items.
  */
 unsigned long queueGetItemCount (void *queueHandle)
 {
