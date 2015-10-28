@@ -1563,9 +1563,9 @@ swResetCallback (guint data)
  */
 void configSaveCallback (guint data)
 {
-	int i, posX, posY;
+	int posX, posY;
 	char *home = getenv ("HOME");
-	char configPath[1024], value[81];
+	char configPath[1024];
 
 	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
 	configSetIntValue ("x_pos", posX);
@@ -2116,7 +2116,8 @@ void loadAlarmInfo (int face, char *buff)
 {
 	int alHour = 0, alMin = 0, i = 0, j = 0, m = 0;
 	char msg[41];
-		
+	
+	msg[0] = 0;
 	while (buff[i] && m < 3)
 	{
 		if (buff[i] == ':')
