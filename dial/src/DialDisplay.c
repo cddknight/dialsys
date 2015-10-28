@@ -1190,8 +1190,12 @@ dialColourCallback (guint data)
 #endif
 				if (colString)
 				{
+					char value[81];
+
 					strncpy (dialColours[i].defColour, colString, 60);
 					g_free (colString);
+					sprintf (value, "colour_%s", dialColours[i].shortName);
+					configSetValue (value, dialColours[i].defColour);
 				}
 				dialColours[i].dialColour = setColour;
 				if (UpdateFunc) UpdateFunc();
