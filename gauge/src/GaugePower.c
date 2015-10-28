@@ -270,11 +270,12 @@ void readPowerMeterValues (int face)
 			"<b>Maximum</b>: %s\n"
 			"<b>Minimum</b>: %s\n"
 			"<b>Hour Average</b>: %s\n"
-			"<b>Day Average</b>: %s"), 
-			powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5]);
+			"<b>Day Average</b>: %s\n"
+			"<b>Month Average</b>: %s"), 
+			powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5], powerStr[6]);
 	setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Hour Average: %s"),
 			powerStr[0], powerStr[4]);
-	setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[4]);
+	setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);
 	faceSetting -> firstValue = myPowerReading[0] / 1000;
 	faceSetting -> secondValue = myPowerReading[4] / 1000;
 }
