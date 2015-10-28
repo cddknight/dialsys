@@ -102,7 +102,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	}
 	else
 	{
-		dialSquareGradient (64, col, 0);
+		dialSquareGradient (64, col, 1);
 //		dialDrawSquare (64, col, -1);
 	}
 
