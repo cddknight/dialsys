@@ -1463,9 +1463,9 @@ powerMeterCallback (guint data)
  */
 void configSaveCallback (guint data)
 {
-	int i, posX, posY;
+	int posX, posY;
 	char *home = getenv ("HOME");
-	char configPath[1024], value[81];
+	char configPath[1024];
 
 	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
 	configSetIntValue ("x_pos", posX);

@@ -358,7 +358,7 @@ static void processBuffer (char *buffer, size_t size)
 		else
 		{
 			printf ("error: could not parse memory\n");
-			printf ("BUFF[%d] [[[%s]]]\n", size, buffer);
+			printf ("BUFF[%lu] [[[%s]]]\n", size, buffer);
 		}
 		xmlFree (xmlBuffer);
 	}
