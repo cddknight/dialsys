@@ -42,29 +42,29 @@
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
-	{	"blk", __("Black"),							"#000000"	},	//	00
-	{	"wht", __("White"),							"#FFFFFF"	},	//	01
-	{	"cbf", __("Clock border when focused"),		"#505050"	},	//	02
-	{	"cbn", __("Clock border not focused"),		"#6E6E6E"	},	//	03
-	{	"cbi", __("Clock border inner circle"),		"#000000"	},	//	04
-	{	"fce", __("Clock face colour"),				"#141414"	},	//	05
-	{	"fsw", __("Stopwatch dial colour"),			"#000000"	},	//	06
-	{	"txt", __("Information text colour"),		"#858585"	},	//	07
-	{	"hrh", __("Hour hand outer colour"),		"#E1E1E1"	},	//	08
-	{	"hhf", __("Hour hand fill colour"),			"#202020"	},	//	09
-	{	"mnh", __("Minute hand outer colour"),		"#E1E1E1"	},	//	10
-	{	"mhf", __("Minute hand fill colour"),		"#202020"	},	//	11
-	{	"sch", __("Second hand outer colour"),		"#FF0000"	},	//	12
-	{	"shf", __("Second hand fill colour"),		"#800000"	},	//	13
-	{	"alh", __("Alarm hand outer colour"),		"#008000"	},	//	14
-	{	"ahf", __("Alarm hand fill colour"),		"#004000"	},	//	15
-	{	"swh", __("Stopwatch hand outer colour"),	"#FF0000"	},	//	16
-	{	"swf", __("Stopwatch hand fill colour"),	"#800000"	},	//	17
-	{	"hrm", __("Hour marker colour"),			"#646464"	},	//	18
-	{	"mnm", __("Minute marker colour"),			"#3C3C3C"	},	//	19
-	{	"swm", __("Stopwatch marker colour"),		"#828282"	},	//	20
-	{	"qum", __("Quarter marker colour"),			"#AAAAAA"	},	//	21
-	{	"qmf", __("Quarter marker fill colour"),	"#646464"	},	//	22
+	{	"blk", __("Black"),					"#000000"	},	//	00
+	{	"wht", __("White"),					"#FFFFFF"	},	//	01
+	{	"fce", __("Main face colour"),		"#141414"	},	//	02	T
+	{	"bri", __("Border inner circle"),	"#000000"	},	//	03	T
+	{	"brf", __("Border when focused"),	"#505050"	},	//	04	T
+	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//	05	T
+	{	"fsw", __("Stopwatch dial"),		"#000000"	},	//	06
+	{	"txt", __("Information text"),		"#858585"	},	//	07
+	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	//	08
+	{	"hof", __("Hour hand fill"),		"#202020"	},	//	09
+	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	//	10
+	{	"mif", __("Minute hand fill"),		"#202020"	},	//	11
+	{	"seh", __("Second hand outer"),		"#FF0000"	},	//	12
+	{	"sef", __("Second hand fill"),		"#800000"	},	//	13
+	{	"alh", __("Alarm hand outer"),		"#008000"	},	//	14
+	{	"alf", __("Alarm hand fill"),		"#004000"	},	//	15
+	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	//	16
+	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	//	17
+	{	"hom", __("Hour markers"),			"#646464"	},	//	18
+	{	"mim", __("Minute markers"),		"#3C3C3C"	},	//	19
+	{	"stm", __("Stopwatch markers"),		"#828282"	},	//	20
+	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	//	21
+	{	"quf", __("Quarter markers fill"),	"#646464"	},	//	22
 	{	NULL, NULL, ""	}
 }; 
 
@@ -1568,8 +1568,8 @@ void configSaveCallback (guint data)
 	char configPath[1024];
 
 	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
-	configSetIntValue ("x_pos", posX);
-	configSetIntValue ("y_pos", posY);
+	configSetIntValue ("clock_x_pos", posX);
+	configSetIntValue ("clock_y_pos", posY);
 	configSetIntValue ("current_face", currentFace);
 	
 	if (home)
@@ -1956,62 +1956,6 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 	   		faceSetting -> alarmInfo.alarmShown = 0;
 		}
 	}
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  D E F A U L T  C L O C K                                                                                          *
- *  ========================                                                                                          *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Set in config default values used by dial library.
- *  \result None.
- */
-void defaultClock (void)
-{
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);
-	configSetValue ("font_name", fontName);
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  U P D A T E  C L O C K                                                                                            *
- *  ======================                                                                                            *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Called by dial library when settings change.
- *  \result None.
- */
-void updateClock (void)
-{
-	int i;
-	
-	configGetIntValue ("number_cols", &faceWidth);
-	configGetIntValue ("number_rows", &faceHeight);
-	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("marker_type", &markerType);
-	configGetIntValue ("marker_step", &markerStep);
-	configGetIntValue ("opacity", &faceOpacity);
-	configGetIntValue ("gradient", &faceGradient);
-	configGetValue ("font_name", fontName, 100);
-
-	for (i = 0; i < (faceHeight * faceWidth); i++)
-	{
-		if (faceSettings[i] == NULL)
-		{
-			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
-		}
-	}
-	lastTime = -1;
 }
 
 /**********************************************************************************************************************
@@ -2460,6 +2404,66 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  D E F A U L T  C L O C K                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set in config default values used by dial library.
+ *  \result None.
+ */
+void defaultClock (void)
+{
+	configSetIntValue ("number_cols", faceWidth);
+	configSetIntValue ("number_rows", faceHeight);
+	configSetIntValue ("face_size", faceSize);
+	configSetIntValue ("marker_type", markerType);
+	configSetIntValue ("marker_step", markerStep);
+	configSetIntValue ("opacity", faceOpacity);
+	configSetIntValue ("gradient", faceGradient);
+	configSetValue ("font_name", fontName);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  U P D A T E  C L O C K                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Called by dial library when settings change.
+ *  \result None.
+ */
+void updateClock (void)
+{
+	int i;
+	
+	configGetIntValue ("number_cols", &faceWidth);
+	configGetIntValue ("number_rows", &faceHeight);
+	configGetIntValue ("face_size", &faceSize);
+	configGetIntValue ("marker_type", &markerType);
+	configGetIntValue ("marker_step", &markerStep);
+	configGetIntValue ("opacity", &faceOpacity);
+	configGetIntValue ("gradient", &faceGradient);
+	configGetValue ("font_name", fontName, 100);
+
+	for (i = 0; i < (faceHeight * faceWidth); i++)
+	{
+		if (faceSettings[i] == NULL)
+		{
+			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
+		}
+	}
+	configSetIntValue ("clock_num_col", faceWidth);
+	configSetIntValue ("clock_num_row", faceHeight);
+	configSetIntValue ("clock_mark_type", markerType);
+	configSetIntValue ("clock_mark_step", markerStep);
+	lastTime = -1;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  L O A D  C O N F I G                                                                                              *
  *  ====================                                                                                              *
  *                                                                                                                    *
@@ -2488,15 +2492,15 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("fast_setting", &fastSetting);
 	configGetBoolValue ("bounce_seconds", &showBounceSec);
 	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("number_cols", &faceWidth);
-	configGetIntValue ("number_rows", &faceHeight);
-	configGetIntValue ("current_face", &currentFace);
-	configGetIntValue ("marker_type", &markerType);
-	configGetIntValue ("marker_step", &markerStep);
+	configGetIntValue ("clock_num_col", &faceWidth);
+	configGetIntValue ("clock_num_row", &faceHeight);
+	configGetIntValue ("clock_current", &currentFace);
+	configGetIntValue ("clock_mark_type", &markerType);
+	configGetIntValue ("clock_mark_step", &markerStep);
 	configGetIntValue ("opacity", &faceOpacity);	
 	configGetIntValue ("gradient", &faceGradient);	
-	configGetIntValue ("x_pos", posX);
-	configGetIntValue ("y_pos", posY);
+	configGetIntValue ("clock_x_pos", posX);
+	configGetIntValue ("clock_y_pos", posY);
 	configGetValue ("font_name", fontName, 100);
 
 	for (i = 2; i < MAX__COLOURS; i++)
@@ -2567,6 +2571,11 @@ void loadConfig (int *posX, int *posY)
 			}
 		}
 	}
+	configSetIntValue ("number_cols", faceWidth);
+	configSetIntValue ("number_rows", faceHeight);
+	configSetIntValue ("marker_type", markerType);
+	configSetIntValue ("marker_step", markerStep);
+
 //	configFree ();
 }
 

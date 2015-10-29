@@ -29,31 +29,31 @@ COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
 	{	"blk", __("Black"),					"#000000"		},	//	00
 	{	"wht", __("White"),					"#FFFFFF"		},	//	01
-	{	"brf", __("Border when focused"),	"#505050"		},	//	02
-	{	"brn", __("Border not focused"),	"#6E6E6E"		},	//	03
-	{	"bri", __("Border inner circle"),	"#000000"		},	//	04
-	{	"fce", __("Gauge face"),			"#141414"		},	//	05
-	{	"txt", __("Information text"),		"#858585"		},	//	06
-	{	"fth", __("Main hand outer"),		"#E0E0E0"		},	//	07
-	{	"ftf", __("Main hand fill"),		"#202020"		},	//	08
-	{	"sdh", __("Second hand outer"),		"#808080"		},	//	09
-	{	"sdf", __("Second hand fill"),		"#202020"		},	//	10
-	{	"mxh", __("Max value hand outer"),	"#E00000"		},	//	11
-	{	"mxf", __("Max value hand fill"),	"#200000"		},	//	12
-	{	"mnh", __("Min value hand outer"),	"#0080E0"		},	//	13
-	{	"mnf", __("Min value hand fill"),	"#002020"		},	//	14
-	{	"ccl", __("Centre circle outer"),	"#AA0000"		},	//	15
-	{	"ccf", __("Centre circle fill"),	"#640000"		},	//	16
+	{	"fce", __("Main face colour"),		"#141414"		},	//	02	T
+	{	"bri", __("Border inner circle"),	"#000000"		},	//	03	T
+	{	"brf", __("Border when focused"),	"#505050"		},	//	04	T
+	{	"brn", __("Border not focused"),	"#6E6E6E"		},	//	05	T
+	{	"txt", __("Information text"),		"#858585"		},	//	06	T
+	{	"gah", __("Main hand outer"),		"#E0E0E0"		},	//	07
+	{	"gaf", __("Main hand fill"),		"#202020"		},	//	08
+	{	"seh", __("Second hand outer"),		"#808080"		},	//	09
+	{	"sef", __("Second hand fill"),		"#202020"		},	//	10
+	{	"mah", __("Max value hand outer"),	"#E00000"		},	//	11
+	{	"maf", __("Max value hand fill"),	"#200000"		},	//	12
+	{	"mih", __("Min value hand outer"),	"#0080E0"		},	//	13
+	{	"mif", __("Min value hand fill"),	"#002020"		},	//	14
+	{	"cec", __("Centre circle outer"),	"#AA0000"		},	//	15
+	{	"cef", __("Centre circle fill"),	"#640000"		},	//	16
 	{	"qum", __("Segment marker outer"),	"#AAAAAA"		},	//	17
-	{	"qmf", __("Segment marker fill"),	"#646464"		},	//	18
-	{	"cld", __("Cold zone colour"),		"#0060A0"		},	//	19
+	{	"quf", __("Segment marker fill"),	"#646464"		},	//	18
+	{	"col", __("Cold zone colour"),		"#0060A0"		},	//	19
 	{	"hot", __("Hot zone colour"),		"#600000"		},	//	20
 	{	NULL, NULL, ""	}
 }; 
 
 char *handNames[HAND_COUNT] =
 {
-	"first", "second", "max", "min"
+	"main", "option", "max", "min"
 };
 
 #ifndef COLOUR
@@ -1468,9 +1468,9 @@ void configSaveCallback (guint data)
 	char configPath[1024];
 
 	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
-	configSetIntValue ("x_pos", posX);
-	configSetIntValue ("y_pos", posY);
-	configSetIntValue ("current_face", currentFace);
+	configSetIntValue ("gauge_x_pos", posX);
+	configSetIntValue ("gauge_y_pos", posY);
+	configSetIntValue ("gauge_current", currentFace);
 	
 	if (home)
 	{
@@ -1623,62 +1623,6 @@ static int updateMaxMinValues (FACE_SETTINGS *faceSetting, int firstValue)
 			saved -> shownMinValue = faceSetting -> shownFirstValue;
 	}		
 	return (saveMax == saved -> shownMaxValue && saveMin == saved -> shownMinValue) ? 0 : 1;
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  D E F A U L T  G A U G E                                                                                          *
- *  ========================                                                                                          *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Set in config default values used by dial library.
- *  \result None.
- */
-void defaultGauge (void)
-{
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);
-	configSetValue ("font_name", fontName);
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  U P D A T E  G A U G E                                                                                            *
- *  ======================                                                                                            *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Call back called when a gauge setting is changed by the dial system.
- *  \result None.
- */
-void updateGauge (void)
-{
-	int i;
-	
-	configGetIntValue ("number_cols", &faceWidth);
-	configGetIntValue ("number_rows", &faceHeight);
-	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("marker_type", &markerType);
-	configGetIntValue ("marker_step", &markerStep);
-	configGetIntValue ("opacity", &faceOpacity);
-	configGetIntValue ("gradient", &faceGradient);
-	configGetValue ("font_name", fontName, 100);
-
-	for (i = 0; i < (faceHeight * faceWidth); i++)
-	{
-		if (faceSettings[i] == NULL)
-		{
-			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
-		}
-	}
-	lastTime = -1;
 }
 
 /**********************************************************************************************************************
@@ -1957,6 +1901,66 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  D E F A U L T  G A U G E                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set in config default values used by dial library.
+ *  \result None.
+ */
+void defaultGauge (void)
+{
+	configSetIntValue ("number_cols", faceWidth);
+	configSetIntValue ("number_rows", faceHeight);
+	configSetIntValue ("face_size", faceSize);
+	configSetIntValue ("marker_type", markerType);
+	configSetIntValue ("marker_step", markerStep);
+	configSetIntValue ("opacity", faceOpacity);
+	configSetIntValue ("gradient", faceGradient);
+	configSetValue ("font_name", fontName);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  U P D A T E  G A U G E                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Call back called when a gauge setting is changed by the dial system.
+ *  \result None.
+ */
+void updateGauge (void)
+{
+	int i;
+	
+	configGetIntValue ("number_cols", &faceWidth);
+	configGetIntValue ("number_rows", &faceHeight);
+	configGetIntValue ("face_size", &faceSize);
+	configGetIntValue ("marker_type", &markerType);
+	configGetIntValue ("marker_step", &markerStep);
+	configGetIntValue ("opacity", &faceOpacity);
+	configGetIntValue ("gradient", &faceGradient);
+	configGetValue ("font_name", fontName, 100);
+
+	for (i = 0; i < (faceHeight * faceWidth); i++)
+	{
+		if (faceSettings[i] == NULL)
+		{
+			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
+		}
+	}
+	configSetIntValue ("gauge_num_col", faceWidth);
+	configSetIntValue ("gauge_num_row", faceHeight);
+	configSetIntValue ("gauge_mark_type", markerType);
+	configSetIntValue ("gauge_mark_step", markerStep);
+	lastTime = -1;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  L O A D  C O N F I G                                                                                              *
  *  ====================                                                                                              *
  *                                                                                                                    *
@@ -1979,23 +1983,23 @@ void loadConfig (int *posX, int *posY)
 	strcat (configPath, configFile);
 	configLoad (configPath);
 
-	configGetIntValue ("always_on_top", &alwaysOnTop);
-	configGetIntValue ("on_all_desktops", &stuckOnAll);
-	configGetIntValue ("locked_position", &lockMove);
+	configGetBoolValue ("always_on_top", &alwaysOnTop);
+	configGetBoolValue ("on_all_desktops", &stuckOnAll);
+	configGetBoolValue ("locked_position", &lockMove);
 	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("number_cols", &faceWidth);
-	configGetIntValue ("number_rows", &faceHeight);
-	configGetIntValue ("current_face", &currentFace);
-	configGetIntValue ("marker_type", &markerType);
-	configGetIntValue ("marker_step", &markerStep);
+	configGetIntValue ("gauge_num_col", &faceWidth);
+	configGetIntValue ("gauge_num_row", &faceHeight);
+	configGetIntValue ("gauge_current", &currentFace);
+	configGetIntValue ("gauge_mark_type", &markerType);
+	configGetIntValue ("gauge_mark_step", &markerStep);
 	configGetIntValue ("opacity", &faceOpacity);
 	configGetIntValue ("gradient", &faceGradient);	
-	configGetIntValue ("x_pos", posX);
-	configGetIntValue ("y_pos", posY);
+	configGetIntValue ("gauge_x_pos", posX);
+	configGetIntValue ("gauge_y_pos", posY);
 	configGetValue ("font_name", fontName, 100);
 	configGetIntValue ("hightide_time", (int *)&hightideTime);
 	configGetValue ("tide_info_url", tideURL, 100);
-	configGetIntValue ("Weather_scales", (int *)&weatherScales);
+	configGetIntValue ("weather_scales", (int *)&weatherScales);
 	configGetValue ("location_key", locationKey, 40);
 	configGetValue ("thermo_server", thermoServer, 40);
 	configGetIntValue ("thermo_port", &thermoPort);
@@ -2036,6 +2040,10 @@ void loadConfig (int *posX, int *posY)
 		configGetIntValue (value, &val);
 		faceSettings[i] -> faceSubType = val;
 	}
+	configSetIntValue ("number_cols", faceWidth);
+	configSetIntValue ("number_rows", faceHeight);
+	configSetIntValue ("marker_type", markerType);
+	configSetIntValue ("marker_step", markerStep);
 }
 
 /**********************************************************************************************************************

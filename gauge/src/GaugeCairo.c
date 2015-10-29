@@ -94,7 +94,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	 *------------------------------------------------------------------------------------------------*/	
 	dialDrawStart (cr, posX, posY);
 
-	col = (weHaveFocus && face == currentFace) ? FACE1_COLOUR : FACE2_COLOUR;
+	col = (weHaveFocus && face == currentFace) ? FACE3_COLOUR : FACE4_COLOUR;
 	if (circ)
 	{
 		dialCircleGradient (64, col, 1);
@@ -106,8 +106,8 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 //		dialDrawSquare (64, col, -1);
 	}
 
-	dialCircleGradient (62, FACE3_COLOUR, 0);
-	dialCircleGradient (58, FACE4_COLOUR, 1);
+	dialCircleGradient (62, FACE2_COLOUR, 0);
+	dialCircleGradient (58, FACE1_COLOUR, 1);
 
 //	dialDrawCircle (62, FACE3_COLOUR, -1);
 //	dialDrawCircle (60, FACE4_COLOUR, -1);
