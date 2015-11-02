@@ -340,9 +340,9 @@ static GdkPixbuf *defaultIcon;
 /******************************************************************************************************
  *                                                                                                    *
  ******************************************************************************************************/
-static int alwaysOnTop 			=  0;			// Saved in the config file
-static int stuckOnAll 			=  0;			// Saved in the config file
-static int lockMove 			=  0;			// Saved in the config file
+static bool alwaysOnTop 		=  0;			// Saved in the config file
+static bool stuckOnAll 			=  0;			// Saved in the config file
+static bool lockMove 			=  0;			// Saved in the config file
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
 static time_t lastTime 			= -1;
