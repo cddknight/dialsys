@@ -5,7 +5,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: dirutils
+Name: dialsys
 Description: Library to help display dials.
 Version: @VERSION@
 Requires:

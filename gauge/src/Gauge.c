@@ -2398,11 +2398,7 @@ main (int argc, char *argv[])
 	 *------------------------------------------------------------------------------------------------*/
 	gtk_widget_show_all (GTK_WIDGET (mainWindow));
 	g_timeout_add (200, clockTickCallback, NULL);
-#if GTK_MAJOR_VERSION > 2 && GTK_MINOR_VERSION > 7
-	gtk_widget_set_opacity (GTK_WIDGET (mainWindow), ((double)faceOpacity) / 100);
-#elif GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-	gtk_window_set_opacity (mainWindow, ((double)faceOpacity) / 100);
-#endif
+	dialSetOpacity();
 
 	i = nice (5);
 	gtk_main ();

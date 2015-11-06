@@ -123,6 +123,7 @@ void dialSquareGradientX (int posX, int posY, int size, int colFill, int style);
 int dialSin 			(int number, int angle);
 int dialCos 			(int number, int angle);
 float dialGetFontSize 	(char *fontName);
+void dialSetOpacity		();
 
 void dialFontCallback 	(guint data);
 void dialColourCallback	(guint data);

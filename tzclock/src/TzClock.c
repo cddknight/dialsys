@@ -256,6 +256,7 @@ GtkWidget *drawingArea;
 GtkAccelGroup *accelGroup;
 bool fastSetting				=  FALSE;		// Saved in the config file
 bool showBounceSec				=  FALSE;		// Saved in the config file
+bool clockDecorated				=  FALSE;		// Saved in the config file
 int faceSize 					=  3 * 64;		// Saved in the config file
 int faceWidth 					=  1;			// Saved in the config file
 int faceHeight 					=  1;			// Saved in the config file
@@ -986,7 +987,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 		{
 #ifndef CLOCK_IS_DECORATED
 		case 1:	/* left button */
-			if (!lockMove)
+			if (!lockMove && !clockDecorated)
 			{
 				gtk_window_begin_move_drag (GTK_WINDOW (mainWindow), event->button, event->x_root,
 						event->y_root, event->time);
@@ -2213,6 +2214,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case 'd':							/* Set the date format */
 				loadDateFormat (&argv[i][2]);	
 				break;
+			case 'D':
+				clockDecorated = !clockDecorated;
+				configSetBoolValue ("decorated", clockDecorated);
+				break;
 			case 'f':							/* Select the face for zone changes */
 				{
 					int f = atoi (&argv[i][2]);
@@ -2491,6 +2496,7 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("locked_position", &lockMove);
 	configGetBoolValue ("fast_setting", &fastSetting);
 	configGetBoolValue ("bounce_seconds", &showBounceSec);
+	configGetBoolValue ("decorated", &clockDecorated);
 	configGetIntValue ("face_size", &faceSize);
 	configGetIntValue ("clock_num_col", &faceWidth);
 	configGetIntValue ("clock_num_row", &faceHeight);
@@ -2682,9 +2688,10 @@ main (int argc, char *argv[])
 	gtk_container_add (GTK_CONTAINER (eventBox), drawingArea);
 	gtk_container_add (GTK_CONTAINER (mainWindow), eventBox);
 
-#ifndef CLOCK_IS_DECORATED
-	gtk_window_set_decorated (GTK_WINDOW (mainWindow), FALSE);
-#endif
+	if (!clockDecorated)
+	{
+		gtk_window_set_decorated (GTK_WINDOW (mainWindow), FALSE);
+	}
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Complete stuff left over from the command line                                                 *
@@ -2719,20 +2726,17 @@ main (int argc, char *argv[])
 
 	stickCallback (0);
 	onTopCallback (0);
-#ifndef CLOCK_IS_DECORATED
-	lockCallback (0);
-#endif
+	if (!clockDecorated)
+	{
+		lockCallback (0);
+	}
 
 	/*------------------------------------------------------------------------------------------------*
 	 * OK all ready lets run it!                                                                      *
 	 *------------------------------------------------------------------------------------------------*/
 	gtk_widget_show_all (GTK_WIDGET (mainWindow));
 	g_timeout_add (50, clockTickCallback, NULL);
-#if GTK_MAJOR_VERSION > 2 && GTK_MINOR_VERSION > 7
-	gtk_widget_set_opacity (GTK_WIDGET (mainWindow), ((double)faceOpacity) / 100);
-#elif GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-	gtk_window_set_opacity (mainWindow, ((double)faceOpacity) / 100);
-#endif
+	dialSetOpacity ();
 
 	i = nice (5);
 	gtk_main ();

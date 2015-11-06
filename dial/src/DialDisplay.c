@@ -1066,6 +1066,15 @@ dialFontCallback (guint data)
 	gtk_widget_destroy (dialog);
 }
 
+void dialSetOpacity ()
+{
+#if GTK_MAJOR_VERSION > 2 && GTK_MINOR_VERSION > 7
+	gtk_widget_set_opacity (GTK_WIDGET (mainWindow), ((double)dialOpacity) / 100);
+#elif GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
+	gtk_window_set_opacity (mainWindow, ((double)dialOpacity) / 100);
+#endif
+}
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  D I A L  C O L O U R  C O M B O  C A L L B A C K                                                                  *
@@ -1093,6 +1102,21 @@ void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
 	}
 }
 
+void dialScaleChanged (GtkRange *range, gpointer data)
+{
+	int scale = (int)data;
+	
+	if (scale == 0)
+	{
+		dialGradient = (int)gtk_range_get_value (range);
+	}
+	else if (scale == 1)
+	{
+		dialOpacity = (int)gtk_range_get_value (range);
+		dialSetOpacity ();
+	}
+}
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  D I A L  C O L O U R  C A L L B A C K                                                                             *
@@ -1113,6 +1137,8 @@ dialColourCallback (guint data)
 	GtkWidget *dialog;
 	GtkWidget *comboBox;
 	GtkWidget *colourSel;
+	GtkWidget *gradLabel, *gradScale;
+	GtkWidget *opacLabel, *opacScale;
 #if GTK_MAJOR_VERSION == 2
 	GdkColor setColour;
 #else
@@ -1155,11 +1181,25 @@ dialColourCallback (guint data)
 	colourSel = gtk_color_chooser_widget_new ();
 	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true); 
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), &dialColours[2].dialColour);
+	gradLabel = gtk_label_new (_("Gradent"));
+	gradScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 50, 100, 1);
+	opacLabel = gtk_label_new (_("Opacity"));
+	opacScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 50, 100, 1);
+	gtk_range_set_value ((GtkRange *)gradScale, (gdouble)dialGradient);
+	gtk_range_set_value ((GtkRange *)opacScale, (gdouble)dialOpacity);
+	g_signal_connect (G_OBJECT(gradScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)0);
+    g_signal_connect (G_OBJECT(opacScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)1);
 #endif
 	g_signal_connect (comboBox, "changed", G_CALLBACK (dialColourComboCallback), colourSel);
 
 	gtk_container_add (GTK_CONTAINER (vbox), comboBox);
 	gtk_container_add (GTK_CONTAINER (vbox), colourSel);
+#if GTK_MAJOR_VERSION > 2
+	gtk_container_add (GTK_CONTAINER (vbox), gradLabel);
+	gtk_container_add (GTK_CONTAINER (vbox), gradScale);
+	gtk_container_add (GTK_CONTAINER (vbox), opacLabel);
+	gtk_container_add (GTK_CONTAINER (vbox), opacScale);
+#endif
 	gtk_widget_show_all (dialog);
 
 	do
@@ -1177,13 +1217,13 @@ dialColourCallback (guint data)
 				gchar *colString = NULL;
 #if GTK_MAJOR_VERSION == 2
 				gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (colourSel), &setColour);
-	#if GTK_MINOR_VERSION > 11
+#if GTK_MINOR_VERSION > 11
 				colString = gdk_color_to_string (&setColour);
-	#else
+#else
 				colString = g_malloc (10);
 				sprintf (colString, "#%02X%02X%02X", setColour.red / 256, setColour.green / 256, 
 						setColour.blue / 256);
-	#endif
+#endif
 #else
 				gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (colourSel), &setColour);
 				colString = gdk_rgba_to_string (&setColour);
@@ -1198,13 +1238,19 @@ dialColourCallback (guint data)
 					configSetValue (value, dialColours[i].defColour);
 				}
 				dialColours[i].dialColour = setColour;
-				if (UpdateFunc) UpdateFunc();
 			}
+			configSetIntValue ("opacity", dialOpacity);
+			configSetIntValue ("gradient", dialGradient);			
+			if (UpdateFunc) UpdateFunc();
 			break;
 		}
 	}
 	while (reRun);
 
+	gtk_widget_destroy (gradLabel);
+	gtk_widget_destroy (gradScale);
+	gtk_widget_destroy (opacLabel);
+	gtk_widget_destroy (opacScale);
 	gtk_widget_destroy (comboBox);
 	gtk_widget_destroy (colourSel);
 	gtk_widget_destroy (dialog); 
