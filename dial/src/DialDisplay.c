@@ -146,6 +146,11 @@ void dialDrawFinish ()
 	cairo_restore (saveCairo);
 }
 
+#if GTK_MAJOR_VERSION == 2
+GdkColor
+#else
+GdkRGBA
+#endif
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  D I A L  C O L O U R                                                                                              *
@@ -153,15 +158,11 @@ void dialDrawFinish ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Get the colour value for a colour number.
- *  @param i The number of the colour to find.
- *  @result Pointer to the GtkColour.
+ *  \brief Get the colour value for a colour number.
+ *  \param i The number of the colour to find.
+ *  \result Pointer to the GtkColour.
  */
-#if GTK_MAJOR_VERSION == 2
-GdkColor *dialColour (int i)
-#else
-GdkRGBA *dialColour (int i)
-#endif
+*dialColour (int i)
 {
 	if (i < 0 || i >= dialMaxColours)
 		return &dialColours[0].dialColour;
@@ -176,9 +177,9 @@ GdkRGBA *dialColour (int i)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Set the colour to use
- *  \param i Which colour to set
- *  \result None
+ *  \brief Set the colour to use.
+ *  \param i Which colour to set.
+ *  \result None.
  */
 void dialSetColour (int i)
 {
@@ -1066,12 +1067,24 @@ dialFontCallback (guint data)
 	gtk_widget_destroy (dialog);
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  S E T  O P A C I T Y                                                                                     *
+ *  =============================                                                                                     *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set the Opacity (transparency) of the face.
+ *  \result Nonr.
+ */
 void dialSetOpacity ()
 {
+	double opacity = (((double)dialOpacity / 2) + 50) / 100;
+	
 #if GTK_MAJOR_VERSION > 2 && GTK_MINOR_VERSION > 7
-	gtk_widget_set_opacity (GTK_WIDGET (mainWindow), ((double)dialOpacity) / 100);
+	gtk_widget_set_opacity (GTK_WIDGET (mainWindow), opacity);
 #elif GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-	gtk_window_set_opacity (mainWindow, ((double)dialOpacity) / 100);
+	gtk_window_set_opacity (mainWindow, opacity);
 #endif
 }
 
@@ -1102,6 +1115,18 @@ void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
 	}
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  S C A L E  C H A N G E D                                                                                 *
+ *  =================================                                                                                 *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Someone moved a scale so update the face.
+ *  \param range The widget that changed.
+ *  \param data Which scale was moved.
+ *  \result None.
+ */
 void dialScaleChanged (GtkRange *range, gpointer data)
 {
 	int scale = (int)data;
@@ -1182,9 +1207,9 @@ dialColourCallback (guint data)
 	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true); 
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), &dialColours[2].dialColour);
 	gradLabel = gtk_label_new (_("Gradent"));
-	gradScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 50, 100, 1);
+	gradScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 100, 1);
 	opacLabel = gtk_label_new (_("Opacity"));
-	opacScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 50, 100, 1);
+	opacScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 100, 1);
 	gtk_range_set_value ((GtkRange *)gradScale, (gdouble)dialGradient);
 	gtk_range_set_value ((GtkRange *)opacScale, (gdouble)dialOpacity);
 	g_signal_connect (G_OBJECT(gradScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)0);
