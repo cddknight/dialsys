@@ -1137,11 +1137,11 @@ dialColourCallback (guint data)
 	GtkWidget *dialog;
 	GtkWidget *comboBox;
 	GtkWidget *colourSel;
-	GtkWidget *gradLabel, *gradScale;
-	GtkWidget *opacLabel, *opacScale;
 #if GTK_MAJOR_VERSION == 2
 	GdkColor setColour;
 #else
+	GtkWidget *gradLabel, *gradScale;
+	GtkWidget *opacLabel, *opacScale;
 	GtkWidget *contentArea;
 	GdkRGBA setColour;
 #endif
@@ -1247,10 +1247,12 @@ dialColourCallback (guint data)
 	}
 	while (reRun);
 
+#if GTK_MAJOR_VERSION > 2
 	gtk_widget_destroy (gradLabel);
 	gtk_widget_destroy (gradScale);
 	gtk_widget_destroy (opacLabel);
 	gtk_widget_destroy (opacScale);
+#endif
 	gtk_widget_destroy (comboBox);
 	gtk_widget_destroy (colourSel);
 	gtk_widget_destroy (dialog); 
