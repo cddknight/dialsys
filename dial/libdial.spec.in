@@ -10,6 +10,7 @@ Source: http://www.tzclock.org/releases/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: pkgconfig desktop-file-utils 
 BuildRequires: @REQUIRES@
+%define debug_package %{nil}
 
 %description
 This package contains necessary library files for libdial applications.
