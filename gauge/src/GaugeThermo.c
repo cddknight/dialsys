@@ -238,7 +238,8 @@ void readThermometerValues (int face)
 			myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4]);
 	setFaceString (faceSetting, FACESTR_WIN, 0, _("Outside: %0.1f%s, Inside: %0.1f%s"),
 			myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
-	setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s", myThermoReading[0], "\302\260C");
+	setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n(%0.1f%s)", 
+			myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
 	faceSetting -> firstValue = myThermoReading[0];
 	faceSetting -> secondValue = myThermoReading[1];
 }
