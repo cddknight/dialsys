@@ -277,7 +277,13 @@ void readPowerMeterValues (int face)
 			powerStr[0], powerStr[5]);
 	setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);
 	faceSetting -> firstValue = myPowerReading[0] / 1000;
-	faceSetting -> secondValue = myPowerReading[4] / 1000;
+	faceSetting -> secondValue = myPowerReading[5] / 1000;
+
+	while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+	{
+		faceSetting -> faceScaleMax *= 2;
+		maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+	}
 }
 
 #endif

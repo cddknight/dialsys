@@ -1454,7 +1454,7 @@ powerMeterCallback (guint data)
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 0;
-	faceSettings[currentFace] -> faceScaleMax = 10;
+	faceSettings[currentFace] -> faceScaleMax = 2.5;
 #endif
 }
 
