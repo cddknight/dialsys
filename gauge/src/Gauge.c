@@ -698,7 +698,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 		switch (event->button)
 		{
 #ifndef GAUGE_IS_DECORATED
-		case 1:	/* left button */
+		case GDK_BUTTON_PRIMARY:	/* left button */
 			if (!lockMove)
 			{
 				gtk_window_begin_move_drag (GTK_WINDOW (mainWindow), event->button, event->x_root,
@@ -707,7 +707,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 			return TRUE;
 #endif
 			
-		case 3:	/* right button */
+		case GDK_BUTTON_SECONDARY:	/* right button */
 			prepareForPopup ();
 			popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
 			gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
