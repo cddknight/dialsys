@@ -1129,7 +1129,7 @@ void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
  */
 void dialScaleChanged (GtkRange *range, gpointer data)
 {
-	int scale = (int)data;
+    char scale = data == NULL ? 0 : 1;
 	
 	if (scale == 0)
 	{
