@@ -9,7 +9,8 @@ do
 		cd ${DIR}
 		if [ -e buildrpm.sh ]
 		then
-			./buildrpm.sh
+			../../project/buildrpm.expect
+#			./buildrpm.sh
 		fi
 		cd ${START_PWD}
 	fi
