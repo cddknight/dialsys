@@ -677,7 +677,7 @@ calendarCallback (guint data)
 	}
 	localtime (&t);
 	
-	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), mainWindow,
+	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 						_("Close"), 
@@ -751,7 +751,7 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/	
-	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), mainWindow,
+	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 			_("Close"), 

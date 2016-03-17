@@ -559,7 +559,7 @@ void tideSettings (guint data)
 	GtkWidget *grid;
 #endif
 
-	dialog = gtk_dialog_new_with_buttons ("Tide Settings", mainWindow,
+	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 						_("Close"), 
