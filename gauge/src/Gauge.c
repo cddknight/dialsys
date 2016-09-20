@@ -289,13 +289,14 @@ MENU_DESC gaugeMenuDesc[] =
 	{	__("Entropy"),			entropyCallback,		NULL,				0,	NULL,	0,	1	},	/*	02	*/
 	{	__("Hard Disk"),		NULL,					harddiskMenuDesc,	0,	NULL,	0,	1	},	/*	03	*/
 	{	__("Memory"),			NULL,					memoryMenuDesc,		0,	NULL,	0,	1	},	/*	04	*/
-	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*	05	*/
-	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*	06	*/
-	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*	07	*/
-	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*	08	*/
-	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*	09	*/
-	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*	10	*/
-	{	NULL,					NULL,					NULL,				0	}					/*	11	*/
+	{	__("Moon Phase"),		moonPhaseCallback,		NULL,				0,	NULL,	0,	1	},	/*	05	*/
+	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*	06	*/
+	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*	07	*/
+	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*	08	*/
+	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*	09	*/
+	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*	10	*/
+	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*	11	*/
+	{	NULL,					NULL,					NULL,				0	}					/*	12	*/
 };
 
 MENU_DESC prefMenuDesc[] =
@@ -975,6 +976,9 @@ clockTickCallback (gpointer data)
 				readPowerMeterValues (face);
 				break;
 #endif
+			case FACE_TYPE_MOONPHASE:
+				readMoonPhaseValues (face);
+				break;
 			default:
 				/*------------------------------------------------------------------------------------*
 				 * Used for drawing the icon on the about box.                                        *
@@ -1212,6 +1216,12 @@ batteryCallback (guint data)
 {
 	gaugeReset (currentFace, FACE_TYPE_BATTERY, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_HOT_COLD | FACE_HC_REVS);
+}
+
+void
+moonPhaseCallback (guint data)
+{
+	gaugeReset (currentFace, FACE_TYPE_MOONPHASE, data);
 }
 
 /**********************************************************************************************************************
@@ -2288,6 +2298,9 @@ main (int argc, char *argv[])
 			weatherCallback (faceSettings[i] -> faceSubType);
 			break;
 #endif
+		case FACE_TYPE_MOONPHASE:
+			moonPhaseCallback (faceSettings[i] -> faceSubType);
+			break;
 		}
 	}
 	currentFace = saveFace;
@@ -2387,6 +2400,7 @@ main (int argc, char *argv[])
 #ifdef GAUGE_HAS_POWER
 	readPowerMeterInit();
 #endif
+	readMoonPhaseInit();
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Called to set any values                                                                       *

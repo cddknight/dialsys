@@ -3,8 +3,8 @@ bin_PROGRAMS = gauge
 gauge_SOURCES = src/Gauge.c src/GaugeCPU.c src/GaugeSensors.c src/GaugeWeather.c \
 		src/GaugeMemory.c src/GaugeBattery.c src/GaugeNetwork.c src/GaugeEntropy.c \
 		src/GaugeTide.c src/GaugeHarddisk.c src/GaugeThermo.c src/GaugePower.c \
-		src/GaugeCairo.c src/GaugeDisp.h src/socket.c src/socket.h src/GaugeIcon.xpm \
-		src/GaugeIcon_small.xpm 
+		src/GaugeMoon.c src/GaugeCairo.c src/GaugeDisp.h src/socket.c src/socket.h \
+		src/GaugeIcon.xpm src/GaugeIcon_small.xpm 
 gauge_CPPFLAGS = -D_FILE_OFFSET_BITS=64 $(DEPS_CFLAGS)
 LIBS = $(DEPS_LIBS)
 EXTRA_DIST = gauge.desktop icons/48x48/gauge.png icons/128x128/gauge.png icons/scalable/gauge.svg \

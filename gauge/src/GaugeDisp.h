@@ -80,51 +80,52 @@
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-#define FLAG_LOCK			1
-#define FLAG_ON_TOP			2
-#define FLAG_STICK			4
+#define FLAG_LOCK				1
+#define FLAG_ON_TOP				2
+#define FLAG_STICK				4	
 
-#define HAND_FIRST			0
-#define HAND_SECOND			1
-#define HAND_MAX			2
-#define HAND_MIN			3
-#define HAND_COUNT			4
+#define HAND_FIRST				0
+#define HAND_SECOND				1
+#define HAND_MAX				2
+#define HAND_MIN				3
+#define HAND_COUNT				4
 
-#define MAX_MIN_COUNT		24
+#define MAX_MIN_COUNT			24
 
-#define SCALE_1				300
-#define SCALE_2				600
-#define SCALE_3				900
-#define SCALE_4				1200
-#define SCALE_0				750
+#define SCALE_1					300
+#define SCALE_2					600
+#define SCALE_3					900
+#define SCALE_4					1200
+#define SCALE_0					750
 
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-#define MENU_GAUGE_BATTERY	0
-#define MENU_GAUGE_LOAD		1
-#define MENU_GAUGE_ENTROPY	2
-#define MENU_GAUGE_HARDDISK	3
-#define MENU_GAUGE_MEMORY	4
-#define MENU_GAUGE_NETWORK	5
-#define MENU_GAUGE_POWER	6
-#define MENU_GAUGE_SENSOR	7
-#define MENU_GAUGE_THERMO	8
-#define MENU_GAUGE_TIDE		9
-#define MENU_GAUGE_WEATHER	10
+#define MENU_GAUGE_BATTERY		0
+#define MENU_GAUGE_LOAD			1
+#define MENU_GAUGE_ENTROPY		2
+#define MENU_GAUGE_HARDDISK		3
+#define MENU_GAUGE_MEMORY		4
+#define MENU_GAUGE_MOONPHASE	5
+#define MENU_GAUGE_NETWORK		6
+#define MENU_GAUGE_POWER		7
+#define MENU_GAUGE_SENSOR		8
+#define MENU_GAUGE_THERMO		9
+#define MENU_GAUGE_TIDE			10
+#define MENU_GAUGE_WEATHER		11
 
-#define MENU_PREF_ONTOP		0
-#define MENU_PREF_STUCK		1
-#define MENU_PREF_LOCK		2
-#define MENU_PREF_SVG		10
+#define MENU_PREF_ONTOP			0
+#define MENU_PREF_STUCK			1
+#define MENU_PREF_LOCK			2
+#define MENU_PREF_SVG			10
 
-#define MENU_SENSOR_TEMP	0
-#define MENU_SENSOR_FAN		1
+#define MENU_SENSOR_TEMP		0
+#define MENU_SENSOR_FAN			1
 
-#define MENU_MARK_STRT		0
-#define MENU_MARK_STOP		1
-#define MENU_STEP_STRT		3
-#define MENU_STEP_STOP		6
+#define MENU_MARK_STRT			0
+#define MENU_MARK_STOP			1
+#define MENU_STEP_STRT			3
+#define MENU_STEP_STOP			6
 
 #define FACE_REDRAW		0x0001
 #define FACE_SHOWHOT	0x0002
@@ -187,6 +188,7 @@ FACE_SETTINGS;
 #define FACE_TYPE_HARDDISK		9
 #define FACE_TYPE_THERMO		10
 #define FACE_TYPE_POWER			11
+#define FACE_TYPE_MOONPHASE		12
 
 #define LOCATION_COUNT			6
 
@@ -211,6 +213,7 @@ void memoryCallback			(guint data);
 void networkCallback		(guint data);
 void harddiskCallback		(guint data);
 void batteryCallback		(guint data);
+void moonPhaseCallback		(guint data);
 void entropyCallback		(guint data);
 void tideCallback			(guint data);
 void sensorTempCallback		(guint data);
@@ -248,6 +251,8 @@ void readHarddiskInit (void);
 void readHarddiskValues (int face);
 void readBatteryInit (void);
 void readBatteryValues (int face);
+void readMoonPhaseInit (void);
+void readMoonPhaseValues (int face);
 void readEntropyInit (void);
 void readEntropyValues (int face);
 void readTideInit (void);
