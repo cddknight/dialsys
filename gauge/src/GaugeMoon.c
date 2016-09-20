@@ -1,7 +1,7 @@
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  G A U G E  B A T T E R Y . C                                                                                      *
- *  ============================                                                                                      *
+ *  G A U G E  M O O N . C                                                                                            *
+ *  ======================                                                                                            *
  *                                                                                                                    *
  *  This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public         *
  *  License version 2 as published by the Free Software Foundation.  Note that I am not granting permission to        *
@@ -17,9 +17,8 @@
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @file
- *  @brief Handle a gauge that shows battery.
- *  @version $Id: GaugeBattery.c 1856 2014-01-14 15:10:08Z ukchkn $
+ *  \file
+ *  \brief Handle a gauge that shows battery.
  */
 #include <stdio.h>
 #include <string.h>
@@ -49,8 +48,8 @@ static int myUpdateID = 100;
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  R E A D  B A T T E R Y  I N I T                                                                                   *
- *  ===============================                                                                                   *
+ *  R E A D  M O O N  P H A S E  I N I T                                                                              *
+ *  ====================================                                                                              *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
@@ -261,8 +260,8 @@ double moon_phase(int year, int month, int day, double hour, int *ip)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  R E A D  B A T T E R Y  V A L U E S                                                                               *
- *  ===================================                                                                               *
+ *  R E A D  M O O N  P H A S E  V A L U E S                                                                          *
+ *  ========================================                                                                          *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
@@ -305,14 +304,5 @@ void readMoonPhaseValues (int face)
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.1f%%) - Gauge"),
 				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
 	}
-/*	faceSetting -> firstValue = atoi (batteryValues[2]) * 100;
-	faceSetting -> firstValue /= atoi (batteryValues[1]);
-	setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(%s)"), gettext (state));
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: %0.1f%% Full, %s"), 
-			faceSetting -> firstValue, gettext (state));
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.1f%% Full - Gauge"), 
-			faceSetting -> firstValue);
-	setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), 
-			faceSetting -> firstValue); */
 }
 
