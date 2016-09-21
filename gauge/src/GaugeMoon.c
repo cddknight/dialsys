@@ -68,10 +68,10 @@ void readMoonPhaseInit (void)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param now .
- *  \param jd .
- *  \result .
+ *  \brief Convert a Julian date back to a day month year.
+ *  \param now Save the result here.
+ *  \param jd Date to convert.
+ *  \result None.
  */
 void JulianToDate(TimePlace * now, double jd)
 {
@@ -112,11 +112,11 @@ void JulianToDate(TimePlace * now, double jd)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param year .
- *  \param month .
- *  \param day .
- *  \result .
+ *  \brief Calculate a Julian date.
+ *  \param year Year to use.
+ *  \param month Month to use.
+ *  \param day Daye to use.
+ *  \result Julian date.
  */
 double Julian(int year, int month, double day)
 {
@@ -124,7 +124,7 @@ double Julian(int year, int month, double day)
 	 * Returns the number of julian days for the specified day. 
 	 */
 
-	int a, b, c, e;
+	int a, b = 0, c, e;
 	if (month < 3)
 	{
 		year--;
@@ -147,14 +147,13 @@ double Julian(int year, int month, double day)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param j .
- *  \result .
+ *  \brief Calculate the suns position.
+ *  \param j Don't know copied this code.
+ *  \result Don't know copied this code.
  */
 double sun_position(double j)
 {
 	double n, x, e, l, dl, v;
-	double m2;
 	int i;
 
 	n = 360 / 365.2422 * j;
@@ -185,17 +184,15 @@ double sun_position(double j)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param j .
- *  \param ls .
- *  \result .
+ *  \brief Calculate the moon position.
+ *  \param j Don't know, copied this code.
+ *  \param ls Don't know copied this code.
+ *  \result Don't know copied this code.
  */
 double moon_position(double j, double ls)
 {
 
-	double ms, l, mm, n, ev, sms, z, x, lm, bm, ae, ec;
-	double d;
-	double ds, as, dm;
+	double ms, l, mm, n, ev, sms, ae, ec;
 	int i;
 
 	/*
@@ -233,12 +230,12 @@ double moon_position(double j, double ls)
  **********************************************************************************************************************/
 /**
  *  \brief .
- *  \param year .
- *  \param month .
- *  \param day .
- *  \param hour .
- *  \param ip .
- *  \result .
+ *  \param year The year to calculate for.
+ *  \param month The month to calculate for.
+ *  \param day The day to calculate for.
+ *  \param hour The hour to calculate for.
+ *  \param ip Returned number for the phase.
+ *  \result Moon phase 0 to 1.
  */
 double moon_phase(int year, int month, int day, double hour, int *ip)
 {
@@ -265,7 +262,7 @@ double moon_phase(int year, int month, int day, double hour, int *ip)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Read the state of the battery.
+ *  \brief Read the state of the moon.
  *  \param face Which face is this for.
  *  \result None.
  */
@@ -297,11 +294,11 @@ void readMoonPhaseValues (int face)
 
 		faceSetting -> firstValue = p;
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Moon\nPhase"));
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.1f%%)"),
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"),
 				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
 		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"),
 				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.1f%%) - Gauge"),
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.0f%%) - Gauge"),
 				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
 	}
 }
