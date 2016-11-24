@@ -31,18 +31,9 @@
 #include "TzClockDisp.h"
 #include "TimeZone.h"
 
-extern int faceSize;
-extern int faceWidth;
-extern int faceHeight;
-extern int weHaveFocus;
-extern int currentFace;
-extern int timeSetting;
-extern bool fastSetting;
-extern bool showBounceSec;
-extern int markerType;
+extern CLOCK_INST clockInst;
 extern time_t forceTime;
 extern HAND_STYLE handStyle[];
-extern FACE_SETTINGS *faceSettings[];
 extern TZ_INFO *timeZones;
 #if GTK_MAJOR_VERSION == 2
 extern GtkWidget *drawingArea;
@@ -76,9 +67,9 @@ char *roman[25] =
 gboolean 
 drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	FACE_SETTINGS *faceSetting = clockInst.faceSettings[face];
 	int i, j, col, timeZone = faceSetting -> currentTZ;
-	int centerX = posX + (faceSize >> 1), centerY = posY + (faceSize >> 1);
+	int centerX = posX + (clockInst.faceSize >> 1), centerY = posY + (clockInst.faceSize >> 1);
 	int showSubSec, markerFlags = 0xFFFFFF;
 	time_t t = faceSetting -> timeShown;
 	char tempString[101];
@@ -94,7 +85,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	 *------------------------------------------------------------------------------------------------*/	
 	dialDrawStart (cr, posX, posY);
 
-	col = (weHaveFocus && face == currentFace) ? FACE3_COLOUR : FACE4_COLOUR;
+	col = (clockInst.weHaveFocus && face == clockInst.currentFace) ? FACE3_COLOUR : FACE4_COLOUR;
 	if (circ)
 	{
 		dialCircleGradient (64, col, 1);
@@ -130,7 +121,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	/*------------------------------------------------------------------------------------------------*
 	 * Calculate which markers to draw                                                                *
 	 *------------------------------------------------------------------------------------------------*/
-	if (markerType > 2)
+	if (clockInst.markerType > 2)
 	{
 		if (showSubSec)
 		{
@@ -171,7 +162,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	{
 		int m = faceSetting -> show24Hour ? i * 10 : i * 20;
 
-		if (faceSize > 256)
+		if (clockInst.faceSize > 256)
 		{
 			if (!faceSetting -> show24Hour || !(i % 2))
 				dialDrawMinute (30, 1, m, MMARK_COLOUR);
@@ -183,9 +174,9 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			{
 				char buff[11] = "";
 				int hour = i == 0 ? (faceSetting -> show24Hour ? 24 : 12) : i / 5;
-				if (markerType == 3)
+				if (clockInst.markerType == 3)
 					sprintf (buff, "%d", hour);
-				if (markerType == 4)
+				if (clockInst.markerType == 4)
 					strcpy (buff, roman[hour]);
 				dialDrawMark (m, 31, QFILL_COLOUR, QMARK_COLOUR, buff);
 			}
@@ -197,12 +188,12 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	 *------------------------------------------------------------------------------------------------*/
 	if (showSubSec)
 	{
-		dialDrawCircleX (centerX, posY + ((3 * faceSize) >> 2), 21, FACE5_COLOUR, -1);
+		dialDrawCircleX (centerX, posY + ((3 * clockInst.faceSize) >> 2), 21, FACE5_COLOUR, -1);
 	}
 	if (faceSetting -> stopwatch)
 	{
-		dialDrawCircleX (posX + (faceSize >> 2), centerY, 21, FACE5_COLOUR, -1);			
-		dialDrawCircleX (posX + (3 * faceSize >> 2), centerY, 21, FACE5_COLOUR, -1);
+		dialDrawCircleX (posX + (clockInst.faceSize >> 2), centerY, 21, FACE5_COLOUR, -1);			
+		dialDrawCircleX (posX + (3 * clockInst.faceSize >> 2), centerY, 21, FACE5_COLOUR, -1);
 	}	
 	
 	if (showSubSec || faceSetting -> stopwatch)
@@ -214,16 +205,16 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			if (showSubSec)
 			{
 				if (!(i % 5))
-					dialDrawMinuteX (centerX, posY + ((3 * faceSize) >> 2),
+					dialDrawMinuteX (centerX, posY + ((3 * clockInst.faceSize) >> 2),
 							(i % 15) ? 9 : 8, (i % 15) ? 1 : 2, m, WMARK_COLOUR);
 			}
 			if (faceSetting -> stopwatch)
 			{
 				if (!(i % 6))
-					dialDrawMinuteX (posX + (faceSize >> 2), centerY,
+					dialDrawMinuteX (posX + (clockInst.faceSize >> 2), centerY,
 							(i % 12) ? 9 : 8, (i % 12) ? 1 : 2, m, WMARK_COLOUR);
 				if (!(i % 4))
-					dialDrawMinuteX (posX + ((3 * faceSize) >> 2), centerY,
+					dialDrawMinuteX (posX + ((3 * clockInst.faceSize) >> 2), centerY,
 							(i % 20) ? 9 : 8, (i % 20) ? 1 : 2, m, WMARK_COLOUR);
 			}
 		}
@@ -238,15 +229,15 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	}
 	if (showSubSec)
 	{
-		dialDrawHandX (centerX, posY + ((3 * faceSize) >> 2), faceSetting -> handPosition[HAND_SECS], &handStyle[HAND_SUBS]);
-		dialDrawCircleX (centerX, posY + ((3 * faceSize) >> 2), 2, SFILL_COLOUR, SEC___COLOUR);
+		dialDrawHandX (centerX, posY + ((3 * clockInst.faceSize) >> 2), faceSetting -> handPosition[HAND_SECS], &handStyle[HAND_SUBS]);
+		dialDrawCircleX (centerX, posY + ((3 * clockInst.faceSize) >> 2), 2, SFILL_COLOUR, SEC___COLOUR);
 	}
 	if (faceSetting -> stopwatch)
 	{
-		dialDrawHandX (posX + (faceSize >> 2), centerY, faceSetting -> handPosition[HAND_STOPWT], &handStyle[HAND_STOPWT]);
-		dialDrawHandX (posX + ((3 * faceSize) >> 2), centerY, faceSetting -> handPosition[HAND_STOPWM], &handStyle[HAND_STOPWM]);
-		dialDrawCircleX (posX + (faceSize >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);			
-		dialDrawCircleX (posX + ((3 * faceSize) >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);
+		dialDrawHandX (posX + (clockInst.faceSize >> 2), centerY, faceSetting -> handPosition[HAND_STOPWT], &handStyle[HAND_STOPWT]);
+		dialDrawHandX (posX + ((3 * clockInst.faceSize) >> 2), centerY, faceSetting -> handPosition[HAND_STOPWM], &handStyle[HAND_STOPWM]);
+		dialDrawCircleX (posX + (clockInst.faceSize >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);			
+		dialDrawCircleX (posX + ((3 * clockInst.faceSize) >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);
 	}
 
 	dialDrawHand (faceSetting -> handPosition[HAND_HOUR], &handStyle[HAND_HOUR]);
@@ -295,11 +286,11 @@ void clockExpose (GtkWidget *widget)
 	int i, j, face = 0;
 	cairo_t *cr = gdk_cairo_create (drawingArea -> window);
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < clockInst.faceHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < clockInst.faceWidth; i++)
 		{
-			drawFace (cr, face++, (i * faceSize), (j * faceSize), 0);
+			drawFace (cr, face++, (i * clockInst.faceSize), (j * clockInst.faceSize), 0);
 		}
 	}
 
@@ -316,11 +307,11 @@ void clockExpose (cairo_t *cr)
 {
 	int i, j, face = 0;
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < clockInst.faceHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < clockInst.faceWidth; i++)
 		{
-			drawFace (cr, face++, (i * faceSize), (j * faceSize), 0);
+			drawFace (cr, face++, (i * clockInst.faceSize), (j * clockInst.faceSize), 0);
 		}
 	}
 }
@@ -344,14 +335,14 @@ int dialSave(char *fileName)
 	int i, j, face = 0;
 	cairo_t *cr;
 
-	surface = cairo_svg_surface_create (fileName, faceWidth * faceSize, faceHeight * faceSize);
+	surface = cairo_svg_surface_create (fileName, clockInst.faceWidth * clockInst.faceSize, clockInst.faceHeight * clockInst.faceSize);
 	cr = cairo_create(surface);
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < clockInst.faceHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < clockInst.faceWidth; i++)
 		{
-			drawFace (cr, face++, (i * faceSize), (j * faceSize), 1);
+			drawFace (cr, face++, (i * clockInst.faceSize), (j * clockInst.faceSize), 1);
 		}
 	}
 

@@ -191,6 +191,35 @@ typedef struct _faceSettings
 }
 FACE_SETTINGS;
 
+typedef struct _clockInst
+{
+	GtkWindow *mainWindow;
+	GtkWidget *drawingArea;
+	GtkAccelGroup *accelGroup;
+	bool fastSetting;			// Saved in the config file
+	bool showBounceSec;			// Saved in the config file
+	bool clockDecorated;		// Saved in the config file
+	int faceSize;				// Saved in the config file
+	int faceWidth;				// Saved in the config file
+	int faceHeight;				// Saved in the config file
+	int weHaveFocus;
+	int currentFace;			// Saved in the config file
+	int toolTipFace;
+	int timeSetting;
+	int allowSaveDisp;
+	int markerType;				// Saved in the config file
+	int markerStep;				// Saved in the config file
+	int faceOpacity;			// Saved in the config file
+	int faceGradient;			// Saved in the config file
+	time_t forceTime;
+	char fontName[101];			// Saved in the config file
+	char configFile[81];
+	char windowTitle[128];
+	char windowToolTip[128];
+	FACE_SETTINGS *faceSettings[MAX_FACES];
+}
+CLOCK_INST;
+
 /*----------------------------------------------------------------------------------------------------*
  * Store for the supported timezones                                                                  *
  *----------------------------------------------------------------------------------------------------*/

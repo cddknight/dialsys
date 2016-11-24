@@ -30,33 +30,68 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  S A V E                                                                                                  *
+ *  ================                                                                                                  *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Dummy fuction to keep library happy.
+ *  \result None.
+ */
 void dialSave() {}
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  M A I N                                                                                           *
- *  =======                                                                                           *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  G E T  S C R E E N  S I Z E                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief Start of the program called by the library.
- *  @param argc Number of arguments, passed to init.
- *  @param argv Command line arguments, passed to init.
- *  @result Nothing.
+ *  \brief New method to get the sreen size.
+ *  \param width Return width.
+ *  \param height Return height.
+ *  \result None.
+ */
+void getScreenSize (int *width, int *height)
+{
+	GdkDisplay *display;
+	GdkMonitor *monitor;
+	GdkRectangle monitor_geometry;
+
+	display = gdk_display_get_default ();
+	monitor = gdk_display_get_monitor (display, 0);
+	gdk_monitor_get_geometry (monitor, &monitor_geometry);
+
+	if (width != NULL)
+	{
+		*width = monitor_geometry.width;
+	}
+	if (height != NULL)
+	{
+		*height = monitor_geometry.height;
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  M A I N                                                                                                           *
+ *  =======                                                                                                           *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Start of the program called by the library.
+ *  \param argc Number of arguments, passed to init.
+ *  \param argv Command line arguments, passed to init.
+ *  \result Nothing.
  */
 int main (int argc, char *argv[])
 {
-//	GtkWidget *mainWindow;
+	int width = 0, height = 0;
 
 	gtk_init (&argc, &argv);
-
-/*	g_set_application_name ("copyclip");
-	gtk_window_set_default_icon_name ("copyclip");
-	mainWindow = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_widget_show_all (mainWindow);
-	gtk_main ();
-*/
-	printf ("XPOS=%d\nYPOS=%d\n",
-			gdk_screen_width(), gdk_screen_height());
+	getScreenSize (&width, &height);
+	printf ("XPOS=%d\nYPOS=%d\n", width, height);
 	return 0;
 }

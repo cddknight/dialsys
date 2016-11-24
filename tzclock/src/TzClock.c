@@ -251,30 +251,36 @@ static int bounceSec			=  0;
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-GtkWindow *mainWindow;
-GtkWidget *drawingArea;
-GtkAccelGroup *accelGroup;
-bool fastSetting				=  FALSE;		// Saved in the config file
-bool showBounceSec				=  FALSE;		// Saved in the config file
-bool clockDecorated				=  FALSE;		// Saved in the config file
-int faceSize 					=  3 * 64;		// Saved in the config file
-int faceWidth 					=  1;			// Saved in the config file
-int faceHeight 					=  1;			// Saved in the config file
-int weHaveFocus 				=  0;
-int currentFace 				=  0;			// Saved in the config file
-int toolTipFace					=  0;
-int timeSetting					=  0;
-int allowSaveDisp				=  0;
-int markerType	 				=  3;			// Saved in the config file
-int markerStep	 				=  300;			// Saved in the config file
-int faceOpacity					=  100;			// Saved in the config file
-int faceGradient				=  0;			// Saved in the config file
-time_t forceTime				= -1;
-FACE_SETTINGS *faceSettings[MAX_FACES];
-char fontName[101]				=  "Sans";		// Saved in the config file
-char configFile[81]				=  ".tzclockrc";
-char windowTitle[128];
-char windowToolTip[128];
+GtkApplication *app;
+int running = 0;
+
+CLOCK_INST clockInst =
+{
+	NULL, 			// mainWindow
+	NULL, 			// drawingArea
+	NULL, 			// accelGroup
+	FALSE, 			// fastSetting
+	FALSE,  		// showBounceSec
+	FALSE, 			// clockDecorated
+	3 * 64, 		// faceSize
+	1,	 			// faceWidth
+	1, 				// faceHeight
+	0,	 			// weHaveFocus
+	0,	 			// currentFace
+	0,	 			// toolTipFace
+	0,	 			// timeSetting
+	0,	 			// allowSaveDisp
+	3,	 			// markerType
+	300, 			// markerStep
+	100, 			// faceOpacity
+	0,	 			// faceGradient
+	-1, 			// forceTime
+	"Sans", 		// fontName
+	".tzclockrc", 	// configFile
+	"", 			// windowTitle
+	"" 				// windowToolTip
+};
+
 HAND_STYLE handStyle[HAND_COUNT] =  				// Saved in the config file
 { 
 	{ 0, 19, 5, HOUR__COLOUR, HFILL_COLOUR, 1, 0 },	// Hour hand
@@ -410,6 +416,38 @@ howTo (FILE * outFile, char *format, ...)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  G E T  S C R E E N  S I Z E                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief New method to get the sreen size.
+ *  \param width Return width.
+ *  \param height Return height.
+ *  \result None.
+ */
+void getScreenSize (int *width, int *height)
+{
+	GdkDisplay *display;
+	GdkMonitor *monitor;
+	GdkRectangle monitor_geometry;
+
+	display = gdk_display_get_default ();
+	monitor = gdk_display_get_monitor (display, 0);
+	gdk_monitor_get_geometry (monitor, &monitor_geometry);
+
+	if (width != NULL)
+	{
+		*width = monitor_geometry.width;
+	}
+	if (height != NULL)
+	{
+		*height = monitor_geometry.height;
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  S P L I T  T I M E  Z O N E                                                                                       *
  *  ===========================                                                                                       *
  *                                                                                                                    *
@@ -497,7 +535,8 @@ splitTimeZone (char *timeZone, char *area, char *city, char *display, int doUppe
 void
 quitCallback (guint data)
 {
-	gtk_main_quit ();
+	g_application_quit (G_APPLICATION (app));
+//	gtk_main_quit ();
 }
 
 /**********************************************************************************************************************
@@ -517,7 +556,7 @@ copyCallback (guint data)
 	time_t t;
 	char stringDate[101];
 	GtkClipboard* clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-	int timeZone = faceSettings[currentFace] -> currentTZ;
+	int timeZone = clockInst.faceSettings[clockInst.currentFace] -> currentTZ;
 
 	t = time (NULL);
 	if (timeZones[timeZone].value == 0)
@@ -533,15 +572,15 @@ copyCallback (guint data)
 	switch (data)
 	{
 	case 0:
-		getStringValue (stringDate, 100, timeZone ? TXT_COPY_DT_Z : TXT_COPY_DT_L, currentFace, t);
+		getStringValue (stringDate, 100, timeZone ? TXT_COPY_DT_Z : TXT_COPY_DT_L, clockInst.currentFace, t);
 		break;
 
 	case 1:
-		getStringValue (stringDate, 100, timeZone ? TXT_COPY_D_Z : TXT_COPY_D_L, currentFace, t);
+		getStringValue (stringDate, 100, timeZone ? TXT_COPY_D_Z : TXT_COPY_D_L, clockInst.currentFace, t);
 		break;
 
 	case 2:
-		getStringValue (stringDate, 100, timeZone ? TXT_COPY_T_Z : TXT_COPY_T_L, currentFace, t);
+		getStringValue (stringDate, 100, timeZone ? TXT_COPY_T_Z : TXT_COPY_T_L, clockInst.currentFace, t);
 		break;
 	}
 	gtk_clipboard_set_text (clipboard, stringDate, -1);
@@ -564,13 +603,13 @@ setTimeZoneCallback (guint data)
 	char value[81];
 	int timeZone = (int) data;
 	
-	faceSettings[currentFace] -> currentTZ = timeZones[timeZone].value;
-	splitTimeZone (timeZones[timeZone].envName, faceSettings[currentFace] -> currentTZArea, 
-			faceSettings[currentFace] -> currentTZCity, faceSettings[currentFace] -> currentTZDisp,
-			faceSettings[currentFace] -> upperCity);
+	clockInst.faceSettings[clockInst.currentFace] -> currentTZ = timeZones[timeZone].value;
+	splitTimeZone (timeZones[timeZone].envName, clockInst.faceSettings[clockInst.currentFace] -> currentTZArea, 
+			clockInst.faceSettings[clockInst.currentFace] -> currentTZCity, clockInst.faceSettings[clockInst.currentFace] -> currentTZDisp,
+			clockInst.faceSettings[clockInst.currentFace] -> upperCity);
 
-	sprintf (value, "timezone_city_%d", currentFace + 1);
-	configSetValue (value, faceSettings[currentFace] -> currentTZCity);
+	sprintf (value, "timezone_city_%d", clockInst.currentFace + 1);
+	configSetValue (value, clockInst.faceSettings[clockInst.currentFace] -> currentTZCity);
 	lastTime = -1;
 }
 
@@ -593,7 +632,7 @@ onTopCallback (guint data)
 		alwaysOnTop = !alwaysOnTop;
 		configSetBoolValue ("always_on_top", alwaysOnTop);
 	}
-	gtk_window_set_keep_above (GTK_WINDOW (mainWindow), alwaysOnTop);
+	gtk_window_set_keep_above (GTK_WINDOW (clockInst.mainWindow), alwaysOnTop);
 }
 
 /**********************************************************************************************************************
@@ -616,9 +655,9 @@ stickCallback (guint data)
 		configSetBoolValue ("on_all_desktops", stuckOnAll);
 	}
 	if (stuckOnAll)
-		gtk_window_stick (GTK_WINDOW (mainWindow));
+		gtk_window_stick (GTK_WINDOW (clockInst.mainWindow));
 	else
-		gtk_window_unstick (GTK_WINDOW (mainWindow));
+		gtk_window_unstick (GTK_WINDOW (clockInst.mainWindow));
 }
 
 /**********************************************************************************************************************
@@ -664,7 +703,7 @@ calendarCallback (guint data)
 	GtkWidget *vbox;
 #endif
 
-	int timeZone = faceSettings[currentFace] -> currentTZ;
+	int timeZone = clockInst.faceSettings[clockInst.currentFace] -> currentTZ;
 
 	t = time (NULL);
 	if (timeZones[timeZone].value == 0)
@@ -677,7 +716,7 @@ calendarCallback (guint data)
 	}
 	localtime (&t);
 	
-	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(clockInst.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 						_("Close"), 
@@ -716,11 +755,11 @@ calendarCallback (guint data)
  */
 void alarmSetAngle (int face)
 {
-	short angle = faceSettings[face] -> show24Hour ? 
-			(faceSettings[face] -> alarmInfo.alarmHour * 50)  + ((faceSettings[face] -> alarmInfo.alarmMin * 60) / 72): 
-			(faceSettings[face] -> alarmInfo.alarmHour * 100) + ((faceSettings[face] -> alarmInfo.alarmMin * 60) / 36);
-	if (angle != faceSettings[face] -> handPosition[HAND_ALARM])
-		faceSettings[face] -> handPosition[HAND_ALARM] = angle;
+	short angle = clockInst.faceSettings[face] -> show24Hour ? 
+			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 50)  + ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 72): 
+			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 100) + ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 36);
+	if (angle != clockInst.faceSettings[face] -> handPosition[HAND_ALARM])
+		clockInst.faceSettings[face] -> handPosition[HAND_ALARM] = angle;
 }
 
 /**********************************************************************************************************************
@@ -751,7 +790,7 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/	
-	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(clockInst.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 			_("Close"), 
@@ -786,7 +825,7 @@ alarmCallback (guint data)
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
 	adj = (GtkAdjustment *) gtk_adjustment_new 
-			(faceSettings[currentFace] -> alarmInfo.alarmHour, 0, 23, 1, 4, 0);
+			(clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmHour, 0, 23, 1, 4, 0);
 	spinner1 = gtk_spin_button_new (adj, 0, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner1), TRUE);
 	gtk_spin_button_set_snap_to_ticks (GTK_SPIN_BUTTON (spinner1), TRUE);
@@ -809,7 +848,7 @@ alarmCallback (guint data)
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
 	adj = (GtkAdjustment *) gtk_adjustment_new
-			(faceSettings[currentFace] -> alarmInfo.alarmMin, 0, 59, 1, 5, 0);
+			(clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmMin, 0, 59, 1, 5, 0);
 	spinner2 = gtk_spin_button_new (adj, 0, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner2), TRUE);
 	gtk_spin_button_set_snap_to_ticks (GTK_SPIN_BUTTON (spinner2), TRUE);
@@ -834,7 +873,7 @@ alarmCallback (guint data)
 	entry1 = gtk_entry_new ();
 	gtk_entry_set_width_chars (GTK_ENTRY (entry1), 30);
 	gtk_entry_set_max_length (GTK_ENTRY (entry1), 40);
-	gtk_entry_set_text (GTK_ENTRY (entry1), faceSettings[currentFace] -> alarmInfo.message);
+	gtk_entry_set_text (GTK_ENTRY (entry1), clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message);
     gtk_box_pack_start (GTK_BOX(vbox2), entry1, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Run command :"));
@@ -847,11 +886,11 @@ alarmCallback (guint data)
 
 	entry2 = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry2), 40);
-	gtk_entry_set_text (GTK_ENTRY (entry2), faceSettings[currentFace] -> alarmInfo.command);
+	gtk_entry_set_text (GTK_ENTRY (entry2), clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.command);
     gtk_box_pack_start (GTK_BOX(vbox2), entry2, TRUE, TRUE, 0);
 
 	check = gtk_check_button_new_with_label (_("Weekdays only"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check), faceSettings[currentFace] -> alarmInfo.onlyWeekdays);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check), clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.onlyWeekdays);
 	gtk_box_pack_start (GTK_BOX(vbox2), check, FALSE, FALSE, 0);
 
 	/*------------------------------------------------------------------------------------------------*
@@ -861,24 +900,24 @@ alarmCallback (guint data)
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		strcpy (faceSettings[currentFace] -> alarmInfo.message, gtk_entry_get_text (GTK_ENTRY(entry1)));
-		strcpy (faceSettings[currentFace] -> alarmInfo.command, gtk_entry_get_text (GTK_ENTRY(entry2)));
-		faceSettings[currentFace] -> alarmInfo.alarmHour = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner1));
-		faceSettings[currentFace] -> alarmInfo.alarmMin  = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
-		faceSettings[currentFace] -> alarmInfo.showAlarm = (faceSettings[currentFace] -> alarmInfo.message[0] != 0);
-		faceSettings[currentFace] -> alarmInfo.onlyWeekdays = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
+		strcpy (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message, gtk_entry_get_text (GTK_ENTRY(entry1)));
+		strcpy (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.command, gtk_entry_get_text (GTK_ENTRY(entry2)));
+		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmHour = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner1));
+		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmMin  = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
+		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.showAlarm = (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message[0] != 0);
+		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.onlyWeekdays = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
 
-		sprintf (value, "alarm_hour_%d", currentFace + 1);
-		configSetIntValue (value, faceSettings[currentFace] -> alarmInfo.alarmHour);
-		sprintf (value, "alarm_min_%d", currentFace + 1);
-		configSetIntValue (value, faceSettings[currentFace] -> alarmInfo.alarmMin);
-		sprintf (value, "alarm_message_%d", currentFace + 1);
-		configSetValue (value, faceSettings[currentFace] -> alarmInfo.message);
-		sprintf (value, "alarm_command_%d", currentFace + 1);
-		configSetValue (value, faceSettings[currentFace] -> alarmInfo.command);
-		sprintf (value, "alarm_only_weekdays_%d", currentFace + 1);
-		configSetBoolValue (value, faceSettings[currentFace] -> alarmInfo.onlyWeekdays);
-		alarmSetAngle (currentFace);
+		sprintf (value, "alarm_hour_%d", clockInst.currentFace + 1);
+		configSetIntValue (value, clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmHour);
+		sprintf (value, "alarm_min_%d", clockInst.currentFace + 1);
+		configSetIntValue (value, clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmMin);
+		sprintf (value, "alarm_message_%d", clockInst.currentFace + 1);
+		configSetValue (value, clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message);
+		sprintf (value, "alarm_command_%d", clockInst.currentFace + 1);
+		configSetValue (value, clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.command);
+		sprintf (value, "alarm_only_weekdays_%d", clockInst.currentFace + 1);
+		configSetBoolValue (value, clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.onlyWeekdays);
+		alarmSetAngle (clockInst.currentFace);
 		lastTime = -1;
 	}
 	gtk_widget_destroy (dialog);
@@ -909,7 +948,7 @@ aboutCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Nice dialog that can be used with newer versions of the GTK API.                               *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_show_about_dialog (mainWindow,
+	gtk_show_about_dialog (clockInst.mainWindow,
 			"title", _("About Timezone Clock"),
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 			"program-name", _("Timezone Clock"),
@@ -938,27 +977,27 @@ void prepareForPopup (void)
 {
 	int i;
 	
-	viewMenuDesc[0].disable = (faceWidth >= 10 || (faceWidth + 1) * faceHeight > MAX_FACES ? 1 : 0);
-	viewMenuDesc[1].disable = (faceWidth < 2 ? 1 : 0);
-	viewMenuDesc[2].disable = (faceHeight >= 10 || (faceHeight + 1) * faceWidth > MAX_FACES ? 1 : 0);
-	viewMenuDesc[3].disable = (faceHeight < 2 ? 1 : 0);
+	viewMenuDesc[0].disable = (clockInst.faceWidth >= 10 || (clockInst.faceWidth + 1) * clockInst.faceHeight > MAX_FACES ? 1 : 0);
+	viewMenuDesc[1].disable = (clockInst.faceWidth < 2 ? 1 : 0);
+	viewMenuDesc[2].disable = (clockInst.faceHeight >= 10 || (clockInst.faceHeight + 1) * clockInst.faceWidth > MAX_FACES ? 1 : 0);
+	viewMenuDesc[3].disable = (clockInst.faceHeight < 2 ? 1 : 0);
 
 	prefMenuDesc[MENU_PREF_ONTOP].checked = alwaysOnTop;
 	prefMenuDesc[MENU_PREF_STUCK].checked = stuckOnAll;
 	prefMenuDesc[MENU_PREF_LOCK].checked = lockMove;
-	prefMenuDesc[MENU_PREF_SHOWS].checked = faceSettings[currentFace] -> showSeconds;
-	prefMenuDesc[MENU_PREF_SUBS].checked = faceSettings[currentFace] -> subSecond;
-	prefMenuDesc[MENU_PREF_SUBS].disable = !faceSettings[currentFace] -> showSeconds;
-	prefMenuDesc[MENU_PREF_SVG].disable = !allowSaveDisp;
+	prefMenuDesc[MENU_PREF_SHOWS].checked = clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
+	prefMenuDesc[MENU_PREF_SUBS].checked = clockInst.faceSettings[clockInst.currentFace] -> subSecond;
+	prefMenuDesc[MENU_PREF_SUBS].disable = !clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
+	prefMenuDesc[MENU_PREF_SVG].disable = !clockInst.allowSaveDisp;
 	
-	stopWMenuDesc[MENU_STPW_ENBL].checked = faceSettings[currentFace] -> stopwatch;
-	stopWMenuDesc[MENU_STPW_START].disable = !faceSettings[currentFace] -> stopwatch;
-	stopWMenuDesc[MENU_STPW_RESET].disable = !faceSettings[currentFace] -> stopwatch;
+	stopWMenuDesc[MENU_STPW_ENBL].checked = clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
+	stopWMenuDesc[MENU_STPW_START].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
+	stopWMenuDesc[MENU_STPW_RESET].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	
 	for (i = MENU_MARK_STRT; i <= MENU_MARK_STOP; ++i)
-		markerMenuDesc[i].checked = (markerMenuDesc[i].param == markerType ? 1 : 0);
+		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.markerType ? 1 : 0);
 	for (i = MENU_STEP_STRT; i <= MENU_STEP_STOP; ++i)
-		markerMenuDesc[i].checked = (markerMenuDesc[i].param == markerStep ? 1 : 0);
+		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.markerStep ? 1 : 0);
 }
 
 /**********************************************************************************************************************
@@ -976,11 +1015,9 @@ void prepareForPopup (void)
 gboolean
 windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 {
-	GtkWidget *popupMenu;
-
 	if (event->type == GDK_BUTTON_PRESS)
 	{
-		currentFace = ((int)event -> x / faceSize) + (((int)event -> y / faceSize) * faceWidth);
+		clockInst.currentFace = ((int)event -> x / clockInst.faceSize) + (((int)event -> y / clockInst.faceSize) * clockInst.faceWidth);
 		lastTime = -1;
 
 		switch (event->button)
@@ -991,9 +1028,9 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #else
 		case 1:
 #endif
-			if (!lockMove && !clockDecorated)
+			if (!lockMove && !clockInst.clockDecorated)
 			{
-				gtk_window_begin_move_drag (GTK_WINDOW (mainWindow), event->button, event->x_root,
+				gtk_window_begin_move_drag (GTK_WINDOW (clockInst.mainWindow), event->button, event->x_root,
 						event->y_root, event->time);
 			}
 			return TRUE;
@@ -1004,14 +1041,19 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #else
 		case 3:
 #endif
-			prepareForPopup ();
-			popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
-			gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
-					NULL,								/* parent_menu_item */
-					NULL,								/* func */
-					NULL,								/* data */
-					event->button, event->time);
-			return TRUE;
+			{
+				GtkWidget *popupMenu;
+
+				prepareForPopup ();
+				popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
+//				gtk_menu_popup (GTK_MENU (popupMenu), clockInst.mainWindow,	/* parent_menu_shell */
+//						NULL,								/* parent_menu_item */
+//						NULL,								/* func */
+//						NULL,								/* data */
+//						event->button, event->time);
+				return TRUE;
+			}
 		}
 	}
 	return FALSE;
@@ -1032,8 +1074,6 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 gboolean
 windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 {
-	GtkWidget *popupMenu;
-
 	/*------------------------------------------------------------------------------------------------*
 	 * You can select a face buy pressing and holding the ALT key while typing the number of the      *
 	 * clock facce that you want to select.  In order to do this we track the ALT key press and       *
@@ -1067,13 +1107,16 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 			 *----------------------------------------------------------------------------------------*/
 			if (event->keyval == GDK_KEY_M || event->keyval == GDK_KEY_m)
 			{
+				GtkWidget *popupMenu;
+
 				prepareForPopup ();
-				popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
-				gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
-						NULL,								/* parent_menu_item */
-						NULL,								/* func */
-						NULL,								/* data */
-						0, event->time);
+				popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
+//				gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
+//						NULL,								/* parent_menu_item */
+//						NULL,								/* func */
+//						NULL,								/* data */
+//						0, event->time);
 			}
 			/*----------------------------------------------------------------------------------------*
 			 * Press ALT + n where n is a number between 1 and 9 to select the face                   *
@@ -1093,7 +1136,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 				}
 			}
 		}
-		gtk_window_activate_key (GTK_WINDOW (mainWindow), event);
+		gtk_window_activate_key (GTK_WINDOW (clockInst.mainWindow), event);
 	}
 	/*------------------------------------------------------------------------------------------------*
 	 * Process key release events                                                                     *
@@ -1103,9 +1146,9 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 		if (event->keyval == 0xFFE9 && keyPressFaceNum != -1)  /* Alt key released */
 		{
 			keyPressFaceNum --;
-			if (keyPressFaceNum >= 0 && keyPressFaceNum < (faceWidth * faceHeight))
+			if (keyPressFaceNum >= 0 && keyPressFaceNum < (clockInst.faceWidth * clockInst.faceHeight))
 			{
-				currentFace = keyPressFaceNum;
+				clockInst.currentFace = keyPressFaceNum;
 				lastTime = -1;
 			}
 		}
@@ -1138,7 +1181,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 	 *------------------------------------------------------------------------------------------------*/	
 	tempTime = (tm -> tm_hour * 60) + tm -> tm_min;
 		
-	if (!fastSetting)
+	if (!clockInst.fastSetting)
 	{
 		int gap = 0;
 		
@@ -1188,7 +1231,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 			tm -> tm_min = tempTime % 60;
 			tm -> tm_hour = tempTime / 60;
 			
-			timeSetting = 1;
+			clockInst.timeSetting = 1;
 		}
 		else
 			faceSetting -> stepping = 0;
@@ -1206,23 +1249,23 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		if (faceSetting -> showSeconds)
 			update = 1;
 
-		if (face == currentFace)
+		if (face == clockInst.currentFace)
 		{
 			getStringValue (tempString, 100, faceSetting -> currentTZ ? TXT_TITLE_Z : TXT_TITLE_L, face, t);
-			if (strcmp (windowTitle, tempString))
+			if (strcmp (clockInst.windowTitle, tempString))
 			{
-				strcpy (windowTitle, tempString);
-				gtk_window_set_title (GTK_WINDOW (mainWindow), windowTitle);
+				strcpy (clockInst.windowTitle, tempString);
+				gtk_window_set_title (GTK_WINDOW (clockInst.mainWindow), clockInst.windowTitle);
 			}
 		}
-		if (face == toolTipFace)
+		if (face == clockInst.toolTipFace)
 		{
 			getStringValue (tempString, 100, faceSetting -> currentTZ ? TXT_TOOLTIP_Z : TXT_TOOLTIP_L, face, t);
-			if (strcmp (windowToolTip, tempString))
+			if (strcmp (clockInst.windowToolTip, tempString))
 			{
-				strcpy (windowToolTip, tempString);
+				strcpy (clockInst.windowToolTip, tempString);
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-				gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), windowToolTip);
+				gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.mainWindow), clockInst.windowToolTip);
 #endif
 			}
 		}
@@ -1304,10 +1347,10 @@ clockTickCallback (gpointer data)
 	struct tm tm;
     struct timeval tv;
 	time_t t = time (NULL);
-	int update = 0, i, faceCount = faceHeight * faceWidth;
+	int update = 0, i, faceCount = clockInst.faceHeight * clockInst.faceWidth;
 	
-	if (forceTime != -1)
-		t = forceTime;
+	if (clockInst.forceTime != -1)
+		t = clockInst.forceTime;
 	if (lastTime == -1)
 		update = 1;
 	lastTime = t;
@@ -1315,14 +1358,14 @@ clockTickCallback (gpointer data)
 	tv.tv_sec = 0;
 	for (i = 0; i < faceCount; ++i)
 	{	
-		FACE_SETTINGS *faceSetting = faceSettings[i];
+		FACE_SETTINGS *faceSetting = clockInst.faceSettings[i];
 
 		if (faceSetting -> stepping || (faceSetting -> stopwatch && faceSetting -> swStartTime != -1) || 
 				faceSetting -> timeShown != t || faceSetting -> updateFace || bounceSec)
 		{
 			getTheFaceTime (faceSetting, &t, &tm);
 			checkForAlarm (faceSetting, &tm);
-			if (showBounceSec && faceSetting -> showSeconds)
+			if (clockInst.showBounceSec && faceSetting -> showSeconds)
 			{
 				if (tv.tv_sec == 0)
 			        gettimeofday(&tv, NULL);		
@@ -1334,9 +1377,9 @@ clockTickCallback (gpointer data)
 	}
 	if (update)
 	{
-		if (drawingArea)
+		if (clockInst.drawingArea)
 		{
-			gtk_widget_queue_draw (drawingArea);
+			gtk_widget_queue_draw (clockInst.drawingArea);
 		}
 	}
 	return TRUE;
@@ -1359,7 +1402,7 @@ gboolean
 focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
 	lastTime = -1;
-	weHaveFocus = 1;
+	clockInst.weHaveFocus = 1;
 	return TRUE;
 }
 
@@ -1380,7 +1423,7 @@ gboolean
 focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
 	lastTime = -1;
-	weHaveFocus = 0;
+	clockInst.weHaveFocus = 0;
 	return TRUE;
 }
 
@@ -1404,10 +1447,10 @@ userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
 	gdouble dx, dy;
 
 	gdk_event_get_coords (event, &dx, &dy);
-	newFace = ((int)dx / faceSize) + (((int)dy / faceSize) * faceWidth);
-	if (newFace != toolTipFace)
+	newFace = ((int)dx / clockInst.faceSize) + (((int)dy / clockInst.faceSize) * clockInst.faceWidth);
+	if (newFace != clockInst.toolTipFace)
 	{
-		toolTipFace = newFace;
+		clockInst.toolTipFace = newFace;
 		lastTime = -1;
 	}
 	return TRUE;
@@ -1429,10 +1472,10 @@ showSecondsCallback (guint data)
 {
 	char value[81];
 
-	faceSettings[currentFace] -> showSeconds = !faceSettings[currentFace] -> showSeconds;
-	sprintf (value, "show_seconds_%d", currentFace + 1);
-	configSetBoolValue (value, faceSettings[currentFace] -> showSeconds);
-	faceSettings[currentFace] -> updateFace = true;
+	clockInst.faceSettings[clockInst.currentFace] -> showSeconds = !clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
+	sprintf (value, "show_seconds_%d", clockInst.currentFace + 1);
+	configSetBoolValue (value, clockInst.faceSettings[clockInst.currentFace] -> showSeconds);
+	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 }
 
 /**********************************************************************************************************************
@@ -1451,10 +1494,10 @@ subSecondCallback (guint data)
 {
 	char value[81];
 
-	faceSettings[currentFace] -> subSecond = !faceSettings[currentFace] -> subSecond;
-	sprintf (value, "sub_second_%d", currentFace + 1);
-	configSetBoolValue (value, faceSettings[currentFace] -> subSecond);
-	faceSettings[currentFace] -> updateFace = true;
+	clockInst.faceSettings[clockInst.currentFace] -> subSecond = !clockInst.faceSettings[clockInst.currentFace] -> subSecond;
+	sprintf (value, "sub_second_%d", clockInst.currentFace + 1);
+	configSetBoolValue (value, clockInst.faceSettings[clockInst.currentFace] -> subSecond);
+	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 }
 
 /**********************************************************************************************************************
@@ -1473,12 +1516,12 @@ stopwatchCallback (guint data)
 {
 	char value[81];
 
-	faceSettings[currentFace] -> stopwatch = !faceSettings[currentFace] -> stopwatch;
-	sprintf (value, "stopwatch_%d", currentFace + 1);
-	configGetBoolValue (value, &faceSettings[currentFace] -> stopwatch);
-	faceSettings[currentFace] -> swStartTime = -1;
-	faceSettings[currentFace] -> swRunTime = 0;
-	faceSettings[currentFace] -> updateFace = true;
+	clockInst.faceSettings[clockInst.currentFace] -> stopwatch = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
+	sprintf (value, "stopwatch_%d", clockInst.currentFace + 1);
+	configGetBoolValue (value, &clockInst.faceSettings[clockInst.currentFace] -> stopwatch);
+	clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
+	clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
+	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 	lastTime = -1;
 }
 
@@ -1496,18 +1539,18 @@ stopwatchCallback (guint data)
 void
 swStartCallback (guint data)
 {
-	if (faceSettings[currentFace] -> stopwatch)
+	if (clockInst.faceSettings[clockInst.currentFace] -> stopwatch)
 	{
 		struct timeval tv;
 	
-		if (faceSettings[currentFace] -> swStartTime == -1)
+		if (clockInst.faceSettings[clockInst.currentFace] -> swStartTime == -1)
 		{
 			if (gettimeofday(&tv, NULL) == 0)
 			{
-				faceSettings[currentFace] -> swStartTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
-				faceSettings[currentFace] -> swStartTime -= faceSettings[currentFace] -> swRunTime;
-				faceSettings[currentFace] -> swRunTime = 0;
-				faceSettings[currentFace] -> updateFace = true;
+				clockInst.faceSettings[clockInst.currentFace] -> swStartTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
+				clockInst.faceSettings[clockInst.currentFace] -> swStartTime -= clockInst.faceSettings[clockInst.currentFace] -> swRunTime;
+				clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
+				clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 				stopwatchActive ++;
 				lastTime = -1;
 			}
@@ -1518,10 +1561,10 @@ swStartCallback (guint data)
 			{
 				long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
 				
-				tempTime -= faceSettings[currentFace] -> swStartTime;		
-				faceSettings[currentFace] -> swRunTime = tempTime;
-				faceSettings[currentFace] -> swStartTime = -1;
-				faceSettings[currentFace] -> updateFace = true;
+				tempTime -= clockInst.faceSettings[clockInst.currentFace] -> swStartTime;		
+				clockInst.faceSettings[clockInst.currentFace] -> swRunTime = tempTime;
+				clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
+				clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 				stopwatchActive --;
 				lastTime = -1;
 			}
@@ -1543,13 +1586,13 @@ swStartCallback (guint data)
 void
 swResetCallback (guint data)
 {
-	if (faceSettings[currentFace] -> stopwatch)
+	if (clockInst.faceSettings[clockInst.currentFace] -> stopwatch)
 	{
-		int oldStartTime = faceSettings[currentFace] -> swStartTime;
+		int oldStartTime = clockInst.faceSettings[clockInst.currentFace] -> swStartTime;
 		
-		faceSettings[currentFace] -> swStartTime = -1;
-		faceSettings[currentFace] -> swRunTime = 0;
-		faceSettings[currentFace] -> updateFace = true;
+		clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
+		clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
+		clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 		
 		if (oldStartTime != -1)
 		{
@@ -1576,16 +1619,16 @@ void configSaveCallback (guint data)
 	char *home = getenv ("HOME");
 	char configPath[1024];
 
-	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
+	gtk_window_get_position (GTK_WINDOW (clockInst.mainWindow), &posX, &posY);
 	configSetIntValue ("clock_x_pos", posX);
 	configSetIntValue ("clock_y_pos", posY);
-	configSetIntValue ("current_face", currentFace);
+	configSetIntValue ("current_face", clockInst.currentFace);
 	
 	if (home)
 	{
 		strcpy (configPath, home);
 		strcat (configPath, "/");
-		strcat (configPath, configFile);
+		strcat (configPath, clockInst.configFile);
 		configSave (configPath);
 	}
 }
@@ -1639,7 +1682,7 @@ getStopwatchTime (FACE_SETTINGS *faceSetting)
  */
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	FACE_SETTINGS *faceSetting = clockInst.faceSettings[face];
 	char tempAddStr[101], tempCommand[11], stringFormat[81];
 	int i = 0, j = 0;
 	struct tm tm;
@@ -1928,7 +1971,7 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 					}
 				}
 #if GTK_MAJOR_VERSION == 2
-				dialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (mainWindow),
+				dialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (clockInst.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
 						"%d:%02d - <b>\"%s\"</b>", tm -> tm_hour, tm -> tm_min,
@@ -2096,10 +2139,10 @@ void loadAlarmInfo (int face, char *buff)
 	}
 	if (msg[0] && alHour < 24 && alMin < 60)
 	{
-		faceSettings[face] -> alarmInfo.showAlarm = 1;
-		faceSettings[face] -> alarmInfo.alarmHour = alHour;
-		faceSettings[face] -> alarmInfo.alarmMin = alMin;
-		strcpy (faceSettings[face] -> alarmInfo.message, msg);
+		clockInst.faceSettings[face] -> alarmInfo.showAlarm = 1;
+		clockInst.faceSettings[face] -> alarmInfo.alarmHour = alHour;
+		clockInst.faceSettings[face] -> alarmInfo.alarmMin = alMin;
+		strcpy (clockInst.faceSettings[face] -> alarmInfo.message, msg);
 	}
 }
 
@@ -2205,13 +2248,13 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetBoolValue ("always_on_top", alwaysOnTop);
 				break;
 			case 'B':
-				showBounceSec = !showBounceSec;
-				configSetBoolValue ("bounce_seconds", showBounceSec);
+				clockInst.showBounceSec = !clockInst.showBounceSec;
+				configSetBoolValue ("bounce_seconds", clockInst.showBounceSec);
 				break;
 			case 'b':							/* Select sub-second hand */
-				faceSettings[face] -> subSecond = !faceSettings[face] -> subSecond;
+				clockInst.faceSettings[face] -> subSecond = !clockInst.faceSettings[face] -> subSecond;
 				sprintf (value, "sub_second_%d", face + 1);
-				configSetBoolValue (value, faceSettings[face] -> subSecond);
+				configSetBoolValue (value, clockInst.faceSettings[face] -> subSecond);
 				break;
 			case 'C':							/* Specify config file, done in main */
 				break;
@@ -2223,35 +2266,35 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				loadDateFormat (&argv[i][2]);	
 				break;
 			case 'D':
-				clockDecorated = !clockDecorated;
-				configSetBoolValue ("decorated", clockDecorated);
+				clockInst.clockDecorated = !clockInst.clockDecorated;
+				configSetBoolValue ("decorated", clockInst.clockDecorated);
 				break;
 			case 'f':							/* Select the face for zone changes */
 				{
 					int f = atoi (&argv[i][2]);
-					if (f > 0 && f <= (faceWidth * faceHeight))
+					if (f > 0 && f <= (clockInst.faceWidth * clockInst.faceHeight))
 					{
 						face = f - 1;
-						currentFace = face;
+						clockInst.currentFace = face;
 					}
 					else
 						invalidOption = 1;
 				}
 				break;
 			case 'F':							/* Select the font to be used */
-				strncpy (fontName, &argv[i][2], 99);
-				configSetValue ("font_name", fontName);
+				strncpy (clockInst.fontName, &argv[i][2], 99);
+				configSetValue ("font_name", clockInst.fontName);
 				break;
 			case 'g':
-				faceGradient = atoi (&argv[i][2]);
-				if (faceGradient < 0) faceGradient = 0;
-				if (faceGradient > 100) faceGradient = 100;
-				configSetIntValue ("gradient", faceGradient);
+				clockInst.faceGradient = atoi (&argv[i][2]);
+				if (clockInst.faceGradient < 0) clockInst.faceGradient = 0;
+				if (clockInst.faceGradient > 100) clockInst.faceGradient = 100;
+				configSetIntValue ("gradient", clockInst.faceGradient);
 				break;
 			case 'h':							/* Select sub-second hand */
-				faceSettings[face] -> showSeconds = !faceSettings[face] -> showSeconds;
+				clockInst.faceSettings[face] -> showSeconds = !clockInst.faceSettings[face] -> showSeconds;
 				sprintf (value, "show_seconds_%d", face + 1);
-				configSetBoolValue (value, faceSettings[face] -> showSeconds);
+				configSetBoolValue (value, clockInst.faceSettings[face] -> showSeconds);
 				break;
 			case 'H':							/* Set the hand style, length and tail */
 				loadHandInfo (&argv[i][2]);
@@ -2263,12 +2306,12 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case 'm':							/* What to show at 12, 3, 6, 9 */
 				if (argv[i][2] >= '0' && argv[i][2] <= '9')
 				{
-					markerType = (argv[i][2] - '0');
+					clockInst.markerType = (argv[i][2] - '0');
 					if (argv[i][3] >= '1' && argv[i][3] <= '9')
-						markerStep = (argv[i][3] - '0');
+						clockInst.markerStep = (argv[i][3] - '0');
 				}
-				configSetIntValue ("marker_type", markerType);
-				configSetIntValue ("marker_step", markerStep);
+				configSetIntValue ("marker_type", clockInst.markerType);
+				configSetIntValue ("marker_step", clockInst.markerStep);
 				break;
 			case 'n':							/* Set the number of ... */
 				switch (argv[i][2])
@@ -2276,8 +2319,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				case 'c':						/* ... columns */
 					{
 						int c = atoi (&argv[i][3]);
-						if (c > 0 && c <= 10 && c * faceHeight <= MAX_FACES)
-							configSetIntValue ("number_cols", faceWidth = c);
+						if (c > 0 && c <= 10 && c * clockInst.faceHeight <= MAX_FACES)
+							configSetIntValue ("number_cols", clockInst.faceWidth = c);
 						else
 							invalidOption = 1;
 					}
@@ -2285,8 +2328,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				case 'r':						/* ... rows */
 					{
 						int r = atoi (&argv[i][3]);
-						if (r > 0 && r <= 10 && r * faceWidth <= MAX_FACES)
-							configSetIntValue ("number_rows", faceHeight = r);
+						if (r > 0 && r <= 10 && r * clockInst.faceWidth <= MAX_FACES)
+							configSetIntValue ("number_rows", clockInst.faceHeight = r);
 						else
 							invalidOption = 1;
 					}
@@ -2295,51 +2338,51 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					invalidOption = 1;
 					break;
 				}
-				for (j = 0; j < (faceWidth * faceHeight); ++j)
+				for (j = 0; j < (clockInst.faceWidth * clockInst.faceHeight); ++j)
 				{
-					if (faceSettings[j] == NULL)
+					if (clockInst.faceSettings[j] == NULL)
 					{
-						faceSettings[j] = malloc (sizeof (FACE_SETTINGS));
-						memset (faceSettings[j], 0, sizeof (FACE_SETTINGS));
+						clockInst.faceSettings[j] = malloc (sizeof (FACE_SETTINGS));
+						memset (clockInst.faceSettings[j], 0, sizeof (FACE_SETTINGS));
 					}			
 				}
 				break;
 			case 'o':							/* Overwrite current city name */
 				strcpy (cityName, "x/");
 				strncat (cityName, &argv[i][2], 25);
-				splitTimeZone (cityName, NULL, NULL, faceSettings[face] -> overwriteMesg, 0);
+				splitTimeZone (cityName, NULL, NULL, clockInst.faceSettings[face] -> overwriteMesg, 0);
 				sprintf (value, "overwrite_city_%d", face + 1);
-				configSetValue (value, faceSettings[face] -> overwriteMesg);
+				configSetValue (value, clockInst.faceSettings[face] -> overwriteMesg);
 				break;
 			case 'O':
-				faceOpacity = atoi (&argv[i][2]);
-				if (faceOpacity < 0) faceOpacity = 0;
-				if (faceOpacity > 100) faceOpacity = 100;
-				configSetIntValue ("opacity", faceOpacity);
+				clockInst.faceOpacity = atoi (&argv[i][2]);
+				if (clockInst.faceOpacity < 0) clockInst.faceOpacity = 0;
+				if (clockInst.faceOpacity > 100) clockInst.faceOpacity = 100;
+				configSetIntValue ("opacity", clockInst.faceOpacity);
 				break;
 			case 'q':							/* Quick time setting */
-				fastSetting = !fastSetting;
-				configSetBoolValue ("fast_setting", fastSetting);
+				clockInst.fastSetting = !clockInst.fastSetting;
+				configSetBoolValue ("fast_setting", clockInst.fastSetting);
 				break;
 			case 'S':							/* Enable the stopwatch */
-				faceSettings[face] -> stopwatch = !faceSettings[face] -> stopwatch;
+				clockInst.faceSettings[face] -> stopwatch = !clockInst.faceSettings[face] -> stopwatch;
 				sprintf (value, "stopwatch_%d", face + 1);
-				configSetBoolValue (value, faceSettings[face] -> stopwatch);
+				configSetBoolValue (value, clockInst.faceSettings[face] -> stopwatch);
 				break;
-			case 's':							/* Select the faceSize of the clock */
-				faceSize = atoi (&argv[i][2]);
-				configSetIntValue ("face_size", faceSize);
+			case 's':							/* Select the clockInst.faceSize of the clock */
+				clockInst.faceSize = atoi (&argv[i][2]);
+				configSetIntValue ("face_size", clockInst.faceSize);
 				break;
 			case 'T':							/* Force the clock to show a fixed time */
-				forceTime = atoi (&argv[i][2]);
+				clockInst.forceTime = atoi (&argv[i][2]);
 				break;
 			case 'u':							/* Uppercase the city name */
-				faceSettings[face] -> upperCity = !faceSettings[face] -> upperCity;
+				clockInst.faceSettings[face] -> upperCity = !clockInst.faceSettings[face] -> upperCity;
 				sprintf (value, "uppercase_city_%d", face + 1);
-				configSetBoolValue (value, faceSettings[face] -> upperCity);
+				configSetBoolValue (value, clockInst.faceSettings[face] -> upperCity);
 				break;
 			case 'V':
-				allowSaveDisp = !allowSaveDisp;
+				clockInst.allowSaveDisp = !clockInst.allowSaveDisp;
 				break;
 			case 'w':							/* Show on all workspaces */
 				stuckOnAll = !stuckOnAll;
@@ -2376,7 +2419,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 						splitTimeZone (timeZones[j].envName, NULL, cityName, NULL, 0);
 						if (strcasecmp (&argv[i][2], cityName) == 0)
 						{
-							faceSettings[face] -> currentTZ = j;
+							clockInst.faceSettings[face] -> currentTZ = j;
 							break;
 						}
 					}
@@ -2387,9 +2430,9 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case '2':							/* Display 24 hour clock */
 				if (argv[i][2] == '4')
 				{
-					faceSettings[face] -> show24Hour = !faceSettings[face] -> show24Hour;
+					clockInst.faceSettings[face] -> show24Hour = !clockInst.faceSettings[face] -> show24Hour;
 					sprintf (value, "show_24_hour_%d", face + 1);
-					configSetBoolValue (value, faceSettings[face] -> show24Hour);
+					configSetBoolValue (value, clockInst.faceSettings[face] -> show24Hour);
 				}
 				else
 				{
@@ -2427,14 +2470,14 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
  */
 void defaultClock (void)
 {
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);
-	configSetValue ("font_name", fontName);
+	configSetIntValue ("number_cols", clockInst.faceWidth);
+	configSetIntValue ("number_rows", clockInst.faceHeight);
+	configSetIntValue ("face_size", clockInst.faceSize);
+	configSetIntValue ("marker_type", clockInst.markerType);
+	configSetIntValue ("marker_step", clockInst.markerStep);
+	configSetIntValue ("opacity", clockInst.faceOpacity);
+	configSetIntValue ("gradient", clockInst.faceGradient);
+	configSetValue ("font_name", clockInst.fontName);
 }
 
 /**********************************************************************************************************************
@@ -2451,27 +2494,27 @@ void updateClock (void)
 {
 	int i;
 	
-	configGetIntValue ("number_cols", &faceWidth);
-	configGetIntValue ("number_rows", &faceHeight);
-	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("marker_type", &markerType);
-	configGetIntValue ("marker_step", &markerStep);
-	configGetIntValue ("opacity", &faceOpacity);
-	configGetIntValue ("gradient", &faceGradient);
-	configGetValue ("font_name", fontName, 100);
+	configGetIntValue ("number_cols", &clockInst.faceWidth);
+	configGetIntValue ("number_rows", &clockInst.faceHeight);
+	configGetIntValue ("face_size", &clockInst.faceSize);
+	configGetIntValue ("marker_type", &clockInst.markerType);
+	configGetIntValue ("marker_step", &clockInst.markerStep);
+	configGetIntValue ("opacity", &clockInst.faceOpacity);
+	configGetIntValue ("gradient", &clockInst.faceGradient);
+	configGetValue ("font_name", clockInst.fontName, 100);
 
-	for (i = 0; i < (faceHeight * faceWidth); i++)
+	for (i = 0; i < (clockInst.faceHeight * clockInst.faceWidth); i++)
 	{
-		if (faceSettings[i] == NULL)
+		if (clockInst.faceSettings[i] == NULL)
 		{
-			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
+			clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 	}
-	configSetIntValue ("clock_num_col", faceWidth);
-	configSetIntValue ("clock_num_row", faceHeight);
-	configSetIntValue ("clock_mark_type", markerType);
-	configSetIntValue ("clock_mark_step", markerStep);
+	configSetIntValue ("clock_num_col", clockInst.faceWidth);
+	configSetIntValue ("clock_num_row", clockInst.faceHeight);
+	configSetIntValue ("clock_mark_type", clockInst.markerType);
+	configSetIntValue ("clock_mark_step", clockInst.markerStep);
 	lastTime = -1;
 }
 
@@ -2496,26 +2539,26 @@ void loadConfig (int *posX, int *posY)
 	configLoad ("/etc/tzclockrc");
 	strcpy (configPath, home);
 	strcat (configPath, "/");
-	strcat (configPath, configFile);
+	strcat (configPath, clockInst.configFile);
 	configLoad (configPath);
 
 	configGetBoolValue ("always_on_top", &alwaysOnTop);
 	configGetBoolValue ("on_all_desktops", &stuckOnAll);
 	configGetBoolValue ("locked_position", &lockMove);
-	configGetBoolValue ("fast_setting", &fastSetting);
-	configGetBoolValue ("bounce_seconds", &showBounceSec);
-	configGetBoolValue ("decorated", &clockDecorated);
-	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("clock_num_col", &faceWidth);
-	configGetIntValue ("clock_num_row", &faceHeight);
-	configGetIntValue ("clock_current", &currentFace);
-	configGetIntValue ("clock_mark_type", &markerType);
-	configGetIntValue ("clock_mark_step", &markerStep);
-	configGetIntValue ("opacity", &faceOpacity);	
-	configGetIntValue ("gradient", &faceGradient);	
+	configGetBoolValue ("fast_setting", &clockInst.fastSetting);
+	configGetBoolValue ("bounce_seconds", &clockInst.showBounceSec);
+	configGetBoolValue ("decorated", &clockInst.clockDecorated);
+	configGetIntValue ("face_size", &clockInst.faceSize);
+	configGetIntValue ("clock_num_col", &clockInst.faceWidth);
+	configGetIntValue ("clock_num_row", &clockInst.faceHeight);
+	configGetIntValue ("clock_current", &clockInst.currentFace);
+	configGetIntValue ("clock_mark_type", &clockInst.markerType);
+	configGetIntValue ("clock_mark_step", &clockInst.markerStep);
+	configGetIntValue ("opacity", &clockInst.faceOpacity);	
+	configGetIntValue ("gradient", &clockInst.faceGradient);	
 	configGetIntValue ("clock_x_pos", posX);
 	configGetIntValue ("clock_y_pos", posY);
-	configGetValue ("font_name", fontName, 100);
+	configGetValue ("font_name", clockInst.fontName, 100);
 
 	for (i = 2; i < MAX__COLOURS; i++)
 	{
@@ -2540,37 +2583,37 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "%s_hand_fill", handNames[i]);
 		configGetBoolValue (value, &handStyle[i].fillIn);
 	}
-	for (i = 0; i < (faceWidth * faceHeight); i++)
+	for (i = 0; i < (clockInst.faceWidth * clockInst.faceHeight); i++)
 	{
-		if (faceSettings[i] == NULL)
+		if (clockInst.faceSettings[i] == NULL)
 		{
-			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
+			clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 		sprintf (value, "alarm_hour_%d", i + 1);
-		configGetIntValue (value, &faceSettings[i] -> alarmInfo.alarmHour);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> alarmInfo.alarmHour);
 		sprintf (value, "alarm_min_%d", i + 1);
-		configGetIntValue (value, &faceSettings[i] -> alarmInfo.alarmMin);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> alarmInfo.alarmMin);
 		sprintf (value, "alarm_message_%d", i + 1);
-		configGetValue (value, faceSettings[i] -> alarmInfo.message, 40);
+		configGetValue (value, clockInst.faceSettings[i] -> alarmInfo.message, 40);
 		sprintf (value, "alarm_command_%d", i + 1);
-		configGetValue (value, faceSettings[i] -> alarmInfo.command, 40);
+		configGetValue (value, clockInst.faceSettings[i] -> alarmInfo.command, 40);
 		sprintf (value, "alarm_only_weekdays_%d", i + 1);
-		configGetBoolValue (value, &faceSettings[i] -> alarmInfo.onlyWeekdays);
-		faceSettings[i] -> alarmInfo.showAlarm = (faceSettings[i] -> alarmInfo.message[0] ? 1 : 0);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> alarmInfo.onlyWeekdays);
+		clockInst.faceSettings[i] -> alarmInfo.showAlarm = (clockInst.faceSettings[i] -> alarmInfo.message[0] ? 1 : 0);
 
 		sprintf (value, "stopwatch_%d", i + 1);
-		configGetBoolValue (value, &faceSettings[i] -> stopwatch);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> stopwatch);
 		sprintf (value, "sub_second_%d", i + 1);
-		configGetBoolValue (value, &faceSettings[i] -> subSecond);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> subSecond);
 		sprintf (value, "show_seconds_%d", i + 1);
-		configGetBoolValue (value, &faceSettings[i] -> showSeconds);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> showSeconds);
 		sprintf (value, "show_24_hour_%d", i + 1);
-		configGetBoolValue (value, &faceSettings[i] -> show24Hour);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> show24Hour);
 		sprintf (value, "uppercase_city_%d", i + 1);
-		configGetBoolValue (value, &faceSettings[i] -> upperCity);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> upperCity);
 		sprintf (value, "overwrite_city_%d", i + 1);
-		configGetValue (value, faceSettings[i] -> overwriteMesg, 24);
+		configGetValue (value, clockInst.faceSettings[i] -> overwriteMesg, 24);
 
 		sprintf (value, "timezone_city_%d", i + 1);
 		configGetValue (value, configPath, 24);
@@ -2580,88 +2623,51 @@ void loadConfig (int *posX, int *posY)
 			splitTimeZone (timeZones[j].envName, NULL, tempName, NULL, 0);
 			if (strcasecmp (configPath, tempName) == 0)
 			{
-				faceSettings[i] -> currentTZ = j;
+				clockInst.faceSettings[i] -> currentTZ = j;
 				break;
 			}
 		}
 	}
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
+	configSetIntValue ("number_cols", clockInst.faceWidth);
+	configSetIntValue ("number_rows", clockInst.faceHeight);
+	configSetIntValue ("marker_type", clockInst.markerType);
+	configSetIntValue ("marker_step", clockInst.markerStep);
 
 //	configFree ();
 }
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  M A I N                                                                                                           *
- *  =======                                                                                                           *
+ *  A C T I V A T E                                                                                                   *
+ *  ===============                                                                                                   *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
  *  \brief Start of the program.
- *  \param argc Arg count.
- *  \param argv Arg values.
+ *  \param app Called on start up to activate first clockInst.
+ *  \param user_data Pointer to user data.
  *  \result None.
  */
-int
-main (int argc, char *argv[])
+static void activate (GApplication *app, gpointer user_data)
 {
-	int posX = -1, posY = -1, saveFace, i;
+	int posX = -1, posY = -1;
 	GtkWidget *eventBox;
 
-	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, NULL);
-	textdomain (PACKAGE);
+	if (running == 1)
+		return;
 
-	/*------------------------------------------------------------------------------------------------*
-	 * Initalaise the window.                                                                         *
-	 *------------------------------------------------------------------------------------------------*/
-	gtk_init (&argc, &argv);
-	g_set_application_name (PACKAGE_NAME);
-	gtk_window_set_default_icon_name ("tzclock");
+	running = 1;
 
-	mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
-	gtk_window_set_title (mainWindow, PACKAGE_NAME);
+	configGetIntValue ("clock_x_pos", &posX);
+	configGetIntValue ("clock_y_pos", &posY);
 
-	for (i = 1; i < argc; i++)
-	{
-		if (argv[i][0] == '-')
-		{
-			if (argv[i][1] == 'C')
-			{
-				strncpy (configFile, &argv[i][2], 80);
-				configFile[80] = 0;
-			}
-		}
-	}
-	
-	parseZone ();
-	defaultClock ();
-	loadConfig (&posX, &posY);
-	processCommandLine (argc, argv, &posX, &posY);
-	mainMenuDesc[0].subMenuDesc = timeZoneMenu;
+	clockInst.mainWindow = GTK_WINDOW (gtk_application_window_new (GTK_APPLICATION (app)));
+	gtk_window_set_title (clockInst.mainWindow, PACKAGE_NAME);
 
-	saveFace = currentFace;
-	for (i = 0; i < (faceHeight * faceWidth); i++)
-	{
-		currentFace = i;
-		if (faceSettings[i] == NULL)
-		{
-			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
-		}
-		setTimeZoneCallback (faceSettings[i] -> currentTZ);
-		faceSettings[i] -> swStartTime = -1;
-		alarmSetAngle (i);
-	}
-	currentFace = toolTipFace = saveFace;
-	
 	/*------------------------------------------------------------------------------------------------*
 	 * Do all the other windows initialisation.                                                       *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_window_set_resizable (GTK_WINDOW (mainWindow), FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (clockInst.mainWindow), FALSE);
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Icon stuff.                                                                                    *
@@ -2671,7 +2677,7 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
 	 * Final windows configuration.                                                                   *
 	 *------------------------------------------------------------------------------------------------*/
-	drawingArea = dialInit (mainWindow, updateClock, &colourNames[0], 0, dialSave);
+	clockInst.drawingArea = dialInit (clockInst.mainWindow, updateClock, &colourNames[0], 0, dialSave);
 	
 	/*------------------------------------------------------------------------------------------------*
 	 * This is the first time we can do this because we check the screen size in this routine.        *
@@ -2679,26 +2685,26 @@ main (int argc, char *argv[])
 	dialFixFaceSize ();
 
 #if GTK_MAJOR_VERSION == 2
-	g_signal_connect (G_OBJECT (drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
+	g_signal_connect (G_OBJECT (clockInst.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
 #else
-	g_signal_connect (G_OBJECT (drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
+	g_signal_connect (G_OBJECT (clockInst.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
 #endif
-	g_signal_connect (G_OBJECT (mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
+	g_signal_connect (G_OBJECT (clockInst.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
+	g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
+	g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
+//	g_signal_connect (G_OBJECT (clockInst.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
+	g_signal_connect (G_OBJECT (clockInst.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
 
-	g_signal_connect (G_OBJECT (mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
+	g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
+	g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
  	eventBox = gtk_event_box_new ();
 
-	gtk_container_add (GTK_CONTAINER (eventBox), drawingArea);
-	gtk_container_add (GTK_CONTAINER (mainWindow), eventBox);
+	gtk_container_add (GTK_CONTAINER (eventBox), clockInst.drawingArea);
+	gtk_container_add (GTK_CONTAINER (clockInst.mainWindow), eventBox);
 
-	if (!clockDecorated)
+	if (!clockInst.clockDecorated)
 	{
-		gtk_window_set_decorated (GTK_WINDOW (mainWindow), FALSE);
+		gtk_window_set_decorated (GTK_WINDOW (clockInst.mainWindow), FALSE);
 	}
 
 	/*------------------------------------------------------------------------------------------------*
@@ -2706,35 +2712,39 @@ main (int argc, char *argv[])
 	 *------------------------------------------------------------------------------------------------*/
 	if (posX != -1 && posY != -1)
 	{
-		if (posX == -2)
-			posX = (gdk_screen_width() - (faceWidth * faceSize)) / 2;
-		if (posY == -2)
-			posY = (gdk_screen_height() - (faceHeight * faceSize)) / 2;
-		if (posX == -3)
-			posX = gdk_screen_width() - (faceWidth * faceSize);
-		if (posY == -3)
-			posY = gdk_screen_height() - (faceHeight * faceSize);
-		if (posX > gdk_screen_width() - 64)
-			posX = gdk_screen_width() - 64;
-		if (posY > gdk_screen_height() - 64)
-			posY = gdk_screen_height() - 64;
+		int width = 1024, height = 768;
 
-		gtk_window_move (mainWindow, posX, posY);
+		getScreenSize (&width, &height);
+
+		if (posX == -2)
+			posX = (width - (clockInst.faceWidth * clockInst.faceSize)) / 2;
+		if (posY == -2)
+			posY = (height - (clockInst.faceHeight * clockInst.faceSize)) / 2;
+		if (posX == -3)
+			posX = width - (clockInst.faceWidth * clockInst.faceSize);
+		if (posY == -3)
+			posY = height - (clockInst.faceHeight * clockInst.faceSize);
+		if (posX > width - 64)
+			posX = width - 64;
+		if (posY > height - 64)
+			posY = height - 64;
+
+		gtk_window_move (clockInst.mainWindow, posX, posY);
 	}
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-	gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), "TzClock");
+	gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.mainWindow), "TzClock");
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Called to set any values                                                                       *
 	 *------------------------------------------------------------------------------------------------*/
-	accelGroup = gtk_accel_group_new ();
-	gtk_window_add_accel_group (GTK_WINDOW (mainWindow), accelGroup);
-	createMenu (mainMenuDesc, accelGroup, TRUE);
+	clockInst.accelGroup = gtk_accel_group_new ();
+	gtk_window_add_accel_group (GTK_WINDOW (clockInst.mainWindow), clockInst.accelGroup);
+	createMenu (mainMenuDesc, clockInst.accelGroup, TRUE);
 
 	stickCallback (0);
 	onTopCallback (0);
-	if (!clockDecorated)
+	if (!clockInst.clockDecorated)
 	{
 		lockCallback (0);
 	}
@@ -2742,12 +2752,67 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
 	 * OK all ready lets run it!                                                                      *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_widget_show_all (GTK_WIDGET (mainWindow));
+	gtk_widget_show_all (GTK_WIDGET (clockInst.mainWindow));
 	g_timeout_add (50, clockTickCallback, NULL);
 	dialSetOpacity ();
+}
 
-	i = nice (5);
-	gtk_main ();
-	exit (0);
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  M A I N                                                                                                           *
+ *  =======                                                                                                           *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Start of the program called by the library.
+ *  \param argc Number of arguments, passed to init.
+ *  \param argv Command line arguments, passed to init.
+ *  \result Nothing.
+ */
+int
+main (int argc, char **argv)
+{
+	int posX = -1, posY = -1, saveFace;
+	int status, i;
+
+	for (i = 1; i < argc; i++)
+	{
+		if (argv[i][0] == '-')
+		{
+			if (argv[i][1] == 'C')
+			{
+				strncpy (clockInst.configFile, &argv[i][2], 80);
+				clockInst.configFile[80] = 0;
+			}
+		}
+	}
+
+	parseZone ();
+	defaultClock ();
+	loadConfig (&posX, &posY);
+//	processCommandLine (argc, argv, &posX, &posY);
+	mainMenuDesc[0].subMenuDesc = timeZoneMenu;
+
+	saveFace = clockInst.currentFace;
+	for (i = 0; i < (clockInst.faceHeight * clockInst.faceWidth); i++)
+	{
+		clockInst.currentFace = i;
+		if (clockInst.faceSettings[i] == NULL)
+		{
+			clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
+		}
+		setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
+		clockInst.faceSettings[i] -> swStartTime = -1;
+		alarmSetAngle (i);
+	}
+	clockInst.currentFace = clockInst.toolTipFace = saveFace;
+	
+	app = gtk_application_new ("org.tzclockInst.tzclock", G_APPLICATION_FLAGS_NONE);
+	g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+	status = g_application_run (G_APPLICATION (app), argc, argv);
+	g_object_unref (app);
+
+	return status;
 }
 
