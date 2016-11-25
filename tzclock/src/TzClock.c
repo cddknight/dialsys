@@ -428,22 +428,33 @@ howTo (FILE * outFile, char *format, ...)
  */
 void getScreenSize (int *width, int *height)
 {
-	GdkDisplay *display;
-	GdkMonitor *monitor;
-	GdkRectangle monitor_geometry;
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+        GdkDisplay *display;
+        GdkMonitor *monitor;
+        GdkRectangle monitor_geometry;
 
-	display = gdk_display_get_default ();
-	monitor = gdk_display_get_monitor (display, 0);
-	gdk_monitor_get_geometry (monitor, &monitor_geometry);
+        display = gdk_display_get_default ();
+        monitor = gdk_display_get_monitor (display, 0);
+        gdk_monitor_get_geometry (monitor, &monitor_geometry);
 
-	if (width != NULL)
-	{
-		*width = monitor_geometry.width;
-	}
-	if (height != NULL)
-	{
-		*height = monitor_geometry.height;
-	}
+        if (width != NULL)
+        {
+                *width = monitor_geometry.width;
+        }
+        if (height != NULL)
+        {
+                *height = monitor_geometry.height;
+        }
+#else
+        if (width != NULL)
+        {
+                *width = gdk_screen_width();
+        }
+        if (height != NULL)
+        {
+                *height = gdk_screen_height();
+        }
+#endif  
 }
 
 /**********************************************************************************************************************
@@ -1046,12 +1057,15 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 
 				prepareForPopup ();
 				popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
 				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
-//				gtk_menu_popup (GTK_MENU (popupMenu), clockInst.mainWindow,	/* parent_menu_shell */
-//						NULL,								/* parent_menu_item */
-//						NULL,								/* func */
-//						NULL,								/* data */
-//						event->button, event->time);
+#else
+				gtk_menu_popup (GTK_MENU(popupMenu), NULL,	/* parent_menu_shell */
+						NULL,								/* parent_menu_item */
+						NULL,								/* func */
+						NULL,								/* data */
+						event->button, event->time);
+#endif
 				return TRUE;
 			}
 		}
@@ -1111,12 +1125,15 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 
 				prepareForPopup ();
 				popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
 				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
-//				gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
-//						NULL,								/* parent_menu_item */
-//						NULL,								/* func */
-//						NULL,								/* data */
-//						0, event->time);
+#else
+				gtk_menu_popup (GTK_MENU(popupMenu), NULL,	/* parent_menu_shell */
+						NULL,								/* parent_menu_item */
+						NULL,								/* func */
+						NULL,								/* data */
+						0, event->time);
+#endif
 			}
 			/*----------------------------------------------------------------------------------------*
 			 * Press ALT + n where n is a number between 1 and 9 to select the face                   *

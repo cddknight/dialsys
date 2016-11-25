@@ -56,22 +56,33 @@ void dialSave() {}
  */
 void getScreenSize (int *width, int *height)
 {
-	GdkDisplay *display;
-	GdkMonitor *monitor;
-	GdkRectangle monitor_geometry;
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+        GdkDisplay *display;
+        GdkMonitor *monitor;
+        GdkRectangle monitor_geometry;
 
-	display = gdk_display_get_default ();
-	monitor = gdk_display_get_monitor (display, 0);
-	gdk_monitor_get_geometry (monitor, &monitor_geometry);
+        display = gdk_display_get_default ();
+        monitor = gdk_display_get_monitor (display, 0);
+        gdk_monitor_get_geometry (monitor, &monitor_geometry);
 
-	if (width != NULL)
-	{
-		*width = monitor_geometry.width;
-	}
-	if (height != NULL)
-	{
-		*height = monitor_geometry.height;
-	}
+        if (width != NULL)
+        {
+                *width = monitor_geometry.width;
+        }
+        if (height != NULL)
+        {
+                *height = monitor_geometry.height;
+        }
+#else
+        if (width != NULL)
+        {
+                *width = gdk_screen_width();
+        }
+        if (height != NULL)
+        {
+                *height = gdk_screen_height();
+        }
+#endif
 }
 
 /**********************************************************************************************************************
