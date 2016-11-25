@@ -34,7 +34,7 @@ static int dialWidth			= 1;			// Saved in the config file
 static int dialHeight			= 1;			// Saved in the config file
 static int markerType			= 0;
 static int markerStep           = SCALE_4;
-static int dialOpacity			= 100;
+static int dialOpacity			= 99;
 static int dialGradient			= 0;
 static int dialMaxColours;
 static int savePosX, savePosY;
@@ -103,6 +103,49 @@ GtkWidget *dialInit (GtkWindow *mainWindowIn, void(*update)(void), COLOUR_DETAIL
 	
 	dialWindowMask();
 	return drawingArea;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  G E T  S C R E E N  S I Z E                                                                              *
+ *  ====================================                                                                              *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief New method to get the sreen size.
+ *  \param width Return width.
+ *  \param height Return height.
+ *  \result None.
+ */
+void dialGetScreenSize (int *width, int *height)
+{
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+        GdkDisplay *display;
+        GdkMonitor *monitor;
+        GdkRectangle monitor_geometry;
+
+        display = gdk_display_get_default ();
+        monitor = gdk_display_get_monitor (display, 0);
+        gdk_monitor_get_geometry (monitor, &monitor_geometry);
+
+        if (width != NULL)
+        {
+                *width = monitor_geometry.width;
+        }
+        if (height != NULL)
+        {
+                *height = monitor_geometry.height;
+        }
+#else
+        if (width != NULL)
+        {
+                *width = gdk_screen_width();
+        }
+        if (height != NULL)
+        {
+                *height = gdk_screen_height();
+        }
+#endif  
 }
 
 /**********************************************************************************************************************
@@ -1207,9 +1250,9 @@ dialColourCallback (guint data)
 	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true); 
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), &dialColours[2].dialColour);
 	gradLabel = gtk_label_new (_("Gradent"));
-	gradScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 100, 1);
+	gradScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 99, 1);
 	opacLabel = gtk_label_new (_("Opacity"));
-	opacScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 100, 1);
+	opacScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 99, 1);
 	gtk_range_set_value ((GtkRange *)gradScale, (gdouble)dialGradient);
 	gtk_range_set_value ((GtkRange *)opacScale, (gdouble)dialOpacity);
 	g_signal_connect (G_OBJECT(gradScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)0);
@@ -1390,15 +1433,17 @@ int dialCos (int number, int angle)
  */
 void dialFixFaceSize (void)
 {
-	int max = 1024;
+	int max = 1024, width = 0, height = 0;
+
+	dialGetScreenSize (&width, &height);
 	
-	if (max * dialWidth > gdk_screen_width())
+	if (max * dialWidth > width)
 	{
-		max = ((gdk_screen_width() / dialWidth) * 64) / 64;
+		max = ((width / dialWidth) * 64) / 64;
 	}
-	if (max * dialHeight > gdk_screen_height())
+	if (max * dialHeight > height)
 	{
-		max = ((gdk_screen_height() / dialHeight) * 64) / 64;
+		max = ((height / dialHeight) * 64) / 64;
 	}
 	if (dialSize > max)
 	{

@@ -120,6 +120,7 @@ void dialDrawTextX		(int posX, int posY, char *string1, int colour, int scale);
 void dialCircleGradientX (int posX, int posY, int size, int colFill, int style);
 void dialSquareGradientX (int posX, int posY, int size, int colFill, int style);
 
+void dialGetScreenSize	(int *width, int *height);
 int dialSin 			(int number, int angle);
 int dialCos 			(int number, int angle);
 float dialGetFontSize 	(char *fontName);

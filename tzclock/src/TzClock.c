@@ -416,49 +416,6 @@ howTo (FILE * outFile, char *format, ...)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  G E T  S C R E E N  S I Z E                                                                                       *
- *  ===========================                                                                                       *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief New method to get the sreen size.
- *  \param width Return width.
- *  \param height Return height.
- *  \result None.
- */
-void getScreenSize (int *width, int *height)
-{
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
-        GdkDisplay *display;
-        GdkMonitor *monitor;
-        GdkRectangle monitor_geometry;
-
-        display = gdk_display_get_default ();
-        monitor = gdk_display_get_monitor (display, 0);
-        gdk_monitor_get_geometry (monitor, &monitor_geometry);
-
-        if (width != NULL)
-        {
-                *width = monitor_geometry.width;
-        }
-        if (height != NULL)
-        {
-                *height = monitor_geometry.height;
-        }
-#else
-        if (width != NULL)
-        {
-                *width = gdk_screen_width();
-        }
-        if (height != NULL)
-        {
-                *height = gdk_screen_height();
-        }
-#endif  
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
  *  S P L I T  T I M E  Z O N E                                                                                       *
  *  ===========================                                                                                       *
  *                                                                                                                    *
@@ -2731,7 +2688,7 @@ static void activate (GApplication *app, gpointer user_data)
 	{
 		int width = 1024, height = 768;
 
-		getScreenSize (&width, &height);
+		dialGetScreenSize (&width, &height);
 
 		if (posX == -2)
 			posX = (width - (clockInst.faceWidth * clockInst.faceSize)) / 2;
