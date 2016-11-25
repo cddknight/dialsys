@@ -719,11 +719,15 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #endif
 			prepareForPopup ();
 			popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+			gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
+#else
 			gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
 					NULL,								/* parent_menu_item */
 					NULL,								/* func */
 					NULL,								/* data */
 					event->button, event->time);
+#endif
 			return TRUE;
 		}
 	}
@@ -782,11 +786,15 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 			{
 				prepareForPopup ();
 				popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
+#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
+#else
 				gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
 						NULL,								/* parent_menu_item */
 						NULL,								/* func */
 						NULL,								/* data */
 						0, event->time);
+#endif
 			}
 			/*----------------------------------------------------------------------------------------*
 			 * Press ALT + n where n is a number between 1 and 9 to select the face                   *
@@ -2356,18 +2364,22 @@ main (int argc, char *argv[])
 	 *------------------------------------------------------------------------------------------------*/
 	if (posX != -1 && posY != -1)
 	{
+		int width = 1024, height = 768;
+
+		dialGetScreenSize (&width, &height);
+
 		if (posX == -2)
-			posX = (gdk_screen_width() - (faceWidth * faceSize)) / 2;
+			posX = (width - (faceWidth * faceSize)) / 2;
 		if (posY == -2)
-			posY = (gdk_screen_height() - (faceHeight * faceSize)) / 2;
+			posY = (height - (faceHeight * faceSize)) / 2;
 		if (posX == -3)
-			posX = gdk_screen_width() - (faceWidth * faceSize);
+			posX = width - (faceWidth * faceSize);
 		if (posY == -3)
-			posY = gdk_screen_height() - (faceHeight * faceSize);
-		if (posX > gdk_screen_width() - 64)
-			posX = gdk_screen_width() - 64;
-		if (posY > gdk_screen_height() - 64)
-			posY = gdk_screen_height() - 64;
+			posY = height - (faceHeight * faceSize);
+		if (posX > width - 64)
+			posX = width - 64;
+		if (posY > height - 64)
+			posY = height - 64;
 
 		gtk_window_move (mainWindow, posX, posY);
 	}
