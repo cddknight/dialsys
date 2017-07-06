@@ -251,7 +251,7 @@ static int bounceSec			=  0;
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-GtkApplication *app;
+/* GtkApplication *app; */
 int running = 0;
 
 CLOCK_INST clockInst =
@@ -503,8 +503,8 @@ splitTimeZone (char *timeZone, char *area, char *city, char *display, int doUppe
 void
 quitCallback (guint data)
 {
-	g_application_quit (G_APPLICATION (app));
-//	gtk_main_quit ();
+/*	g_application_quit (G_APPLICATION (app)); */
+	gtk_main_quit ();
 }
 
 /**********************************************************************************************************************
@@ -2612,181 +2612,159 @@ void loadConfig (int *posX, int *posY)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  A C T I V A T E                                                                                                   *
- *  ===============                                                                                                   *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Start of the program.
- *  \param app Called on start up to activate first clockInst.
- *  \param user_data Pointer to user data.
- *  \result None.
- */
-static void activate (GApplication *app, gpointer user_data)
-{
-	int posX = -1, posY = -1;
-	GtkWidget *eventBox;
-
-	if (running == 1)
-		return;
-
-	running = 1;
-
-	configGetIntValue ("clock_x_pos", &posX);
-	configGetIntValue ("clock_y_pos", &posY);
-
-	clockInst.mainWindow = GTK_WINDOW (gtk_application_window_new (GTK_APPLICATION (app)));
-	gtk_window_set_title (clockInst.mainWindow, PACKAGE_NAME);
-
-	/*------------------------------------------------------------------------------------------------*
-	 * Do all the other windows initialisation.                                                       *
-	 *------------------------------------------------------------------------------------------------*/
-	gtk_window_set_resizable (GTK_WINDOW (clockInst.mainWindow), FALSE);
-
-	/*------------------------------------------------------------------------------------------------*
-	 * Icon stuff.                                                                                    *
-	 *------------------------------------------------------------------------------------------------*/
-	defaultIcon = gdk_pixbuf_new_from_xpm_data ((const char **) &TzClockIcon_xpm);
-
-	/*------------------------------------------------------------------------------------------------*
-	 * Final windows configuration.                                                                   *
-	 *------------------------------------------------------------------------------------------------*/
-	clockInst.drawingArea = dialInit (clockInst.mainWindow, updateClock, &colourNames[0], 0, dialSave);
-	
-	/*------------------------------------------------------------------------------------------------*
-	 * This is the first time we can do this because we check the screen size in this routine.        *
-	 *------------------------------------------------------------------------------------------------*/
-	dialFixFaceSize ();
-
-#if GTK_MAJOR_VERSION == 2
-	g_signal_connect (G_OBJECT (clockInst.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
-#else
-	g_signal_connect (G_OBJECT (clockInst.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
-#endif
-	g_signal_connect (G_OBJECT (clockInst.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
-	g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
-	g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
-//	g_signal_connect (G_OBJECT (clockInst.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
-	g_signal_connect (G_OBJECT (clockInst.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
-
-	g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
-	g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
- 	eventBox = gtk_event_box_new ();
-
-	gtk_container_add (GTK_CONTAINER (eventBox), clockInst.drawingArea);
-	gtk_container_add (GTK_CONTAINER (clockInst.mainWindow), eventBox);
-
-	if (!clockInst.clockDecorated)
-	{
-		gtk_window_set_decorated (GTK_WINDOW (clockInst.mainWindow), FALSE);
-	}
-
-	/*------------------------------------------------------------------------------------------------*
-	 * Complete stuff left over from the command line                                                 *
-	 *------------------------------------------------------------------------------------------------*/
-	if (posX != -1 && posY != -1)
-	{
-		int width = 1024, height = 768;
-
-		dialGetScreenSize (&width, &height);
-
-		if (posX == -2)
-			posX = (width - (clockInst.faceWidth * clockInst.faceSize)) / 2;
-		if (posY == -2)
-			posY = (height - (clockInst.faceHeight * clockInst.faceSize)) / 2;
-		if (posX == -3)
-			posX = width - (clockInst.faceWidth * clockInst.faceSize);
-		if (posY == -3)
-			posY = height - (clockInst.faceHeight * clockInst.faceSize);
-		if (posX > width - 64)
-			posX = width - 64;
-		if (posY > height - 64)
-			posY = height - 64;
-
-		gtk_window_move (clockInst.mainWindow, posX, posY);
-	}
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-	gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.mainWindow), "TzClock");
-#endif
-
-	/*------------------------------------------------------------------------------------------------*
-	 * Called to set any values                                                                       *
-	 *------------------------------------------------------------------------------------------------*/
-	clockInst.accelGroup = gtk_accel_group_new ();
-	gtk_window_add_accel_group (GTK_WINDOW (clockInst.mainWindow), clockInst.accelGroup);
-	createMenu (mainMenuDesc, clockInst.accelGroup, TRUE);
-
-	stickCallback (0);
-	onTopCallback (0);
-	if (!clockInst.clockDecorated)
-	{
-		lockCallback (0);
-	}
-
-	/*------------------------------------------------------------------------------------------------*
-	 * OK all ready lets run it!                                                                      *
-	 *------------------------------------------------------------------------------------------------*/
-	gtk_widget_show_all (GTK_WIDGET (clockInst.mainWindow));
-	g_timeout_add (50, clockTickCallback, NULL);
-	dialSetOpacity ();
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
  *  M A I N                                                                                                           *
  *  =======                                                                                                           *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Start of the program called by the library.
- *  \param argc Number of arguments, passed to init.
- *  \param argv Command line arguments, passed to init.
- *  \result Nothing.
+ *  \brief Start of the program.
+ *  \param argc Arg count.
+ *  \param argv Arg values.
+ *  \result None.
  */
 int
-main (int argc, char **argv)
+main (int argc, char *argv[])
 {
-	int posX = -1, posY = -1, saveFace;
-	int status, i;
+        int posX = -1, posY = -1, saveFace, i;
+        GtkWidget *eventBox;
 
-	for (i = 1; i < argc; i++)
-	{
-		if (argv[i][0] == '-')
-		{
-			if (argv[i][1] == 'C')
-			{
-				strncpy (clockInst.configFile, &argv[i][2], 80);
-				clockInst.configFile[80] = 0;
-			}
-		}
-	}
+        setlocale (LC_ALL, "");
+        bindtextdomain (PACKAGE, NULL);
+        textdomain (PACKAGE);
 
-	parseZone ();
-	defaultClock ();
-	loadConfig (&posX, &posY);
-//	processCommandLine (argc, argv, &posX, &posY);
-	mainMenuDesc[0].subMenuDesc = timeZoneMenu;
+        /*------------------------------------------------------------------------------------------------*
+         * Initalaise the window.                                                                         *
+         *------------------------------------------------------------------------------------------------*/
+        gtk_init (&argc, &argv);
+        g_set_application_name (PACKAGE_NAME);
+        gtk_window_set_default_icon_name ("tzclock");
 
-	saveFace = clockInst.currentFace;
-	for (i = 0; i < (clockInst.faceHeight * clockInst.faceWidth); i++)
-	{
-		clockInst.currentFace = i;
-		if (clockInst.faceSettings[i] == NULL)
-		{
-			clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
-		}
-		setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
-		clockInst.faceSettings[i] -> swStartTime = -1;
-		alarmSetAngle (i);
-	}
-	clockInst.currentFace = clockInst.toolTipFace = saveFace;
-	
-	app = gtk_application_new ("org.tzclockInst.tzclock", G_APPLICATION_FLAGS_NONE);
-	g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-	status = g_application_run (G_APPLICATION (app), argc, argv);
-	g_object_unref (app);
+        clockInst.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+        gtk_window_set_title (clockInst.mainWindow, PACKAGE_NAME);
 
-	return status;
+        for (i = 1; i < argc; i++)
+        {
+                if (argv[i][0] == '-')
+                {
+                        if (argv[i][1] == 'C')
+                        {
+                                strncpy (clockInst.configFile, &argv[i][2], 80);
+                                clockInst.configFile[80] = 0;
+                        }
+                }
+        }
+        
+        parseZone ();
+        defaultClock ();
+        loadConfig (&posX, &posY);
+        processCommandLine (argc, argv, &posX, &posY);
+        mainMenuDesc[0].subMenuDesc = timeZoneMenu;
+
+        saveFace = clockInst.currentFace;
+        for (i = 0; i < (clockInst.faceHeight * clockInst.faceWidth); i++)
+        {
+                clockInst.currentFace = i;
+                if (clockInst.faceSettings[i] == NULL)
+                {
+                        clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+                        memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
+                }
+                setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
+                clockInst.faceSettings[i] -> swStartTime = -1;
+                alarmSetAngle (i);
+        }
+        clockInst.currentFace = clockInst.toolTipFace = saveFace;
+        
+        /*------------------------------------------------------------------------------------------------*
+         * Do all the other windows initialisation.                                                       *
+         *------------------------------------------------------------------------------------------------*/
+        gtk_window_set_resizable (GTK_WINDOW (clockInst.mainWindow), FALSE);
+
+        /*------------------------------------------------------------------------------------------------*
+         * Icon stuff.                                                                                    *
+         *------------------------------------------------------------------------------------------------*/
+        defaultIcon = gdk_pixbuf_new_from_xpm_data ((const char **) &TzClockIcon_xpm);
+
+        /*------------------------------------------------------------------------------------------------*
+         * Final windows configuration.                                                                   *
+         *------------------------------------------------------------------------------------------------*/
+        clockInst.drawingArea = dialInit (clockInst.mainWindow, updateClock, &colourNames[0], 0, dialSave);
+        
+        /*------------------------------------------------------------------------------------------------*
+         * This is the first time we can do this because we check the screen size in this routine.        *
+         *------------------------------------------------------------------------------------------------*/
+        dialFixFaceSize ();
+
+#if GTK_MAJOR_VERSION == 2
+        g_signal_connect (G_OBJECT (clockInst.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
+#else
+        g_signal_connect (G_OBJECT (clockInst.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
+#endif
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
+
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
+        g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
+        eventBox = gtk_event_box_new ();
+
+        gtk_container_add (GTK_CONTAINER (eventBox), clockInst.drawingArea);
+        gtk_container_add (GTK_CONTAINER (clockInst.mainWindow), eventBox);
+
+        if (!clockInst.clockDecorated)
+        {
+                gtk_window_set_decorated (GTK_WINDOW (clockInst.mainWindow), FALSE);
+        }
+
+        /*------------------------------------------------------------------------------------------------*
+         * Complete stuff left over from the command line                                                 *
+         *------------------------------------------------------------------------------------------------*/
+        if (posX != -1 && posY != -1)
+        {
+                if (posX == -2)
+                        posX = (gdk_screen_width() - (clockInst.faceWidth * clockInst.faceSize)) / 2;
+                if (posY == -2)
+                        posY = (gdk_screen_height() - (clockInst.faceHeight * clockInst.faceSize)) / 2;
+                if (posX == -3)
+                        posX = gdk_screen_width() - (clockInst.faceWidth * clockInst.faceSize);
+                if (posY == -3)
+                        posY = gdk_screen_height() - (clockInst.faceHeight * clockInst.faceSize);
+                if (posX > gdk_screen_width() - 64)
+                        posX = gdk_screen_width() - 64;
+                if (posY > gdk_screen_height() - 64)
+                        posY = gdk_screen_height() - 64;
+
+                gtk_window_move (clockInst.mainWindow, posX, posY);
+        }
+#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
+        gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.mainWindow), "TzClock");
+#endif
+
+        /*------------------------------------------------------------------------------------------------*
+         * Called to set any values                                                                       *
+         *------------------------------------------------------------------------------------------------*/
+        clockInst.accelGroup = gtk_accel_group_new ();
+        gtk_window_add_accel_group (GTK_WINDOW (clockInst.mainWindow), clockInst.accelGroup);
+        createMenu (mainMenuDesc, clockInst.accelGroup, TRUE);
+
+        stickCallback (0);
+        onTopCallback (0);
+        if (!clockInst.clockDecorated)
+        {
+                lockCallback (0);
+        }
+
+        /*------------------------------------------------------------------------------------------------*
+         * OK all ready lets run it!                                                                      *
+         *------------------------------------------------------------------------------------------------*/
+        gtk_widget_show_all (GTK_WIDGET (clockInst.mainWindow));
+        g_timeout_add (50, clockTickCallback, NULL);
+        dialSetOpacity ();
+
+        i = nice (5);
+        gtk_main ();
+        exit (0);
 }
 
