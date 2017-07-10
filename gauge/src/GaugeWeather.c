@@ -37,9 +37,7 @@
 
 extern FACE_SETTINGS *faceSettings[];
 extern MENU_DESC gaugeMenuDesc[];
-extern GtkWindow *mainWindow;
-extern int faceWidth;
-extern int faceHeight;
+extern DIAL_CONFIG dialConfig;
 
 enum {
 	COL_NAME = 0,
@@ -999,7 +997,7 @@ void weatherGetMaxMin(FACE_SETTINGS * faceSetting)
 void showErrorMessage(char *message)
 {
 	GtkWidget *dialog;
-	dialog = gtk_message_dialog_new(GTK_WINDOW(mainWindow),
+	dialog = gtk_message_dialog_new(GTK_WINDOW(dialConfig.mainWindow),
 									GTK_DIALOG_DESTROY_WITH_PARENT,
 									GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL);
 	gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(dialog), message);
@@ -1265,9 +1263,9 @@ void weatherGaugeReset()
 	int i, j, face = 0;
 
 	fixupShowValues();
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < dialConfig.dialWidth; i++)
 		{
 			if (faceSettings[face]->showFaceType == FACE_TYPE_WEATHER)
 			{
@@ -1351,7 +1349,7 @@ void weatherSettings(guint data)
 	GtkWidget *grid;
 #endif
 
-	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(mainWindow),
+	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
 										 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 										 _("Close"),

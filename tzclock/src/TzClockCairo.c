@@ -1,32 +1,25 @@
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  T z C L O C K C A I R O. C                                                                        *
- *  ==========================                                                                        *
- *                                                                                                    *
- *  TzClock developed by Chris Knight based on glock by Eric L. Smith.                                * 
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  TzClock is free software; you can redistribute it and/or modify it under the terms of the GNU     *
- *  General Public License version 2 as published by the Free Software Foundation.  Note that I       *
- *  am not granting permission to redistribute or modify TzClock under the terms of any later         *
- *  version of the General Public License.                                                            *
- *                                                                                                    *
- *  TzClock is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without      *
- *  even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        *
- *  GNU General Public License for more details.                                                      *
- *                                                                                                    *
- *  You should have received a copy of the GNU General Public License along with this program (in     * 
- *  the file "COPYING"); if not, write to the Free Software Foundation, Inc.,                         *
- *  59 Temple Place - Suite 330, Boston, MA 02111, USA.                                               *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  T Z  C L O C K  C A I R O . C                                                                                     *
+ *  =============================                                                                                     *
+ *                                                                                                                    *
+ *  This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public         *
+ *  License version 2 as published by the Free Software Foundation.  Note that I am not granting permission to        *
+ *  redistribute or modify this under the terms of any later version of the General Public License.                   *
+ *                                                                                                                    *
+ *  This is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the                *
+ *  impliedwarranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for   *
+ *  more details.                                                                                                     *
+ *                                                                                                                    *
+ *  You should have received a copy of the GNU General Public License along with this program (in the file            *
+ *  "COPYING"); if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111,   *
+ *  USA.                                                                                                              *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @file
- *  @brief .
- *  @version $Id: TzClockCairo.c 1813 2013-12-20 11:39:09Z ukchkn $
+ *  \file
+ *  \brief Clock drawing functions.
  */
- 
 #include "config.h"
 #include "TzClockDisp.h"
 #include "TimeZone.h"
@@ -49,27 +42,27 @@ char *roman[25] =
 	"XXIV"
 };
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  D R A W  F A C E                                                                                  *
- *  ================                                                                                  *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D R A W  F A C E                                                                                                  *
+ *  ================                                                                                                  *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param cr .
- *  @param face .
- *  @param posX .
- *  @param posY .
- *  @param t .
- *  @result .
+ *  \brief .
+ *  \param cr .
+ *  \param face .
+ *  \param posX .
+ *  \param posY .
+ *  \param circ .
+ *  \result .
  */
 gboolean 
 drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 {
 	FACE_SETTINGS *faceSetting = clockInst.faceSettings[face];
 	int i, j, col, timeZone = faceSetting -> currentTZ;
-	int centerX = posX + (clockInst.faceSize >> 1), centerY = posY + (clockInst.faceSize >> 1);
+	int centerX = posX + (clockInst.dialConfig.dialSize >> 1), centerY = posY + (clockInst.dialConfig.dialSize >> 1);
 	int showSubSec, markerFlags = 0xFFFFFF;
 	time_t t = faceSetting -> timeShown;
 	char tempString[101];
@@ -121,7 +114,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	/*------------------------------------------------------------------------------------------------*
 	 * Calculate which markers to draw                                                                *
 	 *------------------------------------------------------------------------------------------------*/
-	if (clockInst.markerType > 2)
+	if (clockInst.dialConfig.markerType > 2)
 	{
 		if (showSubSec)
 		{
@@ -162,7 +155,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	{
 		int m = faceSetting -> show24Hour ? i * 10 : i * 20;
 
-		if (clockInst.faceSize > 256)
+		if (clockInst.dialConfig.dialSize > 256)
 		{
 			if (!faceSetting -> show24Hour || !(i % 2))
 				dialDrawMinute (30, 1, m, MMARK_COLOUR);
@@ -174,9 +167,9 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			{
 				char buff[11] = "";
 				int hour = i == 0 ? (faceSetting -> show24Hour ? 24 : 12) : i / 5;
-				if (clockInst.markerType == 3)
+				if (clockInst.dialConfig.markerType == 3)
 					sprintf (buff, "%d", hour);
-				if (clockInst.markerType == 4)
+				if (clockInst.dialConfig.markerType == 4)
 					strcpy (buff, roman[hour]);
 				dialDrawMark (m, 31, QFILL_COLOUR, QMARK_COLOUR, buff);
 			}
@@ -188,12 +181,12 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	 *------------------------------------------------------------------------------------------------*/
 	if (showSubSec)
 	{
-		dialDrawCircleX (centerX, posY + ((3 * clockInst.faceSize) >> 2), 21, FACE5_COLOUR, -1);
+		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 21, FACE5_COLOUR, -1);
 	}
 	if (faceSetting -> stopwatch)
 	{
-		dialDrawCircleX (posX + (clockInst.faceSize >> 2), centerY, 21, FACE5_COLOUR, -1);			
-		dialDrawCircleX (posX + (3 * clockInst.faceSize >> 2), centerY, 21, FACE5_COLOUR, -1);
+		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);			
+		dialDrawCircleX (posX + (3 * clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);
 	}	
 	
 	if (showSubSec || faceSetting -> stopwatch)
@@ -205,16 +198,16 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			if (showSubSec)
 			{
 				if (!(i % 5))
-					dialDrawMinuteX (centerX, posY + ((3 * clockInst.faceSize) >> 2),
+					dialDrawMinuteX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2),
 							(i % 15) ? 9 : 8, (i % 15) ? 1 : 2, m, WMARK_COLOUR);
 			}
 			if (faceSetting -> stopwatch)
 			{
 				if (!(i % 6))
-					dialDrawMinuteX (posX + (clockInst.faceSize >> 2), centerY,
+					dialDrawMinuteX (posX + (clockInst.dialConfig.dialSize >> 2), centerY,
 							(i % 12) ? 9 : 8, (i % 12) ? 1 : 2, m, WMARK_COLOUR);
 				if (!(i % 4))
-					dialDrawMinuteX (posX + ((3 * clockInst.faceSize) >> 2), centerY,
+					dialDrawMinuteX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY,
 							(i % 20) ? 9 : 8, (i % 20) ? 1 : 2, m, WMARK_COLOUR);
 			}
 		}
@@ -229,15 +222,15 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	}
 	if (showSubSec)
 	{
-		dialDrawHandX (centerX, posY + ((3 * clockInst.faceSize) >> 2), faceSetting -> handPosition[HAND_SECS], &handStyle[HAND_SUBS]);
-		dialDrawCircleX (centerX, posY + ((3 * clockInst.faceSize) >> 2), 2, SFILL_COLOUR, SEC___COLOUR);
+		dialDrawHandX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), faceSetting -> handPosition[HAND_SECS], &handStyle[HAND_SUBS]);
+		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 2, SFILL_COLOUR, SEC___COLOUR);
 	}
 	if (faceSetting -> stopwatch)
 	{
-		dialDrawHandX (posX + (clockInst.faceSize >> 2), centerY, faceSetting -> handPosition[HAND_STOPWT], &handStyle[HAND_STOPWT]);
-		dialDrawHandX (posX + ((3 * clockInst.faceSize) >> 2), centerY, faceSetting -> handPosition[HAND_STOPWM], &handStyle[HAND_STOPWM]);
-		dialDrawCircleX (posX + (clockInst.faceSize >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);			
-		dialDrawCircleX (posX + ((3 * clockInst.faceSize) >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);
+		dialDrawHandX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, faceSetting -> handPosition[HAND_STOPWT], &handStyle[HAND_STOPWT]);
+		dialDrawHandX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY, faceSetting -> handPosition[HAND_STOPWM], &handStyle[HAND_STOPWM]);
+		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);			
+		dialDrawCircleX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);
 	}
 
 	dialDrawHand (faceSetting -> handPosition[HAND_HOUR], &handStyle[HAND_HOUR]);
@@ -277,20 +270,20 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Call when the gauge needs to be drawn.
- *  @param cr The gauge has been exposed.
- *  @result None.
+ *  \brief Call when the gauge needs to be drawn.
+ *  \param widget .
+ *  \result None.
  */
 void clockExpose (GtkWidget *widget)
 {
 	int i, j, face = 0;
 	cairo_t *cr = gdk_cairo_create (clockInst.drawingArea -> window);
 
-	for (j = 0; j < clockInst.faceHeight; j++)
+	for (j = 0; j < clockInst.dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < clockInst.faceWidth; i++)
+		for (i = 0; i < clockInst.dialConfig.dialWidth; i++)
 		{
-			drawFace (cr, face++, (i * clockInst.faceSize), (j * clockInst.faceSize), 0);
+			drawFace (cr, face++, (i * clockInst.dialConfig.dialSize), (j * clockInst.dialConfig.dialSize), 0);
 		}
 	}
 
@@ -301,17 +294,28 @@ void clockExpose (GtkWidget *widget)
 	cr = NULL;	
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C L O C K  E X P O S E                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief .
+ *  \param cr .
+ *  \result .
+ */
 #else
 
 void clockExpose (cairo_t *cr)
 {
 	int i, j, face = 0;
 
-	for (j = 0; j < clockInst.faceHeight; j++)
+	for (j = 0; j < clockInst.dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < clockInst.faceWidth; i++)
+		for (i = 0; i < clockInst.dialConfig.dialWidth; i++)
 		{
-			drawFace (cr, face++, (i * clockInst.faceSize), (j * clockInst.faceSize), 0);
+			drawFace (cr, face++, (i * clockInst.dialConfig.dialSize), (j * clockInst.dialConfig.dialSize), 0);
 		}
 	}
 }
@@ -325,30 +329,28 @@ void clockExpose (cairo_t *cr)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  @brief Save the display to a file.
- *  @param fileName Name of the file to save the SVG in.
- *  @result None.
+ *  \brief Save the display to a file.
+ *  \param fileName Name of the file to save the SVG in.
+ *  \result None.
  */
-int dialSave(char *fileName) 
+void dialSave(char *fileName) 
 {
 	cairo_surface_t *surface;
 	int i, j, face = 0;
 	cairo_t *cr;
 
-	surface = cairo_svg_surface_create (fileName, clockInst.faceWidth * clockInst.faceSize, clockInst.faceHeight * clockInst.faceSize);
+	surface = cairo_svg_surface_create (fileName, clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialSize, clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialSize);
 	cr = cairo_create(surface);
 
-	for (j = 0; j < clockInst.faceHeight; j++)
+	for (j = 0; j < clockInst.dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < clockInst.faceWidth; i++)
+		for (i = 0; i < clockInst.dialConfig.dialWidth; i++)
 		{
-			drawFace (cr, face++, (i * clockInst.faceSize), (j * clockInst.faceSize), 1);
+			drawFace (cr, face++, (i * clockInst.dialConfig.dialSize), (j * clockInst.dialConfig.dialSize), 1);
 		}
 	}
 
 	cairo_surface_destroy(surface);
 	cairo_destroy(cr);
-
-	return 0;
 }
 

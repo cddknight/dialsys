@@ -24,15 +24,12 @@
 #include "config.h"
 #include "GaugeDisp.h"
 
-extern GtkWidget *mainWindow;
-extern int faceSize;
-extern int faceWidth;
-extern int faceHeight;
 extern int weHaveFocus;
 extern int currentFace;
 extern int toolTipFace;
 extern HAND_STYLE handStyle[];
 extern FACE_SETTINGS *faceSettings[];
+extern DIAL_CONFIG dialConfig;
 #if GTK_MAJOR_VERSION == 2
 extern GtkWidget *drawingArea;
 #endif
@@ -188,22 +185,22 @@ void clockExpose (GtkWidget *widget)
 	int i, j, face = 0;
 	cairo_t *cr = gdk_cairo_create (drawingArea -> window);
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < dialConfig.dialWidth; i++)
 		{
-			drawFace (cr, face, (i * faceSize), (j * faceSize), 0);
+			drawFace (cr, face, (i * dialConfig.dialSize), (j * dialConfig.dialSize), 0);
 			if (face == currentFace)
 			{
 				if (faceSettings[face] -> text[FACESTR_WIN])
-					gtk_window_set_title (GTK_WINDOW (mainWindow), faceSettings[face] -> text[FACESTR_WIN]);
+					gtk_window_set_title (GTK_WINDOW (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_WIN]);
 			}
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 			if (face == toolTipFace)
 			{
 				if (faceSettings[face] -> text[FACESTR_TIP])
 				{
-					gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
+					gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
 				}
 			}
 #endif
@@ -235,21 +232,21 @@ void clockExpose (cairo_t *cr)
 {
 	int i, j, face = 0;
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < dialConfig.dialWidth; i++)
 		{
-			drawFace (cr, face, (i * faceSize), (j * faceSize), 0);
+			drawFace (cr, face, (i * dialConfig.dialSize), (j * dialConfig.dialSize), 0);
 			if (face == currentFace)
 			{
 				if (faceSettings[face] -> text[FACESTR_WIN])
-					gtk_window_set_title (GTK_WINDOW (mainWindow), faceSettings[face] -> text[FACESTR_WIN]);
+					gtk_window_set_title (GTK_WINDOW (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_WIN]);
 			}
 			if (face == toolTipFace)
 			{
 				if (faceSettings[face] -> text[FACESTR_TIP])
 				{
-					gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
+					gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
 				}
 			}
 			++face;			
@@ -270,26 +267,24 @@ void clockExpose (cairo_t *cr)
  *  \param fileName Name of the file to save the SVG in.
  *  \result None.
  */
-int dialSave(char *fileName) 
+void dialSave(char *fileName) 
 {
 	cairo_surface_t *surface;
 	int i, j, face = 0;
 	cairo_t *cr;
 
-	surface = cairo_svg_surface_create (fileName, faceWidth * faceSize, faceHeight * faceSize);
+	surface = cairo_svg_surface_create (fileName, dialConfig.dialWidth * dialConfig.dialSize, dialConfig.dialHeight * dialConfig.dialSize);
 	cr = cairo_create(surface);
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < dialConfig.dialWidth; i++)
 		{
-			drawFace (cr, face++, (i * faceSize), (j * faceSize), 1);
+			drawFace (cr, face++, (i * dialConfig.dialSize), (j * dialConfig.dialSize), 1);
 		}
 	}
 
 	cairo_surface_destroy(surface);
 	cairo_destroy(cr);
-
-	return 0;
 }
 

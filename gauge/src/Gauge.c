@@ -347,25 +347,17 @@ static bool lockMove 			=  0;			// Saved in the config file
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
 static time_t lastTime 			= -1;
+void updateGauge (void);
 
 /******************************************************************************************************
  *                                                                                                    *
  ******************************************************************************************************/
-GtkWindow *mainWindow;
-GtkWidget *drawingArea;
 GtkAccelGroup *accelGroup;
-int faceSize 					=  3 * 64;		// Saved in the config file
-int faceWidth 					=  1;			// Saved in the config file
-int faceHeight 					=  1;			// Saved in the config file
 int weHaveFocus 				=  0;
 int currentFace 				=  0;			// Saved in the config file
 int toolTipFace					=  0;
 int sysUpdateID					=  100;
 int allowSaveDisp				=  0;
-int markerType	 				=  3;			// Saved in the config file
-int markerStep	 				=  180;			// Saved in the config file
-int faceOpacity					=  100;
-int faceGradient				=  0;			// Saved in the config file
 FACE_SETTINGS *faceSettings[MAX_FACES];
 char fontName[101]				=  "Sans";		// Saved in the config file
 char configFile[81]				=  ".gaugerc";
@@ -378,6 +370,24 @@ HAND_STYLE handStyle[HAND_COUNT]	=			// Saved in the config file
 };
 time_t hightideTime = 1308047160;
 char tideURL[129] = "http://www.tidetimes.org.uk/london-bridge-tower-pier-tide-times.rss";
+DIAL_CONFIG dialConfig =
+{								// -- Used by dial library --
+	NULL, 						// mainWindow
+	NULL, 						// drawingArea
+	3 * 64,						// faceSize
+	1,	 						// faceWidth
+	1, 							// faceHeight
+	3,	 						// markerType
+	300, 						// markerStep
+	99, 						// faceOpacity
+	0,	 						// faceGradient
+	750,							// startPoint
+	&fontName[0],				// Font name pointer
+	updateGauge,				// Update func.
+	dialSave,					// Save func.
+	&colourNames[0]				// Colour details
+};
+
 
 /******************************************************************************************************
  * Prototypes for functions in the tables that are defined later.                                     *
@@ -495,7 +505,7 @@ onTopCallback (guint data)
 		alwaysOnTop = !alwaysOnTop;
 		configSetBoolValue ("always_on_top", alwaysOnTop);
 	}
-	gtk_window_set_keep_above (GTK_WINDOW (mainWindow), alwaysOnTop != 0);
+	gtk_window_set_keep_above (GTK_WINDOW (dialConfig.mainWindow), alwaysOnTop != 0);
 }
 
 /**********************************************************************************************************************
@@ -518,9 +528,9 @@ stickCallback (guint data)
 		configSetBoolValue ("on_all_desktops", stuckOnAll);
 	}
 	if (stuckOnAll)
-		gtk_window_stick (GTK_WINDOW (mainWindow));
+		gtk_window_stick (GTK_WINDOW (dialConfig.mainWindow));
 	else
-		gtk_window_unstick (GTK_WINDOW (mainWindow));
+		gtk_window_unstick (GTK_WINDOW (dialConfig.mainWindow));
 }
 
 /**********************************************************************************************************************
@@ -565,7 +575,7 @@ aboutCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Nice dialog that can be used with newer versions of the GTK API.                               *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_show_about_dialog (mainWindow,
+	gtk_show_about_dialog (dialConfig.mainWindow,
 			"title", _("About Gauge"),
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 			"program-name", _("Gauge"),
@@ -575,7 +585,7 @@ aboutCallback (guint data)
 			"comments", _("Gauge is a highly configurable analogue gauge,\n"
 						  "capable of monitoring many different system\n"
 						  "and environmental values."),
-			"copyright", "Copyright © 2005 - 2015 Chris Knight <chris@theknight.co.uk>",
+			"copyright", "Copyright © 2005 - 2017 Chris Knight <chris@theknight.co.uk>",
 			"logo", defaultIcon,
 			"version", verString,
 			"website", "http://www.TzClock.org/",
@@ -657,15 +667,15 @@ void prepareForPopup (void)
 {
 	int i;
 
-	viewMenuDesc[0].disable = (faceWidth >= 10 || (faceWidth + 1) * faceHeight > MAX_FACES ? 1 : 0);
-	viewMenuDesc[1].disable = (faceWidth < 2 ? 1 : 0);
-	viewMenuDesc[2].disable = (faceHeight >= 10 || (faceHeight + 1) * faceWidth > MAX_FACES ? 1 : 0);
-	viewMenuDesc[3].disable = (faceHeight < 2 ? 1 : 0);
+	viewMenuDesc[0].disable = (dialConfig.dialWidth >= 10 || (dialConfig.dialWidth + 1) * dialConfig.dialHeight > MAX_FACES ? 1 : 0);
+	viewMenuDesc[1].disable = (dialConfig.dialWidth < 2 ? 1 : 0);
+	viewMenuDesc[2].disable = (dialConfig.dialHeight >= 10 || (dialConfig.dialHeight + 1) * dialConfig.dialWidth > MAX_FACES ? 1 : 0);
+	viewMenuDesc[3].disable = (dialConfig.dialHeight < 2 ? 1 : 0);
 	
 	for (i = MENU_MARK_STRT; i <= MENU_MARK_STOP; ++i)
-		markerMenuDesc[i].checked = (markerMenuDesc[i].param == markerType ? 1 : 0);
+		markerMenuDesc[i].checked = (markerMenuDesc[i].param == dialConfig.markerType ? 1 : 0);
 	for (i = MENU_STEP_STRT; i <= MENU_STEP_STOP; ++i)
-		markerMenuDesc[i].checked = (markerMenuDesc[i].param == markerStep ? 1 : 0);
+		markerMenuDesc[i].checked = (markerMenuDesc[i].param == dialConfig.markerStep ? 1 : 0);
 
 	prefMenuDesc[MENU_PREF_ONTOP].checked = alwaysOnTop;
 	prefMenuDesc[MENU_PREF_STUCK].checked = stuckOnAll;
@@ -693,7 +703,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 
 	if (event->type == GDK_BUTTON_PRESS)
 	{
-		currentFace = ((int)event -> x / faceSize) + (((int)event -> y / faceSize) * faceWidth);
+		currentFace = ((int)event -> x / dialConfig.dialSize) + (((int)event -> y / dialConfig.dialSize) * dialConfig.dialWidth);
 		lastTime = -1;
 
 		switch (event->button)
@@ -706,7 +716,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #endif
 			if (!lockMove)
 			{
-				gtk_window_begin_move_drag (GTK_WINDOW (mainWindow), event->button, event->x_root,
+				gtk_window_begin_move_drag (GTK_WINDOW (dialConfig.mainWindow), event->button, event->x_root,
 						event->y_root, event->time);
 			}
 			return TRUE;
@@ -814,7 +824,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 				}
 			}
 		}
-		gtk_window_activate_key (GTK_WINDOW (mainWindow), event);
+		gtk_window_activate_key (GTK_WINDOW (dialConfig.mainWindow), event);
 	}
 	/*------------------------------------------------------------------------------------------------*
 	 * Process key release events                                                                     *
@@ -824,7 +834,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 		if (event->keyval == 0xFFE9 && keyPressFaceNum != -1)  /* Alt key released */
 		{
 			keyPressFaceNum --;
-			if (keyPressFaceNum >= 0 && keyPressFaceNum < (faceWidth * faceHeight))
+			if (keyPressFaceNum >= 0 && keyPressFaceNum < (dialConfig.dialWidth * dialConfig.dialHeight))
 			{
 				currentFace = keyPressFaceNum;
 				lastTime = -1;
@@ -929,9 +939,9 @@ clockTickCallback (gpointer data)
 {
 	int update = 0, i, j, face = 0;
 
-	for (j = 0; j < faceHeight; j++)
+	for (j = 0; j < dialConfig.dialHeight; j++)
 	{
-		for (i = 0; i < faceWidth; i++)
+		for (i = 0; i < dialConfig.dialWidth; i++)
 		{
 			if (!faceSettings[face])
 			{
@@ -1008,9 +1018,9 @@ clockTickCallback (gpointer data)
 
 	if (update)
 	{
-		if (drawingArea)
+		if (dialConfig.drawingArea)
 		{
-			gtk_widget_queue_draw (drawingArea);
+			gtk_widget_queue_draw (dialConfig.drawingArea);
 		}
 		lastTime = time (NULL);
 	}
@@ -1493,7 +1503,7 @@ void configSaveCallback (guint data)
 	char *home = getenv ("HOME");
 	char configPath[1024];
 
-	gtk_window_get_position (GTK_WINDOW (mainWindow), &posX, &posY);
+	gtk_window_get_position (GTK_WINDOW (dialConfig.mainWindow), &posX, &posY);
 	configSetIntValue ("gauge_x_pos", posX);
 	configSetIntValue ("gauge_y_pos", posY);
 	configSetIntValue ("gauge_current", currentFace);
@@ -1569,7 +1579,7 @@ userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
 	gdouble dx, dy;
 
 	gdk_event_get_coords (event, &dx, &dy);
-	newFace = ((int)dx / faceSize) + (((int)dy / faceSize) * faceWidth);
+	newFace = ((int)dx / dialConfig.dialSize) + (((int)dy / dialConfig.dialSize) * dialConfig.dialWidth);
 	if (newFace != toolTipFace)
 	{
 		toolTipFace = newFace;
@@ -1794,7 +1804,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case 'f':							/* Select the face for zone changes */
 				{
 					int f = atoi (&argv[i][2]);
-					if (f > 0 && f <= (faceWidth * faceHeight))
+					if (f > 0 && f <= (dialConfig.dialWidth * dialConfig.dialHeight))
 					{
 						face = f - 1;
 						currentFace = face;
@@ -1808,10 +1818,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetValue ("font_name", fontName);
 				break;
 			case 'g':
-				faceGradient = atoi (&argv[i][2]);
-				if (faceGradient < 0) faceGradient = 0;
-				if (faceGradient > 100) faceGradient = 100;
-				configSetIntValue ("gradient", faceGradient);
+				dialConfig.dialGradient = atoi (&argv[i][2]);
+				if (dialConfig.dialGradient < 0) dialConfig.dialGradient = 0;
+				if (dialConfig.dialGradient > 100) dialConfig.dialGradient = 100;
+				configSetIntValue ("gradient", dialConfig.dialGradient);
 				break;
 			case 'H':							/* Set the hand style, length and tail */
 				loadHandInfo (&argv[i][2]);
@@ -1823,12 +1833,12 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case 'm':							/* What to show at 12, 3, 6, 9 */
 				if (argv[i][2] >= '0' && argv[i][2] <= '9')
 				{
-					markerType = (argv[i][2] - '0');
+					dialConfig.markerType = (argv[i][2] - '0');
 					if (argv[i][3] >= '1' && argv[i][3] <= '9')
-						markerStep = (argv[i][3] - '0');
+						dialConfig.markerStep = (argv[i][3] - '0');
 				}
-				configSetIntValue ("marker_type", markerType);
-				configSetIntValue ("marker_step", markerStep);
+				configSetIntValue ("gauge_mark_type", dialConfig.markerType);
+				configSetIntValue ("gauge_mark_step", dialConfig.markerStep);
 				break;
 			case 'n':							/* Set the number of ... */
 				switch (argv[i][2])
@@ -1836,8 +1846,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				case 'c':						/* ... columns */
 					{
 						int c = atoi (&argv[i][3]);
-						if (c > 0 && c <= 10 && c * faceHeight <= MAX_FACES)
-							configSetIntValue ("number_cols", faceWidth = c);
+						if (c > 0 && c <= 10 && c * dialConfig.dialHeight <= MAX_FACES)
+							configSetIntValue ("gauge_num_col", dialConfig.dialWidth = c);
 						else
 							invalidOption = 1;
 					}
@@ -1845,8 +1855,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				case 'r':						/* ... rows */
 					{
 						int r = atoi (&argv[i][3]);
-						if (r > 0 && r <= 10 && r * faceWidth <= MAX_FACES)
-							configSetIntValue ("number_rows", faceHeight = r);
+						if (r > 0 && r <= 10 && r * dialConfig.dialWidth <= MAX_FACES)
+							configSetIntValue ("gauge_num_row", dialConfig.dialHeight = r);
 						else
 							invalidOption = 1;
 					}
@@ -1855,7 +1865,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					invalidOption = 1;
 					break;
 				}
-				for (j = 0; j < (faceWidth * faceHeight); ++j)
+				for (j = 0; j < (dialConfig.dialWidth * dialConfig.dialHeight); ++j)
 				{
 					if (faceSettings[j] == NULL)
 					{
@@ -1865,12 +1875,14 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				}
 				break;
 			case 'O':
-				faceOpacity = atoi (&argv[i][2]);
-				configSetIntValue ("opacity", faceOpacity);
+				dialConfig.dialOpacity = atoi (&argv[i][2]);
+				if (dialConfig.dialOpacity < 0) dialConfig.dialOpacity = 0;
+				if (dialConfig.dialOpacity > 99) dialConfig.dialOpacity = 99;
+				configSetIntValue ("opacity", dialConfig.dialOpacity);
 				break;
-			case 's':							/* Select the faceSize of the clock */
-				faceSize = atoi (&argv[i][2]);
-				configSetIntValue ("face_size", faceSize);
+			case 's':							/* Select the dialConfig.dialSize of the clock */
+				dialConfig.dialSize = atoi (&argv[i][2]);
+				configSetIntValue ("face_size", dialConfig.dialSize);
 				break;
 			case 'T':
 				faceSettings[currentFace] -> showFaceType = 255;
@@ -1927,28 +1939,6 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  D E F A U L T  G A U G E                                                                                          *
- *  ========================                                                                                          *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Set in config default values used by dial library.
- *  \result None.
- */
-void defaultGauge (void)
-{
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("face_size", faceSize);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
-	configSetIntValue ("opacity", faceOpacity);
-	configSetIntValue ("gradient", faceGradient);
-	configSetValue ("font_name", fontName);
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
  *  U P D A T E  G A U G E                                                                                            *
  *  ======================                                                                                            *
  *                                                                                                                    *
@@ -1960,17 +1950,8 @@ void defaultGauge (void)
 void updateGauge (void)
 {
 	int i;
-	
-	configGetIntValue ("number_cols", &faceWidth);
-	configGetIntValue ("number_rows", &faceHeight);
-	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("marker_type", &markerType);
-	configGetIntValue ("marker_step", &markerStep);
-	configGetIntValue ("opacity", &faceOpacity);
-	configGetIntValue ("gradient", &faceGradient);
-	configGetValue ("font_name", fontName, 100);
 
-	for (i = 0; i < (faceHeight * faceWidth); i++)
+	for (i = 0; i < (dialConfig.dialHeight * dialConfig.dialWidth); i++)
 	{
 		if (faceSettings[i] == NULL)
 		{
@@ -1978,10 +1959,22 @@ void updateGauge (void)
 			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 	}
-	configSetIntValue ("gauge_num_col", faceWidth);
-	configSetIntValue ("gauge_num_row", faceHeight);
-	configSetIntValue ("gauge_mark_type", markerType);
-	configSetIntValue ("gauge_mark_step", markerStep);
+	i = 0;
+	while (colourNames[i].shortName)
+	{
+		char value[81];
+		sprintf (value, "colour_%s", colourNames[i].shortName);
+		configSetValue (value, colourNames[i].defColour);
+		++i;
+	}
+	configSetIntValue ("gauge_num_col", dialConfig.dialWidth);
+	configSetIntValue ("gauge_num_row", dialConfig.dialHeight);
+	configSetIntValue ("gauge_mark_type", dialConfig.markerType);
+	configSetIntValue ("gauge_mark_step", dialConfig.markerStep);
+	configSetIntValue ("face_size", dialConfig.dialSize);
+	configSetIntValue ("opacity", dialConfig.dialOpacity);
+	configSetIntValue ("gradient", dialConfig.dialGradient);
+	configSetValue ("font_name", fontName);
 	lastTime = -1;
 }
 
@@ -2012,14 +2005,14 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("always_on_top", &alwaysOnTop);
 	configGetBoolValue ("on_all_desktops", &stuckOnAll);
 	configGetBoolValue ("locked_position", &lockMove);
-	configGetIntValue ("face_size", &faceSize);
-	configGetIntValue ("gauge_num_col", &faceWidth);
-	configGetIntValue ("gauge_num_row", &faceHeight);
+	configGetIntValue ("face_size", &dialConfig.dialSize);
+	configGetIntValue ("gauge_num_col", &dialConfig.dialWidth);
+	configGetIntValue ("gauge_num_row", &dialConfig.dialHeight);
 	configGetIntValue ("gauge_current", &currentFace);
-	configGetIntValue ("gauge_mark_type", &markerType);
-	configGetIntValue ("gauge_mark_step", &markerStep);
-	configGetIntValue ("opacity", &faceOpacity);
-	configGetIntValue ("gradient", &faceGradient);	
+	configGetIntValue ("gauge_mark_type", &dialConfig.markerType);
+	configGetIntValue ("gauge_mark_step", &dialConfig.markerStep);
+	configGetIntValue ("opacity", &dialConfig.dialOpacity);
+	configGetIntValue ("gradient", &dialConfig.dialGradient);	
 	configGetIntValue ("gauge_x_pos", posX);
 	configGetIntValue ("gauge_y_pos", posY);
 	configGetValue ("font_name", fontName, 100);
@@ -2050,7 +2043,7 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "%s_hand_fill", handNames[i]);
 		configGetBoolValue (value, &handStyle[i].fillIn);
 	}
-	for (i = 0; i < (faceWidth * faceHeight); i++)
+	for (i = 0; i < (dialConfig.dialWidth * dialConfig.dialHeight); i++)
 	{
 		int val;
 
@@ -2066,10 +2059,14 @@ void loadConfig (int *posX, int *posY)
 		configGetIntValue (value, &val);
 		faceSettings[i] -> faceSubType = val;
 	}
-	configSetIntValue ("number_cols", faceWidth);
-	configSetIntValue ("number_rows", faceHeight);
-	configSetIntValue ("marker_type", markerType);
-	configSetIntValue ("marker_step", markerStep);
+}
+
+void setupDisplay()
+{
+	configSetIntValue ("number_cols", dialConfig.dialWidth);
+	configSetIntValue ("number_rows", dialConfig.dialHeight);
+	configSetIntValue ("marker_type", dialConfig.markerType);
+	configSetIntValue ("marker_step", dialConfig.markerStep);
 }
 
 /**********************************************************************************************************************
@@ -2231,8 +2228,8 @@ main (int argc, char *argv[])
 	g_set_application_name (PACKAGE_NAME);
 	gtk_window_set_default_icon_name (PACKAGE);
 
-	mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
-	gtk_window_set_title (GTK_WINDOW (mainWindow), PACKAGE_NAME);
+	dialConfig.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+	gtk_window_set_title (GTK_WINDOW (dialConfig.mainWindow), PACKAGE_NAME);
 
 	for (i = 1; i < argc; i++)
 	{
@@ -2245,12 +2242,12 @@ main (int argc, char *argv[])
 			}
 		}
 	}
-	defaultGauge();
 	loadConfig (&posX, &posY);
 	processCommandLine (argc, argv, &posX, &posY);
+	setupDisplay();
 	
 	saveFace = currentFace;
-	for (i = 0; i < (faceWidth * faceHeight); i++)
+	for (i = 0; i < (dialConfig.dialWidth * dialConfig.dialHeight); i++)
 	{
 		currentFace = i;
 		if (faceSettings[i] == NULL)
@@ -2317,7 +2314,7 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
 	 * Do all the other windows initialisation.                                                       *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_window_set_resizable (GTK_WINDOW (mainWindow), FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (dialConfig.mainWindow), FALSE);
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Icon stuff.                                                                                    *
@@ -2327,7 +2324,7 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
 	 * Final windows configuration.                                                                   *
 	 *------------------------------------------------------------------------------------------------*/
-	drawingArea = dialInit (mainWindow, updateGauge, &colourNames[0], 750, dialSave);
+    dialInit (&dialConfig);
 	
 	/*------------------------------------------------------------------------------------------------*
 	 * This is the first time we can do this because we check the screen size in this routine.        *
@@ -2338,25 +2335,25 @@ main (int argc, char *argv[])
 	 * Final windows configuration.                                                                   *
 	 *------------------------------------------------------------------------------------------------*/
 #if GTK_MAJOR_VERSION == 2
-	g_signal_connect (G_OBJECT (drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
 #else
-	g_signal_connect (G_OBJECT (drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
 #endif
-	g_signal_connect (G_OBJECT (mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
 
-	g_signal_connect (G_OBJECT (mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
-	g_signal_connect (G_OBJECT (mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
  	eventBox = gtk_event_box_new ();
 
-	gtk_container_add (GTK_CONTAINER (eventBox), drawingArea);
-	gtk_container_add (GTK_CONTAINER (mainWindow), eventBox);
+	gtk_container_add (GTK_CONTAINER (eventBox), dialConfig.drawingArea);
+	gtk_container_add (GTK_CONTAINER (dialConfig.mainWindow), eventBox);
 
 #ifndef GAUGE_IS_DECORATED
-	gtk_window_set_decorated (GTK_WINDOW (mainWindow), FALSE);
+	gtk_window_set_decorated (GTK_WINDOW (dialConfig.mainWindow), FALSE);
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
@@ -2369,23 +2366,23 @@ main (int argc, char *argv[])
 		dialGetScreenSize (&width, &height);
 
 		if (posX == -2)
-			posX = (width - (faceWidth * faceSize)) / 2;
+			posX = (width - (dialConfig.dialWidth * dialConfig.dialSize)) / 2;
 		if (posY == -2)
-			posY = (height - (faceHeight * faceSize)) / 2;
+			posY = (height - (dialConfig.dialHeight * dialConfig.dialSize)) / 2;
 		if (posX == -3)
-			posX = width - (faceWidth * faceSize);
+			posX = width - (dialConfig.dialWidth * dialConfig.dialSize);
 		if (posY == -3)
-			posY = height - (faceHeight * faceSize);
+			posY = height - (dialConfig.dialHeight * dialConfig.dialSize);
 		if (posX > width - 64)
 			posX = width - 64;
 		if (posY > height - 64)
 			posY = height - 64;
 
-		gtk_window_move (mainWindow, posX, posY);
+		gtk_window_move (dialConfig.mainWindow, posX, posY);
 	}
 
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-	gtk_widget_set_tooltip_markup (GTK_WIDGET (mainWindow), "Gauge");
+	gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), "Gauge");
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
@@ -2418,7 +2415,7 @@ main (int argc, char *argv[])
 	 * Called to set any values                                                                       *
 	 *------------------------------------------------------------------------------------------------*/
 	accelGroup = gtk_accel_group_new ();
-	gtk_window_add_accel_group (mainWindow, accelGroup);
+	gtk_window_add_accel_group (dialConfig.mainWindow, accelGroup);
 	createMenu (mainMenuDesc, accelGroup, FALSE);
 
 	stickCallback (0);
@@ -2430,7 +2427,7 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
 	 * OK all ready lets run it!                                                                      *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_widget_show_all (GTK_WIDGET (mainWindow));
+	gtk_widget_show_all (GTK_WIDGET (dialConfig.mainWindow));
 	g_timeout_add (200, clockTickCallback, NULL);
 	dialSetOpacity();
 

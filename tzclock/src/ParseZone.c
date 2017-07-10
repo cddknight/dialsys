@@ -1,28 +1,24 @@
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  P A R S E  Z O N E . C                                                                            *
- *  ======================                                                                            *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  TzClock is free software; you can redistribute it and/or modify it under the terms of the GNU     *
- *  General Public License version 2 as published by the Free Software Foundation.  Note that I       *
- *  am not granting permission to redistribute or modify TzClock under the terms of any later         *
- *  version of the General Public License.                                                            *
- *                                                                                                    *
- *  TzClock is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without      *
- *  even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        *
- *  GNU General Public License for more details.                                                      *
- *                                                                                                    *
- *  You should have received a copy of the GNU General Public License along with this program (in     * 
- *  the file "COPYING"); if not, write to the Free Software Foundation, Inc.,                         *
- *  59 Temple Place - Suite 330, Boston, MA 02111, USA.                                               *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P A R S E  Z O N E . C                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ *  This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public         *
+ *  License version 2 as published by the Free Software Foundation.  Note that I am not granting permission to        *
+ *  redistribute or modify this under the terms of any later version of the General Public License.                   *
+ *                                                                                                                    *
+ *  This is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the                *
+ *  impliedwarranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for   *
+ *  more details.                                                                                                     *
+ *                                                                                                                    *
+ *  You should have received a copy of the GNU General Public License along with this program (in the file            *
+ *  "COPYING"); if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111,   *
+ *  USA.                                                                                                              *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @file
- *  @brief .
- *  @version $Id: ParseZone.c 1467 2012-05-16 15:55:26Z ukchkn $
+ *  \file
+ *  \brief Function to parse the zone file.
  */
 #include <stdio.h>
 #include <string.h>
@@ -58,19 +54,19 @@ static char *areaSwap[] =
 	NULL, NULL
 };
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  G E T  A R E A  A N D  C I T Y                                                                    *
- *  ==============================                                                                    *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  G E T  A R E A  A N D  C I T Y                                                                                    *
+ *  ==============================                                                                                    *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param inBuffer .
- *  @param area .
- *  @param subArea .
- *  @param city .
- *  @result .
+ *  \brief Split the area into parts.
+ *  \param inBuffer Input full name.
+ *  \param area Output area.
+ *  \param subArea Output sub-area.
+ *  \param city Output city.
+ *  \result None.
  */
 int getAreaAndCity (char *inBuffer, char *area, char *subArea, char *city)
 {
@@ -120,17 +116,17 @@ int getAreaAndCity (char *inBuffer, char *area, char *subArea, char *city)
 	return (area[0] != 0 && city[0] != 0);
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  F I N D  A R E A  I N F O                                                                         *
- *  =========================                                                                         *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  F I N D  A R E A  I N F O                                                                                         *
+ *  =========================                                                                                         *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param areaInfoList .
- *  @param area .
- *  @result .
+ *  \brief Search for an area.
+ *  \param areaInfoList List to search in.
+ *  \param area Area to look for.
+ *  \result None.
  */
 AREAINFO *findAreaInfo (void *areaInfoList, char *area)
 {
@@ -147,16 +143,16 @@ AREAINFO *findAreaInfo (void *areaInfoList, char *area)
 	return retnAreaInfo;
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  T I D Y  N A M E                                                                                  *
- *  ================                                                                                  *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  T I D Y  N A M E                                                                                                  *
+ *  ================                                                                                                  *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param name .
- *  @result .
+ *  \brief Tidy up a name.
+ *  \param name Name to tidy up.
+ *  \result None.
  */
 char *tidyName (char *name)
 {
@@ -178,17 +174,17 @@ char *tidyName (char *name)
 	return retnName;
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  C O M P A R E  A R E A                                                                            *
- *  ======================                                                                            *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C O M P A R E  A R E A                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param item1 .
- *  @param item2 .
- *  @result .
+ *  \brief Compare two areas.
+ *  \param item1 First area.
+ *  \param item2 Other area.
+ *  \result 1, 0 or -1 depending on the order.
  */
 int compareArea (void *item1, void *item2)
 {
@@ -198,36 +194,36 @@ int compareArea (void *item1, void *item2)
 	return (strcmp (areaInfo1 -> areaName, areaInfo2 -> areaName));
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  C O M P A R E  C I T Y                                                                            *
- *  ======================                                                                            *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C O M P A R E  C I T Y                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param item1 .
- *  @param item2 .
- *  @result .
+ *  \brief Compare two cities.
+ *  \param item1 First city.
+ *  \param item2 Other city.
+ *  \result 1, 0 or -1 depending on the order.
  */
 int compareCity (void *item1, void *item2)
 {
 	return (strcmp ((char *)item1, (char *)item2));
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  A D D  A R E A  A N D  C I T Y                                                                    *
- *  ==============================                                                                    *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  A D D  A R E A  A N D  C I T Y                                                                                    *
+ *  ==============================                                                                                    *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param areaInfoList .
- *  @param area .
- *  @param subArea .
- *  @param city .
- *  @result .
+ *  \brief Add a city to the list.
+ *  \param areaInfoList List to add to.
+ *  \param area Area to add.
+ *  \param subArea Sub-area to add.
+ *  \param city City to add.
+ *  \result None.
  */
 int addAreaAndCity (void *areaInfoList, char *area, char *subArea, char *city)
 {
@@ -295,16 +291,16 @@ int addAreaAndCity (void *areaInfoList, char *area, char *subArea, char *city)
 	return 1;
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  B U I L D  A R E A  I N F O                                                                       *
- *  ===========================                                                                       *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  B U I L D  A R E A  I N F O                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param areaInfoList .
- *  @result .
+ *  \brief Build the area info.
+ *  \param areaInfoList List to use.
+ *  \result None.
  */
 int buildAreaInfo (void *areaInfoList)
 {
@@ -459,15 +455,15 @@ int buildAreaInfo (void *areaInfoList)
 	return nTimeZones;
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  P A R S E  Z O N E                                                                                *
- *  ==================                                                                                *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P A R S E  Z O N E                                                                                                *
+ *  ==================                                                                                                *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @result .
+ *  \brief Parse the zone file.
+ *  \result None.
  */
 int parseZone (void)
 {

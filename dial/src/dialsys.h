@@ -94,9 +94,31 @@ typedef struct _handStyle
 HAND_STYLE;
 
 /*----------------------------------------------------------------------------------------------------*
+ * Dial config                                                                                        *
+ *----------------------------------------------------------------------------------------------------*/
+typedef struct _dialConfig
+{
+	GtkWindow *mainWindow;
+	GtkWidget *drawingArea;
+	int dialSize;
+	int dialWidth;
+	int dialHeight;
+	int markerType;
+	int markerStep;
+	int dialOpacity;
+	int dialGradient;
+	int startPoint;
+	char *fontName;
+	void(*UpdateFunc)(void); 
+	void(*DialSave)(char *path);
+	COLOUR_DETAILS *colourDetails;
+}
+DIAL_CONFIG;
+
+/*----------------------------------------------------------------------------------------------------*
  * Prototypes for dial display                                                                        *
  *----------------------------------------------------------------------------------------------------*/
-GtkWidget *dialInit 	(GtkWindow *mainWindowIn, void(*update)(void), COLOUR_DETAILS *colourDetails, int start, void *dialSave);
+GtkWidget *dialInit 	(DIAL_CONFIG *dialConfig);
 void dialDrawStart 		(cairo_t *cr, int posX, int posY);
 void dialDrawFinish 	(void);
 

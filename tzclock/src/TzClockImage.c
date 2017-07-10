@@ -1,32 +1,25 @@
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  T z C L O C K C A I R O. C                                                                        *
- *  ==========================                                                                        *
- *                                                                                                    *
- *  TzClock developed by Chris Knight based on glock by Eric L. Smith.                                * 
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  TzClock is free software; you can redistribute it and/or modify it under the terms of the GNU     *
- *  General Public License version 2 as published by the Free Software Foundation.  Note that I       *
- *  am not granting permission to redistribute or modify TzClock under the terms of any later         *
- *  version of the General Public License.                                                            *
- *                                                                                                    *
- *  TzClock is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without      *
- *  even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        *
- *  GNU General Public License for more details.                                                      *
- *                                                                                                    *
- *  You should have received a copy of the GNU General Public License along with this program (in     * 
- *  the file "COPYING"); if not, write to the Free Software Foundation, Inc.,                         *
- *  59 Temple Place - Suite 330, Boston, MA 02111, USA.                                               *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  T Z  C L O C K  I M A G E . C                                                                                     *
+ *  =============================                                                                                     *
+ *                                                                                                                    *
+ *  This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public         *
+ *  License version 2 as published by the Free Software Foundation.  Note that I am not granting permission to        *
+ *  redistribute or modify this under the terms of any later version of the General Public License.                   *
+ *                                                                                                                    *
+ *  This is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the                *
+ *  impliedwarranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for   *
+ *  more details.                                                                                                     *
+ *                                                                                                                    *
+ *  You should have received a copy of the GNU General Public License along with this program (in the file            *
+ *  "COPYING"); if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111,   *
+ *  USA.                                                                                                              *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @file
- *  @brief .
- *  @version $Id: TzClockImage.c 1434 2012-04-06 07:19:33Z chris $
+ *  \file
+ *  \brief Not used.
  */
- 
 #include "config.h"
 #include "TzClockDisp.h"
 #include "TimeZone.h"
@@ -100,15 +93,15 @@ char *g_pFileNames[CLOCK_ELEMENTS] =
 };
 RsvgDimensionData	g_DimensionData;
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  M A K E  W I N D O W  M A S K                                                                     *
- *  =============================                                                                     *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  M A K E  W I N D O W  M A S K                                                                                     *
+ *  =============================                                                                                     *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @result .
+ *  \brief .
+ *  \result .
  */
 void makeWindowMask ()
 {
@@ -148,18 +141,19 @@ void makeWindowMask ()
 	g_object_unref (gc);
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  D R A W  T E X T                                                                                  *
- *  ================                                                                                  *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D R A W  T E X T                                                                                                  *
+ *  ================                                                                                                  *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param cr .
- *  @param string1 .
- *  @param string2 .
- *  @result .
+ *  \brief .
+ *  \param cr .
+ *  \param string1 .
+ *  \param string2 .
+ *  \param top .
+ *  \result .
  */
 void drawText (cairo_t *cr, char *string1, char *string2, int top)
 {
@@ -209,17 +203,17 @@ void drawText (cairo_t *cr, char *string1, char *string2, int top)
 	cairo_restore (cr);
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  C A I R O  D R A W  S U R F A C E                                                                 *
- *  =================================                                                                 *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C A I R O  D R A W  S U R F A C E                                                                                 *
+ *  =================================                                                                                 *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param cr .
- *  @param backgound .
- *  @result .
+ *  \brief .
+ *  \param cr .
+ *  \param backgound .
+ *  \result .
  */
 void cairoDrawSurface (cairo_t *cr, int backgound)
 {
@@ -296,20 +290,21 @@ void cairoDrawSurface (cairo_t *cr, int backgound)
 	}
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  D R A W  F A C E                                                                                  *
- *  ================                                                                                  *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D R A W  F A C E                                                                                                  *
+ *  ================                                                                                                  *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param cr .
- *  @param face .
- *  @param posX .
- *  @param posY .
- *  @param t .
- *  @result .
+ *  \brief .
+ *  \param cr .
+ *  \param face .
+ *  \param posX .
+ *  \param posY .
+ *  \param t .
+ *  \param bounce .
+ *  \result .
  */
 gboolean 
 drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
@@ -498,16 +493,16 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 	return TRUE;
 }
 
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  C L O C K  E X P O S E                                                                            *
- *  ======================                                                                            *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C L O C K  E X P O S E                                                                                            *
+ *  ======================                                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @brief .
- *  @param widget .
- *  @result .
+ *  \brief .
+ *  \param widget .
+ *  \result .
  */
 void clockExpose (GtkWidget * widget)
 {

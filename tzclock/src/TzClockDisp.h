@@ -193,29 +193,21 @@ FACE_SETTINGS;
 
 typedef struct _clockInst
 {
-	GtkWindow *mainWindow;
-	GtkWidget *drawingArea;
 	GtkAccelGroup *accelGroup;
 	bool fastSetting;			// Saved in the config file
 	bool showBounceSec;			// Saved in the config file
 	bool clockDecorated;		// Saved in the config file
-	int faceSize;				// Saved in the config file
-	int faceWidth;				// Saved in the config file
-	int faceHeight;				// Saved in the config file
 	int weHaveFocus;
 	int currentFace;			// Saved in the config file
 	int toolTipFace;
 	int timeSetting;
 	int allowSaveDisp;
-	int markerType;				// Saved in the config file
-	int markerStep;				// Saved in the config file
-	int faceOpacity;			// Saved in the config file
-	int faceGradient;			// Saved in the config file
 	time_t forceTime;
-	char fontName[101];			// Saved in the config file
-	char configFile[81];
+	char fontName[128];			// Saved in the config file
+	char configFile[128];
 	char windowTitle[128];
 	char windowToolTip[128];
+	DIAL_CONFIG dialConfig;
 	FACE_SETTINGS *faceSettings[MAX_FACES];
 }
 CLOCK_INST;
@@ -240,7 +232,7 @@ void clockExpose (GtkWidget *widget);
 #else
 void clockExpose (cairo_t *cr);
 #endif
-int dialSave(char *fileName);
+void dialSave(char *fileName);
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow);
 int  xSinCos (int number, int angle, int useCos);
 int  getStopwatchTime (FACE_SETTINGS *faceSetting);

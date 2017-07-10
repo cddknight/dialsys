@@ -39,7 +39,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <libintl.h>
 #include <cairo-svg.h>
-#include "dialsys.h"
+#include <dialsys.h>
 
 #define _(String) gettext (String)
 #define __(String) (String)
@@ -235,7 +235,7 @@ void clockExpose (GtkWidget *widget);
 #else
 void clockExpose (cairo_t *cr);
 #endif
-int dialSave (char *fileName); 
+void dialSave (char *fileName); 
 char *getStringValue (char *outString1, char *outString2, int maxSize, int stringNumber, int face, time_t timeNow);
 int xSinCos (int number, int angle, int useCos);
 void maxMinReset (SAVED_MAX_MIN *savedMaxMin, int count, int interval);

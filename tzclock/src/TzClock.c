@@ -1,32 +1,25 @@
-/*----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  T z C L O C K . C                                                                                 *
- *  =================                                                                                 *
- *                                                                                                    *
- *  TzClock developed by Chris Knight based on glock by Eric L. Smith.                                * 
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*
- *                                                                                                    *
- *  TzClock is free software; you can redistribute it and/or modify it under the terms of the GNU     *
- *  General Public License version 2 as published by the Free Software Foundation.  Note that I       *
- *  am not granting permission to redistribute or modify TzClock under the terms of any later         *
- *  version of the General Public License.                                                            *
- *                                                                                                    *
- *  TzClock is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without      *
- *  even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        *
- *  GNU General Public License for more details.                                                      *
- *                                                                                                    *
- *  You should have received a copy of the GNU General Public License along with this program (in     *
- *  the file "COPYING"); if not, write to the Free Software Foundation, Inc.,                         *
- *  59 Temple Place - Suite 330, Boston, MA 02111, USA.                                               *
- *                                                                                                    *
- *----------------------------------------------------------------------------------------------------*/
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  T Z  C L O C K . C                                                                                                *
+ *  ==================                                                                                                *
+ *                                                                                                                    *
+ *  This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public         *
+ *  License version 2 as published by the Free Software Foundation.  Note that I am not granting permission to        *
+ *  redistribute or modify this under the terms of any later version of the General Public License.                   *
+ *                                                                                                                    *
+ *  This is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the                *
+ *  impliedwarranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for   *
+ *  more details.                                                                                                     *
+ *                                                                                                                    *
+ *  You should have received a copy of the GNU General Public License along with this program (in the file            *
+ *  "COPYING"); if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111,   *
+ *  USA.                                                                                                              *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
 /**
- *  @file
- *  @brief .
- *  @version $Id: TzClock.c 1815 2013-12-23 08:43:10Z chris $
+ *  \file
+ *  \brief Main clock sources.
  */
- 
 #include "config.h"
 #include "TzClockDisp.h"
 #include "ParseZone.h"
@@ -235,6 +228,7 @@ MENU_DESC mainMenuDesc[] =
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
 static GdkPixbuf *defaultIcon;
+void updateClock (void);
 
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
@@ -251,34 +245,38 @@ static int bounceSec			=  0;
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-/* GtkApplication *app; */
-int running = 0;
-
 CLOCK_INST clockInst =
 {
-	NULL, 			// mainWindow
-	NULL, 			// drawingArea
-	NULL, 			// accelGroup
-	FALSE, 			// fastSetting
-	FALSE,  		// showBounceSec
-	FALSE, 			// clockDecorated
-	3 * 64, 		// faceSize
-	1,	 			// faceWidth
-	1, 				// faceHeight
-	0,	 			// weHaveFocus
-	0,	 			// currentFace
-	0,	 			// toolTipFace
-	0,	 			// timeSetting
-	0,	 			// allowSaveDisp
-	3,	 			// markerType
-	300, 			// markerStep
-	100, 			// faceOpacity
-	0,	 			// faceGradient
-	-1, 			// forceTime
-	"Sans", 		// fontName
-	".tzclockrc", 	// configFile
-	"", 			// windowTitle
-	"" 				// windowToolTip
+	NULL, 							// accelGroup
+	FALSE, 							// fastSetting
+	FALSE,  						// showBounceSec
+	FALSE, 							// clockDecorated
+	0,	 							// weHaveFocus
+	0,	 							// currentFace
+	0,	 							// toolTipFace
+	0,	 							// timeSetting
+	0,	 							// allowSaveDisp
+	-1, 							// forceTime
+	"Sans", 						// fontName
+	".tzclockrc", 					// configFile
+	"", 							// windowTitle
+	"",								// windowToolTip
+	{								// -- Used by dial library --
+		NULL, 						// mainWindow
+		NULL, 						// drawingArea
+		3 * 64,						// faceSize
+		1,	 						// faceWidth
+		1, 							// faceHeight
+		3,	 						// markerType
+		300, 						// markerStep
+		99, 						// faceOpacity
+		0,	 						// faceGradient
+		0,							// startPoint
+		&clockInst.fontName[0],		// Font name pointer
+		updateClock,				// Update func.
+		dialSave,					// Save func.
+		&colourNames[0]				// Colour details
+	}
 };
 
 HAND_STYLE handStyle[HAND_COUNT] =  				// Saved in the config file
@@ -600,7 +598,7 @@ onTopCallback (guint data)
 		alwaysOnTop = !alwaysOnTop;
 		configSetBoolValue ("always_on_top", alwaysOnTop);
 	}
-	gtk_window_set_keep_above (GTK_WINDOW (clockInst.mainWindow), alwaysOnTop);
+	gtk_window_set_keep_above (GTK_WINDOW (clockInst.dialConfig.mainWindow), alwaysOnTop);
 }
 
 /**********************************************************************************************************************
@@ -623,9 +621,9 @@ stickCallback (guint data)
 		configSetBoolValue ("on_all_desktops", stuckOnAll);
 	}
 	if (stuckOnAll)
-		gtk_window_stick (GTK_WINDOW (clockInst.mainWindow));
+		gtk_window_stick (GTK_WINDOW (clockInst.dialConfig.mainWindow));
 	else
-		gtk_window_unstick (GTK_WINDOW (clockInst.mainWindow));
+		gtk_window_unstick (GTK_WINDOW (clockInst.dialConfig.mainWindow));
 }
 
 /**********************************************************************************************************************
@@ -684,7 +682,7 @@ calendarCallback (guint data)
 	}
 	localtime (&t);
 	
-	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(clockInst.mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 						_("Close"), 
@@ -758,7 +756,7 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/	
-	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(clockInst.mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 			_("Close"), 
@@ -916,7 +914,7 @@ aboutCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Nice dialog that can be used with newer versions of the GTK API.                               *
 	 *------------------------------------------------------------------------------------------------*/
-	gtk_show_about_dialog (clockInst.mainWindow,
+	gtk_show_about_dialog (clockInst.dialConfig.mainWindow,
 			"title", _("About Timezone Clock"),
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 			"program-name", _("Timezone Clock"),
@@ -924,7 +922,7 @@ aboutCallback (guint data)
 			"artists", artists,
 			"authors", authors,
 			"comments", comment,
-			"copyright", "Copyright © 2005 - 2015 Chris Knight <chris@theknight.co.uk>",
+			"copyright", "Copyright © 2005 - 2017 Chris Knight <chris@theknight.co.uk>",
 			"logo", defaultIcon,
 			"version", verString,
 			"website", "http://www.TzClock.org/",
@@ -945,10 +943,10 @@ void prepareForPopup (void)
 {
 	int i;
 	
-	viewMenuDesc[0].disable = (clockInst.faceWidth >= 10 || (clockInst.faceWidth + 1) * clockInst.faceHeight > MAX_FACES ? 1 : 0);
-	viewMenuDesc[1].disable = (clockInst.faceWidth < 2 ? 1 : 0);
-	viewMenuDesc[2].disable = (clockInst.faceHeight >= 10 || (clockInst.faceHeight + 1) * clockInst.faceWidth > MAX_FACES ? 1 : 0);
-	viewMenuDesc[3].disable = (clockInst.faceHeight < 2 ? 1 : 0);
+	viewMenuDesc[0].disable = (clockInst.dialConfig.dialWidth >= 10 || (clockInst.dialConfig.dialWidth + 1) * clockInst.dialConfig.dialHeight > MAX_FACES ? 1 : 0);
+	viewMenuDesc[1].disable = (clockInst.dialConfig.dialWidth < 2 ? 1 : 0);
+	viewMenuDesc[2].disable = (clockInst.dialConfig.dialHeight >= 10 || (clockInst.dialConfig.dialHeight + 1) * clockInst.dialConfig.dialWidth > MAX_FACES ? 1 : 0);
+	viewMenuDesc[3].disable = (clockInst.dialConfig.dialHeight < 2 ? 1 : 0);
 
 	prefMenuDesc[MENU_PREF_ONTOP].checked = alwaysOnTop;
 	prefMenuDesc[MENU_PREF_STUCK].checked = stuckOnAll;
@@ -963,9 +961,9 @@ void prepareForPopup (void)
 	stopWMenuDesc[MENU_STPW_RESET].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	
 	for (i = MENU_MARK_STRT; i <= MENU_MARK_STOP; ++i)
-		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.markerType ? 1 : 0);
+		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.dialConfig.markerType ? 1 : 0);
 	for (i = MENU_STEP_STRT; i <= MENU_STEP_STOP; ++i)
-		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.markerStep ? 1 : 0);
+		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.dialConfig.markerStep ? 1 : 0);
 }
 
 /**********************************************************************************************************************
@@ -985,7 +983,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 {
 	if (event->type == GDK_BUTTON_PRESS)
 	{
-		clockInst.currentFace = ((int)event -> x / clockInst.faceSize) + (((int)event -> y / clockInst.faceSize) * clockInst.faceWidth);
+		clockInst.currentFace = ((int)event -> x / clockInst.dialConfig.dialSize) + (((int)event -> y / clockInst.dialConfig.dialSize) * clockInst.dialConfig.dialWidth);
 		lastTime = -1;
 
 		switch (event->button)
@@ -998,7 +996,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #endif
 			if (!lockMove && !clockInst.clockDecorated)
 			{
-				gtk_window_begin_move_drag (GTK_WINDOW (clockInst.mainWindow), event->button, event->x_root,
+				gtk_window_begin_move_drag (GTK_WINDOW (clockInst.dialConfig.mainWindow), event->button, event->x_root,
 						event->y_root, event->time);
 			}
 			return TRUE;
@@ -1110,7 +1108,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 				}
 			}
 		}
-		gtk_window_activate_key (GTK_WINDOW (clockInst.mainWindow), event);
+		gtk_window_activate_key (GTK_WINDOW (clockInst.dialConfig.mainWindow), event);
 	}
 	/*------------------------------------------------------------------------------------------------*
 	 * Process key release events                                                                     *
@@ -1120,7 +1118,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 		if (event->keyval == 0xFFE9 && keyPressFaceNum != -1)  /* Alt key released */
 		{
 			keyPressFaceNum --;
-			if (keyPressFaceNum >= 0 && keyPressFaceNum < (clockInst.faceWidth * clockInst.faceHeight))
+			if (keyPressFaceNum >= 0 && keyPressFaceNum < (clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialHeight))
 			{
 				clockInst.currentFace = keyPressFaceNum;
 				lastTime = -1;
@@ -1229,7 +1227,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 			if (strcmp (clockInst.windowTitle, tempString))
 			{
 				strcpy (clockInst.windowTitle, tempString);
-				gtk_window_set_title (GTK_WINDOW (clockInst.mainWindow), clockInst.windowTitle);
+				gtk_window_set_title (GTK_WINDOW (clockInst.dialConfig.mainWindow), clockInst.windowTitle);
 			}
 		}
 		if (face == clockInst.toolTipFace)
@@ -1239,7 +1237,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 			{
 				strcpy (clockInst.windowToolTip, tempString);
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-				gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.mainWindow), clockInst.windowToolTip);
+				gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.dialConfig.mainWindow), clockInst.windowToolTip);
 #endif
 			}
 		}
@@ -1321,7 +1319,7 @@ clockTickCallback (gpointer data)
 	struct tm tm;
     struct timeval tv;
 	time_t t = time (NULL);
-	int update = 0, i, faceCount = clockInst.faceHeight * clockInst.faceWidth;
+	int update = 0, i, faceCount = clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth;
 	
 	if (clockInst.forceTime != -1)
 		t = clockInst.forceTime;
@@ -1351,9 +1349,9 @@ clockTickCallback (gpointer data)
 	}
 	if (update)
 	{
-		if (clockInst.drawingArea)
+		if (clockInst.dialConfig.drawingArea)
 		{
-			gtk_widget_queue_draw (clockInst.drawingArea);
+			gtk_widget_queue_draw (clockInst.dialConfig.drawingArea);
 		}
 	}
 	return TRUE;
@@ -1421,7 +1419,7 @@ userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
 	gdouble dx, dy;
 
 	gdk_event_get_coords (event, &dx, &dy);
-	newFace = ((int)dx / clockInst.faceSize) + (((int)dy / clockInst.faceSize) * clockInst.faceWidth);
+	newFace = ((int)dx / clockInst.dialConfig.dialSize) + (((int)dy / clockInst.dialConfig.dialSize) * clockInst.dialConfig.dialWidth);
 	if (newFace != clockInst.toolTipFace)
 	{
 		clockInst.toolTipFace = newFace;
@@ -1593,7 +1591,7 @@ void configSaveCallback (guint data)
 	char *home = getenv ("HOME");
 	char configPath[1024];
 
-	gtk_window_get_position (GTK_WINDOW (clockInst.mainWindow), &posX, &posY);
+	gtk_window_get_position (GTK_WINDOW (clockInst.dialConfig.mainWindow), &posX, &posY);
 	configSetIntValue ("clock_x_pos", posX);
 	configSetIntValue ("clock_y_pos", posY);
 	configSetIntValue ("current_face", clockInst.currentFace);
@@ -1945,7 +1943,7 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 					}
 				}
 #if GTK_MAJOR_VERSION == 2
-				dialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (clockInst.mainWindow),
+				dialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (clockInst.dialConfig.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
 						"%d:%02d - <b>\"%s\"</b>", tm -> tm_hour, tm -> tm_min,
@@ -2246,7 +2244,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case 'f':							/* Select the face for zone changes */
 				{
 					int f = atoi (&argv[i][2]);
-					if (f > 0 && f <= (clockInst.faceWidth * clockInst.faceHeight))
+					if (f > 0 && f <= (clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialHeight))
 					{
 						face = f - 1;
 						clockInst.currentFace = face;
@@ -2260,10 +2258,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetValue ("font_name", clockInst.fontName);
 				break;
 			case 'g':
-				clockInst.faceGradient = atoi (&argv[i][2]);
-				if (clockInst.faceGradient < 0) clockInst.faceGradient = 0;
-				if (clockInst.faceGradient > 100) clockInst.faceGradient = 100;
-				configSetIntValue ("gradient", clockInst.faceGradient);
+				clockInst.dialConfig.dialGradient = atoi (&argv[i][2]);
+				if (clockInst.dialConfig.dialGradient < 0) clockInst.dialConfig.dialGradient = 0;
+				if (clockInst.dialConfig.dialGradient > 100) clockInst.dialConfig.dialGradient = 100;
+				configSetIntValue ("gradient", clockInst.dialConfig.dialGradient);
 				break;
 			case 'h':							/* Select sub-second hand */
 				clockInst.faceSettings[face] -> showSeconds = !clockInst.faceSettings[face] -> showSeconds;
@@ -2280,12 +2278,12 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 			case 'm':							/* What to show at 12, 3, 6, 9 */
 				if (argv[i][2] >= '0' && argv[i][2] <= '9')
 				{
-					clockInst.markerType = (argv[i][2] - '0');
+					clockInst.dialConfig.markerType = (argv[i][2] - '0');
 					if (argv[i][3] >= '1' && argv[i][3] <= '9')
-						clockInst.markerStep = (argv[i][3] - '0');
+						clockInst.dialConfig.markerStep = (argv[i][3] - '0');
 				}
-				configSetIntValue ("marker_type", clockInst.markerType);
-				configSetIntValue ("marker_step", clockInst.markerStep);
+				configSetIntValue ("clock_mark_type", clockInst.dialConfig.markerType);
+				configSetIntValue ("clock_mark_step", clockInst.dialConfig.markerStep);
 				break;
 			case 'n':							/* Set the number of ... */
 				switch (argv[i][2])
@@ -2293,8 +2291,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				case 'c':						/* ... columns */
 					{
 						int c = atoi (&argv[i][3]);
-						if (c > 0 && c <= 10 && c * clockInst.faceHeight <= MAX_FACES)
-							configSetIntValue ("number_cols", clockInst.faceWidth = c);
+						if (c > 0 && c <= 10 && c * clockInst.dialConfig.dialHeight <= MAX_FACES)
+							configSetIntValue ("clock_num_col", clockInst.dialConfig.dialWidth = c);
 						else
 							invalidOption = 1;
 					}
@@ -2302,8 +2300,8 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				case 'r':						/* ... rows */
 					{
 						int r = atoi (&argv[i][3]);
-						if (r > 0 && r <= 10 && r * clockInst.faceWidth <= MAX_FACES)
-							configSetIntValue ("number_rows", clockInst.faceHeight = r);
+						if (r > 0 && r <= 10 && r * clockInst.dialConfig.dialWidth <= MAX_FACES)
+							configSetIntValue ("clock_num_row", clockInst.dialConfig.dialHeight = r);
 						else
 							invalidOption = 1;
 					}
@@ -2312,7 +2310,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					invalidOption = 1;
 					break;
 				}
-				for (j = 0; j < (clockInst.faceWidth * clockInst.faceHeight); ++j)
+				for (j = 0; j < (clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialHeight); ++j)
 				{
 					if (clockInst.faceSettings[j] == NULL)
 					{
@@ -2329,10 +2327,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetValue (value, clockInst.faceSettings[face] -> overwriteMesg);
 				break;
 			case 'O':
-				clockInst.faceOpacity = atoi (&argv[i][2]);
-				if (clockInst.faceOpacity < 0) clockInst.faceOpacity = 0;
-				if (clockInst.faceOpacity > 100) clockInst.faceOpacity = 100;
-				configSetIntValue ("opacity", clockInst.faceOpacity);
+				clockInst.dialConfig.dialOpacity = atoi (&argv[i][2]);
+				if (clockInst.dialConfig.dialOpacity < 0) clockInst.dialConfig.dialOpacity = 0;
+				if (clockInst.dialConfig.dialOpacity > 100) clockInst.dialConfig.dialOpacity = 100;
+				configSetIntValue ("opacity", clockInst.dialConfig.dialOpacity);
 				break;
 			case 'q':							/* Quick time setting */
 				clockInst.fastSetting = !clockInst.fastSetting;
@@ -2343,9 +2341,9 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				sprintf (value, "stopwatch_%d", face + 1);
 				configSetBoolValue (value, clockInst.faceSettings[face] -> stopwatch);
 				break;
-			case 's':							/* Select the clockInst.faceSize of the clock */
-				clockInst.faceSize = atoi (&argv[i][2]);
-				configSetIntValue ("face_size", clockInst.faceSize);
+			case 's':							/* Select the clockInst.dialConfig.dialSize of the clock */
+				clockInst.dialConfig.dialSize = atoi (&argv[i][2]);
+				configSetIntValue ("face_size", clockInst.dialConfig.dialSize);
 				break;
 			case 'T':							/* Force the clock to show a fixed time */
 				clockInst.forceTime = atoi (&argv[i][2]);
@@ -2434,28 +2432,6 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  D E F A U L T  C L O C K                                                                                          *
- *  ========================                                                                                          *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Set in config default values used by dial library.
- *  \result None.
- */
-void defaultClock (void)
-{
-	configSetIntValue ("number_cols", clockInst.faceWidth);
-	configSetIntValue ("number_rows", clockInst.faceHeight);
-	configSetIntValue ("face_size", clockInst.faceSize);
-	configSetIntValue ("marker_type", clockInst.markerType);
-	configSetIntValue ("marker_step", clockInst.markerStep);
-	configSetIntValue ("opacity", clockInst.faceOpacity);
-	configSetIntValue ("gradient", clockInst.faceGradient);
-	configSetValue ("font_name", clockInst.fontName);
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
  *  U P D A T E  C L O C K                                                                                            *
  *  ======================                                                                                            *
  *                                                                                                                    *
@@ -2468,16 +2444,7 @@ void updateClock (void)
 {
 	int i;
 	
-	configGetIntValue ("number_cols", &clockInst.faceWidth);
-	configGetIntValue ("number_rows", &clockInst.faceHeight);
-	configGetIntValue ("face_size", &clockInst.faceSize);
-	configGetIntValue ("marker_type", &clockInst.markerType);
-	configGetIntValue ("marker_step", &clockInst.markerStep);
-	configGetIntValue ("opacity", &clockInst.faceOpacity);
-	configGetIntValue ("gradient", &clockInst.faceGradient);
-	configGetValue ("font_name", clockInst.fontName, 100);
-
-	for (i = 0; i < (clockInst.faceHeight * clockInst.faceWidth); i++)
+	for (i = 0; i < (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth); i++)
 	{
 		if (clockInst.faceSettings[i] == NULL)
 		{
@@ -2485,10 +2452,22 @@ void updateClock (void)
 			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 	}
-	configSetIntValue ("clock_num_col", clockInst.faceWidth);
-	configSetIntValue ("clock_num_row", clockInst.faceHeight);
-	configSetIntValue ("clock_mark_type", clockInst.markerType);
-	configSetIntValue ("clock_mark_step", clockInst.markerStep);
+	i = 0;
+	while (colourNames[i].shortName)
+	{
+		char value[81];
+		sprintf (value, "colour_%s", colourNames[i].shortName);
+		configSetValue (value, colourNames[i].defColour);
+		++i;
+	}
+	configSetIntValue ("clock_num_col", clockInst.dialConfig.dialWidth);
+	configSetIntValue ("clock_num_row", clockInst.dialConfig.dialHeight);
+	configSetIntValue ("clock_mark_type", clockInst.dialConfig.markerType);
+	configSetIntValue ("clock_mark_step", clockInst.dialConfig.markerStep);
+	configSetIntValue ("face_size", clockInst.dialConfig.dialSize);
+	configSetIntValue ("opacity", clockInst.dialConfig.dialOpacity);
+	configSetIntValue ("gradient", clockInst.dialConfig.dialGradient);
+	configSetValue ("font_name", clockInst.fontName);
 	lastTime = -1;
 }
 
@@ -2522,14 +2501,14 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("fast_setting", &clockInst.fastSetting);
 	configGetBoolValue ("bounce_seconds", &clockInst.showBounceSec);
 	configGetBoolValue ("decorated", &clockInst.clockDecorated);
-	configGetIntValue ("face_size", &clockInst.faceSize);
-	configGetIntValue ("clock_num_col", &clockInst.faceWidth);
-	configGetIntValue ("clock_num_row", &clockInst.faceHeight);
+	configGetIntValue ("face_size", &clockInst.dialConfig.dialSize);
+	configGetIntValue ("clock_num_col", &clockInst.dialConfig.dialWidth);
+	configGetIntValue ("clock_num_row", &clockInst.dialConfig.dialHeight);
 	configGetIntValue ("clock_current", &clockInst.currentFace);
-	configGetIntValue ("clock_mark_type", &clockInst.markerType);
-	configGetIntValue ("clock_mark_step", &clockInst.markerStep);
-	configGetIntValue ("opacity", &clockInst.faceOpacity);	
-	configGetIntValue ("gradient", &clockInst.faceGradient);	
+	configGetIntValue ("clock_mark_type", &clockInst.dialConfig.markerType);
+	configGetIntValue ("clock_mark_step", &clockInst.dialConfig.markerStep);
+	configGetIntValue ("opacity", &clockInst.dialConfig.dialOpacity);	
+	configGetIntValue ("gradient", &clockInst.dialConfig.dialGradient);	
 	configGetIntValue ("clock_x_pos", posX);
 	configGetIntValue ("clock_y_pos", posY);
 	configGetValue ("font_name", clockInst.fontName, 100);
@@ -2557,7 +2536,7 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "%s_hand_fill", handNames[i]);
 		configGetBoolValue (value, &handStyle[i].fillIn);
 	}
-	for (i = 0; i < (clockInst.faceWidth * clockInst.faceHeight); i++)
+	for (i = 0; i < (clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialHeight); i++)
 	{
 		if (clockInst.faceSettings[i] == NULL)
 		{
@@ -2602,12 +2581,6 @@ void loadConfig (int *posX, int *posY)
 			}
 		}
 	}
-	configSetIntValue ("number_cols", clockInst.faceWidth);
-	configSetIntValue ("number_rows", clockInst.faceHeight);
-	configSetIntValue ("marker_type", clockInst.markerType);
-	configSetIntValue ("marker_step", clockInst.markerStep);
-
-//	configFree ();
 }
 
 /**********************************************************************************************************************
@@ -2639,8 +2612,8 @@ main (int argc, char *argv[])
         g_set_application_name (PACKAGE_NAME);
         gtk_window_set_default_icon_name ("tzclock");
 
-        clockInst.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
-        gtk_window_set_title (clockInst.mainWindow, PACKAGE_NAME);
+        clockInst.dialConfig.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+        gtk_window_set_title (clockInst.dialConfig.mainWindow, PACKAGE_NAME);
 
         for (i = 1; i < argc; i++)
         {
@@ -2655,13 +2628,12 @@ main (int argc, char *argv[])
         }
         
         parseZone ();
-        defaultClock ();
         loadConfig (&posX, &posY);
         processCommandLine (argc, argv, &posX, &posY);
         mainMenuDesc[0].subMenuDesc = timeZoneMenu;
 
         saveFace = clockInst.currentFace;
-        for (i = 0; i < (clockInst.faceHeight * clockInst.faceWidth); i++)
+        for (i = 0; i < (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth); i++)
         {
                 clockInst.currentFace = i;
                 if (clockInst.faceSettings[i] == NULL)
@@ -2678,7 +2650,7 @@ main (int argc, char *argv[])
         /*------------------------------------------------------------------------------------------------*
          * Do all the other windows initialisation.                                                       *
          *------------------------------------------------------------------------------------------------*/
-        gtk_window_set_resizable (GTK_WINDOW (clockInst.mainWindow), FALSE);
+        gtk_window_set_resizable (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
 
         /*------------------------------------------------------------------------------------------------*
          * Icon stuff.                                                                                    *
@@ -2688,7 +2660,7 @@ main (int argc, char *argv[])
         /*------------------------------------------------------------------------------------------------*
          * Final windows configuration.                                                                   *
          *------------------------------------------------------------------------------------------------*/
-        clockInst.drawingArea = dialInit (clockInst.mainWindow, updateClock, &colourNames[0], 0, dialSave);
+        dialInit (&clockInst.dialConfig);
         
         /*------------------------------------------------------------------------------------------------*
          * This is the first time we can do this because we check the screen size in this routine.        *
@@ -2696,26 +2668,26 @@ main (int argc, char *argv[])
         dialFixFaceSize ();
 
 #if GTK_MAJOR_VERSION == 2
-        g_signal_connect (G_OBJECT (clockInst.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
 #else
-        g_signal_connect (G_OBJECT (clockInst.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
 #endif
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
 
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
-        g_signal_connect (G_OBJECT (clockInst.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
+        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
         eventBox = gtk_event_box_new ();
 
-        gtk_container_add (GTK_CONTAINER (eventBox), clockInst.drawingArea);
-        gtk_container_add (GTK_CONTAINER (clockInst.mainWindow), eventBox);
+        gtk_container_add (GTK_CONTAINER (eventBox), clockInst.dialConfig.drawingArea);
+        gtk_container_add (GTK_CONTAINER (clockInst.dialConfig.mainWindow), eventBox);
 
         if (!clockInst.clockDecorated)
         {
-                gtk_window_set_decorated (GTK_WINDOW (clockInst.mainWindow), FALSE);
+                gtk_window_set_decorated (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
         }
 
         /*------------------------------------------------------------------------------------------------*
@@ -2723,30 +2695,34 @@ main (int argc, char *argv[])
          *------------------------------------------------------------------------------------------------*/
         if (posX != -1 && posY != -1)
         {
-                if (posX == -2)
-                        posX = (gdk_screen_width() - (clockInst.faceWidth * clockInst.faceSize)) / 2;
-                if (posY == -2)
-                        posY = (gdk_screen_height() - (clockInst.faceHeight * clockInst.faceSize)) / 2;
-                if (posX == -3)
-                        posX = gdk_screen_width() - (clockInst.faceWidth * clockInst.faceSize);
-                if (posY == -3)
-                        posY = gdk_screen_height() - (clockInst.faceHeight * clockInst.faceSize);
-                if (posX > gdk_screen_width() - 64)
-                        posX = gdk_screen_width() - 64;
-                if (posY > gdk_screen_height() - 64)
-                        posY = gdk_screen_height() - 64;
+			int width = 1024, height = 768;
 
-                gtk_window_move (clockInst.mainWindow, posX, posY);
+			dialGetScreenSize (&width, &height);
+
+			if (posX == -2)
+				posX = (width - (clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialSize)) / 2;
+			if (posY == -2)
+				posY = (height - (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialSize)) / 2;
+			if (posX == -3)
+				posX = width - (clockInst.dialConfig.dialWidth * clockInst.dialConfig.dialSize);
+			if (posY == -3)
+				posY = height - (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialSize);
+			if (posX > width - 64)
+				posX = width - 64;
+			if (posY > height - 64)
+				posY = height - 64;
+
+			gtk_window_move (clockInst.dialConfig.mainWindow, posX, posY);
         }
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-        gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.mainWindow), "TzClock");
+        gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.dialConfig.mainWindow), "TzClock");
 #endif
 
         /*------------------------------------------------------------------------------------------------*
          * Called to set any values                                                                       *
          *------------------------------------------------------------------------------------------------*/
         clockInst.accelGroup = gtk_accel_group_new ();
-        gtk_window_add_accel_group (GTK_WINDOW (clockInst.mainWindow), clockInst.accelGroup);
+        gtk_window_add_accel_group (GTK_WINDOW (clockInst.dialConfig.mainWindow), clockInst.accelGroup);
         createMenu (mainMenuDesc, clockInst.accelGroup, TRUE);
 
         stickCallback (0);
@@ -2759,7 +2735,7 @@ main (int argc, char *argv[])
         /*------------------------------------------------------------------------------------------------*
          * OK all ready lets run it!                                                                      *
          *------------------------------------------------------------------------------------------------*/
-        gtk_widget_show_all (GTK_WIDGET (clockInst.mainWindow));
+        gtk_widget_show_all (GTK_WIDGET (clockInst.dialConfig.mainWindow));
         g_timeout_add (50, clockTickCallback, NULL);
         dialSetOpacity ();
 
