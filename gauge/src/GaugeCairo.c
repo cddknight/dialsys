@@ -183,7 +183,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 void clockExpose (GtkWidget *widget)
 {
 	int i, j, face = 0;
-	cairo_t *cr = gdk_cairo_create (drawingArea -> window);
+	cairo_t *cr = gdk_cairo_create (dialConfig.drawingArea -> window);
 
 	for (j = 0; j < dialConfig.dialHeight; j++)
 	{
