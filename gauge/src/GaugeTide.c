@@ -475,7 +475,7 @@ void readTideValues (int face)
 {
 	struct tm *tideTime;
 	time_t nextTideTime, lastTideTime;
-	char tideDirStr[8], tideHeightStr[8], tideTimeStr[8];
+	char tideDirStr[41], tideHeightStr[41], tideTimeStr[41];
 	long duration;
 
 	FACE_SETTINGS *faceSetting = faceSettings[face];
