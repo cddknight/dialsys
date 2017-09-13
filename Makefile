@@ -20,6 +20,11 @@ dist: $(ALLDIRS)
 	$(MAKE) -C gauge dist
 	$(MAKE) -C tzclock dist
 
+dist-bzip2: $(ALLDIRS)
+	$(MAKE) -C dial dist-bzip2
+	$(MAKE) -C gauge dist-bzip2
+	$(MAKE) -C tzclock dist-bzip2
+
 distclean: $(ALLDIRS)
 	$(MAKE) -C dial distclean
 	$(MAKE) -C gauge distclean
@@ -30,3 +35,6 @@ maintainer-clean: $(ALLDIRS)
 	$(MAKE) -C gauge maintainer-clean
 	$(MAKE) -C tzclock maintainer-clean
 
+	$(MAKE) -C dialsys
+	$(MAKE) -C dialsys
+	$(MAKE) -C dialsys
