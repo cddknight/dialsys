@@ -25,7 +25,7 @@
 #include <string.h>
 #include "GaugeDisp.h"
 
-#define CPU_COUNT 9
+#define CPU_COUNT 32
 
 extern FACE_SETTINGS *faceSettings[];
 extern MENU_DESC gaugeMenuDesc[];
@@ -39,11 +39,11 @@ int readClockRates (void);
 
 static int readCount[3];
 static float loadAverages[3];
-static int clockRates[CPU_COUNT];
-static int myUpdateID[CPU_COUNT];
-static int loadValues[CPU_COUNT][8];
-static unsigned long startStats[CPU_COUNT][10];
-static unsigned long endStats[CPU_COUNT][10];
+static int clockRates[CPU_COUNT + 1];
+static int myUpdateID[CPU_COUNT + 1];
+static int loadValues[CPU_COUNT + 1][8];
+static unsigned long startStats[CPU_COUNT + 1][10];
+static unsigned long endStats[CPU_COUNT + 1][10];
 char *name[8] = 
 {
 	__("Total"),
@@ -309,26 +309,29 @@ int readAverage (float readAvs[])
  */
 int readClockRates ()
 {
-	int retn = 0;
+	int i = 0, retn = 0;
 	char readBuff[512];
-	FILE *readFile = fopen ("/proc/cpuinfo", "r");
+	FILE *readFile;
 
-	clockRates[0] = 0;
-	if (readFile != NULL)
+	for (i = 0; i < CPU_COUNT; ++i) 
 	{
-		while (fgets(readBuff, 510, readFile) && retn < CPU_COUNT)
+		sprintf (readBuff, "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq", i);
+		if ((readFile = fopen (readBuff, "r")) != NULL)
 		{
-			if (strncmp (readBuff, "cpu MHz	\t: ", 11) == 0)
+			if (fgets(readBuff, 510, readFile))
 			{
-				clockRates[++retn] = atoi (&readBuff[11]);
+				clockRates[++retn] = atoi (readBuff) / 1000;
 				clockRates[0] += clockRates[retn];
 			}
+			fclose (readFile);
+			continue;
 		}
-		fclose (readFile);
-		
-		if (retn)
-			clockRates[0] /= retn;
+		break;
 	}
-	return retn;
+	if (retn)
+	{
+		clockRates[0] /= retn;
+	}
+	return retn;	
 }
 
