@@ -313,6 +313,7 @@ int readClockRates ()
 	char readBuff[512];
 	FILE *readFile;
 
+	clockRates[0] = 0;
 	for (i = 0; i < CPU_COUNT; ++i) 
 	{
 		sprintf (readBuff, "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq", i);
