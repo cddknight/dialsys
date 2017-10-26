@@ -33,7 +33,7 @@ extern MENU_DESC pickCPUMenuDesc[];
 extern int sysUpdateID;
 
 void readCPULoad (int procNumber);
-int readStats (unsigned long *stats, int procNumber);
+int readStats (unsigned long long *stats, int procNumber);
 int readAverage (float stats[]);
 int readClockRates (void);
 
@@ -215,7 +215,7 @@ void readCPULoad (int procNumber)
  *  \param procNumber Which processor to read from.
  *  \result Number of words read.
  */
-int readStats (unsigned long *stats, int procNumber)
+int readStats (unsigned long long *stats, int procNumber)
 {
 	int i, j, n = 0, found = 0;
 	char readBuff[1025], word[254], procName[41];
