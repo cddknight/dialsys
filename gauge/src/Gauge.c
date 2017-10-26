@@ -998,7 +998,6 @@ clockTickCallback (gpointer data)
 				readMoonPhaseValues (face);
 				break;
 			default:
-printf ("Face: %d - Type: %d\n", face, faceSettings[face] -> showFaceType);
 				/*------------------------------------------------------------------------------------*
 				 * Used for drawing the icon on the about box.                                        *
 				 *------------------------------------------------------------------------------------*/
@@ -1886,7 +1885,14 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetIntValue ("face_size", dialConfig.dialSize);
 				break;
 			case 'T':
-				faceSettings[currentFace] -> showFaceType = 255;
+				{
+					int type = atoi (&argv[i][2]);
+					if (type >= 0 && type <= FACE_TYPE_MAX)
+					{
+						faceSettings[currentFace] -> showFaceType = atoi (&argv[i][2]);
+						faceSettings[currentFace] -> faceSubType = 0;
+					}
+				}
 				break;
 			case 'V':
 				allowSaveDisp = !allowSaveDisp;
