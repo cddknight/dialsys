@@ -1236,6 +1236,17 @@ batteryCallback (guint data)
 	faceSettings[currentFace] -> faceFlags |= (FACE_HOT_COLD | FACE_HC_REVS);
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  M O O N  P H A S E  C A L L B A C K                                                                               *
+ *  ===================================                                                                               *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Called to setup moon phase dial.
+ *  \param data Not used.
+ *  \result None.
+ */
 void
 moonPhaseCallback (guint data)
 {
@@ -2063,6 +2074,16 @@ void loadConfig (int *posX, int *posY)
 	}
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  S E T U P  D I S P L A Y                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Set values in the config that will be used by the library.
+ *  \result None.
+ */
 void setupDisplay()
 {
 	configSetIntValue ("number_cols", dialConfig.dialWidth);
