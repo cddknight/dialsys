@@ -124,7 +124,7 @@ void readBatteryValues (int face)
 	{
 		faceSetting -> firstValue = 0;
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(Missing)"));
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery<b>: Not Installed"));
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: Not Installed"));
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: Not Installed - Gauge"));
 		setFaceString (faceSetting, FACESTR_BOT, 0, _("0%%"));
 	}
