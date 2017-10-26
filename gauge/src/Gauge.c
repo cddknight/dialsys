@@ -2231,6 +2231,12 @@ main (int argc, char *argv[])
 	dialConfig.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 	gtk_window_set_title (GTK_WINDOW (dialConfig.mainWindow), PACKAGE_NAME);
 
+	/*------------------------------------------------------------------------------------------------*
+	 * There must be at least one face.                                                               *
+	 *------------------------------------------------------------------------------------------------*/
+	faceSettings[0] = malloc (sizeof (FACE_SETTINGS));
+	memset (faceSettings[0], 0, sizeof (FACE_SETTINGS));
+
 	for (i = 1; i < argc; i++)
 	{
 		if (argv[i][0] == '-')
@@ -2242,6 +2248,7 @@ main (int argc, char *argv[])
 			}
 		}
 	}
+
 	loadConfig (&posX, &posY);
 	processCommandLine (argc, argv, &posX, &posY);
 	setupDisplay();
@@ -2254,6 +2261,7 @@ main (int argc, char *argv[])
 		{
 			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
 			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
+			printf ("5:(%d, %d, %d, %p)\n", dialConfig.dialWidth, dialConfig.dialHeight, i, faceSettings[i]);
 		}
 		switch (faceSettings[i] -> showFaceType)
 		{

@@ -42,8 +42,8 @@ static float loadAverages[3];
 static int clockRates[CPU_COUNT + 1];
 static int myUpdateID[CPU_COUNT + 1];
 static int loadValues[CPU_COUNT + 1][8];
-static unsigned long startStats[CPU_COUNT + 1][10];
-static unsigned long endStats[CPU_COUNT + 1][10];
+static unsigned long long startStats[CPU_COUNT + 1][10];
+static unsigned long long endStats[CPU_COUNT + 1][10];
 char *name[8] = 
 {
 	__("Total"),
@@ -246,7 +246,7 @@ int readStats (unsigned long *stats, int procNumber)
 					}
 					else
 					{
-						stats[n] = atol (word);
+						stats[n] = atoll (word);
 						if (n != 4)					// Ignore Idle ticks
 							stats[0] += stats[n];	// Count all other ticks
 					}
