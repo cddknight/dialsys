@@ -1889,8 +1889,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					int type = atoi (&argv[i][2]);
 					if (type >= 0 && type <= FACE_TYPE_MAX)
 					{
-						faceSettings[currentFace] -> showFaceType = atoi (&argv[i][2]);
-						faceSettings[currentFace] -> faceSubType = 0;
+						gaugeReset (currentFace, type, 0);
 					}
 				}
 				break;
