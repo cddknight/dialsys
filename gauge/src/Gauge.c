@@ -998,6 +998,7 @@ clockTickCallback (gpointer data)
 				readMoonPhaseValues (face);
 				break;
 			default:
+printf ("Face: %d - Type: %d\n", face, faceSettings[face] -> showFaceType);
 				/*------------------------------------------------------------------------------------*
 				 * Used for drawing the icon on the about box.                                        *
 				 *------------------------------------------------------------------------------------*/
@@ -2043,21 +2044,17 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "%s_hand_fill", handNames[i]);
 		configGetBoolValue (value, &handStyle[i].fillIn);
 	}
-	for (i = 0; i < (dialConfig.dialWidth * dialConfig.dialHeight); i++)
+	for (i = 0; i < (dialConfig.dialWidth * dialConfig.dialHeight); ++i)
 	{
-		int val;
-
 		if (faceSettings[i] == NULL)
 		{
 			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
 			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 		sprintf (value, "show_face_type_%d", i + 1);
-		configGetIntValue (value, &val);
-		faceSettings[i] -> showFaceType = val;
+		configGetIntValue (value, (int *)&faceSettings[i] -> showFaceType);
 		sprintf (value, "face_sub_type_%d", i + 1);
-		configGetIntValue (value, &val);
-		faceSettings[i] -> faceSubType = val;
+		configGetIntValue (value, (int *)&faceSettings[i] -> faceSubType);
 	}
 }
 
@@ -2261,7 +2258,6 @@ main (int argc, char *argv[])
 		{
 			faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
 			memset (faceSettings[i], 0, sizeof (FACE_SETTINGS));
-			printf ("5:(%d, %d, %d, %p)\n", dialConfig.dialWidth, dialConfig.dialHeight, i, faceSettings[i]);
 		}
 		switch (faceSettings[i] -> showFaceType)
 		{
