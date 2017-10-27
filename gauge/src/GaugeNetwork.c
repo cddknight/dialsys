@@ -31,6 +31,7 @@
 #define MAX_SCALE_MEM	20
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern MENU_DESC networkDevDesc[];
 extern int sysUpdateID;
@@ -245,7 +246,10 @@ void readDeviceValues()
  */
 void readNetworkInit (void)
 {
-	readDeviceValues();
+	if (gaugeEnabled[FACE_TYPE_NETWORK].enabled)
+	{
+		readDeviceValues();
+	}
 }
 
 /**********************************************************************************************************************
@@ -261,51 +265,54 @@ void readNetworkInit (void)
  */
 void readNetworkValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
-	int scale, device = faceSetting -> faceSubType & 0x00FF;
-	unsigned long value = 0;
-	unsigned short shift;
-	char *nameT, *nameD;
+	if (gaugeEnabled[FACE_TYPE_NETWORK].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
+		int scale, device = faceSetting -> faceSubType & 0x00FF;
+		unsigned long value = 0;
+		unsigned short shift;
+		char *nameT, *nameD;
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % 10 != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		readDeviceValues();
-		myUpdateID = sysUpdateID;
-	}
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (sysUpdateID % 10 != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			readDeviceValues();
+			myUpdateID = sysUpdateID;
+		}
 
-	nameD = deviceActivity[device].name;
-	if (faceSetting -> faceSubType & 0x0100)
-	{
-		nameT = typeNames[0];
-		scale = deviceActivity[device].dataRead.useScale;
-		value = faceSetting -> firstValue = deviceActivity[device].dataRead.rate;
-	}
-	else
-	{
-		nameT = typeNames[1];
-		scale = deviceActivity[device].dataWrite.useScale;
-		value = faceSetting -> firstValue = deviceActivity[device].dataWrite.rate;
-	}
-	faceSetting -> firstValue /= scale;
-	shift = getScaleShiftCount(scale);
-	setFaceString (faceSetting, FACESTR_TOP, 0, _("Network\n%s (%s)"), nameT, nameD);
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Network %s</b>: %lu B/s (%s)"), nameT, value, nameD);
-	setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.1f)"), speedName[shift], faceSetting -> firstValue);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Network %s - Gauge"), nameT);
+		nameD = deviceActivity[device].name;
+		if (faceSetting -> faceSubType & 0x0100)
+		{
+			nameT = typeNames[0];
+			scale = deviceActivity[device].dataRead.useScale;
+			value = faceSetting -> firstValue = deviceActivity[device].dataRead.rate;
+		}
+		else
+		{
+			nameT = typeNames[1];
+			scale = deviceActivity[device].dataWrite.useScale;
+			value = faceSetting -> firstValue = deviceActivity[device].dataWrite.rate;
+		}
+		faceSetting -> firstValue /= scale;
+		shift = getScaleShiftCount(scale);
+		setFaceString (faceSetting, FACESTR_TOP, 0, _("Network\n%s (%s)"), nameT, nameD);
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Network %s</b>: %lu B/s (%s)"), nameT, value, nameD);
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.1f)"), speedName[shift], faceSetting -> firstValue);
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Network %s - Gauge"), nameT);
 
-	if (faceSetting -> updateNum != shift)
-	{
-		maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
-		faceSetting -> faceFlags |= FACE_REDRAW;
-		faceSetting -> updateNum = shift;
+		if (faceSetting -> updateNum != shift)
+		{
+			maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+			faceSetting -> faceFlags |= FACE_REDRAW;
+			faceSetting -> updateNum = shift;
+		}
 	}
 }
 

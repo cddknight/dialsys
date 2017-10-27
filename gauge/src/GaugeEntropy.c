@@ -28,6 +28,7 @@
 #include "GaugeDisp.h"
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
@@ -50,8 +51,10 @@ static int myEntropyAvail = 0;
  */
 void readEntropyInit (void)
 {
-/*	myPoolsize = readEntropyFile (entropyPoolFile, myPoolsize); */
-	gaugeMenuDesc[MENU_GAUGE_ENTROPY].disable = 0;
+	if (gaugeEnabled[FACE_TYPE_ENTROPY].enabled)
+	{
+		gaugeMenuDesc[MENU_GAUGE_ENTROPY].disable = 0;
+	}
 }
 
 /**********************************************************************************************************************
@@ -67,27 +70,30 @@ void readEntropyInit (void)
  */
 void readEntropyValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	if (gaugeEnabled[FACE_TYPE_ENTROPY].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (sysUpdateID % 5 != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			myEntropyAvail = readEntropyFile (entropyAvailFile, myEntropyAvail);
+			myUpdateID = sysUpdateID;
+		}
+		faceSetting -> firstValue = myEntropyAvail * 100;
+		faceSetting -> firstValue /= myPoolsize;
+		setFaceString (faceSetting, FACESTR_TOP, 0, _("Random\nEntropy"));
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Entropy</b>: %0.1f%% Full"), faceSetting -> firstValue);
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Random Entropy: %0.1f%% Full - Gauge"), faceSetting -> firstValue);
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), faceSetting -> firstValue);
 	}
-	else if (sysUpdateID % 5 != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		myEntropyAvail = readEntropyFile (entropyAvailFile, myEntropyAvail);
-		myUpdateID = sysUpdateID;
-	}
-	faceSetting -> firstValue = myEntropyAvail * 100;
-	faceSetting -> firstValue /= myPoolsize;
-	setFaceString (faceSetting, FACESTR_TOP, 0, _("Random\nEntropy"));
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Entropy</b>: %0.1f%% Full"), faceSetting -> firstValue);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Random Entropy: %0.1f%% Full - Gauge"), faceSetting -> firstValue);
-	setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), faceSetting -> firstValue);
 }
 
 /**********************************************************************************************************************

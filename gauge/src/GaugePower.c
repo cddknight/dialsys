@@ -36,6 +36,7 @@
 #ifdef GAUGE_HAS_POWER
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern char powerServer[];
 extern int powerPort;
@@ -54,17 +55,20 @@ double myPowerReading[8];
  */
 void readPowerMeterInit (void)
 {
-	char addr[20];
-	int clientSock = -1;
+	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
+	{
+		char addr[20];
+		int clientSock = -1;
 	
-	if (GetAddressFromName (powerServer, addr))
-	{
-		clientSock = ConnectClientSocket (addr, powerPort);
-	}
-	if (SocketValid (clientSock))
-	{
-		gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
-		CloseSocket (&clientSock);
+		if (GetAddressFromName (powerServer, addr))
+		{
+			clientSock = ConnectClientSocket (addr, powerPort);
+		}
+		if (SocketValid (clientSock))
+		{
+			gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
+			CloseSocket (&clientSock);
+		}
 	}
 }
 
@@ -242,47 +246,50 @@ void getPowerStr (double reading, char *buffer)
  */
 void readPowerMeterValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
-	char powerStr[8][41];
-	int i;
-
-	if (faceSetting -> faceFlags & FACE_REDRAW)
+	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
-		;
-	}
-	else if (faceSetting -> nextUpdate)
-	{
-		faceSetting -> nextUpdate -= 1;
-		return;
-	}
-	else if (!faceSetting -> nextUpdate)
-	{
-		readPowerMeterInfo ();
-		faceSetting -> nextUpdate = 30;
-	}
+		FACE_SETTINGS *faceSetting = faceSettings[face];
+		char powerStr[8][41];
+		int i;
 
-	for (i = 0; i < 8; ++i)
-		getPowerStr (myPowerReading[i], &powerStr[i][0]);
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (faceSetting -> nextUpdate)
+		{
+			faceSetting -> nextUpdate -= 1;
+			return;
+		}
+		else if (!faceSetting -> nextUpdate)
+		{
+			readPowerMeterInfo ();
+			faceSetting -> nextUpdate = 30;
+		}
 
-	setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
-	setFaceString (faceSetting, FACESTR_TIP, 0, 
-			_("<b>Current</b>: %s\n"
-			"<b>Maximum</b>: %s\n"
-			"<b>Minimum</b>: %s\n"
-			"<b>Hour Average</b>: %s\n"
-			"<b>Day Average</b>: %s\n"
-			"<b>Month Average</b>: %s"), 
-			powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5], powerStr[6]);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Day Average: %s"),
-			powerStr[0], powerStr[5]);
-	setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);
-	faceSetting -> firstValue = myPowerReading[0] / 1000;
-	faceSetting -> secondValue = myPowerReading[5] / 1000;
+		for (i = 0; i < 8; ++i)
+			getPowerStr (myPowerReading[i], &powerStr[i][0]);
 
-	while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
-	{
-		faceSetting -> faceScaleMax *= 2;
-		maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+		setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
+		setFaceString (faceSetting, FACESTR_TIP, 0, 
+				_("<b>Current</b>: %s\n"
+				"<b>Maximum</b>: %s\n"
+				"<b>Minimum</b>: %s\n"
+				"<b>Hour Average</b>: %s\n"
+				"<b>Day Average</b>: %s\n"
+				"<b>Month Average</b>: %s"), 
+				powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5], powerStr[6]);
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Day Average: %s"),
+				powerStr[0], powerStr[5]);
+		setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);
+		faceSetting -> firstValue = myPowerReading[0] / 1000;
+		faceSetting -> secondValue = myPowerReading[5] / 1000;
+
+		while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+		{
+			faceSetting -> faceScaleMax *= 2;
+			maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+		}
 	}
 }
 

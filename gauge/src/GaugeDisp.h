@@ -191,6 +191,13 @@ FACE_SETTINGS;
 #define FACE_TYPE_MOONPHASE		12
 #define FACE_TYPE_MAX			13
 
+typedef struct _gaugeEnabled 
+{
+	char *gaugeName;
+	int enabled;
+}
+GAUGE_ENABLED;
+
 #define LOCATION_COUNT			6
 
 /*----------------------------------------------------------------------------------------------------*

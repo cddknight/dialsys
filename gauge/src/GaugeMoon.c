@@ -41,6 +41,7 @@ TimePlace;
 #include "GaugeDisp.h"
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
@@ -58,7 +59,10 @@ static int myUpdateID = 100;
  */
 void readMoonPhaseInit (void)
 {
-	gaugeMenuDesc[MENU_GAUGE_MOONPHASE].disable = 0;
+	if (gaugeEnabled[FACE_TYPE_MOONPHASE].enabled)
+	{
+		gaugeMenuDesc[MENU_GAUGE_MOONPHASE].disable = 0;
+	}
 }
 
 /**********************************************************************************************************************
@@ -268,38 +272,41 @@ double moon_phase(int year, int month, int day, double hour, int *ip)
  */
 void readMoonPhaseValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	if (gaugeEnabled[FACE_TYPE_MOONPHASE].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % 25 != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		myUpdateID = sysUpdateID;
-	}
-	{
-		struct tm result;
-		time_t now = time(NULL);
-		double p;
-		int ip;
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (sysUpdateID % 25 != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			myUpdateID = sysUpdateID;
+		}
+		{
+			struct tm result;
+			time_t now = time(NULL);
+			double p;
+			int ip;
 
-		localtime_r(&now, &result);
-		p = moon_phase(result.tm_year + 1900, result.tm_mon + 1, result.tm_mday, result.tm_hour, &ip);
-		p = floor(p * 1000 + 0.5) / 10;
+			localtime_r(&now, &result);
+			p = moon_phase(result.tm_year + 1900, result.tm_mon + 1, result.tm_mday, result.tm_hour, &ip);
+			p = floor(p * 1000 + 0.5) / 10;
 
-		faceSetting -> firstValue = p;
-		setFaceString (faceSetting, FACESTR_TOP, 0, _("Moon\nPhase"));
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"),
-				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"),
-				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.0f%%) - Gauge"),
-				ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
+			faceSetting -> firstValue = p;
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Moon\nPhase"));
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"),
+					ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"),
+					ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.0f%%) - Gauge"),
+					ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
+		}
 	}
 }
 

@@ -26,6 +26,7 @@
 #include "GaugeDisp.h"
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
@@ -66,7 +67,10 @@ static char *name[] =
  */
 void readMemoryInit (void)
 {
-	gaugeMenuDesc[MENU_GAUGE_MEMORY].disable = 0;
+	if (gaugeEnabled[FACE_TYPE_MEMORY].enabled)
+	{
+		gaugeMenuDesc[MENU_GAUGE_MEMORY].disable = 0;
+	}
 }
 
 /**********************************************************************************************************************
@@ -82,68 +86,71 @@ void readMemoryInit (void)
  */
 void readMemoryValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
-	int faceType = faceSetting -> faceSubType;
-	float value = 0, totalMem = 0;
-	unsigned long total;
+	if (gaugeEnabled[FACE_TYPE_MEMORY].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
+		int faceType = faceSetting -> faceSubType;
+		float value = 0, totalMem = 0;
+		unsigned long total;
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % 15 != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		readMemInfo ();
-		myUpdateID = sysUpdateID;
-	}
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (sysUpdateID % 15 != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			readMemInfo ();
+			myUpdateID = sysUpdateID;
+		}
 
-	faceSetting -> firstValue = 0;
-	faceSetting -> secondValue = 0;
+		faceSetting -> firstValue = 0;
+		faceSetting -> secondValue = 0;
 	
 
-	if (faceType == 4)
-	{
-		if ((total = memValues[4]) == 0)
-			value = totalMem = 0;
-		else
+		if (faceType == 4)
 		{
-			value = total - memValues[5];
+			if ((total = memValues[4]) == 0)
+				value = totalMem = 0;
+			else
+			{
+				value = total - memValues[5];
 			
-			faceSetting -> firstValue = (value * 100) / total;
+				faceSetting -> firstValue = (value * 100) / total;
+				totalMem = (double)total / 1024000;
+				value /= 1024000;
+			}
+		}
+		else if (memValues[0])
+		{
+			total = memValues[0];
 			totalMem = (double)total / 1024000;
+			if (faceType == 0)			/* Used by applications */
+			{
+				value = total - (memValues[1] + memValues[2] + memValues[3]);
+			}
+			else
+			{
+				value = memValues[faceType];
+			}
+			if (total)
+			{
+				faceSetting -> firstValue = (value * 100) / total;
+				faceSetting -> secondValue = ((total - memValues[1]) * 100) / total;
+			}
 			value /= 1024000;
 		}
-	}
-	else if (memValues[0])
-	{
-		total = memValues[0];
-		totalMem = (double)total / 1024000;
-		if (faceType == 0)			/* Used by applications */
-		{
-			value = total - (memValues[1] + memValues[2] + memValues[3]);
-		}
-		else
-		{
-			value = memValues[faceType];
-		}
-		if (total)
-		{
-			faceSetting -> firstValue = (value * 100) / total;
-			faceSetting -> secondValue = ((total - memValues[1]) * 100) / total;
-		}
-		value /= 1024000;
-	}
 
-	setFaceString (faceSetting, FACESTR_TOP, 0, _("Memory\n(%s)"), gettext (name[faceType]));
-	setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%0.1fGB"), faceSetting -> firstValue, totalMem);
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s</b>: %0.1f%% (%0.1fGB)\n<b>Total Size</b>: %0.1fGB"), 
-			gettext (name[faceType]), faceSetting -> firstValue, value, totalMem);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Memory %s: %0.1f%% - Gauge"), gettext (name[faceType]), 
-			faceSetting -> firstValue);
+		setFaceString (faceSetting, FACESTR_TOP, 0, _("Memory\n(%s)"), gettext (name[faceType]));
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%0.1fGB"), faceSetting -> firstValue, totalMem);
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s</b>: %0.1f%% (%0.1fGB)\n<b>Total Size</b>: %0.1fGB"), 
+				gettext (name[faceType]), faceSetting -> firstValue, value, totalMem);
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Memory %s: %0.1f%% - Gauge"), gettext (name[faceType]), 
+				faceSetting -> firstValue);
+	}
 }
 
 /**********************************************************************************************************************

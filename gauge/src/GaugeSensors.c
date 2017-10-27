@@ -32,6 +32,7 @@
 #include <sensors/sensors.h>
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern MENU_DESC sTempMenuDesc[];
 extern MENU_DESC sFanMenuDesc[];
@@ -84,13 +85,19 @@ void findSensors ()
 			{
 				if (subfeature -> type == SENSORS_SUBFEATURE_TEMP_INPUT && tempCount < 8)
 				{
-					sTempMenuDesc[tempCount].disable = 0;
-					++tempCount;
+					if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled)
+					{
+						sTempMenuDesc[tempCount].disable = 0;
+						++tempCount;
+					}
 				}
 				else if (subfeature -> type == SENSORS_SUBFEATURE_FAN_INPUT && fanCount < 8)
 				{
-					sFanMenuDesc[fanCount].disable = 0;
-					++fanCount;
+					if (gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
+					{
+						sFanMenuDesc[fanCount].disable = 0;
+						++fanCount;
+					}
 				}
 				subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
 			}
@@ -121,16 +128,19 @@ void findSensors ()
 void readSensorInit (void)
 {
 #if SENSORS_API_VERSION >= 1024
-	FILE *inputFile;
-
-	if ((inputFile = fopen ("/etc/sensors3.conf", "r")) != NULL)
+	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
 	{
-		if (sensors_init(inputFile) == 0)
+		FILE *inputFile;
+
+		if ((inputFile = fopen ("/etc/sensors3.conf", "r")) != NULL)
 		{
-			initSensorsOK = 1;
-			findSensors();
+			if (sensors_init(inputFile) == 0)
+			{
+				initSensorsOK = 1;
+				findSensors();
+			}
+			fclose (inputFile);
 		}
-		fclose (inputFile);
 	}
 #endif
 }
@@ -148,96 +158,103 @@ void readSensorInit (void)
  */
 void readSensorValues (int face)
 {
-	int nr = 0, count = 0;
-	FACE_SETTINGS *faceSetting = faceSettings[face];
-	int type = faceSetting -> showFaceType;
-	int number = faceSetting -> faceSubType;
+	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
+	{
+		int nr = 0, count = 0;
+		FACE_SETTINGS *faceSetting = faceSettings[face];
+		int type = faceSetting -> showFaceType;
+		int number = faceSetting -> faceSubType;
 
 #if SENSORS_API_VERSION >= 1024
 
-	const sensors_chip_name *chipset;
-	const sensors_feature *feature;
-	const sensors_subfeature *subfeature;
+		const sensors_chip_name *chipset;
+		const sensors_feature *feature;
+		const sensors_subfeature *subfeature;
 
 #endif
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % 10 != 0)
-	{
-		return;
-	}
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (sysUpdateID % 10 != 0)
+		{
+			return;
+		}
 
 #if SENSORS_API_VERSION >= 1024
 
-	if (initSensorsOK)
-	{
-		chipset = sensors_get_detected_chips (NULL, &nr);
-		while (chipset)
+		if (initSensorsOK)
 		{
-			int nr1 = 0;
-
-			feature = sensors_get_features (chipset, &nr1);
-			while (feature)
+			chipset = sensors_get_detected_chips (NULL, &nr);
+			while (chipset)
 			{
-				int nr2 = 0;
+				int nr1 = 0;
 
-				subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
-				while (subfeature)
+				feature = sensors_get_features (chipset, &nr1);
+				while (feature)
 				{
-					if (subfeature -> type == faceTypes[type - FACE_TYPE_SENSOR_TEMP])
-					{
-						if (count++ == number)
-						{
-							double value;
-	
-							if (sensors_get_value (chipset, nr2 - 1, &value) == 0)
-							{
-								switch (type)
-								{
-								case FACE_TYPE_SENSOR_TEMP:
-									setFaceString (faceSetting, FACESTR_TOP, 0, _("Temp %d"), number + 1);
-									setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Temp %d - Gauge"), number + 1);
-									setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Temp %d</b>: %0.0f\302\260C\n"
-												"<b>Chipset Name</b>: %s"),	number + 1, value, chipset -> prefix);
-									setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\302\260C"), value);
-									faceSetting -> firstValue = value;
-									while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
-									{
-										faceSetting -> faceScaleMax += 25;
-										maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
-									}									
-									break;
+					int nr2 = 0;
 
-								case FACE_TYPE_SENSOR_FAN:
-									setFaceString (faceSetting, FACESTR_TOP, 0, _("Fan %d"), number + 1);
-									setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Fan %d - Gauge"), number + 1);
-									setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Fan %d</b>: %0.0f rpm\n"
-												"<b>Chipset Name</b>: %s"),	number + 1, value, chipset -> prefix);
-									setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\n(rpm)"), value);
-									faceSetting -> firstValue = value / 100;
-									while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+					subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
+					while (subfeature)
+					{
+						if (subfeature -> type == faceTypes[type - FACE_TYPE_SENSOR_TEMP])
+						{
+							if (count++ == number)
+							{
+								double value;
+	
+								if (sensors_get_value (chipset, nr2 - 1, &value) == 0)
+								{
+									switch (type)
 									{
-										faceSetting -> faceScaleMax += 25;
-										maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
-									}									
-									break;
+									case FACE_TYPE_SENSOR_TEMP:
+										if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled)
+										{
+											setFaceString (faceSetting, FACESTR_TOP, 0, _("Temp %d"), number + 1);
+											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Temp %d - Gauge"), number + 1);
+											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Temp %d</b>: %0.0f\302\260C\n"
+														"<b>Chipset Name</b>: %s"),	number + 1, value, chipset -> prefix);
+											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\302\260C"), value);
+											faceSetting -> firstValue = value;
+											while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+											{
+												faceSetting -> faceScaleMax += 25;
+												maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+											}
+										}
+										break;
+
+									case FACE_TYPE_SENSOR_FAN:
+										if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled)
+										{
+											setFaceString (faceSetting, FACESTR_TOP, 0, _("Fan %d"), number + 1);
+											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Fan %d - Gauge"), number + 1);
+											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Fan %d</b>: %0.0f rpm\n"
+														"<b>Chipset Name</b>: %s"),	number + 1, value, chipset -> prefix);
+											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\n(rpm)"), value);
+											faceSetting -> firstValue = value / 100;
+											while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+											{
+												faceSetting -> faceScaleMax += 25;
+												maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+											}
+										}
+										break;
+									}
+									return;
 								}
-								return;
 							}
 						}
+						subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
 					}
-					subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
+					feature = sensors_get_features (chipset, &nr1);
 				}
-				feature = sensors_get_features (chipset, &nr1);
+				chipset = sensors_get_detected_chips (NULL, &nr);
 			}
-			chipset = sensors_get_detected_chips (NULL, &nr);
 		}
-	}
-	
 #endif
+	}
 }
-
 #endif

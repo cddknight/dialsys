@@ -33,6 +33,7 @@
 #ifdef GAUGE_HAS_TIDE
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern DIAL_CONFIG dialConfig;
 extern int sysUpdateID;
@@ -455,9 +456,12 @@ void getTideTimes ()
  */
 void readTideInit (void)
 {
-	gaugeMenuDesc[MENU_GAUGE_TIDE].disable = 0;
-	tideInfo.tideTimes[0].tideTime = tideInfo.tideTimes[1].tideTime = 0;
-	tideInfo.tideTimes[0].estimate = tideInfo.tideTimes[1].estimate = 1;
+	if (gaugeEnabled[FACE_TYPE_TIDE].enabled)
+	{
+		gaugeMenuDesc[MENU_GAUGE_TIDE].disable = 0;
+		tideInfo.tideTimes[0].tideTime = tideInfo.tideTimes[1].tideTime = 0;
+		tideInfo.tideTimes[0].estimate = tideInfo.tideTimes[1].estimate = 1;
+	}
 }
 
 /**********************************************************************************************************************
@@ -473,64 +477,67 @@ void readTideInit (void)
  */
 void readTideValues (int face)
 {
-	struct tm *tideTime;
-	time_t nextTideTime, lastTideTime;
-	char tideDirStr[41], tideHeightStr[41], tideTimeStr[41];
-	long duration;
+	if (gaugeEnabled[FACE_TYPE_TIDE].enabled)
+	{
+		struct tm *tideTime;
+		time_t nextTideTime, lastTideTime;
+		char tideDirStr[41], tideHeightStr[41], tideTimeStr[41];
+		long duration;
 
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+		FACE_SETTINGS *faceSetting = faceSettings[face];
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % 60 != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		time_t now = time (NULL);
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (sysUpdateID % 60 != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			time_t now = time (NULL);
 		
-		if (tideInfo.readTime < now || tideInfo.tideTimes[1].tideTime < now)
-			getTideTimes();
-		myUpdateID = sysUpdateID;
-	}
+			if (tideInfo.readTime < now || tideInfo.tideTimes[1].tideTime < now)
+				getTideTimes();
+			myUpdateID = sysUpdateID;
+		}
 
-	lastTideTime = tideInfo.tideTimes[0].tideTime;
-	nextTideTime = tideInfo.tideTimes[1].tideTime;
-	tideTime = localtime (&nextTideTime);
-	duration = nextTideTime - lastTideTime;
+		lastTideTime = tideInfo.tideTimes[0].tideTime;
+		nextTideTime = tideInfo.tideTimes[1].tideTime;
+		tideTime = localtime (&nextTideTime);
+		duration = nextTideTime - lastTideTime;
 	
-	faceSetting -> firstValue = (double)(time (NULL) - lastTideTime) / duration;
-	if (tideInfo.tideTimes[1].tideType == 'L')
-		faceSetting -> firstValue = (double)1 - faceSetting -> firstValue;
-	faceSetting -> firstValue *= 3.141592654;
-	faceSetting -> firstValue = cos (faceSetting -> firstValue);
-	faceSetting -> firstValue *= -50;
-	faceSetting -> firstValue += 50;
+		faceSetting -> firstValue = (double)(time (NULL) - lastTideTime) / duration;
+		if (tideInfo.tideTimes[1].tideType == 'L')
+			faceSetting -> firstValue = (double)1 - faceSetting -> firstValue;
+		faceSetting -> firstValue *= 3.141592654;
+		faceSetting -> firstValue = cos (faceSetting -> firstValue);
+		faceSetting -> firstValue *= -50;
+		faceSetting -> firstValue += 50;
 
-	strcpy (tideDirStr, tideInfo.tideTimes[1].tideType == 'H' ? _("High") : _("Low"));
-	sprintf (tideTimeStr, "%d:%02d", tideTime -> tm_hour, tideTime -> tm_min);
-	sprintf (tideHeightStr, "%d.%01d", tideInfo.tideTimes[1].tideHeight / 10, 
-			tideInfo.tideTimes[1].tideHeight % 10);
+		strcpy (tideDirStr, tideInfo.tideTimes[1].tideType == 'H' ? _("High") : _("Low"));
+		sprintf (tideTimeStr, "%d:%02d", tideTime -> tm_hour, tideTime -> tm_min);
+		sprintf (tideHeightStr, "%d.%01d", tideInfo.tideTimes[1].tideHeight / 10, 
+				tideInfo.tideTimes[1].tideHeight % 10);
 
-	setFaceString (faceSetting, FACESTR_TOP, 22, "%s", tideInfo.location);
-	if (tideInfo.tideTimes[1].estimate)
-	{
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n(est.)"), tideDirStr, tideTimeStr);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s (estimate)"), 
-				tideDirStr, tideTimeStr);
+		setFaceString (faceSetting, FACESTR_TOP, 22, "%s", tideInfo.location);
+		if (tideInfo.tideTimes[1].estimate)
+		{
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n(est.)"), tideDirStr, tideTimeStr);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s (estimate)"), 
+					tideDirStr, tideTimeStr);
+		}
+		else
+		{
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%sm"), tideDirStr, tideTimeStr, tideHeightStr);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s\n<b>Height</b>: %sm"),
+					tideDirStr, tideTimeStr, tideHeightStr);
+		}
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"), 
+				tideInfo.tideTimes[1].tideType == 'H' ? _("coming in") : _("going out"),
+				faceSetting -> firstValue);
 	}
-	else
-	{
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%sm"), tideDirStr, tideTimeStr, tideHeightStr);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s\n<b>Height</b>: %sm"),
-				tideDirStr, tideTimeStr, tideHeightStr);
-	}
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"), 
-			tideInfo.tideTimes[1].tideType == 'H' ? _("coming in") : _("going out"),
-			faceSetting -> firstValue);
 }
 
 /**********************************************************************************************************************

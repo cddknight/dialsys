@@ -32,6 +32,7 @@
 #define MAX_SCALE_MEM	20
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern MENU_DESC spaceMenuDesc[];
 extern MENU_DESC diskMenuDesc[];
@@ -353,8 +354,11 @@ void readActivityValues()
  */
 void readHarddiskInit (void)
 {
-	readPartitionNames();
-	readActivityValues();
+	if (gaugeEnabled[FACE_TYPE_HARDDISK].enabled)
+	{
+		readPartitionNames();
+		readActivityValues();
+	}
 }
 
 /**********************************************************************************************************************
@@ -403,70 +407,73 @@ char *sizeToString (unsigned long long partSize, char *sizeStr)
  */
 void readHarddiskValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	if (gaugeEnabled[FACE_TYPE_HARDDISK].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % (faceSetting -> faceSubType & 0x0300 ? 10 : 50) != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		readActivityValues();
-		myUpdateID = sysUpdateID;
-	}
-	if (faceSetting -> faceSubType & 0x0300)
-	{
-		int scale, disk = faceSetting -> faceSubType & 0x00FF;
-		unsigned long value = 0;
-		char *nameT, *nameD;
-
-		nameD = diskActivity[disk].name;
-		if (faceSetting -> faceSubType & 0x0100)
+		if (faceSetting -> faceFlags & FACE_REDRAW)
 		{
-			nameT = typeNames[0];
-			scale = diskActivity[disk].secRead.useScale;
-			faceSetting -> firstValue = value = diskActivity[disk].secRead.rate;
+			;
+		}
+		else if (sysUpdateID % (faceSetting -> faceSubType & 0x0300 ? 10 : 50) != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			readActivityValues();
+			myUpdateID = sysUpdateID;
+		}
+		if (faceSetting -> faceSubType & 0x0300)
+		{
+			int scale, disk = faceSetting -> faceSubType & 0x00FF;
+			unsigned long value = 0;
+			char *nameT, *nameD;
+
+			nameD = diskActivity[disk].name;
+			if (faceSetting -> faceSubType & 0x0100)
+			{
+				nameT = typeNames[0];
+				scale = diskActivity[disk].secRead.useScale;
+				faceSetting -> firstValue = value = diskActivity[disk].secRead.rate;
+			}
+			else
+			{
+				nameT = typeNames[1];
+				scale = diskActivity[disk].secWrite.useScale;
+				faceSetting -> firstValue = value = diskActivity[disk].secWrite.rate;
+			}
+			faceSetting -> firstValue /= scale;
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Sector\n%s (%s)"), gettext (nameT), nameD);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sector %s</b>: %lu/sec (%s)"), gettext (nameT), value, nameD);
+			if (scale > 1)
+				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec\nx%d"), faceSetting -> firstValue, scale);
+			else
+				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec"), faceSetting -> firstValue);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Sector %s - Gauge"), nameT);
+
+			if (faceSetting -> updateNum != scale)
+			{
+				maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+				faceSetting -> faceFlags |= FACE_REDRAW;
+				faceSetting -> updateNum = scale;
+			}
 		}
 		else
 		{
-			nameT = typeNames[1];
-			scale = diskActivity[disk].secWrite.useScale;
-			faceSetting -> firstValue = value = diskActivity[disk].secWrite.rate;
-		}
-		faceSetting -> firstValue /= scale;
-		setFaceString (faceSetting, FACESTR_TOP, 0, _("Sector\n%s (%s)"), gettext (nameT), nameD);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sector %s</b>: %lu/sec (%s)"), gettext (nameT), value, nameD);
-		if (scale > 1)
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec\nx%d"), faceSetting -> firstValue, scale);
-		else
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec"), faceSetting -> firstValue);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Sector %s - Gauge"), nameT);
-
-		if (faceSetting -> updateNum != scale)
-		{
-			maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
-			faceSetting -> faceFlags |= FACE_REDRAW;
-			faceSetting -> updateNum = scale;
-		}
-	}
-	else
-	{
-		char sizeStr[2][41];
-		unsigned long long partTotal, partSize;
+			char sizeStr[2][41];
+			unsigned long long partTotal, partSize;
 		
-		faceSetting -> firstValue = getPartitionFreeSpace(faceSetting -> faceSubType, &partTotal, &partSize);
-		sizeToString (partTotal, sizeStr[0]);
-		sizeToString (partSize, sizeStr[1]);
+			faceSetting -> firstValue = getPartitionFreeSpace(faceSetting -> faceSubType, &partTotal, &partSize);
+			sizeToString (partTotal, sizeStr[0]);
+			sizeToString (partSize, sizeStr[1]);
 		
-		setFaceString (faceSetting, FACESTR_TOP, 0, _("Partition\n%s"), tidyNames[faceSetting -> faceSubType]);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Used Space</b>: %0.1f%% (%s)\n<b>Total Size</b>: %s"), 
-				faceSetting -> firstValue, sizeStr[1], sizeStr[0]);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Partition Space: %0.1f%% Used - Gauge"), faceSetting -> firstValue);
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%s"), faceSetting -> firstValue, sizeStr[0]);
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Partition\n%s"), tidyNames[faceSetting -> faceSubType]);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Used Space</b>: %0.1f%% (%s)\n<b>Total Size</b>: %s"), 
+					faceSetting -> firstValue, sizeStr[1], sizeStr[0]);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Partition Space: %0.1f%% Used - Gauge"), faceSetting -> firstValue);
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%s"), faceSetting -> firstValue, sizeStr[0]);
+		}
 	}
 }
 

@@ -28,6 +28,7 @@
 #include "GaugeDisp.h"
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
@@ -64,9 +65,12 @@ static int myUpdateID = 100;
  */
 void readBatteryInit (void)
 {
-	readBatteryDir ();
-	if (valsRead == 3)
-		gaugeMenuDesc[MENU_GAUGE_BATTERY].disable = 0;
+	if (gaugeEnabled[FACE_TYPE_BATTERY].enabled)
+	{
+		readBatteryDir ();
+		if (valsRead == 3)
+			gaugeMenuDesc[MENU_GAUGE_BATTERY].disable = 0;
+	}
 }
 
 /**********************************************************************************************************************
@@ -82,51 +86,54 @@ void readBatteryInit (void)
  */
 void readBatteryValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	if (gaugeEnabled[FACE_TYPE_BATTERY].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (sysUpdateID % 25 != 0)
-	{
-		return;
-	}
-	if (myUpdateID != sysUpdateID)
-	{
-		readBatteryDir ();
-		myUpdateID = sysUpdateID;
-	}
-	if (valsRead == 3)
-	{
-		int i;
-		char *state = batteryValues[0];
-		
-		for (i = 0; i < 6; i += 2)
+		if (faceSetting -> faceFlags & FACE_REDRAW)
 		{
-			if (strcmp (state, batState[i]) == 0)
-			{
-				state = batState[i + 1];
-				break;
-			}
+			;
 		}
-		faceSetting -> firstValue = atoi (batteryValues[2]) * 100;
-		faceSetting -> firstValue /= atoi (batteryValues[1]);
-		setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(%s)"), gettext (state));
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: %0.1f%% Full, %s"), 
-				faceSetting -> firstValue, gettext (state));
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.1f%% Full - Gauge"), 
-				faceSetting -> firstValue);
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), 
-				faceSetting -> firstValue);
-	}	
-	else
-	{
-		faceSetting -> firstValue = 0;
-		setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(Missing)"));
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: Not Installed"));
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: Not Installed - Gauge"));
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("0%%"));
+		else if (sysUpdateID % 25 != 0)
+		{
+			return;
+		}
+		if (myUpdateID != sysUpdateID)
+		{
+			readBatteryDir ();
+			myUpdateID = sysUpdateID;
+		}
+		if (valsRead == 3)
+		{
+			int i;
+			char *state = batteryValues[0];
+		
+			for (i = 0; i < 6; i += 2)
+			{
+				if (strcmp (state, batState[i]) == 0)
+				{
+					state = batState[i + 1];
+					break;
+				}
+			}
+			faceSetting -> firstValue = atoi (batteryValues[2]) * 100;
+			faceSetting -> firstValue /= atoi (batteryValues[1]);
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(%s)"), gettext (state));
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: %0.1f%% Full, %s"), 
+					faceSetting -> firstValue, gettext (state));
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.1f%% Full - Gauge"), 
+					faceSetting -> firstValue);
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), 
+					faceSetting -> firstValue);
+		}	
+		else
+		{
+			faceSetting -> firstValue = 0;
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(Missing)"));
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: Not Installed"));
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: Not Installed - Gauge"));
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("0%%"));
+		}
 	}
 }
 

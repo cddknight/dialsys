@@ -37,6 +37,7 @@
 #ifdef GAUGE_HAS_THERMO
 
 extern FACE_SETTINGS *faceSettings[];
+extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern char thermoServer[];
 extern int thermoPort;
@@ -55,17 +56,20 @@ double myThermoReading[5] = { 0, 0, 0, 0, 0 };
  */
 void readThermometerInit (void)
 {
-	char addr[20];
-	int clientSock = -1;
+	if (gaugeEnabled[FACE_TYPE_THERMO].enabled)
+	{
+		char addr[20];
+		int clientSock = -1;
 	
-	if (GetAddressFromName (thermoServer, addr))
-	{
-		clientSock = ConnectClientSocket (addr, thermoPort);
-	}
-	if (SocketValid (clientSock))
-	{
-		gaugeMenuDesc[MENU_GAUGE_THERMO].disable = 0;
-		CloseSocket (&clientSock);
+		if (GetAddressFromName (thermoServer, addr))
+		{
+			clientSock = ConnectClientSocket (addr, thermoPort);
+		}
+		if (SocketValid (clientSock))
+		{
+			gaugeMenuDesc[MENU_GAUGE_THERMO].disable = 0;
+			CloseSocket (&clientSock);
+		}
 	}
 }
 
@@ -215,33 +219,36 @@ void readThermometerInfo ()
  */
 void readThermometerValues (int face)
 {
-	FACE_SETTINGS *faceSetting = faceSettings[face];
+	if (gaugeEnabled[FACE_TYPE_THERMO].enabled)
+	{
+		FACE_SETTINGS *faceSetting = faceSettings[face];
 
-	if (faceSetting -> faceFlags & FACE_REDRAW)
-	{
-		;
-	}
-	else if (faceSetting -> nextUpdate)
-	{
-		faceSetting -> nextUpdate -= 1;
-		return;
-	}
-	else if (!faceSetting -> nextUpdate)
-	{
-		readThermometerInfo ();
-		faceSetting -> nextUpdate = 60;
-	}
+		if (faceSetting -> faceFlags & FACE_REDRAW)
+		{
+			;
+		}
+		else if (faceSetting -> nextUpdate)
+		{
+			faceSetting -> nextUpdate -= 1;
+			return;
+		}
+		else if (!faceSetting -> nextUpdate)
+		{
+			readThermometerInfo ();
+			faceSetting -> nextUpdate = 60;
+		}
 
-	setFaceString (faceSetting, FACESTR_TOP, 0, "Thermometer");
-	setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Outside</b>: %0.1f\302\260C\n<b>Inside</b>: %0.1f\302\260C\n"
-			"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%"), 
-			myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4]);
-	setFaceString (faceSetting, FACESTR_WIN, 0, _("Outside: %0.1f%s, Inside: %0.1f%s"),
-			myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
-	setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n(%0.1f%s)", 
-			myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
-	faceSetting -> firstValue = myThermoReading[0];
-	faceSetting -> secondValue = myThermoReading[1];
+		setFaceString (faceSetting, FACESTR_TOP, 0, "Thermometer");
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Outside</b>: %0.1f\302\260C\n<b>Inside</b>: %0.1f\302\260C\n"
+				"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%"), 
+				myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4]);
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Outside: %0.1f%s, Inside: %0.1f%s"),
+				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
+		setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n(%0.1f%s)", 
+				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
+		faceSetting -> firstValue = myThermoReading[0];
+		faceSetting -> secondValue = myThermoReading[1];
+	}
 }
 
 #endif

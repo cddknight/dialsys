@@ -388,6 +388,14 @@ DIAL_CONFIG dialConfig =
 	&colourNames[0]				// Colour details
 };
 
+GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =
+{
+	{	"cpu_load",		1	},	{	"sensor_temp",	1	},	{	"sensor_fan",	1	},
+	{	"weather",		1	},	{	"memory",		1	},	{	"battery",		0	},
+	{	"network",		1	},	{	"entropy",		0	},	{	"tide",			1	},
+	{	"harddisk",		1	},	{	"thermo",		0	},	{	"power",		0	},
+	{	"moonphase",	1	},	{	NULL, 			0	}
+};
 
 /******************************************************************************************************
  * Prototypes for functions in the tables that are defined later.                                     *
@@ -948,6 +956,10 @@ clockTickCallback (gpointer data)
 				printf ("No configuration for face %d (%d, %d)\n", face, j, i);
 				continue;
 			}
+			if (!gaugeEnabled[faceSettings[face] -> showFaceType].enabled)
+			{
+				faceSettings[face] -> showFaceType = FACE_TYPE_MAX;
+			}
 			switch (faceSettings[face] -> showFaceType)
 			{
 			case FACE_TYPE_CPU_LOAD:
@@ -997,6 +1009,8 @@ clockTickCallback (gpointer data)
 			case FACE_TYPE_MOONPHASE:
 				readMoonPhaseValues (face);
 				break;
+
+			case FACE_TYPE_MAX:
 			default:
 				/*------------------------------------------------------------------------------------*
 				 * Used for drawing the icon on the about box.                                        *
@@ -1006,6 +1020,7 @@ clockTickCallback (gpointer data)
 				faceSettings[face] -> faceFlags |= FACE_SHOWCOLD;
 				setFaceString (faceSettings[face], FACESTR_TOP, 0, "Gauge");
 				setFaceString (faceSettings[face], FACESTR_BOT, 0, VERSION);
+				faceSettings[face] -> showFaceType = FACE_TYPE_MAX;
 				faceSettings[face] -> firstValue = 0;
 				break;
 			}
@@ -2071,6 +2086,13 @@ void loadConfig (int *posX, int *posY)
 		configGetIntValue (value, (int *)&faceSettings[i] -> showFaceType);
 		sprintf (value, "face_sub_type_%d", i + 1);
 		configGetIntValue (value, (int *)&faceSettings[i] -> faceSubType);
+	}
+	i = 0;
+	while (gaugeEnabled[i].gaugeName != NULL)
+	{
+		sprintf (value, "%s_enabled", gaugeEnabled[i].gaugeName);
+		configGetIntValue (value, &gaugeEnabled[i].enabled);
+		++i;
 	}
 }
 
