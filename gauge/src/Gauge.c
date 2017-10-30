@@ -956,9 +956,12 @@ clockTickCallback (gpointer data)
 				printf ("No configuration for face %d (%d, %d)\n", face, j, i);
 				continue;
 			}
-			if (!gaugeEnabled[faceSettings[face] -> showFaceType].enabled)
+			if (faceSettings[face] -> showFaceType >= 0 && faceSettings[face] -> showFaceType < FACE_TYPE_MAX)
 			{
-				faceSettings[face] -> showFaceType = FACE_TYPE_MAX;
+				if (!gaugeEnabled[faceSettings[face] -> showFaceType].enabled)
+				{
+					faceSettings[face] -> showFaceType = FACE_TYPE_MAX;
+				}
 			}
 			switch (faceSettings[face] -> showFaceType)
 			{
@@ -1029,8 +1032,9 @@ clockTickCallback (gpointer data)
 		}
 	}
 	if (lastTime == -1)
+	{
 		++update;
-
+	}
 	if (update)
 	{
 		if (dialConfig.drawingArea)
