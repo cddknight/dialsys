@@ -1099,7 +1099,8 @@ dialFontCallback (guint data)
 void dialSetOpacity ()
 {
 	double opacity = (((double)dialConfig -> dialOpacity / 2) + 50) / 100;
-	
+
+	if (opacity >= 1) opacity = 0.999;
 #if GTK_MAJOR_VERSION > 2 && GTK_MINOR_VERSION > 7
 	gtk_widget_set_opacity (GTK_WIDGET (dialConfig -> mainWindow), opacity);
 #elif GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
