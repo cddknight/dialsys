@@ -289,6 +289,7 @@ void readMoonPhaseValues (int face)
 			myUpdateID = sysUpdateID;
 		}
 		{
+			char buff[81];
 			struct tm result;
 			time_t now = time(NULL);
 			double p;
@@ -298,14 +299,17 @@ void readMoonPhaseValues (int face)
 			p = moon_phase(result.tm_year + 1900, result.tm_mon + 1, result.tm_mday, result.tm_hour, &ip);
 			p = floor(p * 1000 + 0.5) / 10;
 
+			strncpy (buff,
+					ip == 0 ? _("New") :
+					ip == 4 ? _("Full") :
+					ip < 4  ? _("Waxing") :
+							  _("Waning"), 80);
+
 			faceSetting -> firstValue = p;
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Moon\nPhase"));
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"),
-					ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"),
-					ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.0f%%) - Gauge"),
-					ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4 ? _("Waxing") : _("Waning"), p);
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"), buff, p);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"), buff, p);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.0f%%) - Gauge"), buff, p);
 		}
 	}
 }
