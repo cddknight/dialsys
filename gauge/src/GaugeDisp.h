@@ -158,7 +158,7 @@ SAVED_MAX_MIN;
 typedef struct _faceSettings 
 {
 	unsigned int faceFlags;
-	char  showFaceType;
+	unsigned int showFaceType;
 	unsigned int faceSubType;
 	short int nextUpdate;
 	short int updateNum;
