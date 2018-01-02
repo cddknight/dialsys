@@ -925,7 +925,7 @@ aboutCallback (guint data)
 			"copyright", "Copyright © 2005 - 2017 Chris Knight <chris@theknight.co.uk>",
 			"logo", defaultIcon,
 			"version", verString,
-			"website", "http://www.TzClock.org/",
+			"website", "https://www.TheKnight.co.uk/",
 			NULL);
 }
 
