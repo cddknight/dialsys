@@ -3,10 +3,10 @@ Name: @PACKAGE@
 Version: @VERSION@
 Release: @REVISION@%{?dist}
 License: GPLv2
-URL: http://www.@PACKAGE@.org
+URL: https://www.theknight.co.uk/
 Packager: Chris Knight <chris@theknight.co.uk>
 Group: Applications/Productivity
-Source: http://www.@PACKAGE@.org/releases/%{name}-%{version}.tar.bz2
+Source: https://www.theknight.co.uk/releases/source/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: pkgconfig desktop-file-utils
 BuildRequires: @REQUIRES@
@@ -60,7 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING AUTHORS
 
 %changelog
-* Fri May 19 2015 Chris Knight <chris@theknight.co.uk> 3.0.6-1
+* Mon Jan 01 2018 Chris Knight <chris@theknight.co.uk> 3.1.7-1
+- New release with support for Fedora 27 and ubuntu 17.10.
+
+* Tue May 19 2015 Chris Knight <chris@theknight.co.uk> 3.0.6-1
 - Fixed build problems with the latest GTK/GDK APIs.
 
 * Fri May 2 2014 Chris Knight <chris@theknight.co.uk> 3.0.5-1
