@@ -55,24 +55,25 @@
 #define FACE2_COLOUR	3
 #define FACE3_COLOUR	4
 #define FACE4_COLOUR	5
-#define FACE5_COLOUR	6
-#define TEXT__COLOUR	7
-#define HOUR__COLOUR	8
-#define HFILL_COLOUR	9
-#define MIN___COLOUR	10
-#define MFILL_COLOUR	11
-#define SEC___COLOUR	12
-#define SFILL_COLOUR	13
-#define ALARM_COLOUR	14
-#define AFILL_COLOUR	15
-#define WATCH_COLOUR	16
-#define WFILL_COLOUR	17
-#define HMARK_COLOUR	18
-#define MMARK_COLOUR	19
-#define WMARK_COLOUR	20
-#define QMARK_COLOUR	21
-#define QFILL_COLOUR	22
-#define MAX__COLOURS	23		
+#define TEXT__COLOUR	6
+#define QMARK_COLOUR	7
+#define QFILL_COLOUR	8
+
+#define FACE5_COLOUR	9
+#define HOUR__COLOUR	10
+#define HFILL_COLOUR	11
+#define MIN___COLOUR	12
+#define MFILL_COLOUR	13
+#define SEC___COLOUR	14
+#define SFILL_COLOUR	15
+#define ALARM_COLOUR	16
+#define AFILL_COLOUR	17
+#define WATCH_COLOUR	18
+#define WFILL_COLOUR	19
+#define HMARK_COLOUR	20
+#define MMARK_COLOUR	21
+#define WMARK_COLOUR	22
+#define MAX__COLOURS	23
 
 /*----------------------------------------------------------------------------------------------------*
  * Setting the format of the date string                                                              *

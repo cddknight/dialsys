@@ -37,27 +37,29 @@ COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
 	{	"blk", __("Black"),					"#000000"	},	//	00
 	{	"wht", __("White"),					"#FFFFFF"	},	//	01
+
 	{	"fce", __("Main face colour"),		"#141414"	},	//	02	T
 	{	"bri", __("Border inner circle"),	"#000000"	},	//	03	T
 	{	"brf", __("Border when focused"),	"#505050"	},	//	04	T
 	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//	05	T
-	{	"fsw", __("Stopwatch dial"),		"#000000"	},	//	06
-	{	"txt", __("Information text"),		"#858585"	},	//	07
-	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	//	08
-	{	"hof", __("Hour hand fill"),		"#202020"	},	//	09
-	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	//	10
-	{	"mif", __("Minute hand fill"),		"#202020"	},	//	11
-	{	"seh", __("Second hand outer"),		"#FF0000"	},	//	12
-	{	"sef", __("Second hand fill"),		"#800000"	},	//	13
-	{	"alh", __("Alarm hand outer"),		"#008000"	},	//	14
-	{	"alf", __("Alarm hand fill"),		"#004000"	},	//	15
-	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	//	16
-	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	//	17
-	{	"hom", __("Hour markers"),			"#646464"	},	//	18
-	{	"mim", __("Minute markers"),		"#3C3C3C"	},	//	19
-	{	"stm", __("Stopwatch markers"),		"#828282"	},	//	20
-	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	//	21
-	{	"quf", __("Quarter markers fill"),	"#646464"	},	//	22
+	{	"txt", __("Information text"),		"#858585"	},	//	06	T
+	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	//	07	T
+	{	"quf", __("Quarter markers fill"),	"#646464"	},	//	08	T
+
+	{	"fsw", __("Stopwatch dial"),		"#000000"	},	//	09
+	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	//	10
+	{	"hof", __("Hour hand fill"),		"#202020"	},	//	11
+	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	//	12
+	{	"mif", __("Minute hand fill"),		"#202020"	},	//	13
+	{	"seh", __("Second hand outer"),		"#FF0000"	},	//	14
+	{	"sef", __("Second hand fill"),		"#800000"	},	//	15
+	{	"alh", __("Alarm hand outer"),		"#008000"	},	//	16
+	{	"alf", __("Alarm hand fill"),		"#004000"	},	//	17
+	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	//	18
+	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	//	19
+	{	"hom", __("Hour markers"),			"#646464"	},	//	20
+	{	"mim", __("Minute markers"),		"#3C3C3C"	},	//	21
+	{	"stm", __("Stopwatch markers"),		"#828282"	},	//	22
 	{	NULL, NULL, ""	}
 }; 
 

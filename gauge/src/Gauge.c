@@ -26,27 +26,29 @@
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
-	{	"blk", __("Black"),					"#000000"		},	//	00
-	{	"wht", __("White"),					"#FFFFFF"		},	//	01
-	{	"fce", __("Main face colour"),		"#141414"		},	//	02	T
-	{	"bri", __("Border inner circle"),	"#000000"		},	//	03	T
-	{	"brf", __("Border when focused"),	"#505050"		},	//	04	T
-	{	"brn", __("Border not focused"),	"#6E6E6E"		},	//	05	T
-	{	"txt", __("Information text"),		"#858585"		},	//	06	T
-	{	"gah", __("Main hand outer"),		"#E0E0E0"		},	//	07
-	{	"gaf", __("Main hand fill"),		"#202020"		},	//	08
-	{	"seh", __("Second hand outer"),		"#808080"		},	//	09
-	{	"sef", __("Second hand fill"),		"#202020"		},	//	10
-	{	"mah", __("Max value hand outer"),	"#E00000"		},	//	11
-	{	"maf", __("Max value hand fill"),	"#200000"		},	//	12
-	{	"mih", __("Min value hand outer"),	"#0080E0"		},	//	13
-	{	"mif", __("Min value hand fill"),	"#002020"		},	//	14
-	{	"cec", __("Centre circle outer"),	"#AA0000"		},	//	15
-	{	"cef", __("Centre circle fill"),	"#640000"		},	//	16
-	{	"qum", __("Segment marker outer"),	"#AAAAAA"		},	//	17
-	{	"quf", __("Segment marker fill"),	"#646464"		},	//	18
-	{	"col", __("Cold zone colour"),		"#0060A0"		},	//	19
-	{	"hot", __("Hot zone colour"),		"#600000"		},	//	20
+	{	"blk", __("Black"),					"#000000"	},	//	00
+	{	"wht", __("White"),					"#FFFFFF"	},	//	01
+
+	{	"fce", __("Main face colour"),		"#141414"	},	//	02	T
+	{	"bri", __("Border inner circle"),	"#000000"	},	//	03	T
+	{	"brf", __("Border when focused"),	"#505050"	},	//	04	T
+	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//	05	T
+	{	"txt", __("Information text"),		"#858585"	},	//	06	T
+	{	"qum", __("Segment marker outer"),	"#AAAAAA"	},	//	07	T
+	{	"quf", __("Segment marker fill"),	"#646464"	},	//	08	T
+
+	{	"gah", __("Main hand outer"),		"#E0E0E0"	},	//	09
+	{	"gaf", __("Main hand fill"),		"#202020"	},	//	10
+	{	"oth", __("Other hand outer"),		"#808080"	},	//	11
+	{	"otf", __("Other hand fill"),		"#202020"	},	//	12
+	{	"mah", __("Max value hand outer"),	"#E00000"	},	//	13
+	{	"maf", __("Max value hand fill"),	"#200000"	},	//	14
+	{	"mnh", __("Min value hand outer"),	"#0080E0"	},	//	15
+	{	"mnf", __("Min value hand fill"),	"#002020"	},	//	16
+	{	"cec", __("Centre circle outer"),	"#AA0000"	},	//	17
+	{	"cef", __("Centre circle fill"),	"#640000"	},	//	18
+	{	"col", __("Cold zone colour"),		"#0060A0"	},	//	19
+	{	"hot", __("Hot zone colour"),		"#600000"	},	//	20
 	{	NULL, NULL, ""	}
 }; 
 
