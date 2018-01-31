@@ -14,7 +14,6 @@ BuildRequires: libcurl-devel
 BuildRequires: libxml2-devel
 BuildRequires: lm_sensors-devel
 BuildRequires: pango-devel
-BuildRequires: pkgconf
 BuildRequires: zlib-devel
 BuildRequires: @REQUIRES@
 
