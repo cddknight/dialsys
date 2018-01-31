@@ -46,6 +46,8 @@ extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
 static int myUpdateID = 100;
+static double lastRead = -1;
+static int change = 0;
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -299,6 +301,25 @@ void readMoonPhaseValues (int face)
 			p = moon_phase(result.tm_year + 1900, result.tm_mon + 1, result.tm_mday, result.tm_hour, &ip);
 			p = floor(p * 1000 + 0.5) / 10;
 
+			if (lastRead == -1)
+			{
+				lastRead = p;
+				change = 0;
+			}
+			else
+			{
+				if (p < lastRead)
+				{
+					change = -1;
+					lastRead = p;
+				}
+				else if (p > lastRead)
+				{
+					change = 1;
+					lastRead = p;
+				}
+			}
+
 			strncpy (buff,
 					ip == 0 ? _("New") :
 					ip == 4 ? _("Full") :
@@ -308,7 +329,15 @@ void readMoonPhaseValues (int face)
 			faceSetting -> firstValue = p;
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Moon\nPhase"));
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"), buff, p);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"), buff, p);
+			if (change != 0 && (ip == 0 || ip == 4))
+			{
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)\n"
+						"<b>Last Change</b>: %s"), (change == -1 ? _("Waning") : change == 1 ? _("Waxing") : _("None")));
+			}
+			else
+			{
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)"), buff, p);
+			}
 			setFaceString (faceSetting, FACESTR_WIN, 0, _("Moon Phase: %s (%0.0f%%) - Gauge"), buff, p);
 		}
 	}
