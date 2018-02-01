@@ -299,7 +299,6 @@ void readMoonPhaseValues (int face)
 
 			localtime_r(&now, &result);
 			p = moon_phase(result.tm_year + 1900, result.tm_mon + 1, result.tm_mday, result.tm_hour, &ip);
-			p = floor(p * 1000 + 0.5) / 10;
 
 			if (lastRead == -1)
 			{
@@ -320,19 +319,16 @@ void readMoonPhaseValues (int face)
 				}
 			}
 
-			strncpy (buff,
-					ip == 0 ? _("New") :
-					ip == 4 ? _("Full") :
-					ip < 4  ? _("Waxing") :
-							  _("Waning"), 80);
+			p = floor(p * 1000 + 0.5) / 10;
+			strncpy (buff, ip == 0 ? _("New") : ip == 4 ? _("Full") : ip < 4  ? _("Waxing") : _("Waning"), 80);
 
 			faceSetting -> firstValue = p;
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Moon\nPhase"));
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"), buff, p);
 			if (change != 0 && (ip == 0 || ip == 4))
 			{
-				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)\n"
-						"<b>Last Change</b>: %s"), (change == -1 ? _("Waning") : change == 1 ? _("Waxing") : _("None")));
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)\n<b>Last Change</b>: %s"), 
+						buff, p, (change == -1 ? _("Waning") : change == 1 ? _("Waxing") : _("None")));
 			}
 			else
 			{
