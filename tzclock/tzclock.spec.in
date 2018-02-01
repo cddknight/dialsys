@@ -9,8 +9,6 @@ Group: Applications/Productivity
 Source: https://www.theknight.co.uk/releases/source/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires: pkgconfig desktop-file-utils
-BuildRequires: desktop-file-utils
-BuildRequires: gdk-pixbuf2-devel
 BuildRequires: pango-devel
 BuildRequires: @REQUIRES@
 
