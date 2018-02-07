@@ -369,8 +369,7 @@ HAND_STYLE handStyle[HAND_COUNT]	=			// Saved in the config file
 	{ 9, 28, 0, MAXH__COLOUR, MAXF__COLOUR, 1, 1 },		// Max hand
 	{ 9, 28, 0, MINH__COLOUR, MINF__COLOUR, 1, 1 }		// Min hand
 };
-time_t hightideTime = 1308047160;
-char tideURL[129] = "http://www.tidetimes.org.uk/london-bridge-tower-pier-tide-times.rss";
+char tideURL[129] = "http://www.ukho.gov.uk/easytide/EasyTide/ShowPrediction.aspx?PortID=0113&PredictionLength=3";
 DIAL_CONFIG dialConfig =
 {								// -- Used by dial library --
 	NULL, 						// mainWindow
@@ -2053,7 +2052,6 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("gauge_x_pos", posX);
 	configGetIntValue ("gauge_y_pos", posY);
 	configGetValue ("font_name", fontName, 100);
-	configGetIntValue ("hightide_time", (int *)&hightideTime);
 	configGetValue ("tide_info_url", tideURL, 100);
 	configGetIntValue ("weather_scales", (int *)&weatherScales);
 	configGetValue ("location_key", locationKey, 40);

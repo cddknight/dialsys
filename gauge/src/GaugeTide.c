@@ -37,7 +37,6 @@ extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern DIAL_CONFIG dialConfig;
 extern int sysUpdateID;
-extern time_t hightideTime;
 
 struct MemoryStruct 
 {
@@ -67,7 +66,7 @@ static int lastReadTide;
 
 extern char tideURL[];
 static int myUpdateID = 100;
-static time_t tideDuration = 22357;
+static time_t tideDuration = 22358;
 static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 
 /**********************************************************************************************************************
