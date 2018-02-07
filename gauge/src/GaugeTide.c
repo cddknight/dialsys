@@ -81,7 +81,7 @@ static char removePrefix[] = "Port predictions (Standard Local Time) are ";
  *  \param mon Month to find.
  *  \result Number of the month.
  */
-int getMonth (char *mon)
+static int getMonth (char *mon)
 {
 	int i;
 	static char *months[12] = 
@@ -104,7 +104,7 @@ int getMonth (char *mon)
  *  \param day Day string to convert.
  *  \result 1 for Sun 7 for Sat, 0 if not found.
  */
-int getDay (char *day)
+static int getDay (char *day)
 {
 	int i;
 	static char *days[12] = 
@@ -113,6 +113,41 @@ int getDay (char *day)
 		if (strncmp (day, days[i], 3) == 0)
 			return i + 1;
 	return 0;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P R O P E R  C A S E  W O R D                                                                                     *
+ *  =============================                                                                                     *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief We get name in uppercase so convert to propercase.
+ *  \param word Word to convert.
+ *  \result None.
+ */
+static void properCaseWord (char *word)
+{
+	int i = 0, start = 1;
+
+	while (word[i] != 0)
+	{
+		if (word[i] >= 'A' && word[i] <= 'Z')
+		{
+			if (!start) word[i] = (word[i] - 'A') + 'a';
+			start = 0;
+		}
+		else if (word[i] >= 'a' && word[i] <= 'z')
+		{
+			if (start) word[i] = (word[i] - 'a') + 'A';			
+			start = 0;
+		}
+		else
+		{
+			start = 1;
+		}
+		++i;
+	}
 }
 
 /**********************************************************************************************************************
@@ -330,6 +365,7 @@ processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 					if (key) 
 					{
 						strncpy (tideInfo.location, (char *)key, 40);
+						properCaseWord (tideInfo.location);
 					}
 				}
 			}
