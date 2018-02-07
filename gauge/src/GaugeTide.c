@@ -26,6 +26,7 @@
 #include <curl/curl.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <libxml/HTMLparser.h>
  
 #include "GaugeDisp.h"
 
@@ -47,76 +48,27 @@ struct MemoryStruct
 struct TideTime
 {
 	time_t tideTime;
-	int tideHeight;
+	double tideHeight;
 	char tideType;
-	char estimate;
+	char tideSet;
 };
 
 struct TideInfo
 {
 	char location[41];
-	time_t baseTime, readTime;
-	struct TideTime tideTimes[2];
+	double locationOffset;
+	struct TideTime tideTimes[10];
+	time_t readTime;
 };
 
-static struct TideInfo tideInfo =
-{
-	"Unknown"
-};
+static struct TideInfo tideInfo;
+static char tideReadLine[1025];
+static int lastReadTide;
 
 extern char tideURL[];
-static char *lineSep = "<br/>";
 static int myUpdateID = 100;
 static time_t tideDuration = 22357;
-static char removePrefix[] = "Tide Times & Heights for ";
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  P R O C E S S  T I D E  T I M E                                                                                   *
- *  ===============================                                                                                   *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Extract parts from: (01:23 - Low Tide (1.
- *  \param line Line read from page.
- *  \result 1 if all OK.
- */
-int processTideTime (char *line)
-{
-	char words[5][41];	
-	int word = 0, i = 0, j = 0;
-
-	while (line[i] && word < 5)
-	{
-		if (line[i] <= ' ' || line[i] == ':' || line[i] == '(' || line[i] == ')' || line[i] == '-')
-		{
-			if (j)
-				words[++word][j = 0] = 0;
-		}
-		else
-		{
-			words[word][j] = line[i];
-			words[word][++j] = 0;
-		}
-		++i;
-	}
-
-	for (i = 0; i <= word; ++i)
-	{
-		if (strcmp (words[3], "Tide") == 0)
-		{
-			tideInfo.tideTimes[1].tideTime = tideInfo.baseTime + (atoi (words[0]) * 3600) + (atoi (words[1]) * 60);
-			tideInfo.tideTimes[1].tideHeight = (int)((atof (words[4]) * 10) + 0.5);
-			tideInfo.tideTimes[1].tideType = words[2][0];
-			if (tideInfo.tideTimes[1].tideTime > time(NULL))
-				return 1;
-
-			tideInfo.tideTimes[0] = tideInfo.tideTimes[1];
-			tideInfo.tideTimes[1].tideTime = 0;
-		}
-	}
-	return 0;
-}
+static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -137,132 +89,163 @@ int getMonth (char *mon)
 			  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 	for (i = 0; i < 12; ++i)
 		if (strncmp (mon, months[i], 3) == 0)
-			return i;
+			return i + 1;
 	return 0;
 }
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  P R O C E S S  L O C A T I O N  D A T E                                                                           *
- *  =======================================                                                                           *
+ *  G E T  D A Y                                                                                                      *
+ *  ============                                                                                                      *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Process the line: (Grovehurst Jetty on 8th July 2011).
- *  \param line Line read from the page.
- *  \result None.
+ *  \brief Convert a simple Sun, Mon format to a number 1, 2.
+ *  \param day Day string to convert.
+ *  \result 1 for Sun 7 for Sat, 0 if not found.
  */
-void processLocationDate (char *line)
+int getDay (char *day)
 {
-	char words[5][41];
-	int word = 0, i = 0, j = 0;
-	struct tm tideTime, *timeNow;
-	time_t now = time(NULL);
-
-	memset (&tideTime, 0, sizeof (tideTime));
-	while (line[i] && word < 5)
-	{
-		if (line[i] <= ' ')
-		{
-			if (j)
-			{
-				if (word == 1)
-				{
-					if (strcmp (words[1], "on") != 0)
-					{
-						strcat (words[0], " ");
-						strcat (words[0], words[1]);
-						--word;
-					}
-				}
-				words[++word][j = 0] = 0;
-			}
-		}
-		else
-		{
-			words[word][j] = line[i];
-			words[word][++j] = 0;
-		}
-		++i;
-	}
-
-	timeNow = localtime (&now);
-	memcpy (&tideTime, timeNow, sizeof (tideTime));
-	strcpy (tideInfo.location, words[0]);
-	tideTime.tm_mday = atoi (words[2]);
-	tideTime.tm_mon = getMonth (words[3]);
-	tideTime.tm_year = atoi (words[4]) - 1900;
-	tideTime.tm_hour = 0;
-	tideTime.tm_min = 0;
-	tideTime.tm_sec = 1;
-	tideInfo.baseTime = mktime(&tideTime);
+	int i;
+	static char *days[12] = 
+			{ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
+	for (i = 0; i < 7; ++i)
+		if (strncmp (day, days[i], 3) == 0)
+			return i + 1;
+	return 0;
 }
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  P R O C E S S  D E S C R I P T I O N                                                                              *
- *  ====================================                                                                              *
+ *  G E T  N E X T  T I D E                                                                                           *
+ *  =======================                                                                                           *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Process a descripsion breaking in to parts at <br>.
- *  \param description Description read fron the page.
- *  \result Number of parts found.
+ *  \brief Look at the loaded times and see what is next.
+ *  \result Number of next tide or -1 if none found.
  */
-int processDescription (xmlChar *description)
+static int getNextTide ()
 {
-	char lines[6][81];
-	int outLine = 0, i = 0, j = 0, k = 0, level = 0;
+	int i, retn = -1;
+	time_t now = time(NULL);
 
-	memset (&lines[0][0], 0, 6 * 81);
-	
-	while (description[i] && outLine < 5)
+	for (i = 0; i < lastReadTide && retn == -1; ++i)
 	{
-		if (description[i] == '<')
-			++level;
-		if (description[i] == '>' && level)
-			--level;
-		if (description[i] != lineSep[k])
+		if (tideInfo.tideTimes[i].tideTime > now)
 		{
-			k = 0;
+			retn = i;
 		}
-		if (description[i] == lineSep[k])
+	}
+	return retn;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P R O C E S S  P R O C E S S  A T I D E                                                                           *
+ *  =======================================                                                                           *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Process a tide read from HTML.
+ *  \param mDay Month day.
+ *  \param mon Month.
+ *  \param type H or L.
+ *  \param hour Hour (local time).
+ *  \param min Min (local time).
+ *  \param height Height of the tide.
+ *  \result None.
+ */
+static void processProcessATide(int mDay, int mon, char type, int hour, int min, double height)
+{
+	struct tm tideTime, *timeNow;
+	time_t now = time(NULL);
+
+//	printf ("Tide[%d]: %d/%d %c %d:%02d %f\n", lastReadTide, mDay, mon, type, hour, min, height);
+	timeNow = gmtime (&now);
+	memcpy (&tideTime, timeNow, sizeof (tideTime));
+	tideTime.tm_mday = mDay;
+	tideTime.tm_mon = mon - 1;
+	tideTime.tm_hour = hour;
+	tideTime.tm_min = min;
+	tideTime.tm_sec = 0;
+	tideTime.tm_isdst = -1;
+
+	if (lastReadTide < 10)
+	{
+		tideInfo.tideTimes[lastReadTide].tideTime = mktime(&tideTime);
+		tideInfo.tideTimes[lastReadTide].tideTime -= (tideInfo.locationOffset * 3600);
+		tideInfo.tideTimes[lastReadTide].tideHeight = height;
+		tideInfo.tideTimes[lastReadTide].tideType = type;
+		tideInfo.tideTimes[lastReadTide].tideSet = 1;
+		++lastReadTide;
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P R O C E S S  C U R R E N T  D A Y                                                                               *
+ *  ===================================                                                                               *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Process all the values read for a day.
+ *  \result None.
+ */
+static void processCurrentDay()
+{
+	char words[25][11];
+	int i = 0, j = 0, w = 0, tideCount = 0;
+	
+	memset (&words, 0, sizeof (words));
+	do
+	{
+		switch (tideReadLine[i])
 		{
-			if (lineSep[++k] == 0)
+		case ' ':
+		case ';':
+		case ':':
+			if (j > 0 && w < 24)
 			{
-				if (j)
+				if (!strcmp (words[w], "HW") || !strcmp (words[w], "LW"))
 				{
-					++outLine;
-					k = 0;
-					j = 0;
+					++tideCount;
 				}
-				lines[outLine][0] = 0;
+				++w;
+				j = 0;
 			}
-		}
-		else if (j < 100 && level == 0 && description[i] != '>')
-		{
-			lines[outLine][j] = description[i];
-			lines[outLine][++j] = 0;
-			if (j == strlen (removePrefix))
+			break;
+
+		default:
+			if (j < 10)
 			{
-				if (strcmp (lines[outLine], removePrefix) == 0)
-					lines[outLine][j = 0] = 0;
+				char ch = tideReadLine[i];
+				if ((ch >= 'A' && ch <='Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9') || 
+						ch == '.' || ch == '-')
+				{
+					words[w][j] = tideReadLine[i];
+					words[w][++j] = 0;
+				}
 			}
+			break;
 		}
 		++i;
 	}
-	if (outLine >= 3)
+	while (tideReadLine[i]);
+
+	if (w == 3 + (tideCount * 4))
 	{
-		processLocationDate (lines[0]);
-		for (i = 1; i < outLine; ++i)
+		int i;
+		for (i = 0; i < tideCount; ++i)
 		{
-			if (processTideTime (lines[i]))
-				break;
+			processProcessATide (atoi (words[1]), getMonth(words[2]), words[3 + i][0], 
+					atoi ((const char *)&words[3 + tideCount + (i * 2)]), 
+					atoi ((const char *)&words[4 + tideCount + (i * 2)]), 
+					atof ((const char *)&words[3 + (tideCount * 3) + i]));
 		}
 	}
-	return outLine;
 }
- 
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  W R I T E  M E M O R Y  C A L L B A C K                                                                           *
@@ -303,26 +286,84 @@ writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
  *  \brief Call by libxml for each of the elements.
  *  \param doc xmldoc handle.
  *  \param aNode Xml node pointer.
+ *  \param curPath The path to the current element.
+ *  \param readLevel How many levels of html are we at.
  *  \result None.
  */
 static void
-processElementNames (xmlDoc *doc, xmlNode * aNode)
+processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 {
 	xmlChar *key;
-    xmlNode *cur_node = NULL;
+    xmlNode *curNode = NULL;
+    char fullPath[1024];
+	char *matchPath[3] = 
+	{
+		"/html/body/div/form/div/div/ul/li/span",
+		"/html/body/div/form/div/div/div/div/table/tr",
+		"/html/body/div/form/div/div/p/span"
+	};
 
-    for (cur_node = aNode; cur_node; cur_node = cur_node->next) 
+    for (curNode = aNode; curNode; curNode = curNode->next) 
     {
-        if (cur_node->type == XML_ELEMENT_NODE) 
-        {
-			if ((!xmlStrcmp (cur_node -> name, (const xmlChar *)"description"))) 
+       	int saveLevel = readLevel;
+
+		if (curNode -> name != NULL)
+		{
+			if ((strlen (curPath) + strlen ((char *)curNode -> name)) > 1022)
 			{
-				key = xmlNodeListGetString (doc, cur_node -> xmlChildrenNode, 1);
-				processDescription (key);
-		    	xmlFree (key);
+				fprintf (stderr, "XML path too long to display\n");
+				break;
+			}
+			strcpy (fullPath, curPath);
+			strcat (fullPath, "/");
+			strcat (fullPath, (char *)curNode -> name);
+		}
+
+        if (curNode->type == XML_ELEMENT_NODE) 
+        {
+			++readLevel;
+			if (!strncmp (fullPath, matchPath[0], strlen (matchPath[0])))
+			{
+				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
+				if (tideInfo.location[0] == 0 && !strncmp ((char *)(curNode -> name), "span", 4))
+				{
+					if (key) 
+					{
+						strncpy (tideInfo.location, (char *)key, 40);
+					}
+				}
+			}
+			if (!strncmp (fullPath, matchPath[1], strlen (matchPath[1])))
+			{
+				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
+				if (key && readLevel == 11)
+				{
+					if (getDay ((char *)key))
+					{
+						if (tideReadLine[0])
+						{
+							processCurrentDay();
+							tideReadLine[0] = 0;
+						}
+					}
+					strncat (tideReadLine, (char *)key, 1024);
+					strncat (tideReadLine, ";", 1024);
+				}
+			}
+			if (!strncmp (fullPath, matchPath[2], strlen (matchPath[2])))
+			{
+				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
+				if (key) 
+				{
+					if (!strncmp (removePrefix, (char *)key, strlen (removePrefix)))
+					{
+						tideInfo.locationOffset = atof ((char *)&key[strlen (removePrefix)]);
+					}
+				}
 			}
         }
-        processElementNames (doc, cur_node->children);
+        processElementNames (doc, curNode->children, fullPath, readLevel);
+        readLevel = saveLevel;
     }
 }
 
@@ -340,20 +381,28 @@ processElementNames (xmlDoc *doc, xmlNode * aNode)
  */
 static void processBuffer (char *buffer, size_t size)
 {
-	xmlDoc *doc = NULL;
-	xmlNode *rootElement = NULL;
+	htmlDocPtr hDoc = NULL;
+	htmlNodePtr rootElement = NULL;
 	xmlChar *xmlBuffer = NULL;
 
 	xmlBuffer = xmlCharStrndup (buffer, size);
 	if (xmlBuffer != NULL)
 	{
-		doc = xmlParseDoc (xmlBuffer);
-
-		if (doc != NULL)
+		if ((hDoc = htmlParseDoc(xmlBuffer, NULL)) != NULL)
 		{
-			rootElement = xmlDocGetRootElement (doc);
-			processElementNames (doc, rootElement);
-			xmlFreeDoc (doc);
+			if ((rootElement = xmlDocGetRootElement (hDoc)) != NULL)
+			{
+				lastReadTide = 0;
+				tideReadLine[0] = 0;
+				tideInfo.location[0] = 0;
+				processElementNames (hDoc, rootElement, "", 0);
+				processCurrentDay();
+				if (lastReadTide)
+				{
+					tideInfo.readTime = time(NULL) + (6 * 60);
+				}
+			}
+			xmlFreeDoc(hDoc);
 		}
 		else
 		{
@@ -386,60 +435,25 @@ void getTideTimes ()
 	curl_global_init(CURL_GLOBAL_ALL);
 	curlHandle = curl_easy_init();
 	curl_easy_setopt(curlHandle, CURLOPT_URL, &tideURL[0]);
+//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=6400&PredictionLength=3");
+//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=2679&PredictionLength=3");
+//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=1570&PredictionLength=3");
+//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=0108&PredictionLength=3");
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_easy_setopt(curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 	curl_easy_perform(curlHandle);
 	curl_easy_cleanup(curlHandle);
 
-	tideInfo.tideTimes[0].tideTime = tideInfo.tideTimes[1].tideTime = 0;
-	tideInfo.tideTimes[0].estimate = tideInfo.tideTimes[1].estimate = 0;
-	
-	processBuffer (chunk.memory, chunk.size);
-	
-	if (!tideInfo.tideTimes[0].tideTime)
+	if (chunk.memory)
 	{
-		if (tideInfo.tideTimes[1].tideTime)
+		if (chunk.size)
 		{
-			tideInfo.tideTimes[0].tideTime = tideInfo.tideTimes[1].tideTime - tideDuration;
-			tideInfo.tideTimes[0].tideType = (tideInfo.tideTimes[1].tideType == 'L' ? 'H' : 'L');
+			memset (&tideInfo, 0, sizeof (tideInfo));
+			processBuffer (chunk.memory, chunk.size);
 		}
-		else
-		{
-			time_t now = time (NULL);
-			tideInfo.tideTimes[0].tideTime = hightideTime;
-			tideInfo.tideTimes[0].tideType = 'H';
-			while (tideInfo.tideTimes[0].tideTime + tideDuration < now)
-			{
-				tideInfo.tideTimes[0].tideTime += tideDuration;
-				tideInfo.tideTimes[0].tideType = (tideInfo.tideTimes[0].tideType == 'L' ? 'H' : 'L');
-			}
-		}
-		tideInfo.tideTimes[0].estimate = 1;
-	}
-/*	printf ("Last Tide: %c, Type: %s, At %s", 
-			tideInfo.tideTimes[0].tideType, 
-			tideInfo.tideTimes[0].estimate ? "Estimate" : "Known",
-			ctime (&tideInfo.tideTimes[0].tideTime)); */
-	
-	if (!tideInfo.tideTimes[1].tideTime)
-	{
-		tideInfo.tideTimes[1].tideTime = tideInfo.tideTimes[0].tideTime + tideDuration;
-		tideInfo.tideTimes[1].tideType = (tideInfo.tideTimes[0].tideType == 'L' ? 'H' : 'L');
-		tideInfo.tideTimes[1].estimate = 1;
-		tideInfo.readTime = time (NULL) + (60 * 30);
-	}
-	else
-		tideInfo.readTime = tideInfo.tideTimes[1].tideTime + 5;
-
-/*	printf ("Next Tide: %c, Type: %s, At %s", 
-			tideInfo.tideTimes[1].tideType, 
-			tideInfo.tideTimes[1].estimate ? "Estimate" : "Known",
-			ctime (&tideInfo.tideTimes[1].tideTime)); */
-
-	if(chunk.memory)
 		free(chunk.memory);
-
+	}
 	curl_global_cleanup();
 }
 
@@ -458,8 +472,8 @@ void readTideInit (void)
 	if (gaugeEnabled[FACE_TYPE_TIDE].enabled)
 	{
 		gaugeMenuDesc[MENU_GAUGE_TIDE].disable = 0;
-		tideInfo.tideTimes[0].tideTime = tideInfo.tideTimes[1].tideTime = 0;
-		tideInfo.tideTimes[0].estimate = tideInfo.tideTimes[1].estimate = 1;
+		memset (&tideInfo, 0, sizeof (tideInfo));
+		strcpy (tideInfo.location, "Unknown");
 	}
 }
 
@@ -482,6 +496,7 @@ void readTideValues (int face)
 		time_t nextTideTime, lastTideTime;
 		char tideDirStr[41], tideHeightStr[41], tideTimeStr[41];
 		long duration;
+		int nextTide;
 
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 
@@ -497,44 +512,45 @@ void readTideValues (int face)
 		{
 			time_t now = time (NULL);
 		
-			if (tideInfo.readTime < now || tideInfo.tideTimes[1].tideTime < now)
+			if (tideInfo.readTime < now)
 				getTideTimes();
 			myUpdateID = sysUpdateID;
 		}
 
-		lastTideTime = tideInfo.tideTimes[0].tideTime;
-		nextTideTime = tideInfo.tideTimes[1].tideTime;
-		tideTime = localtime (&nextTideTime);
+		nextTide = getNextTide();
+		if (nextTide)
+		{
+			lastTideTime = tideInfo.tideTimes[nextTide - 1].tideTime;
+			nextTideTime = tideInfo.tideTimes[nextTide].tideTime;
+		}
+		else
+		{
+			nextTideTime = tideInfo.tideTimes[nextTide].tideTime;
+			lastTideTime = nextTideTime - tideDuration;
+		}
 		duration = nextTideTime - lastTideTime;
+		tideTime = localtime (&nextTideTime);
 	
 		faceSetting -> firstValue = (double)(time (NULL) - lastTideTime) / duration;
-		if (tideInfo.tideTimes[1].tideType == 'L')
+		if (tideInfo.tideTimes[nextTide].tideType == 'L')
+		{
 			faceSetting -> firstValue = (double)1 - faceSetting -> firstValue;
+		}
 		faceSetting -> firstValue *= 3.141592654;
 		faceSetting -> firstValue = cos (faceSetting -> firstValue);
 		faceSetting -> firstValue *= -50;
 		faceSetting -> firstValue += 50;
 
-		strcpy (tideDirStr, tideInfo.tideTimes[1].tideType == 'H' ? _("High") : _("Low"));
+		strcpy (tideDirStr, tideInfo.tideTimes[nextTide].tideType == 'H' ? _("High") : _("Low"));
 		sprintf (tideTimeStr, "%d:%02d", tideTime -> tm_hour, tideTime -> tm_min);
-		sprintf (tideHeightStr, "%d.%01d", tideInfo.tideTimes[1].tideHeight / 10, 
-				tideInfo.tideTimes[1].tideHeight % 10);
+		sprintf (tideHeightStr, "%0.1f", tideInfo.tideTimes[nextTide].tideHeight);
 
 		setFaceString (faceSetting, FACESTR_TOP, 22, "%s", tideInfo.location);
-		if (tideInfo.tideTimes[1].estimate)
-		{
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n(est.)"), tideDirStr, tideTimeStr);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s (estimate)"), 
-					tideDirStr, tideTimeStr);
-		}
-		else
-		{
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%sm"), tideDirStr, tideTimeStr, tideHeightStr);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s\n<b>Height</b>: %sm"),
-					tideDirStr, tideTimeStr, tideHeightStr);
-		}
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%sm"), tideDirStr, tideTimeStr, tideHeightStr);
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s\n<b>Height</b>: %sm"),
+				tideDirStr, tideTimeStr, tideHeightStr);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"), 
-				tideInfo.tideTimes[1].tideType == 'H' ? _("coming in") : _("going out"),
+				tideInfo.tideTimes[nextTide].tideType == 'H' ? _("coming in") : _("going out"),
 				faceSetting -> firstValue);
 	}
 }
@@ -579,12 +595,12 @@ void tideSettings (guint data)
 	vbox = GTK_DIALOG (dialog)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
 
-	label = gtk_label_new (_("RSS feed from: http://www.tidetimes.org.uk/"));
+	label = gtk_label_new (_("Prediction from: http://www.ukho.gov.uk/easytide/"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 3);
-	label = gtk_label_new ("Location feed: ");
+	label = gtk_label_new ("Location (2 days): ");
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	entry = gtk_entry_new ();
@@ -602,14 +618,14 @@ void tideSettings (guint data)
 	gtk_box_pack_start (GTK_BOX (contentArea), vbox, TRUE, TRUE, 0);
 	grid = gtk_grid_new ();
 	
-	label = gtk_label_new (_("RSS feed from: "));
+	label = gtk_label_new (_("Prediction from: "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 1, 1, 1);
-	label = gtk_label_new (_("http://www.tidetimes.org.uk/"));
+	label = gtk_label_new (_("http://www.ukho.gov.uk/easytide/"));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 2, 1, 1, 1);
 
-	label = gtk_label_new (_("Location feed: "));
+	label = gtk_label_new (_("Location (2 days): "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 2, 1, 1);
 	entry = gtk_entry_new ();
