@@ -151,6 +151,31 @@ static void properCaseWord (char *word)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  G E T  L O C A L  N E X T  M I D D A Y                                                                            *
+ *  ======================================                                                                            *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Get the epoch for the next midday.
+ *  \result time_t of the next midday for the update.
+ */
+static time_t getLocalNextMidday ()
+{
+	struct tm localTime;
+	time_t now = time(NULL), retn;
+	localtime_r (&now, &localTime);
+	localTime.tm_hour = 12;
+	localTime.tm_min = 0;
+	retn = mktime (&localTime);
+	if (retn < now)
+	{
+		retn += (24 * 60 *60);
+	}
+	return retn;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  G E T  N E X T  T I D E                                                                                           *
  *  =======================                                                                                           *
  *                                                                                                                    *
@@ -434,7 +459,7 @@ static void processBuffer (char *buffer, size_t size)
 				processCurrentDay();
 				if (lastReadTide)
 				{
-					tideInfo.readTime = time(NULL) + (6 * 60);
+					tideInfo.readTime = getLocalNextMidday();
 				}
 			}
 			xmlFreeDoc(hDoc);
@@ -529,9 +554,9 @@ void readTideValues (int face)
 	{
 		struct tm *tideTime;
 		time_t nextTideTime, lastTideTime;
-		char tideDirStr[41], tideHeightStr[41], tideTimeStr[41];
+		char tideDirStr[41], tideHeightStr[41], tideTimeStr[41], toolTip[1024];
 		long duration;
-		int nextTide;
+		int nextTide, i;
 
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 
@@ -545,10 +570,11 @@ void readTideValues (int face)
 		}
 		if (myUpdateID != sysUpdateID)
 		{
-			time_t now = time (NULL);
-		
+			time_t now = time (NULL);		
 			if (tideInfo.readTime < now)
+			{
 				getTideTimes();
+			}
 			myUpdateID = sysUpdateID;
 		}
 
@@ -564,8 +590,8 @@ void readTideValues (int face)
 			lastTideTime = nextTideTime - tideDuration;
 		}
 		duration = nextTideTime - lastTideTime;
+
 		tideTime = localtime (&nextTideTime);
-	
 		faceSetting -> firstValue = (double)(time (NULL) - lastTideTime) / duration;
 		if (tideInfo.tideTimes[nextTide].tideType == 'L')
 		{
@@ -578,15 +604,28 @@ void readTideValues (int face)
 
 		strcpy (tideDirStr, tideInfo.tideTimes[nextTide].tideType == 'H' ? _("High") : _("Low"));
 		sprintf (tideTimeStr, "%d:%02d", tideTime -> tm_hour, tideTime -> tm_min);
-		sprintf (tideHeightStr, "%0.1f", tideInfo.tideTimes[nextTide].tideHeight);
+		sprintf (tideHeightStr, "%0.1fm", tideInfo.tideTimes[nextTide].tideHeight);
 
 		setFaceString (faceSetting, FACESTR_TOP, 22, "%s", tideInfo.location);
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%sm"), tideDirStr, tideTimeStr, tideHeightStr);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Next</b>: %s tide\n<b>Time</b>: %s\n<b>Height</b>: %sm"),
-				tideDirStr, tideTimeStr, tideHeightStr);
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%s"), tideDirStr, tideTimeStr, tideHeightStr);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"), 
 				tideInfo.tideTimes[nextTide].tideType == 'H' ? _("coming in") : _("going out"),
 				faceSetting -> firstValue);
+		
+		toolTip[0] = 0;
+		for (i = (nextTide ? nextTide - 1 : nextTide); i < 4; ++i)
+		{
+			if (tideInfo.tideTimes[i].tideSet)
+			{
+				if (toolTip[0]) strcat (toolTip, "\n");
+				tideTime = localtime (&tideInfo.tideTimes[i].tideTime);
+				sprintf (tideTimeStr, "%d:%02d", tideTime -> tm_hour, tideTime -> tm_min);
+				strcpy (tideDirStr, tideInfo.tideTimes[i].tideType == 'H' ? _("High water at") : _("Low water at"));
+				sprintf (tideHeightStr, "%0.1fm", tideInfo.tideTimes[i].tideHeight);
+				sprintf (&toolTip[strlen(toolTip)], _("<b>%s</b>: %s, %s"), tideDirStr, tideTimeStr, tideHeightStr);
+			}
+		}
+		setFaceString (faceSetting, FACESTR_TIP, 0, toolTip);
 	}
 }
 
@@ -608,7 +647,6 @@ void tideSettings (guint data)
 	GtkWidget *label;
 	GtkWidget *entry;
 	const char *saveText;
-	char textUpdate = 0;
 #if GTK_MAJOR_VERSION == 2
 	GtkWidget *hbox;
 #else
@@ -680,10 +718,6 @@ void tideSettings (guint data)
 	{
 		strncpy (tideURL, saveText, 128);
 		configSetValue ("tide_info_url", tideURL);
-		textUpdate = 1;
-	}
-	if (textUpdate)
-	{
 		getTideTimes ();
 		myUpdateID = -1;
 	}
