@@ -37,6 +37,9 @@ extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern DIAL_CONFIG dialConfig;
 extern int sysUpdateID;
+extern char tideURL[];
+
+#define MAX_SAVE_TIDES	21
 
 struct MemoryStruct 
 {
@@ -56,7 +59,7 @@ struct TideInfo
 {
 	char location[41];
 	double locationOffset;
-	struct TideTime tideTimes[10];
+	struct TideTime tideTimes[MAX_SAVE_TIDES];
 	time_t readTime;
 };
 
@@ -64,10 +67,12 @@ static struct TideInfo tideInfo;
 static char tideReadLine[1025];
 static int lastReadTide;
 
-extern char tideURL[];
 static int myUpdateID = 100;
 static time_t tideDuration = 22358;
 static char removePrefix[] = "Port predictions (Standard Local Time) are ";
+static char *days[7] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+static char *months[12] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+static char *urlPrefix = "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PredictionLength=4&PortID=";
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -83,9 +88,6 @@ static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 static int getMonth (char *mon)
 {
 	int i;
-	static char *months[12] = 
-			{ "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-			  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 	for (i = 0; i < 12; ++i)
 		if (strncmp (mon, months[i], 3) == 0)
 			return i + 1;
@@ -106,8 +108,6 @@ static int getMonth (char *mon)
 static int getDay (char *day)
 {
 	int i;
-	static char *days[12] = 
-			{ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
 	for (i = 0; i < 7; ++i)
 		if (strncmp (day, days[i], 3) == 0)
 			return i + 1;
@@ -238,7 +238,7 @@ static void processProcessATide(int mDay, int mon, char type, int hour, int min,
 	tideTime.tm_sec = 0;
 	tideTime.tm_isdst = -1;
 
-	if (lastReadTide < 10)
+	if (lastReadTide < MAX_SAVE_TIDES)
 	{
 		tideInfo.tideTimes[lastReadTide].tideTime = mktime(&tideTime);
 		tideInfo.tideTimes[lastReadTide].tideTime -= (tideInfo.locationOffset * 3600);
@@ -261,7 +261,7 @@ static void processProcessATide(int mDay, int mon, char type, int hour, int min,
  */
 static void processCurrentDay()
 {
-	char words[25][11];
+	char words[41][11];
 	int i = 0, j = 0, w = 0, tideCount = 0;
 	
 	memset (&words, 0, sizeof (words));
@@ -272,7 +272,7 @@ static void processCurrentDay()
 		case ' ':
 		case ';':
 		case ':':
-			if (j > 0 && w < 24)
+			if (j > 0 && w < 40)
 			{
 				if (!strcmp (words[w], "HW") || !strcmp (words[w], "LW"))
 				{
@@ -627,8 +627,9 @@ void readTideValues (int face)
 			{
 				if (toolTip[0]) strcat (toolTip, "\n");
 				tideTime = localtime (&tideInfo.tideTimes[i].tideTime);
-				sprintf (tideTimeStr, "%d:%02d", tideTime -> tm_hour, tideTime -> tm_min);
-				strcpy (tideDirStr, tideInfo.tideTimes[i].tideType == 'H' ? _("High water at") : _("Low water at"));
+				sprintf (tideTimeStr, "%s. %d %s, %d:%02d", days[tideTime -> tm_wday], tideTime -> tm_mday,
+						months[tideTime -> tm_mon], tideTime -> tm_hour, tideTime -> tm_min);
+				strcpy (tideDirStr, tideInfo.tideTimes[i].tideType == 'H' ? _("High water") : _("Low water"));
 				sprintf (tideHeightStr, "%0.1fm", tideInfo.tideTimes[i].tideHeight);
 				sprintf (&toolTip[strlen(toolTip)], _("<b>%s</b>: %s, %s"), tideDirStr, tideTimeStr, tideHeightStr);
 			}
@@ -655,6 +656,7 @@ void tideSettings (guint data)
 	GtkWidget *label;
 	GtkWidget *entry;
 	const char *saveText;
+	char portCode[21];
 #if GTK_MAJOR_VERSION == 2
 	GtkWidget *hbox;
 #else
@@ -662,6 +664,14 @@ void tideSettings (guint data)
 	GtkWidget *grid;
 #endif
 
+	if (strlen(tideURL) > strlen(urlPrefix))
+	{
+		sprintf (portCode, "%d", atoi (&tideURL[strlen(urlPrefix)]));
+	}
+	else
+	{
+		portCode[0] = 0;
+	}
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
@@ -681,12 +691,13 @@ void tideSettings (guint data)
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 3);
-	label = gtk_label_new ("Location (2 days): ");
+	label = gtk_label_new ("Location port number: ");
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	entry = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
-	gtk_entry_set_text (GTK_ENTRY (entry), tideURL);
+	gtk_entry_set_max_length (GTK_ENTRY (entry), 4);
+	gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_DIGITS);
+	gtk_entry_set_text (GTK_ENTRY (entry), portCode);
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
@@ -706,12 +717,13 @@ void tideSettings (guint data)
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 2, 1, 1, 1);
 
-	label = gtk_label_new (_("Location (2 days): "));
+	label = gtk_label_new (_("Location port number: "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 2, 1, 1);
 	entry = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
-	gtk_entry_set_text (GTK_ENTRY (entry), tideURL);
+	gtk_entry_set_max_length (GTK_ENTRY (entry), 4);
+	gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_DIGITS);
+	gtk_entry_set_text (GTK_ENTRY (entry), portCode);
 	gtk_grid_attach (GTK_GRID (grid), entry, 2, 2, 1, 1);
 
 	gtk_box_pack_start (GTK_BOX (vbox), grid, FALSE, FALSE, 0);
@@ -722,9 +734,10 @@ void tideSettings (guint data)
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	
 	saveText = gtk_entry_get_text(GTK_ENTRY (entry));
-	if (strcmp (saveText, tideURL) != 0)
+	if (strcmp (saveText, portCode) != 0)
 	{
-		strncpy (tideURL, saveText, 128);
+		strcpy (tideURL, urlPrefix);
+		sprintf (&tideURL[strlen(urlPrefix)], "%04d", atoi (saveText));
 		configSetValue ("tide_info_url", tideURL);
 		getTideTimes ();
 		myUpdateID = -1;

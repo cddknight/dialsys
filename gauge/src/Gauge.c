@@ -369,7 +369,7 @@ HAND_STYLE handStyle[HAND_COUNT]	=			// Saved in the config file
 	{ 9, 28, 0, MAXH__COLOUR, MAXF__COLOUR, 1, 1 },		// Max hand
 	{ 9, 28, 0, MINH__COLOUR, MINF__COLOUR, 1, 1 }		// Min hand
 };
-char tideURL[129] = "http://www.ukho.gov.uk/easytide/EasyTide/ShowPrediction.aspx?PortID=0113&PredictionLength=3";
+char tideURL[129] = "http://www.ukho.gov.uk/easytide/EasyTide/ShowPrediction.aspx?PredictionLength=4&PortID=0113";
 DIAL_CONFIG dialConfig =
 {								// -- Used by dial library --
 	NULL, 						// mainWindow
