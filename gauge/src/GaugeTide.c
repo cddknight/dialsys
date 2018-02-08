@@ -200,7 +200,7 @@ static int getNextTide ()
 	{
 		memset (&tideInfo, 0, sizeof (tideInfo));
 		strcpy (tideInfo.location, "Pending");
-		tideInfo.tideTimes[0].tideTime = time (NULL);
+		tideInfo.tideTimes[0].tideTime = tideInfo.readTime = time (NULL);
 		tideInfo.tideTimes[0].tideType = 'L';
 		retn = 0;
 	}
