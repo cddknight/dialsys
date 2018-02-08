@@ -67,7 +67,7 @@ static struct TideInfo tideInfo;
 static char tideReadLine[1025];
 static int lastReadTide;
 
-static int myUpdateID = 100;
+static int myUpdateID = -1;
 static time_t tideDuration = 22358;
 static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 static char *days[7] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
@@ -571,14 +571,14 @@ void readTideValues (int face)
 		{
 			;
 		}
-		else if (sysUpdateID % 60 != 0)
+		else if (sysUpdateID % 60 != 0 && myUpdateID != -1)
 		{
 			return;
 		}
 		if (myUpdateID != sysUpdateID)
 		{
 			time_t now = time (NULL);		
-			if (tideInfo.readTime < now)
+			if (tideInfo.readTime < now || myUpdateID == -1)
 			{
 				getTideTimes();
 			}
@@ -676,9 +676,8 @@ void tideSettings (guint data)
 #if GTK_MAJOR_VERSION == 2
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
-						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
-						GTK_STOCK_CLOSE, 
-						GTK_RESPONSE_NONE, NULL);
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
 
 	vbox = GTK_DIALOG (dialog)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
@@ -700,7 +699,9 @@ void tideSettings (guint data)
 #else
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
-						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, NULL);
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			_("_OK"), GTK_RESPONSE_ACCEPT, NULL);
+
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
@@ -729,18 +730,19 @@ void tideSettings (guint data)
 #endif
 
 	gtk_widget_show_all (dialog);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	
-	saveText = gtk_entry_get_text(GTK_ENTRY (entry));
-	if (strcmp (saveText, portCode) != 0)
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		strcpy (tideURL, urlPrefix);
-		sprintf (&tideURL[strlen(urlPrefix)], "%04d", atoi (saveText));
-		configSetValue ("tide_info_url", tideURL);
-		getTideTimes ();
-		myUpdateID = -1;
+		saveText = gtk_entry_get_text(GTK_ENTRY (entry));
+		if (strcmp (saveText, portCode) != 0)
+		{
+			strcpy (tideURL, urlPrefix);
+			sprintf (&tideURL[strlen(urlPrefix)], "%04d", atoi (saveText));
+			configSetValue ("tide_info_url", tideURL);
+			getTideTimes ();
+			myUpdateID = -1;
+		}
+		gtk_widget_destroy (dialog);
 	}
-	gtk_widget_destroy (dialog);
 }
 
 #endif

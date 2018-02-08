@@ -1357,9 +1357,9 @@ void weatherSettings(guint data)
 
 #if GTK_MAJOR_VERSION == 2
 
-	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
-										 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-										 GTK_STOCK_CLOSE, GTK_RESPONSE_NONE, NULL);
+    dialog = gtk_dialog_new_with_buttons ("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
 
 	vbox = GTK_DIALOG(dialog)->vbox;
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
@@ -1420,7 +1420,8 @@ void weatherSettings(guint data)
 #else
 
 	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, NULL);
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			_("_OK"), GTK_RESPONSE_ACCEPT, NULL);
 
 	contentArea = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
@@ -1484,20 +1485,21 @@ void weatherSettings(guint data)
 #endif
 
 	gtk_widget_show_all(dialog);
-	gtk_dialog_run(GTK_DIALOG(dialog));
-
-	saveText = gtk_entry_get_text(GTK_ENTRY(entryKey));
-	if (strcmp(saveText, locationKey) != 0)
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		strncpy(locationKey, saveText, 40);
-		configSetValue ("location_key", locationKey);
-		textUpdate = 1;
-	}
-	if (textUpdate)
-	{
-		weatherGaugeReset();
-		myWeather.updateNum = -1;
-		myWeather.nextUpdate = 0;
+		saveText = gtk_entry_get_text(GTK_ENTRY(entryKey));
+		if (strcmp(saveText, locationKey) != 0)
+		{
+			strncpy(locationKey, saveText, 40);
+			configSetValue ("location_key", locationKey);
+			textUpdate = 1;
+		}
+		if (textUpdate)
+		{
+			weatherGaugeReset();
+			myWeather.updateNum = -1;
+			myWeather.nextUpdate = 0;
+		}
 	}
 	gtk_widget_destroy(dialog);
 
