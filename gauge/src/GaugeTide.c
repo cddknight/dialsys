@@ -191,10 +191,18 @@ static int getNextTide ()
 
 	for (i = 0; i < lastReadTide && retn == -1; ++i)
 	{
-		if (tideInfo.tideTimes[i].tideTime > now)
+		if (tideInfo.tideTimes[i].tideTime > now && tideInfo.tideTimes[i].tideSet)
 		{
 			retn = i;
 		}
+	}
+	if (retn == -1)
+	{
+		memset (&tideInfo, 0, sizeof (tideInfo));
+		strcpy (tideInfo.location, "Pending");
+		tideInfo.tideTimes[0].tideTime = time (NULL);
+		tideInfo.tideTimes[0].tideType = 'L';
+		retn = 0;
 	}
 	return retn;
 }
@@ -555,10 +563,9 @@ void readTideValues (int face)
 		struct tm *tideTime;
 		time_t nextTideTime, lastTideTime;
 		char tideDirStr[41], tideHeightStr[41], tideTimeStr[41], toolTip[1024];
-		long duration;
-		int nextTide, i;
-
 		FACE_SETTINGS *faceSetting = faceSettings[face];
+		int i, nextTide, loopStart, loopEnd;
+		long duration;
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
 		{
@@ -577,7 +584,6 @@ void readTideValues (int face)
 			}
 			myUpdateID = sysUpdateID;
 		}
-
 		nextTide = getNextTide();
 		if (nextTide)
 		{
@@ -589,9 +595,9 @@ void readTideValues (int face)
 			nextTideTime = tideInfo.tideTimes[nextTide].tideTime;
 			lastTideTime = nextTideTime - tideDuration;
 		}
+		tideTime = localtime (&nextTideTime);
 		duration = nextTideTime - lastTideTime;
 
-		tideTime = localtime (&nextTideTime);
 		faceSetting -> firstValue = (double)(time (NULL) - lastTideTime) / duration;
 		if (tideInfo.tideTimes[nextTide].tideType == 'L')
 		{
@@ -613,7 +619,9 @@ void readTideValues (int face)
 				faceSetting -> firstValue);
 		
 		toolTip[0] = 0;
-		for (i = (nextTide ? nextTide - 1 : nextTide); i < 4; ++i)
+		loopStart = nextTide ? nextTide - 1 : nextTide;
+		loopEnd = loopStart + 4;
+		for (i = loopStart; i < loopEnd; ++i)
 		{
 			if (tideInfo.tideTimes[i].tideSet)
 			{
