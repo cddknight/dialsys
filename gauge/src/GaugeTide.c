@@ -672,16 +672,13 @@ void tideSettings (guint data)
 	{
 		portCode[0] = 0;
 	}
-	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
-						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-						_("Close"), 
-#else
-						GTK_STOCK_CLOSE, 
-#endif
-						GTK_RESPONSE_NONE, NULL);
 
 #if GTK_MAJOR_VERSION == 2
+
+	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
+						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+						GTK_STOCK_CLOSE, 
+						GTK_RESPONSE_NONE, NULL);
 
 	vbox = GTK_DIALOG (dialog)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
@@ -696,13 +693,14 @@ void tideSettings (guint data)
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	entry = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 4);
-	gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_DIGITS);
 	gtk_entry_set_text (GTK_ENTRY (entry), portCode);
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 #else
 
+	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
+						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, NULL);
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
