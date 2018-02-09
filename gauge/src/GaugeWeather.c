@@ -1359,7 +1359,7 @@ void weatherSettings(guint data)
 
     dialog = gtk_dialog_new_with_buttons ("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
 
 	vbox = GTK_DIALOG(dialog)->vbox;
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
@@ -1421,7 +1421,7 @@ void weatherSettings(guint data)
 
 	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
-			_("_OK"), GTK_RESPONSE_ACCEPT, NULL);
+			_("_OK"), GTK_RESPONSE_ACCEPT, _("_Cancel"), GTK_RESPONSE_REJECT, NULL);
 
 	contentArea = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 

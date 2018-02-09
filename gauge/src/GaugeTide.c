@@ -670,14 +670,14 @@ void tideSettings (guint data)
 	}
 	else
 	{
-		portCode[0] = 0;
+		strcpy (portCode, "113");	
 	}
 
 #if GTK_MAJOR_VERSION == 2
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
-			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
 
 	vbox = GTK_DIALOG (dialog)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
@@ -700,12 +700,12 @@ void tideSettings (guint data)
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
-			_("_OK"), GTK_RESPONSE_ACCEPT, NULL);
+			_("_OK"), GTK_RESPONSE_ACCEPT, _("_Cancel"), GTK_RESPONSE_REJECT, NULL);
 
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
 	gtk_box_pack_start (GTK_BOX (contentArea), vbox, TRUE, TRUE, 0);
 	grid = gtk_grid_new ();
 	
@@ -724,7 +724,6 @@ void tideSettings (guint data)
 	gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_DIGITS);
 	gtk_entry_set_text (GTK_ENTRY (entry), portCode);
 	gtk_grid_attach (GTK_GRID (grid), entry, 2, 2, 1, 1);
-
 	gtk_box_pack_start (GTK_BOX (vbox), grid, FALSE, FALSE, 0);
 
 #endif
@@ -741,8 +740,8 @@ void tideSettings (guint data)
 			getTideTimes ();
 			myUpdateID = -1;
 		}
-		gtk_widget_destroy (dialog);
 	}
+	gtk_widget_destroy (dialog);
 }
 
 #endif
