@@ -58,6 +58,7 @@ struct TideTime
 struct TideInfo
 {
 	char location[41];
+	char country[41];
 	double locationOffset;
 	struct TideTime tideTimes[MAX_SAVE_TIDES];
 	time_t readTime;
@@ -67,7 +68,7 @@ static struct TideInfo tideInfo;
 static char tideReadLine[1025];
 static int lastReadTide;
 
-static int myUpdateID = -1;
+static int myUpdateID = 100;
 static time_t tideDuration = 22358;
 static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 static char *days[7] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
@@ -392,12 +393,17 @@ processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 			if (!strncmp (fullPath, matchPath[0], strlen (matchPath[0])))
 			{
 				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
-				if (tideInfo.location[0] == 0 && !strncmp ((char *)(curNode -> name), "span", 4))
+				if (key && !strncmp ((char *)(curNode -> name), "span", 4))
 				{
-					if (key) 
+					if (tideInfo.location[0] == 0)
 					{
 						strncpy (tideInfo.location, (char *)key, 40);
 						properCaseWord (tideInfo.location);
+					}
+					else if (tideInfo.country[0] == 0)
+					{
+						strncpy (tideInfo.country, (char *)key, 40);
+						properCaseWord (tideInfo.country);
 					}
 				}
 			}
@@ -618,20 +624,19 @@ void readTideValues (int face)
 				tideInfo.tideTimes[nextTide].tideType == 'H' ? _("coming in") : _("going out"),
 				faceSetting -> firstValue);
 		
-		toolTip[0] = 0;
+		sprintf (toolTip, "<b>Port</b>: %s, %s", tideInfo.location, tideInfo.country);
 		loopStart = nextTide ? nextTide - 1 : nextTide;
 		loopEnd = loopStart + 4;
 		for (i = loopStart; i < loopEnd; ++i)
 		{
 			if (tideInfo.tideTimes[i].tideSet)
 			{
-				if (toolTip[0]) strcat (toolTip, "\n");
 				tideTime = localtime (&tideInfo.tideTimes[i].tideTime);
 				sprintf (tideTimeStr, "%s. %d %s, %d:%02d", days[tideTime -> tm_wday], tideTime -> tm_mday,
 						months[tideTime -> tm_mon], tideTime -> tm_hour, tideTime -> tm_min);
 				strcpy (tideDirStr, tideInfo.tideTimes[i].tideType == 'H' ? _("High water") : _("Low water"));
 				sprintf (tideHeightStr, "%0.1fm", tideInfo.tideTimes[i].tideHeight);
-				sprintf (&toolTip[strlen(toolTip)], _("<b>%s</b>: %s, %s"), tideDirStr, tideTimeStr, tideHeightStr);
+				sprintf (&toolTip[strlen(toolTip)], _("\n<b>%s</b>: %s, %s"), tideDirStr, tideTimeStr, tideHeightStr);
 			}
 		}
 		setFaceString (faceSetting, FACESTR_TIP, 0, toolTip);
