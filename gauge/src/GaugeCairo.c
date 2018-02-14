@@ -140,8 +140,8 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 		float scale = ((faceSetting -> faceScaleMax - faceSetting -> faceScaleMin) * i) / 10;
 		
 		sprintf (tempBuff, "%0.3f", scale + faceSetting -> faceScaleMin);
-		dialDrawMark (markAngle, 29, QFILL_COLOUR, QMARK_COLOUR, removeExtra (tempBuff));
-		dialDrawMinute (29, 1, markAngle, QMARK_COLOUR);
+		dialDrawMark (markAngle, 29, QMARK_COLOUR, QMARK_COLOUR, removeExtra (tempBuff));
+		dialDrawMinute (29, 1, markAngle, HMARK_COLOUR);
 	}
 	
 	/*------------------------------------------------------------------------------------------------*

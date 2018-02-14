@@ -1,4 +1,4 @@
-/**********************************************************************************************************************
+	/**********************************************************************************************************************
  *                                                                                                                    *
  *  G A U G E . C                                                                                                     *
  *  =============                                                                                                     *
@@ -34,8 +34,8 @@ COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 	{	"brf", __("Border when focused"),	"#505050"	},	//	04	T
 	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//	05	T
 	{	"txt", __("Information text"),		"#858585"	},	//	06	T
-	{	"qum", __("Segment marker outer"),	"#AAAAAA"	},	//	07	T
-	{	"quf", __("Segment marker fill"),	"#646464"	},	//	08	T
+	{	"qum", __("Scale text"),			"#AAAAAA"	},	//	07	T
+	{	"hom", __("Scale markers"),			"#646464"	},	//	08	T
 
 	{	"gah", __("Main hand outer"),		"#E0E0E0"	},	//	09
 	{	"gaf", __("Main hand fill"),		"#202020"	},	//	10
@@ -231,7 +231,7 @@ MENU_DESC networkDevDesc[] =
 	{	NULL,					networkCallback,		NULL,				0x1007,	NULL,	0,	1	},
 	{	NULL,					networkCallback,		NULL,				0x1008,	NULL,	0,	1	},
 	{	NULL,					networkCallback,		NULL,				0x1009,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1010,	NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x100A,	NULL,	0,	1	},
 	{	NULL, 					NULL,					NULL,				0	}	
 };
 
@@ -1329,13 +1329,13 @@ networkCallback (guint data)
 	{
 		if (data & 0x1000)
 		{
-			faceSubType = faceSettings[currentFace] -> faceSubType & 0x0F00;
-			faceSubType |= (data & 0x00FF);
+			faceSubType = faceSettings[currentFace] -> faceSubType & 0x0FF0;
+			faceSubType |= (data & 0x000F);
 		}
 		else
 		{
-			faceSubType = faceSettings[currentFace] -> faceSubType & 0x00FF;
-			faceSubType |= (data & 0x0F00);
+			faceSubType = faceSettings[currentFace] -> faceSubType & 0x000F;
+			faceSubType |= (data & 0x0FF0);
 		}
 	}
 	faceSubType &= 0x0FFF;

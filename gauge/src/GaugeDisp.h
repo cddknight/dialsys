@@ -60,7 +60,7 @@
 #define FACE4_COLOUR	5
 #define TEXT__COLOUR	6
 #define QMARK_COLOUR	7
-#define QFILL_COLOUR	8
+#define HMARK_COLOUR	8
 
 #define HAND1_COLOUR	9
 #define HFIL1_COLOUR	10

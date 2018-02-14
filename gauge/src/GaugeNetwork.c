@@ -112,20 +112,23 @@ int getScaleShiftCount (int scale)
  *  \param values Values to scale.
  *  \result None (saved in structure).
  */
-void setDeviceScale (struct devValues *values)
+void setDeviceScale (struct devValues *values, int lockScale)
 {
 	int scale = 1, i;
 	while ((values -> rate / scale) > 100)
 		scale *= 10;
 
-	values -> useScale = scale;
-	for (i = 0; i < (MAX_SCALE_MEM - 1); ++i)
+	if (!lockScale || scale > values -> useScale)
 	{
-		values -> oldScales[i] = values -> oldScales[i + 1];
-		if (values -> oldScales[i] > values -> useScale)
-			values -> useScale = values -> oldScales[i];
+		values -> useScale = scale;
+		for (i = 0; i < (MAX_SCALE_MEM - 1); ++i)
+		{
+			values -> oldScales[i] = values -> oldScales[i + 1];
+			if (values -> oldScales[i] > values -> useScale)
+				values -> useScale = values -> oldScales[i];
+		}
+		values -> oldScales[i] = scale;
 	}
-	values -> oldScales[i] = scale;
 }
 
 /**********************************************************************************************************************
@@ -138,7 +141,7 @@ void setDeviceScale (struct devValues *values)
  *  \brief Read the number of sectors read.
  *  \result None.
  */
-void readDeviceValues()
+void readDeviceValues(int lockScale)
 {
 	FILE *devstats;
 	struct timeval tvTaken;
@@ -212,8 +215,8 @@ void readDeviceValues()
 						deviceActivity[device].dataWrite.value = value;
 						deviceActivity[0].dataWrite.value += diff;
 
-						setDeviceScale (&deviceActivity[device].dataRead);
-						setDeviceScale (&deviceActivity[device].dataWrite);
+						setDeviceScale (&deviceActivity[device].dataRead, lockScale);
+						setDeviceScale (&deviceActivity[device].dataWrite, lockScale);
 
 						networkDevDesc[device].disable = 0;
 						networkDevDesc[device].menuName = deviceActivity[device].name;
@@ -229,8 +232,8 @@ void readDeviceValues()
 	}
 	deviceActivity[0].dataRead.rate = (deviceActivity[0].dataRead.value * 1000) / readTime;
 	deviceActivity[0].dataWrite.rate = (deviceActivity[0].dataWrite.value * 1000) / readTime;
-	setDeviceScale (&deviceActivity[0].dataRead);
-	setDeviceScale (&deviceActivity[0].dataWrite);
+	setDeviceScale (&deviceActivity[0].dataRead, lockScale);
+	setDeviceScale (&deviceActivity[0].dataWrite, lockScale);
 }
 
 /**********************************************************************************************************************
@@ -247,7 +250,7 @@ void readNetworkInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_NETWORK].enabled)
 	{
-		readDeviceValues();
+		readDeviceValues(0);
 	}
 }
 
@@ -267,7 +270,9 @@ void readNetworkValues (int face)
 	if (gaugeEnabled[FACE_TYPE_NETWORK].enabled)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
-		int scale, device = faceSetting -> faceSubType & 0x00FF;
+		int device = faceSetting -> faceSubType & 0x000F, scale;
+		int lockScale = (faceSetting -> faceSubType >> 4) & 1;
+		int faceType = (faceSetting -> faceSubType >> 8) & 1;
 		unsigned long value = 0;
 		unsigned short shift;
 		char *nameT, *nameD;
@@ -282,12 +287,12 @@ void readNetworkValues (int face)
 		}
 		if (myUpdateID != sysUpdateID)
 		{
-			readDeviceValues();
+			readDeviceValues(lockScale);
 			myUpdateID = sysUpdateID;
 		}
 
 		nameD = deviceActivity[device].name;
-		if (faceSetting -> faceSubType & 0x0100)
+		if (faceType)
 		{
 			nameT = typeNames[0];
 			scale = deviceActivity[device].dataRead.useScale;
