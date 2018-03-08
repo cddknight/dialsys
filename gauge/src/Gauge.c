@@ -1292,6 +1292,9 @@ void
 wifiCallback (guint data)
 {
 	gaugeReset (currentFace, FACE_TYPE_WIFI, data);
+	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_SHOWCOLD | FACE_HC_REVS);
+	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
+	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 }
 
 /**********************************************************************************************************************

@@ -31,7 +31,8 @@ extern int sysUpdateID;
 
 static int myUpdateID = 100;
 static double lastRead = -1;
-static char *findStr = "Link Quality=";
+static char *findQualityStr = "Link Quality=";
+static char *findSignalStr = "Signal level=";
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -44,7 +45,7 @@ static char *findStr = "Link Quality=";
  *  \param inStr String to search in.
  *  \result -1 not found.
  */
-int huntForQuality (char *inStr)
+int huntForQuality (char *inStr, char *findStr)
 {
     int matched = 0, len = strlen (findStr), i = 0;
 
@@ -81,7 +82,7 @@ int huntForQuality (char *inStr)
  *  \param readValue Save the quality here.
  *  \result 1 if a value was read, 0 if not.
  */
-int readLinkQuality(double *readValue)
+int readLinkQuality(double *qualityValue, double *signalValue)
 {
 	int retn = 0;
 	char readBuff[1025];
@@ -91,15 +92,29 @@ int readLinkQuality(double *readValue)
 	{
 		while (fgets (readBuff, 1024, inFile))
 		{
-			int found = huntForQuality (readBuff);
+			int found = huntForQuality (readBuff, findQualityStr);
 			if (found != -1)
 			{
 				int val1, val2;
-				if (sscanf (&readBuff[found + strlen (findStr)], "%d/%d", &val1, val2) == 2)
+				if (sscanf (&readBuff[found + strlen (findQualityStr)], "%d/%d", &val1, val2) == 2)
 				{
-					*readValue = ((double)val1 / (double)val2) * 100;
+					if (qualityValue != NULL)
+					{
+						*qualityValue = ((double)val1 / (double)val2) * 100;
+					}
 					retn = 1;
-					break;
+				}
+			}
+			found = huntForQuality (readBuff, findSignalStr);
+			if (found != -1)
+			{
+				int val1;
+				if (sscanf (&readBuff[found + strlen (findSignalStr)], "%d", &val1) == 2)
+				{
+					if (signalValue != NULL)
+					{
+						*signalValue = (double)val1;
+					}
 				}
 			}
 		}
@@ -122,8 +137,7 @@ void readWifiInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_WIFI].enabled)
 	{
-		double readValue;
-		if (readLinkQuality(&readValue))
+		if (readLinkQuality(NULL, NULL))
 		{
 			gaugeMenuDesc[MENU_GAUGE_WIFI].disable = 0;
 		}
@@ -147,7 +161,7 @@ void readWifiValues (int face)
 
 	if (gaugeEnabled[FACE_TYPE_MOONPHASE].enabled)
 	{
-		double linkQuality = 0;
+		double linkQuality = 0, signalLevel = 0;
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
@@ -159,11 +173,12 @@ void readWifiValues (int face)
 		{
 			return;
 		}
-		readLinkQuality (&linkQuality);
-		setFaceString (faceSetting, FACESTR_TOP, 0, _("Wifi Quality"));
+		readLinkQuality (&linkQuality, &signalLevel);
+		setFaceString (faceSetting, FACESTR_TOP, 0, _("Wifi\nQuality"));
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Wifi - Gauge"));
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f%%\n"), linkQuality);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Wifi Quality</b>: %0.2f%%"),  linkQuality);
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), linkQuality);
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Wifi Quality</b>: %0.1f%%\n<b>Signal Level</b>:%0.0f dBm"),  
+				linkQuality, signalLevel);
 		faceSetting -> firstValue = linkQuality;
 	}
 }
