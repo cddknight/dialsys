@@ -85,7 +85,7 @@ int readLinkQuality(double *readValue)
 {
 	int retn = 0;
 	char readBuff[1025];
-	FILE *inFile = popen("iwconfig", "r");
+	FILE *inFile = popen("iwconfig 2>> /dev/null", "r");
 
 	if (inFile != NULL)
 	{
