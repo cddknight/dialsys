@@ -98,7 +98,7 @@ int readLinkQuality(double *qualityValue, double *signalValue)
 			if (found != -1)
 			{
 				int val1, val2;
-				if (sscanf (&readBuff[found + strlen (findQualityStr)], "%d/%d", &val1, val2) == 2)
+				if (sscanf (&readBuff[found + strlen (findQualityStr)], "%d/%d", &val1, &val2) == 2)
 				{
 					if (qualityValue != NULL)
 					{
@@ -111,7 +111,7 @@ int readLinkQuality(double *qualityValue, double *signalValue)
 			if (found != -1)
 			{
 				int val1;
-				if (sscanf (&readBuff[found + strlen (findSignalStr)], "%d", &val1) == 2)
+				if (sscanf (&readBuff[found + strlen (findSignalStr)], "%d", &val1) == 1)
 				{
 					if (signalValue != NULL)
 					{
@@ -171,7 +171,7 @@ void readWifiValues (int face)
 			faceSetting -> nextUpdate = 5;
 			update = 1;
 		}
-		if (!update && sysUpdateID % 2 != 0)
+		if (!update && sysUpdateID % 10 != 0)
 		{
 			return;
 		}
