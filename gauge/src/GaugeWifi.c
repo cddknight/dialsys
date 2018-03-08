@@ -43,6 +43,7 @@ static char *findSignalStr = "Signal level=";
 /**
  *  \brief Search for a matching string in a string.
  *  \param inStr String to search in.
+ *  \param findStr String to look for.
  *  \result -1 not found.
  */
 int huntForQuality (char *inStr, char *findStr)
@@ -79,7 +80,8 @@ int huntForQuality (char *inStr, char *findStr)
  **********************************************************************************************************************/
 /**
  *  \brief Read the link quality by running iwconfig.
- *  \param readValue Save the quality here.
+ *  \param qualityValue Link quality value.
+ *  \param signalValue Signal level value.
  *  \result 1 if a value was read, 0 if not.
  */
 int readLinkQuality(double *qualityValue, double *signalValue)
