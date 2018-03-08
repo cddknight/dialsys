@@ -297,7 +297,8 @@ MENU_DESC gaugeMenuDesc[] =
 	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*	09	*/
 	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*	10	*/
 	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*	11	*/
-	{	NULL,					NULL,					NULL,				0	}					/*	12	*/
+	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/*	12	*/
+	{	NULL,					NULL,					NULL,				0	}					/*	13	*/
 };
 
 MENU_DESC prefMenuDesc[] =
@@ -394,7 +395,7 @@ GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =
 	{	"weather",		1	},	{	"memory",		1	},	{	"battery",		0	},
 	{	"network",		1	},	{	"entropy",		0	},	{	"tide",			1	},
 	{	"harddisk",		1	},	{	"thermo",		0	},	{	"power",		0	},
-	{	"moonphase",	1	},	{	NULL, 			0	}
+	{	"moonphase",	1	},	{	"wifi",			1,	},	{	NULL, 			0	}
 };
 
 /******************************************************************************************************
@@ -1013,6 +1014,10 @@ clockTickCallback (gpointer data)
 				readMoonPhaseValues (face);
 				break;
 
+			case FACE_TYPE_WIFI:
+				readWifiValues (face);
+				break;
+
 			case FACE_TYPE_MAX:
 			default:
 				/*------------------------------------------------------------------------------------*
@@ -1270,6 +1275,23 @@ void
 moonPhaseCallback (guint data)
 {
 	gaugeReset (currentFace, FACE_TYPE_MOONPHASE, data);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  W I F I  C A L L B A C K                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Called to setup wifi dial.
+ *  \param data Sub-type if needed.
+ *  \result None.
+ */
+void
+wifiCallback (guint data)
+{
+	gaugeReset (currentFace, FACE_TYPE_WIFI, data);
 }
 
 /**********************************************************************************************************************
@@ -2361,6 +2383,10 @@ main (int argc, char *argv[])
 		case FACE_TYPE_MOONPHASE:
 			moonPhaseCallback (faceSettings[i] -> faceSubType);
 			break;
+
+		case FACE_TYPE_WIFI:
+			wifiCallback (faceSettings[i] -> faceSubType);
+			break;
 		}
 	}
 	currentFace = saveFace;
@@ -2465,6 +2491,7 @@ main (int argc, char *argv[])
 	readPowerMeterInit();
 #endif
 	readMoonPhaseInit();
+	readWifiInit();
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Called to set any values                                                                       *

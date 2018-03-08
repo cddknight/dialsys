@@ -112,6 +112,7 @@
 #define MENU_GAUGE_THERMO		9
 #define MENU_GAUGE_TIDE			10
 #define MENU_GAUGE_WEATHER		11
+#define MENU_GAUGE_WIFI			12
 
 #define MENU_PREF_ONTOP			0
 #define MENU_PREF_STUCK			1
@@ -188,7 +189,8 @@ FACE_SETTINGS;
 #define FACE_TYPE_THERMO		10
 #define FACE_TYPE_POWER			11
 #define FACE_TYPE_MOONPHASE		12
-#define FACE_TYPE_MAX			13
+#define FACE_TYPE_WIFI			13
+#define FACE_TYPE_MAX			14
 
 typedef struct _gaugeEnabled 
 {
@@ -221,6 +223,7 @@ void networkCallback		(guint data);
 void harddiskCallback		(guint data);
 void batteryCallback		(guint data);
 void moonPhaseCallback		(guint data);
+void wifiCallback			(guint data);
 void entropyCallback		(guint data);
 void tideCallback			(guint data);
 void sensorTempCallback		(guint data);
@@ -260,6 +263,8 @@ void readBatteryInit (void);
 void readBatteryValues (int face);
 void readMoonPhaseInit (void);
 void readMoonPhaseValues (int face);
+void readWifiInit (void);
+void readWifiValues (int face);
 void readEntropyInit (void);
 void readEntropyValues (int face);
 void readTideInit (void);
