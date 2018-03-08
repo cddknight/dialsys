@@ -179,7 +179,7 @@ void readWifiValues (int face)
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Wifi\nQuality"));
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Wifi - Gauge"));
 		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), linkQuality);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Wifi Quality</b>: %0.1f%%\n<b>Signal Level</b>:%0.0f dBm"),  
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Wifi Quality</b>: %0.1f%%\n<b>Signal Level</b>: %0.0f dBm"),  
 				linkQuality, signalLevel);
 		faceSetting -> firstValue = linkQuality;
 	}
