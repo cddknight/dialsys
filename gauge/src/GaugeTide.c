@@ -623,8 +623,11 @@ void readTideValues (int face)
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"), 
 				tideInfo.tideTimes[nextTide].tideType == 'H' ? _("coming in") : _("going out"),
 				faceSetting -> firstValue);
-		
-		sprintf (toolTip, "<b>Port</b>: %s, %s", tideInfo.location, tideInfo.country);
+		sprintf (toolTip, "<b>Port</b>: %s, %s\n<b>Tide Level</b>: %s %0.1f%%",
+				tideInfo.location, tideInfo.country,
+				tideInfo.tideTimes[nextTide].tideType == 'H' ? _("Coming in") : _("Going out"),
+				faceSetting -> firstValue);
+
 		loopStart = nextTide ? nextTide - 1 : nextTide;
 		loopEnd = loopStart + 4;
 		for (i = loopStart; i < loopEnd; ++i)
