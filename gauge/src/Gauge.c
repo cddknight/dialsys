@@ -343,9 +343,9 @@ static GdkPixbuf *defaultIcon;
 /******************************************************************************************************
  *                                                                                                    *
  ******************************************************************************************************/
-static bool alwaysOnTop 		=  0;			// Saved in the config file
-static bool stuckOnAll 			=  0;			// Saved in the config file
-static bool lockMove 			=  0;			// Saved in the config file
+static bool alwaysOnTop 		=  0;			/* Saved in the config file */
+static bool stuckOnAll 			=  0;			/* Saved in the config file */
+static bool lockMove 			=  0;			/* Saved in the config file */
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
 static time_t lastTime 			= -1;
@@ -356,37 +356,37 @@ void updateGauge (void);
  ******************************************************************************************************/
 GtkAccelGroup *accelGroup;
 int weHaveFocus 				=  0;
-int currentFace 				=  0;			// Saved in the config file
+int currentFace 				=  0;			/* Saved in the config file */
 int toolTipFace					=  0;
 int sysUpdateID					=  100;
 int allowSaveDisp				=  0;
 FACE_SETTINGS *faceSettings[MAX_FACES];
 char fontName[101]				=  "Sans";		// Saved in the config file
 char configFile[81]				=  ".gaugerc";
-HAND_STYLE handStyle[HAND_COUNT]	=			// Saved in the config file
+HAND_STYLE handStyle[HAND_COUNT]	=			/* Saved in the config file */
 { 
-	{ 1, 28, 0, HAND1_COLOUR, HFIL1_COLOUR, 1, 1 },		// First hand
-	{ 1, 25, 0, HAND2_COLOUR, HFIL2_COLOUR, 1, 1 },		// Second hand
-	{ 9, 28, 0, MAXH__COLOUR, MAXF__COLOUR, 1, 1 },		// Max hand
-	{ 9, 28, 0, MINH__COLOUR, MINF__COLOUR, 1, 1 }		// Min hand
+	{ 1, 28, 0, HAND1_COLOUR, HFIL1_COLOUR, 1, 1 },		/* First hand */
+	{ 1, 25, 0, HAND2_COLOUR, HFIL2_COLOUR, 1, 1 },		/* Second hand */
+	{ 9, 28, 0, MAXH__COLOUR, MAXF__COLOUR, 1, 1 },		/* Max hand */
+	{ 9, 28, 0, MINH__COLOUR, MINF__COLOUR, 1, 1 }		/* Min hand */
 };
 char tideURL[129] = "http://www.ukho.gov.uk/easytide/EasyTide/ShowPrediction.aspx?PredictionLength=4&PortID=0113";
 DIAL_CONFIG dialConfig =
-{								// -- Used by dial library --
-	NULL, 						// mainWindow
-	NULL, 						// drawingArea
-	3 * 64,						// faceSize
-	1,	 						// faceWidth
-	1, 							// faceHeight
-	3,	 						// markerType
-	300, 						// markerStep
-	99, 						// faceOpacity
-	0,	 						// faceGradient
-	750,							// startPoint
-	&fontName[0],				// Font name pointer
-	updateGauge,				// Update func.
-	dialSave,					// Save func.
-	&colourNames[0]				// Colour details
+{								/* -- Used by dial library -- */
+	NULL, 						/* mainWindow */
+	NULL, 						/* drawingArea */
+	3 * 64,						/* faceSize */
+	1,	 						/* faceWidth */
+	1, 							/* faceHeight */
+	3,	 						/* markerType */
+	300, 						/* markerStep */
+	99, 						/* faceOpacity */
+	0,	 						/* faceGradient */
+	750,							/* startPoint */
+	&fontName[0],				/* Font name pointer */
+	updateGauge,				/* Update func. */
+	dialSave,					/* Save func. */
+	&colourNames[0]				/* Colour details */
 };
 
 GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =

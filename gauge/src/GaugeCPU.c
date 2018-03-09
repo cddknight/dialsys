@@ -253,8 +253,8 @@ int readStats (unsigned long long *stats, int procNumber)
 					else
 					{
 						stats[n] = atoll (word);
-						if (n != 4)					// Ignore Idle ticks
-							stats[0] += stats[n];	// Count all other ticks
+						if (n != 4)					/* Ignore Idle ticks */
+							stats[0] += stats[n];	/* Count all other ticks */
 					}
 					word[j = 0] = 0;
 					n ++;

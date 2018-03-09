@@ -229,7 +229,7 @@ static void processProcessATide(int mDay, int mon, char type, int hour, int min,
 	struct tm tideTime, *timeNow;
 	time_t now = time(NULL);
 
-//	printf ("Tide[%d]: %d/%d %c %d:%02d %f\n", lastReadTide, mDay, mon, type, hour, min, height);
+/*	printf ("Tide[%d]: %d/%d %c %d:%02d %f\n", lastReadTide, mDay, mon, type, hour, min, height); */
 	timeNow = gmtime (&now);
 	memcpy (&tideTime, timeNow, sizeof (tideTime));
 	tideTime.tm_mday = mDay;
@@ -509,10 +509,10 @@ void getTideTimes ()
 	curl_global_init(CURL_GLOBAL_ALL);
 	curlHandle = curl_easy_init();
 	curl_easy_setopt(curlHandle, CURLOPT_URL, &tideURL[0]);
-//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=6400&PredictionLength=3");
-//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=2679&PredictionLength=3");
-//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=1570&PredictionLength=3");
-//	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=0108&PredictionLength=3");
+/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=6400&PredictionLength=3"); */
+/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=2679&PredictionLength=3"); */
+/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=1570&PredictionLength=3"); */
+/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=0108&PredictionLength=3"); */
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_easy_setopt(curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");

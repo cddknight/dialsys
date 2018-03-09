@@ -550,7 +550,7 @@ void dialSquareGradientX (int posX, int posY, int size, int colFill, int style)
 	cairo_pattern_add_color_stop_rgb (pat, x2, col[0][2], col[1][2], col[2][2]);
 	cairo_rectangle (saveCairo, posX, posY, trueSize, trueSize);
 	cairo_set_source(saveCairo, pat);
-//	dialSetColour (colFill);
+/*	dialSetColour (colFill); */
 	cairo_fill (saveCairo);
 	cairo_stroke (saveCairo);
 
@@ -707,7 +707,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 	switch (style)
 	{
 	case 0:
-		// Original double triangle
+		/* Original double triangle */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2);
 		points[2] = posX + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_1);
@@ -721,7 +721,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 		break;
 
 	case 1:
-		// Single triangle
+		/* Single triangle */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) 
 					+ dialSin (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2)
@@ -737,7 +737,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 		break;
 
 	case 2:
-		// Rectangle
+		/* Rectangle */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) - dialCos (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[2] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_3);
@@ -751,7 +751,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 		break;
 
 	case 3:
-		//Rectangle with pointer
+		/*Rectangle with pointer */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) - dialCos (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[2] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_3);
@@ -767,7 +767,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 		break;
 
 	case 4:
-		//Rectangle with arrow
+		/*Rectangle with arrow */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) - dialCos (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[2] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_3);
@@ -787,7 +787,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 		break;
 
 	case 5:
-		// Single triangle
+		/* Single triangle */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize / 40, angle + SCALE_1);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) - dialCos (dialConfig -> dialSize / 40, angle + SCALE_1);
 		points[2] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) + dialSin (dialConfig -> dialSize / 40, angle + SCALE_3);
@@ -800,7 +800,7 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 
 	case 9:
 	default:
-		// Simple line
+		/* Simple line */
 		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2);
 		points[2] = posX + dialSin ((dialConfig -> dialSize * size) >> 6, angle);

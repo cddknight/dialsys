@@ -216,7 +216,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 	switch (style)
 	{
 	case 0:
-		// Original double triangle
+		/* Original double triangle */
 		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1);
 		points[1].x = posX + xSinCos (faceSize >> 6, angle + 200, 0);
@@ -230,7 +230,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 		break;
 
 	case 1:
-		// Single triangle
+		/* Single triangle */
 		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) 
 					+ xSinCos (faceSize >> 6, angle + 200, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1)
@@ -246,7 +246,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 		break;
 
 	case 2:
-		// Rectangle
+		/* Rectangle */
 		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) + xSinCos (faceSize >> 6, angle + 200, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1) - xSinCos (faceSize >> 6, angle + 200, 1);
 		points[1].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) + xSinCos (faceSize >> 6, angle + 600, 0);
@@ -260,7 +260,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 		break;
 
 	case 3:
-		//Rectangle with pointer
+		/*Rectangle with pointer */
 		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) + xSinCos (faceSize >> 6, angle + 200, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1) - xSinCos (faceSize >> 6, angle + 200, 1);
 		points[1].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) + xSinCos (faceSize >> 6, angle + 600, 0);
@@ -276,7 +276,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 		break;
 
 	case 4:
-		//Rectangle with arrow
+		/*Rectangle with arrow */
 		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) + xSinCos (faceSize >> 6, angle + 200, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1)	- xSinCos (faceSize >> 6, angle + 200, 1);
 		points[1].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0)	+ xSinCos (faceSize >> 6, angle + 600, 0);
@@ -297,7 +297,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 
 	case 9:
 	default:
-		// Simple line
+		/* Simple line */
 		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1);
 		points[1].x = posX + xSinCos ((faceSize * size) >> 6, angle, 0);

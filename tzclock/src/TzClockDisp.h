@@ -43,8 +43,8 @@
 #define _(String) gettext (String)
 #define __(String) (String)
 
-//#define MAX_FACES 50
-//#define CLOCK_IS_DECORATED
+/*#define MAX_FACES 50 */
+/*#define CLOCK_IS_DECORATED */
 
 /*----------------------------------------------------------------------------------------------------*
  * Stuff used for picking the colours on the clock. Add to the command line.                          *
@@ -149,13 +149,13 @@
  *----------------------------------------------------------------------------------------------------*/
 typedef struct _alarm
 {
-	int alarmHour;				// Setting
-	int alarmMin;				// Setting
+	int alarmHour;				/* Setting */
+	int alarmMin;				/* Setting */
 	int alarmShown;
-	int showAlarm;				// Setting (based on message)
-	bool onlyWeekdays;			// Setting
-	char message[41];			// Setting
-	char command[41];			// Setting
+	int showAlarm;				/* Setting (based on message) */
+	bool onlyWeekdays;			/* Setting */
+	char message[41];			/* Setting */
+	char command[41];			/* Setting */
 }
 ALARM_TIME;
 
@@ -164,13 +164,13 @@ ALARM_TIME;
  *----------------------------------------------------------------------------------------------------*/
 typedef struct _faceSettings 
 {
-	bool stopwatch;				// Setting
-	bool subSecond;				// Setting
-	bool showSeconds;			// Setting
-	bool show24Hour;			// Setting
-	bool upperCity;				// Setting
+	bool stopwatch;				/* Setting */
+	bool subSecond;				/* Setting */
+	bool showSeconds;			/* Setting */
+	bool show24Hour;			/* Setting */
+	bool upperCity;				/* Setting */
 	bool updateFace;
-	int currentTZ;				// Setting (as zone name)
+	int currentTZ;				/* Setting (as zone name) */
 	int swRunTime;
 	int shownTime;
 	int stepping;
@@ -179,7 +179,7 @@ typedef struct _faceSettings
 	char currentTZArea[25];
 	char currentTZCity[25];
 	char currentTZDisp[25];
-	char overwriteMesg[25];		// Setting
+	char overwriteMesg[25];		/* Setting */
 	short handPosition[HAND_COUNT];
 	GtkWidget *drawingArea, *eventBox;
 	ALARM_TIME alarmInfo;
@@ -189,16 +189,16 @@ FACE_SETTINGS;
 typedef struct _clockInst
 {
 	GtkAccelGroup *accelGroup;
-	bool fastSetting;			// Saved in the config file
-	bool showBounceSec;			// Saved in the config file
-	bool clockDecorated;		// Saved in the config file
+	bool fastSetting;			/* Saved in the config file */
+	bool showBounceSec;			/* Saved in the config file */
+	bool clockDecorated;		/* Saved in the config file */
 	int weHaveFocus;
-	int currentFace;			// Saved in the config file
+	int currentFace;			/* Saved in the config file */
 	int toolTipFace;
 	int timeSetting;
 	int allowSaveDisp;
 	time_t forceTime;
-	char fontName[128];			// Saved in the config file
+	char fontName[128];			/* Saved in the config file */
 	char configFile[128];
 	char windowTitle[128];
 	char windowToolTip[128];

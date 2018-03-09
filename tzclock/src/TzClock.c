@@ -235,9 +235,9 @@ void updateClock (void);
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-static bool alwaysOnTop 		=  FALSE;			// Saved in the config file
-static bool stuckOnAll 			=  FALSE;			// Saved in the config file
-static bool lockMove 			=  FALSE;			// Saved in the config file
+static bool alwaysOnTop 		=  FALSE;			/* Saved in the config file */
+static bool stuckOnAll 			=  FALSE;			/* Saved in the config file */
+static bool lockMove 			=  FALSE;			/* Saved in the config file */
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
 static int stopwatchActive		=  0;
@@ -249,48 +249,48 @@ static int bounceSec			=  0;
  *----------------------------------------------------------------------------------------------------*/
 CLOCK_INST clockInst =
 {
-	NULL, 							// accelGroup
-	FALSE, 							// fastSetting
-	FALSE,  						// showBounceSec
-	FALSE, 							// clockDecorated
-	0,	 							// weHaveFocus
-	0,	 							// currentFace
-	0,	 							// toolTipFace
-	0,	 							// timeSetting
-	0,	 							// allowSaveDisp
-	-1, 							// forceTime
+	NULL, 							/* accelGroup */
+	FALSE, 							/* fastSetting */
+	FALSE,  						/* showBounceSec */
+	FALSE, 							/* clockDecorated */
+	0,	 							/* weHaveFocus */
+	0,	 							/* currentFace */
+	0,	 							/* toolTipFace */
+	0,	 							/* timeSetting */
+	0,	 							/* allowSaveDisp */
+	-1, 							/* forceTime */
 	"Sans", 						// fontName
 	".tzclockrc", 					// configFile
 	"", 							// windowTitle
 	"",								// windowToolTip
-	{								// -- Used by dial library --
-		NULL, 						// mainWindow
-		NULL, 						// drawingArea
-		3 * 64,						// faceSize
-		1,	 						// faceWidth
-		1, 							// faceHeight
-		3,	 						// markerType
-		300, 						// markerStep
-		99, 						// faceOpacity
-		0,	 						// faceGradient
-		0,							// startPoint
-		&clockInst.fontName[0],		// Font name pointer
-		updateClock,				// Update func.
-		dialSave,					// Save func.
-		&colourNames[0]				// Colour details
+	{								/* -- Used by dial library -- */
+		NULL, 						/* mainWindow */
+		NULL, 						/* drawingArea */
+		3 * 64,						/* faceSize */
+		1,	 						/* faceWidth */
+		1, 							/* faceHeight */
+		3,	 						/* markerType */
+		300, 						/* markerStep */
+		99, 						/* faceOpacity */
+		0,	 						/* faceGradient */
+		0,							/* startPoint */
+		&clockInst.fontName[0],		/* Font name pointer */
+		updateClock,				/* Update func. */
+		dialSave,					/* Save func. */
+		&colourNames[0]				/* Colour details */
 	}
 };
 
-HAND_STYLE handStyle[HAND_COUNT] =  				// Saved in the config file
+HAND_STYLE handStyle[HAND_COUNT] =  				/* Saved in the config file */
 { 
-	{ 0, 19, 5, HOUR__COLOUR, HFILL_COLOUR, 1, 0 },	// Hour hand
-	{ 0, 28, 7, MIN___COLOUR, MFILL_COLOUR, 1, 0 }, // Minute hand
-	{ 9, 28, 9, SEC___COLOUR, SFILL_COLOUR, 1, 0 },	// Second hand
-	{ 9,  7, 0, SEC___COLOUR, SFILL_COLOUR, 1, 0 },	// Sub-second hand
-	{ 9, 19, 0, ALARM_COLOUR, AFILL_COLOUR, 1, 0 },	// Alarm hand
-	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 },	// Stopwatch hands
-	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 },	// Stopwatch hands
-	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 }	// Stopwatch hands
+	{ 0, 19, 5, HOUR__COLOUR, HFILL_COLOUR, 1, 0 },	/* Hour hand */
+	{ 0, 28, 7, MIN___COLOUR, MFILL_COLOUR, 1, 0 }, /* Minute hand */
+	{ 9, 28, 9, SEC___COLOUR, SFILL_COLOUR, 1, 0 },	/* Second hand */
+	{ 9,  7, 0, SEC___COLOUR, SFILL_COLOUR, 1, 0 },	/* Sub-second hand */
+	{ 9, 19, 0, ALARM_COLOUR, AFILL_COLOUR, 1, 0 },	/* Alarm hand */
+	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 },	/* Stopwatch hands */
+	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 },	/* Stopwatch hands */
+	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 }	/* Stopwatch hands */
 };
 
 /*----------------------------------------------------------------------------------------------------*

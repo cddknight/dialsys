@@ -94,19 +94,19 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	if (circ)
 	{
 		dialCircleGradient (64, col, 1);
-//		dialDrawCircle (64, col, -1);
+/*		dialDrawCircle (64, col, -1); */
 	}
 	else
 	{
 		dialSquareGradient (64, col, 1);
-//		dialDrawSquare (64, col, -1);
+/*		dialDrawSquare (64, col, -1); */
 	}
 
 	dialCircleGradient (62, FACE2_COLOUR, 0);
 	dialCircleGradient (58, FACE1_COLOUR, 1);
 
-//	dialDrawCircle (62, FACE3_COLOUR, -1);
-//	dialDrawCircle (60, FACE4_COLOUR, -1);
+/*	dialDrawCircle (62, FACE3_COLOUR, -1); */
+/*	dialDrawCircle (60, FACE4_COLOUR, -1); */
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Draw the hot and cold markers                                                                  *

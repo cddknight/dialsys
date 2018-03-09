@@ -245,13 +245,13 @@ double changeTemp(double temp)
  */
 double changeSpeed(double speed)
 {
-	if (myWeather.sUnits == 1)	// mps
+	if (myWeather.sUnits == 1)	/* mps */
 		return (speed * 1000) / 3600;
-	if (myWeather.sUnits == 2)	// mph
+	if (myWeather.sUnits == 2)	/* mph */
 		return speed * 0.621371;
-	if (myWeather.sUnits == 3)	// knots
+	if (myWeather.sUnits == 3)	/* knots */
 		return speed * 0.539957;
-	return speed;				// kph
+	return speed;				/* kph */
 }
 
 /**********************************************************************************************************************
@@ -322,11 +322,11 @@ static size_t writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
 	if (realsize)
 	{
 		struct MemoryStruct *mem = (struct MemoryStruct *)data;
-		// char *text = (char *)ptr;
-		// printf ("[s:%d,n:%d,%02X,%02X,%02X,%02X]\n>>>%s<<<\n", 
-		// size, nmemb, 
-		// text[0] & 0xFF, text[1] & 0xFF, text[2] & 0xFF, text[3] & 0xFF, 
-		// text);
+		/* char *text = (char *)ptr; */
+		/* printf ("[s:%d,n:%d,%02X,%02X,%02X,%02X]\n>>>%s<<<\n", */
+		/* size, nmemb, */
+		/* text[0] & 0xFF, text[1] & 0xFF, text[2] & 0xFF, text[3] & 0xFF, */
+		/* text); */
 		mem->memory = realloc(mem->memory, mem->size + realsize + 1);
 		if (mem->memory == NULL)
 		{
@@ -455,8 +455,8 @@ void splitOutForcastTitle(char *value, int level)
 		{
 			if (b == 1)
 			{
-				// printf ("[o:%d][l:%d] %s = %s\n", observations, level,
-				// &buffers[0][0], &buffers[1][0]);
+				/* printf ("[o:%d][l:%d] %s = %s\n", observations, level, */
+				/* &buffers[0][0], &buffers[1][0]); */
 				for (n = 0; n < 7; ++n)
 				{
 					if (strcmp(daysOfWeek[n], &buffers[0][0]) == 0)
@@ -519,8 +519,8 @@ void splitOutDescription(char *value, int level)
 		{
 			if (b == 1)
 			{
-				// printf ("[o:%d][l:%d] %s = %s\n", observations, level,
-				// &buffers[0][0], &buffers[1][0]); 
+				/* printf ("[o:%d][l:%d] %s = %s\n", observations, level, */
+				/* &buffers[0][0], &buffers[1][0]); */
 				if (strcmp(&buffers[0][0], "Temperature") == 0)
 				{
 					myWeather.tempC =
@@ -958,19 +958,19 @@ void weatherGetMaxMin(FACE_SETTINGS * faceSetting)
 
 	switch (faceSetting->faceSubType & 0x0007)
 	{
-	case 0:					// Temp
-	case 4:					// Today 
-	case 5:					// Tomorrow 
-	case 6:					// Two Days Time
+	case 0:					/* Temp */
+	case 4:					/* Today */
+	case 5:					/* Tomorrow */
+	case 6:					/* Two Days Time */
 		faceSetting->faceScaleMin = tempUnits[myWeather.tUnits].tempMin;
 		faceSetting->faceScaleMax = tempUnits[myWeather.tUnits].tempMax;
 		faceSetting->faceFlags |= FACE_HOT_COLD;
 		break;
-	case 1:					// Humidity
+	case 1:					/* Humidity */
 		faceSetting->faceScaleMin = 0;
 		faceSetting->faceScaleMax = 100;
 		break;
-	case 2:					// Pressure
+	case 2:					/* Pressure */
 		faceSetting->faceScaleMin = pressureUnits[myWeather.pUnits].pressureMin;
 		faceSetting->faceScaleMax = pressureUnits[myWeather.pUnits].pressureMax;
 		if (pressureUnits[myWeather.pUnits].pressureUnit == 2)
@@ -978,7 +978,7 @@ void weatherGetMaxMin(FACE_SETTINGS * faceSetting)
 		else
 			faceSetting->faceFlags &= ~FACE_SHOW_POINT;
 		break;
-	case 3:					// Wind Speed
+	case 3:					/* Wind Speed */
 		faceSetting->faceScaleMin = speedUnits[myWeather.sUnits].speedMin;
 		faceSetting->faceScaleMax = speedUnits[myWeather.sUnits].speedMax;
 		faceSetting->faceFlags |= FACE_HOT_COLD;
@@ -1054,7 +1054,7 @@ void readWeatherValues(int face)
 
 		switch (subType)
 		{
-		case 0:					// Temp
+		case 0:					/* Temp */
 			setFaceString(faceSetting, FACESTR_TOP, 16, myWeather.weatherDesc);
 			setFaceString(faceSetting, FACESTR_BOT, 0, "%0.1f%s", myWeather.showTemp,
 						  tempUnits[myWeather.tUnits].tempText);
@@ -1109,7 +1109,7 @@ void readWeatherValues(int face)
 			faceSetting->firstValue = myWeather.showTemp;
 			faceSetting->secondValue = myWeather.showApparent;
 			break;
-		case 1:					// Humidity
+		case 1:					/* Humidity */
 			setFaceString(faceSetting, FACESTR_TOP, 0, _("%0.1f%s\nDew point"), myWeather.showDewPoint,
 						  tempUnits[myWeather.tUnits].tempText);
 			setFaceString(faceSetting, FACESTR_BOT, 0, _("%d%%"), myWeather.humidity);
@@ -1126,7 +1126,7 @@ void readWeatherValues(int face)
 			faceSetting->firstValue = myWeather.humidity;
 			faceSetting->secondValue = DONT_SHOW;
 			break;
-		case 2:					// Pressure
+		case 2:					/* Pressure */
 			setFaceString(faceSetting, FACESTR_TOP, 0, wrapText(myWeather.visView, 1));
 			if (faceSetting->faceFlags & FACE_SHOW_POINT)
 			{
@@ -1167,7 +1167,7 @@ void readWeatherValues(int face)
 				faceSetting->firstValue /= 10;
 			faceSetting->secondValue = DONT_SHOW;
 			break;
-		case 3:					// Wind Speed
+		case 3:					/* Wind Speed */
 			setFaceString(faceSetting, FACESTR_TOP, 16, myWeather.winddirPoint);
 			setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.1f\n(%s)"), myWeather.showWindSpeed,
 							speedUnits[myWeather.sUnits].speedText);
@@ -1186,7 +1186,7 @@ void readWeatherValues(int face)
 			faceSetting->firstValue = myWeather.showWindSpeed;
 			faceSetting->secondValue = DONT_SHOW;
 			break;
-		case 4:					// Temp. forecast
+		case 4:					/* Temp. forecast */
 		case 5:
 		case 6:
 			i = (subType - 4);

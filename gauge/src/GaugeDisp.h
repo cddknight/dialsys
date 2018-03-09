@@ -47,7 +47,7 @@
 #define GAUGE_HAS_TIDE
 #define GAUGE_HAS_THERMO
 #define GAUGE_HAS_POWER
-//#define GAUGE_IS_DECORATED
+/*#define GAUGE_IS_DECORATED */
 
 /*----------------------------------------------------------------------------------------------------*
  * Stuff used for picking the colours on the clock. Add to the command line.                          *

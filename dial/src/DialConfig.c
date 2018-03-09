@@ -74,18 +74,18 @@ int configLoad (const char *configFile)
 		i = 0;
 		quote = 0;
 		
-		// Skip leading white space
-		//==================================================
+		/* Skip leading white space */
+		/*================================================== */
 		while (readBuff[i] <= ' ')
 			i++;
 			
-		// Skip comments
-		//==================================================
+		/* Skip comments */
+		/*================================================== */
 		if (readBuff[i] == '#')
 			continue;
 		
-		// Read parameter name
-		//==================================================
+		/* Read parameter name */
+		/*================================================== */
 		j = 0;	
 		while (readBuff[i] > ' ' && readBuff[i] != '=' && j < 80)
 		{
@@ -94,24 +94,24 @@ int configLoad (const char *configFile)
 			i ++;
 		}
 		
-		// Skip to equal sign
-		//==================================================
+		/* Skip to equal sign */
+		/*================================================== */
 		while (readBuff[i] != 0 && readBuff[i] != '=')
 			i++;
 			
-		// No equal sign then this is not a config line
-		//==================================================
+		/* No equal sign then this is not a config line */
+		/*================================================== */
 		if (readBuff[i] == 0)
 			continue;
 			
-		// Skip while space after the equal sign
-		//==================================================
+		/* Skip while space after the equal sign */
+		/*================================================== */
 		i++;
 		while (readBuff[i] <= ' ')
 			i++;
 
-		// Read parameter value
-		//==================================================
+		/* Read parameter value */
+		/*================================================== */
 		configValue[j = 0] = 0;
 		while (readBuff[i] > 0 && j < 255)
 		{
@@ -130,8 +130,8 @@ int configLoad (const char *configFile)
 			i ++;
 		}
 		
-		// Save the name and value
-		//==================================================
+		/* Save the name and value */
+		/*================================================== */
 		configSetValue (configName, configValue);
 	}
 	fclose (inFile);
