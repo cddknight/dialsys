@@ -33,8 +33,6 @@
 #include "socket.h"
 #include "GaugeDisp.h"
 
-#ifdef GAUGE_HAS_THERMO
-
 extern FACE_SETTINGS *faceSettings[];
 extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
@@ -249,6 +247,4 @@ void readThermometerValues (int face)
 		faceSetting -> secondValue = myThermoReading[1];
 	}
 }
-
-#endif
 

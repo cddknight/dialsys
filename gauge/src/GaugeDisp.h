@@ -42,11 +42,6 @@
 #define _(String) gettext (String)
 #define __(String) (String)
 
-#define GAUGE_HAS_SENSOR
-#define GAUGE_HAS_WEATHER
-#define GAUGE_HAS_TIDE
-#define GAUGE_HAS_THERMO
-#define GAUGE_HAS_POWER
 /*#define GAUGE_IS_DECORATED */
 
 /*----------------------------------------------------------------------------------------------------*

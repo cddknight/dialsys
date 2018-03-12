@@ -984,32 +984,22 @@ clockTickCallback (gpointer data)
 			case FACE_TYPE_HARDDISK:
 				readHarddiskValues (face);
 				break;
-#ifdef GAUGE_HAS_SENSOR
 			case FACE_TYPE_SENSOR_TEMP:
 			case FACE_TYPE_SENSOR_FAN:
 				readSensorValues (face);
 				break;
-#endif
-#ifdef GAUGE_HAS_TIDE
 			case FACE_TYPE_TIDE:
 				readTideValues (face);
 				break;
-#endif
-#ifdef GAUGE_HAS_WEATHER
 			case FACE_TYPE_WEATHER:
 				readWeatherValues (face);
 				break;
-#endif
-#ifdef GAUGE_HAS_THERMO
 			case FACE_TYPE_THERMO:
 				readThermometerValues (face);
 				break;
-#endif
-#ifdef GAUGE_HAS_POWER
 			case FACE_TYPE_POWER:
 				readPowerMeterValues (face);
 				break;
-#endif
 			case FACE_TYPE_MOONPHASE:
 				readMoonPhaseValues (face);
 				break;
@@ -1438,14 +1428,12 @@ void harddiskCallback (guint data)
 void
 sensorTempCallback (guint data)
 {
-#ifdef GAUGE_HAS_SENSOR
 	gaugeReset (currentFace, FACE_TYPE_SENSOR_TEMP, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_HOT_COLD);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 10;
 	faceSettings[currentFace] -> faceScaleMax = 35;
-#endif
 }
 
 /**********************************************************************************************************************
@@ -1462,14 +1450,12 @@ sensorTempCallback (guint data)
 void
 sensorFanCallback (guint data)
 {
-#ifdef GAUGE_HAS_SENSOR
 	gaugeReset (currentFace, FACE_TYPE_SENSOR_FAN, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_SHOWHOT);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 0;
 	faceSettings[currentFace] -> faceScaleMax = 25;
-#endif
 }
 
 /**********************************************************************************************************************
@@ -1486,11 +1472,9 @@ sensorFanCallback (guint data)
 void
 weatherCallback (guint data)
 {
-#ifdef GAUGE_HAS_WEATHER
 	gaugeReset (currentFace, FACE_TYPE_WEATHER, data);
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 3600;
 	weatherGetMaxMin (faceSettings[currentFace]);
-#endif
 }
 
 /**********************************************************************************************************************
@@ -1507,14 +1491,12 @@ weatherCallback (guint data)
 void
 thermometerCallback (guint data)
 {
-#ifdef GAUGE_HAS_THERMO
 	gaugeReset (currentFace, FACE_TYPE_THERMO, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_HOT_COLD);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = -10;
 	faceSettings[currentFace] -> faceScaleMax = 40;
-#endif
 }
 
 /**********************************************************************************************************************
@@ -1531,14 +1513,12 @@ thermometerCallback (guint data)
 void
 powerMeterCallback (guint data)
 {
-#ifdef GAUGE_HAS_POWER
 	gaugeReset (currentFace, FACE_TYPE_POWER, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_HOT_COLD);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 0;
 	faceSettings[currentFace] -> faceScaleMax = 2.5;
-#endif
 }
 
 /**********************************************************************************************************************
@@ -2343,11 +2323,9 @@ main (int argc, char *argv[])
 		case FACE_TYPE_ENTROPY:
 			entropyCallback (faceSettings[i] -> faceSubType);
 			break;
-#ifdef GAUGE_HAS_TIDE
 		case FACE_TYPE_TIDE:
 			tideCallback (faceSettings[i] -> faceSubType);
 			break;
-#endif
 		case FACE_TYPE_CPU_LOAD:
 			loadCallback (faceSettings[i] -> faceSubType);
 			break;
@@ -2360,29 +2338,21 @@ main (int argc, char *argv[])
 		case FACE_TYPE_HARDDISK:
 			harddiskCallback (faceSettings[i] -> faceSubType);
 			break;
-#ifdef GAUGE_HAS_SENSOR
 		case FACE_TYPE_SENSOR_TEMP:
 			sensorTempCallback (faceSettings[i] -> faceSubType);
 			break;
 		case FACE_TYPE_SENSOR_FAN:
 			sensorFanCallback (faceSettings[i] -> faceSubType);
 			break;
-#endif
-#ifdef GAUGE_HAS_THERMO
 		case FACE_TYPE_THERMO:
 			thermometerCallback (faceSettings[i] -> faceSubType);
 			break;
-#endif
-#ifdef GAUGE_HAS_POWER
 		case FACE_TYPE_POWER:
 			powerMeterCallback (faceSettings[i] -> faceSubType);
 			break;
-#endif
-#ifdef GAUGE_HAS_WEATHER
 		case FACE_TYPE_WEATHER:
 			weatherCallback (faceSettings[i] -> faceSubType);
 			break;
-#endif
 		case FACE_TYPE_MOONPHASE:
 			moonPhaseCallback (faceSettings[i] -> faceSubType);
 			break;
@@ -2478,21 +2448,11 @@ main (int argc, char *argv[])
 	readMemoryInit();
 	readNetworkInit();
 	readHarddiskInit();
-#ifdef GAUGE_HAS_SENSOR
 	readSensorInit ();
-#endif
-#ifdef GAUGE_HAS_TIDE
 	readTideInit();
-#endif
-#ifdef GAUGE_HAS_WEATHER
 	readWeatherInit();
-#endif
-#ifdef GAUGE_HAS_THERMO
 	readThermometerInit();
-#endif
-#ifdef GAUGE_HAS_POWER
 	readPowerMeterInit();
-#endif
 	readMoonPhaseInit();
 	readWifiInit();
 

@@ -25,9 +25,6 @@
 #include <stdlib.h>
 
 #include "GaugeDisp.h"
-
-#ifdef GAUGE_HAS_SENSOR
-
 #include <sensors/sensors.h>
 
 extern FACE_SETTINGS *faceSettings[];
@@ -256,4 +253,4 @@ void readSensorValues (int face)
 #endif
 	}
 }
-#endif
+

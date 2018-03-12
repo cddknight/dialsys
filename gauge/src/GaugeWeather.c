@@ -32,8 +32,6 @@
 #include "config.h"
 #include "GaugeDisp.h"
 
-#ifdef GAUGE_HAS_WEATHER
-
 extern FACE_SETTINGS *faceSettings[];
 extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
@@ -1324,8 +1322,6 @@ void weatherComboCallback(GtkWidget * comboBox, gpointer data)
 	weatherGaugeReset();
 }
 
-#endif
-
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  W E A T H E R  S E T T I N G S                                                                                    *
@@ -1339,8 +1335,6 @@ void weatherComboCallback(GtkWidget * comboBox, gpointer data)
  */
 void weatherSettings(guint data)
 {
-#ifdef GAUGE_HAS_WEATHER
-
 	GtkWidget *comboBox;
 	GtkWidget *dialog;
 	GtkWidget *vbox;
@@ -1502,8 +1496,6 @@ void weatherSettings(guint data)
 		}
 	}
 	gtk_widget_destroy(dialog);
-
-#endif
 }
 
 /**********************************************************************************************************************
@@ -1518,8 +1510,6 @@ void weatherSettings(guint data)
  */
 void saveCurrentWeather(void)
 {
-#ifdef GAUGE_HAS_WEATHER
-
 	static char saveDate[41] = "";
 
 	if (strcmp(saveDate, myWeather.updateTime))
@@ -1536,6 +1526,4 @@ void saveCurrentWeather(void)
 		}
 		strcpy(saveDate, myWeather.updateTime);
 	}
-
-#endif
 }

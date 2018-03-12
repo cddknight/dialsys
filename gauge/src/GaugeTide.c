@@ -30,8 +30,6 @@
  
 #include "GaugeDisp.h"
 
-#ifdef GAUGE_HAS_TIDE
-
 extern FACE_SETTINGS *faceSettings[];
 extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
@@ -751,7 +749,4 @@ void tideSettings (guint data)
 	}
 	gtk_widget_destroy (dialog);
 }
-
-#endif
-
 

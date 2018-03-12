@@ -33,8 +33,6 @@
 #include "socket.h"
 #include "GaugeDisp.h"
 
-#ifdef GAUGE_HAS_POWER
-
 extern FACE_SETTINGS *faceSettings[];
 extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
@@ -292,6 +290,4 @@ void readPowerMeterValues (int face)
 		}
 	}
 }
-
-#endif
 
