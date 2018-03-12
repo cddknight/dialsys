@@ -32,24 +32,20 @@ extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
 static int readBatteryDir ();
-static int readBattery (char *fileName);
-static int valsRead = 0;
-static char batteryValues[3][21];
-static char *batteryRoot = "/proc/acpi/battery/";
-static char *name[3] = 
-{
-	"chargingstate:",				/*	charged		*/
-	"designcapacity:",				/*	3221 mAh	*/
-	"remainingcapacity:",			/*	3221 mAh	*/
-};
+static int readBattery (char *filePath);
+static char *batteryRoot = "/sys/class/power_supply/";
 
-static char *batState[6] =
+typedef struct
 {
-	"charged",		__("Charged"),
-	"charging",		__("Charging"),
-	"discharging",	__("Active")
-};
+	int readBat;
+	int chargeDesign;
+	int chargeNow;
+	int chargeFull;
+	char status[41];
+}
+BAT_STATE;
 
+BAT_STATE currentState;
 static int myUpdateID = 100;
 
 /**********************************************************************************************************************
@@ -66,8 +62,7 @@ void readBatteryInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_BATTERY].enabled)
 	{
-		readBatteryDir ();
-		if (valsRead == 3)
+		if (readBatteryDir ())
 			gaugeMenuDesc[MENU_GAUGE_BATTERY].disable = 0;
 	}
 }
@@ -102,24 +97,13 @@ void readBatteryValues (int face)
 			readBatteryDir ();
 			myUpdateID = sysUpdateID;
 		}
-		if (valsRead == 3)
+		if (currentState.readBat && currentState.chargeFull)
 		{
-			int i;
-			char *state = batteryValues[0];
-		
-			for (i = 0; i < 6; i += 2)
-			{
-				if (strcmp (state, batState[i]) == 0)
-				{
-					state = batState[i + 1];
-					break;
-				}
-			}
-			faceSetting -> firstValue = atoi (batteryValues[2]) * 100;
-			faceSetting -> firstValue /= atoi (batteryValues[1]);
-			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n(%s)"), gettext (state));
+			faceSetting -> firstValue = currentState.chargeNow * 100;
+			faceSetting -> firstValue /= currentState.chargeFull;
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n%s"), currentState.status);
 			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: %0.1f%% Full, %s"), 
-					faceSetting -> firstValue, gettext (state));
+					faceSetting -> firstValue, currentState.status);
 			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.1f%% Full - Gauge"), 
 					faceSetting -> firstValue);
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), 
@@ -148,34 +132,31 @@ void readBatteryValues (int face)
  */
 static int readBatteryDir ()
 {
-	char fullPath[80];
+	int readBat = 0;
+	char fullPath[256];
 	struct dirent *dirEntry;
 	DIR *dir = opendir(batteryRoot);
 	
-	valsRead = 0;
+	currentState.readBat = 0;
 	if (dir)
 	{
-		while ((dirEntry = readdir(dir)) != NULL && valsRead != 3)
+		while ((dirEntry = readdir(dir)) != NULL)
 		{
-			if (dirEntry -> d_name[0] != '.')
+			if (strncmp (dirEntry -> d_name, "BAT", 3) == 0)
 			{
-				int i;
-				
 				strcpy (fullPath, batteryRoot);
 				strcat (fullPath, dirEntry -> d_name);
 				strcat (fullPath, "/");
-				i = strlen (fullPath);
-				strcat (fullPath, "info");
-				if ((valsRead = readBattery (fullPath)) != 0)
+				if (readBattery (fullPath))
 				{
-					strcpy (&fullPath[i], "state");
-					valsRead += readBattery (fullPath);
-				}				
+					readBat = 1;
+					break;
+				}
 			}
 		}
 		closedir (dir);
 	}
-	return valsRead;
+	return readBat;
 }		
 
 /**********************************************************************************************************************
@@ -186,60 +167,65 @@ static int readBatteryDir ()
  **********************************************************************************************************************/
 /**
  *  \brief Read from proc the state of the battery.
- *  \param fileName Which files to read.
+ *  \param filePath Path of the battery state directory.
  *  \result Number of values read.
  */
-static int readBattery (char *fileName)
+static int readBattery (char *filePath)
 {
-	int i, j, k, n, p, found = 0;
-	char readBuff[1025], word[254];
-	FILE *inFile = fopen (fileName, "r");
+	FILE *inFile;
+	int chargeDesign = -1, chargeNow = -1, chargeFull = -1;
+	char fullName[256], status[41];
 
-	while (inFile != NULL && found < 4)
+	strcpy (fullName, filePath);
+	strcat (fullName, "charge_full_design");
+	if ((inFile = fopen (filePath, "r")) != NULL)
 	{
-		word[i = j = n = 0] = 0;
-		if (!fgets (readBuff, 1024, inFile))
-			break;
-
-		k = -1;
-		while (n < 2)
+		if (fscanf (inFile, "%d", &chargeDesign) == 1)
 		{
-			if (readBuff[i] == ':' || readBuff[i] == 0)
+			fclose (inFile);
+			strcpy (fullName, filePath);
+			strcat (fullName, "charge_now");
+			if ((inFile = fopen (filePath, "r")) != NULL)
 			{
-				if (word[0])
+				if (fscanf (inFile, "%d", &chargeNow) == 1)
 				{
-					if (n == 0)
+					fclose (inFile);
+					strcpy (fullName, filePath);
+					strcat (fullName, "charge_full");
+					if ((inFile = fopen (filePath, "r")) != NULL)
 					{
-						word[j] = ':';
-						word[++j] = 0;
-						
-						for (p = 0; p < 3; ++p)
-							if (strcmp (name[p], word) == 0)
-								k = p;
+						if (fscanf (inFile, "%d", &chargeFull) == 1)
+						{
+							fclose (inFile);
+							strcpy (fullName, filePath);
+							strcat (fullName, "status");
+							status[0] = 0;
+							if ((inFile = fopen (filePath, "r")) != NULL)
+							{
+								int size = fread (currentState.status, 1, 40, inFile);
+								if (size)
+								{
+									if (currentState.status[size - 1] == '\n')
+									{
+										--size;
+									}
+									currentState.status[size] = 0;
+									currentState.readBat = 1;
+									currentState.chargeDesign = chargeDesign;
+									currentState.chargeNow = chargeNow;
+									currentState.chargeFull = chargeFull;
+								}
+							}
+						}
 					}
-					else if (n == 1 && k != -1)
-					{
-						strncpy (batteryValues[k], word, 20);
-						++found;
-					}
-					word[j = 0] = 0;
-					n ++;
 				}
-				if (readBuff[i] == 0)
-					break;
 			}
-			else if (readBuff[i] > ' ')
-			{
-				word[j++] = readBuff[i];
-				word[j] = 0;
-			}
-			i ++;
+		}
+		if (inFile != NULL)
+		{
+			fclose (inFile);
 		}
 	}
-	if (inFile != NULL)
-	{
-		fclose (inFile);
-	}
-	return found;
+	return currentState.readBat;
 }
 
