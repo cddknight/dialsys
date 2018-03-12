@@ -22,6 +22,7 @@
  */
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 #include <dirent.h>
 
 #include "GaugeDisp.h"
@@ -178,21 +179,21 @@ static int readBattery (char *filePath)
 
 	strcpy (fullName, filePath);
 	strcat (fullName, "charge_full_design");
-	if ((inFile = fopen (filePath, "r")) != NULL)
+	if ((inFile = fopen (fullName, "r")) != NULL)
 	{
 		if (fscanf (inFile, "%d", &chargeDesign) == 1)
 		{
 			fclose (inFile);
 			strcpy (fullName, filePath);
 			strcat (fullName, "charge_now");
-			if ((inFile = fopen (filePath, "r")) != NULL)
+			if ((inFile = fopen (fullName, "r")) != NULL)
 			{
 				if (fscanf (inFile, "%d", &chargeNow) == 1)
 				{
 					fclose (inFile);
 					strcpy (fullName, filePath);
 					strcat (fullName, "charge_full");
-					if ((inFile = fopen (filePath, "r")) != NULL)
+					if ((inFile = fopen (fullName, "r")) != NULL)
 					{
 						if (fscanf (inFile, "%d", &chargeFull) == 1)
 						{
@@ -200,7 +201,7 @@ static int readBattery (char *filePath)
 							strcpy (fullName, filePath);
 							strcat (fullName, "status");
 							status[0] = 0;
-							if ((inFile = fopen (filePath, "r")) != NULL)
+							if ((inFile = fopen (fullName, "r")) != NULL)
 							{
 								int size = fread (currentState.status, 1, 40, inFile);
 								if (size)
@@ -214,6 +215,8 @@ static int readBattery (char *filePath)
 									currentState.chargeDesign = chargeDesign;
 									currentState.chargeNow = chargeNow;
 									currentState.chargeFull = chargeFull;
+									fclose (inFile);
+									inFile = NULL;
 								}
 							}
 						}
@@ -223,6 +226,7 @@ static int readBattery (char *filePath)
 		}
 		if (inFile != NULL)
 		{
+			printf ("errno: %d\n", errno);
 			fclose (inFile);
 		}
 	}
