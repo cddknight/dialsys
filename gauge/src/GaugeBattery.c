@@ -39,10 +39,13 @@ static char *batteryRoot = "/sys/class/power_supply/";
 typedef struct
 {
 	int readBat;
-	int chargeDesign;
-	int chargeNow;
-	int chargeFull;
 	char status[41];
+	int voltMinDesign;
+	int voltNow;
+	int currentNow;
+	int chargeDesign;
+	int chargeFull;
+	int chargeNow;
 }
 BAT_STATE;
 
@@ -103,11 +106,12 @@ void readBatteryValues (int face)
 			faceSetting -> firstValue = currentState.chargeNow * 100;
 			faceSetting -> firstValue /= currentState.chargeFull;
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n%s"), currentState.status);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Battery</b>: %0.1f%% Full, %s"), 
-					faceSetting -> firstValue, currentState.status);
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.1f%% Full - Gauge"), 
-					faceSetting -> firstValue);
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), 
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f%%"), faceSetting -> firstValue);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Status</b>: %s\n"
+					"<b>Charge Now</b>: %d mAh\n<b>Charge Full</b>: %d mAh\n<b>Charge Design</b>: %d mAh"), 
+					currentState.status, currentState.chargeNow / 1000, 
+					currentState.chargeFull / 1000, currentState.chargeDesign / 1000);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.0f%% Full - Gauge"), 
 					faceSetting -> firstValue);
 		}	
 		else
@@ -133,7 +137,6 @@ void readBatteryValues (int face)
  */
 static int readBatteryDir ()
 {
-	int readBat = 0;
 	char fullPath[256];
 	struct dirent *dirEntry;
 	DIR *dir = opendir(batteryRoot);
@@ -150,15 +153,26 @@ static int readBatteryDir ()
 				strcat (fullPath, "/");
 				if (readBattery (fullPath))
 				{
-					readBat = 1;
 					break;
 				}
 			}
 		}
 		closedir (dir);
 	}
-	return readBat;
-}		
+	return currentState.readBat;
+}
+
+char *matchStrings[] =
+{
+	"POWER_SUPPLY_STATUS=",
+	"POWER_SUPPLY_VOLTAGE_MIN_DESIGN=",
+	"POWER_SUPPLY_VOLTAGE_NOW=",
+	"POWER_SUPPLY_CURRENT_NOW=",
+	"POWER_SUPPLY_CHARGE_FULL_DESIGN=",
+	"POWER_SUPPLY_CHARGE_FULL=",
+	"POWER_SUPPLY_CHARGE_NOW=",
+	NULL
+};
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -174,61 +188,50 @@ static int readBatteryDir ()
 static int readBattery (char *filePath)
 {
 	FILE *inFile;
-	int chargeDesign = -1, chargeNow = -1, chargeFull = -1;
-	char fullName[256], status[41];
+	char fullName[256];
 
 	strcpy (fullName, filePath);
-	strcat (fullName, "charge_full_design");
+	strcat (fullName, "uevent");
 	if ((inFile = fopen (fullName, "r")) != NULL)
 	{
-		if (fscanf (inFile, "%d", &chargeDesign) == 1)
+		while (fgets (fullName, 255, inFile))
 		{
-			fclose (inFile);
-			strcpy (fullName, filePath);
-			strcat (fullName, "charge_now");
-			if ((inFile = fopen (fullName, "r")) != NULL)
+			int i = 0;
+			while (matchStrings[i] != NULL)
 			{
-				if (fscanf (inFile, "%d", &chargeNow) == 1)
+				if (strncmp (matchStrings[i], fullName, strlen (matchStrings[i])) == 0)
 				{
-					fclose (inFile);
-					strcpy (fullName, filePath);
-					strcat (fullName, "charge_full");
-					if ((inFile = fopen (fullName, "r")) != NULL)
+					switch (i)
 					{
-						if (fscanf (inFile, "%d", &chargeFull) == 1)
-						{
-							fclose (inFile);
-							strcpy (fullName, filePath);
-							strcat (fullName, "status");
-							status[0] = 0;
-							if ((inFile = fopen (fullName, "r")) != NULL)
-							{
-								int size = fread (currentState.status, 1, 40, inFile);
-								if (size)
-								{
-									if (currentState.status[size - 1] == '\n')
-									{
-										--size;
-									}
-									currentState.status[size] = 0;
-									currentState.readBat = 1;
-									currentState.chargeDesign = chargeDesign;
-									currentState.chargeNow = chargeNow;
-									currentState.chargeFull = chargeFull;
-									fclose (inFile);
-									inFile = NULL;
-								}
-							}
-						}
+					case 0:
+						strncpy (currentState.status, &fullName[strlen (matchStrings[i])], 40);
+						break;
+					case 1:
+						currentState.voltMinDesign = atoi (&fullName[strlen (matchStrings[i])]);
+						break;
+					case 2:
+						currentState.voltNow = atoi (&fullName[strlen (matchStrings[i])]);
+						break;
+					case 3:
+						currentState.currentNow = atoi (&fullName[strlen (matchStrings[i])]);
+						break;
+					case 4:
+						currentState.chargeDesign = atoi (&fullName[strlen (matchStrings[i])]);
+						break;
+					case 5:
+						currentState.chargeFull = atoi (&fullName[strlen (matchStrings[i])]);
+						break;
+					case 6:
+						currentState.chargeNow = atoi (&fullName[strlen (matchStrings[i])]);
+						currentState.readBat = 1;
+						break;
 					}
+					break;
 				}
+				++i;
 			}
 		}
-		if (inFile != NULL)
-		{
-			printf ("errno: %d\n", errno);
-			fclose (inFile);
-		}
+		fclose (inFile);
 	}
 	return currentState.readBat;
 }
