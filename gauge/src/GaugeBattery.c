@@ -36,6 +36,21 @@ static int readBatteryDir ();
 static int readBattery (char *filePath);
 static char *batteryRoot = "/sys/class/power_supply/";
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+static char *matchStrings[] =
+{
+	"POWER_SUPPLY_STATUS=",
+	"POWER_SUPPLY_VOLTAGE_MIN_DESIGN=",
+	"POWER_SUPPLY_VOLTAGE_NOW=",
+	"POWER_SUPPLY_CURRENT_NOW=",
+	"POWER_SUPPLY_CHARGE_FULL_DESIGN=",
+	"POWER_SUPPLY_CHARGE_FULL=",
+	"POWER_SUPPLY_CHARGE_NOW=",
+	NULL
+};
+
 typedef struct
 {
 	int readBat;
@@ -162,17 +177,35 @@ static int readBatteryDir ()
 	return currentState.readBat;
 }
 
-char *matchStrings[] =
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C O P Y  N O  C T R L                                                                                             *
+ *  =====================                                                                                             *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Copy a string without control characters.
+ *  \param outStr Output the string here.
+ *  \param inStr Input the string from here.
+ *  \param maxSize Max size of the output string.
+ *  \result Pointer to the output string.
+ */
+char *copyNoCtrl (char *outStr, char *inStr, int maxSize)
 {
-	"POWER_SUPPLY_STATUS=",
-	"POWER_SUPPLY_VOLTAGE_MIN_DESIGN=",
-	"POWER_SUPPLY_VOLTAGE_NOW=",
-	"POWER_SUPPLY_CURRENT_NOW=",
-	"POWER_SUPPLY_CHARGE_FULL_DESIGN=",
-	"POWER_SUPPLY_CHARGE_FULL=",
-	"POWER_SUPPLY_CHARGE_NOW=",
-	NULL
-};
+	int i = 0, j = 0;
+
+	while (inStr[i] && j < maxSize)
+	{
+		if (inStr[i] >= ' ')
+		{
+			outStr[j++] = inStr[i];
+			outStr[j] = 0;
+		}
+		++i;
+	}
+	return outStr;
+}
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -204,7 +237,7 @@ static int readBattery (char *filePath)
 					switch (i)
 					{
 					case 0:
-						strncpy (currentState.status, &fullName[strlen (matchStrings[i])], 40);
+						copyNoCtrl (currentState.status, &fullName[strlen (matchStrings[i])], 40);
 						break;
 					case 1:
 						currentState.voltMinDesign = atoi (&fullName[strlen (matchStrings[i])]);
