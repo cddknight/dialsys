@@ -56,7 +56,7 @@ typedef struct
 	int readBat;
 	char status[41];
 	int voltMinDesign;
-	int voltNow;
+	int voltageNow;
 	int currentNow;
 	int chargeDesign;
 	int chargeFull;
@@ -122,10 +122,11 @@ void readBatteryValues (int face)
 			faceSetting -> firstValue /= currentState.chargeFull;
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n%s"), currentState.status);
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f%%"), faceSetting -> firstValue);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Status</b>: %s\n"
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Status</b>: %s\n<b>Voltage Now</b>: %0.1f V\n"
 					"<b>Charge Now</b>: %d mAh\n<b>Charge Full</b>: %d mAh\n<b>Charge Design</b>: %d mAh"), 
-					currentState.status, currentState.chargeNow / 1000, 
-					currentState.chargeFull / 1000, currentState.chargeDesign / 1000);
+					currentState.status, (double)(currentState.voltageNow) / 1E6, 
+					currentState.chargeNow / 1000, currentState.chargeFull / 1000, 
+					currentState.chargeDesign / 1000);
 			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.0f%% Full - Gauge"), 
 					faceSetting -> firstValue);
 		}	
@@ -243,7 +244,7 @@ static int readBattery (char *filePath)
 						currentState.voltMinDesign = atoi (&fullName[strlen (matchStrings[i])]);
 						break;
 					case 2:
-						currentState.voltNow = atoi (&fullName[strlen (matchStrings[i])]);
+						currentState.voltageNow = atoi (&fullName[strlen (matchStrings[i])]);
 						break;
 					case 3:
 						currentState.currentNow = atoi (&fullName[strlen (matchStrings[i])]);
