@@ -1,6 +1,7 @@
 .deps/
 .libs/
 autom4te.cache/
+*~
 *.o
 *.bz2
 *.lo
