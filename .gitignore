@@ -4,9 +4,15 @@ autom4te.cache/
 *~
 *.o
 *.bz2
+*.tgz
+*.gz
 *.lo
 *.la
 *.log
+*.deb
+*.rpm
+*.dsc
+*.changes
 .dirstamp
 stamp-h1
 
