@@ -1,15 +1,15 @@
 Source: @PACKAGE@
-Section: unknown
-Priority: extra
-Maintainer: Chris Knight <ukchkn@debianvbox.teligent.org>
+Section: utils
+Priority: standard
+Maintainer: Chris Knight <chris@theknight.co.uk>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev
 Standards-Version: 3.9.3
-Homepage: <insert the upstream URL, if relevant>
-#Vcs-Git: git://git.debian.org/collab-maint/@PACKAGE@.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/@PACKAGE@.git;a=summary
+Homepage: https://theknight.co.uk/
+#Vcs-Git: https://github.com/cddknight/dialsys.git
+#Vcs-Browser: https://github.com/cddknight/dialsys
 
 Package: @PACKAGE@
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Cairo Gauge to display values read from your PC.
+ GTK/Cairo Gauge.
