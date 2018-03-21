@@ -2,7 +2,7 @@
 
 START_PWD=${PWD}
 
-for DIR in dial gauge tzclock
+for DIR in libdial gauge tzclock
 do
 	if [ -d ${DIR} ]
 	then
