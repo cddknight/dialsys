@@ -102,8 +102,10 @@ struct MemoryStruct {
 	size_t size;
 };
 
-char *weatherOBSURL = "http://open.live.bbc.co.uk/weather/feeds/en/%s/observations.rss";
-char *weatherTFCURL = "http://open.live.bbc.co.uk/weather/feeds/en/%s/3dayforecast.rss";
+char *weatherOBSURL = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/%s";
+char *weatherTFCURL = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/%s";
+//char *weatherOBSURL = "http://open.live.bbc.co.uk/weather/feeds/en/%s/observations.rss";
+//char *weatherTFCURL = "http://open.live.bbc.co.uk/weather/feeds/en/%s/3dayforecast.rss";
 int observations = 0;
 extern char locationKey[];
 
