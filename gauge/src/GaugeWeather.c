@@ -637,14 +637,15 @@ void splitOutDescription(char *value, int level)
  */
 static void processWeatherKey(int readLevel, const char *name, char *value)
 {
-	char *titleStr = "BBC Weather - Observations for  ";
+//	char *titleStr = "BBC Weather - Observations for  ";
+	char *titleStr = "BBC Weather - Forecast for  ";
 
 	if (readLevel > 0 && readLevel <= FORECAST_NUM && strcmp(name, "description") == 0)
 	{
 		if (value)
 			splitOutDescription(value, readLevel);
 	}
-	else if (observations == 1 && readLevel == 0 && strcmp(name, "title") == 0)
+	else if (observations == 0 && readLevel == 0 && strcmp(name, "title") == 0)
 	{
 		if (strncmp(titleStr, value, strlen(titleStr)) == 0)
 			strncpy(myWeather.queryName, &value[strlen(titleStr)], 80);
