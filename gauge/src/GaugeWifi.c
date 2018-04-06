@@ -29,8 +29,6 @@ extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern int sysUpdateID;
 
-static int myUpdateID = 100;
-static double lastRead = -1;
 static char *findQualityStr = "Link Quality=";
 static char *findSignalStr = "Signal level=";
 
