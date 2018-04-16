@@ -379,7 +379,7 @@ DIAL_CONFIG dialConfig =
 	1,	 						/* faceWidth */
 	1, 							/* faceHeight */
 	3,	 						/* markerType */
-	300, 						/* markerStep */
+	20, 						/* markerStep */
 	99, 						/* faceOpacity */
 	0,	 						/* faceGradient */
 	750,							/* startPoint */
