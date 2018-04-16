@@ -2344,7 +2344,9 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetBoolValue (value, clockInst.faceSettings[face] -> stopwatch);
 				break;
 			case 's':							/* Select the clockInst.dialConfig.dialSize of the clock */
-				clockInst.dialConfig.dialSize = atoi (&argv[i][2]);
+				clockInst.dialConfig.dialSize = ((atoi (&argv[i][2]) + 63) / 64) * 64;
+				if (clockInst.dialConfig.dialSize < 64) clockInst.dialConfig.dialSize = 64;
+				if (clockInst.dialConfig.dialSize > 1024) clockInst.dialConfig.dialSize = 1024;
 				configSetIntValue ("face_size", clockInst.dialConfig.dialSize);
 				break;
 			case 'T':							/* Force the clock to show a fixed time */

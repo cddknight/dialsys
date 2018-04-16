@@ -1916,7 +1916,9 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				configSetIntValue ("opacity", dialConfig.dialOpacity);
 				break;
 			case 's':							/* Select the dialConfig.dialSize of the clock */
-				dialConfig.dialSize = atoi (&argv[i][2]);
+				dialConfig.dialSize = ((atoi (&argv[i][2]) + 63) / 64) * 64;
+				if (dialConfig.dialSize < 64) dialConfig.dialSize = 64;
+				if (dialConfig.dialSize > 1024) dialConfig.dialSize = 1024;
 				configSetIntValue ("face_size", dialConfig.dialSize);
 				break;
 			case 'T':
