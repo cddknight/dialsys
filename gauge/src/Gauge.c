@@ -2478,9 +2478,8 @@ main (int argc, char *argv[])
 	g_timeout_add (200, clockTickCallback, NULL);
 	dialSetOpacity();
 	{
-		GtkWidget *popupMenu;
 		prepareForPopup ();
-		popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
+		createMenu (mainMenuDesc, accelGroup, FALSE);
 	}
 	i = nice (5);
 	gtk_main ();
