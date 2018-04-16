@@ -1492,7 +1492,7 @@ stopwatchCallback (guint data)
 
 	clockInst.faceSettings[clockInst.currentFace] -> stopwatch = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	sprintf (value, "stopwatch_%d", clockInst.currentFace + 1);
-	configGetBoolValue (value, &clockInst.faceSettings[clockInst.currentFace] -> stopwatch);
+	configSetBoolValue (value, &clockInst.faceSettings[clockInst.currentFace] -> stopwatch);
 	clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
 	clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
 	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
@@ -2740,7 +2740,11 @@ main (int argc, char *argv[])
         gtk_widget_show_all (GTK_WIDGET (clockInst.dialConfig.mainWindow));
         g_timeout_add (50, clockTickCallback, NULL);
         dialSetOpacity ();
-
+		{
+			GtkWidget *popupMenu;
+			prepareForPopup ();
+			popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+		}
         i = nice (5);
         gtk_main ();
         exit (0);
