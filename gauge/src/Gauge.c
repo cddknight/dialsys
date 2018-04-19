@@ -26,31 +26,31 @@
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
-	{	"blk", __("Black"),					"#000000"	},	//	00
-	{	"wht", __("White"),					"#FFFFFF"	},	//	01
+	{	"blk", __("Black"),					"#000000"	},	//  00
+	{	"wht", __("White"),					"#FFFFFF"	},	//  01
 
-	{	"fce", __("Main face colour"),		"#141414"	},	//	02	T
-	{	"bri", __("Border inner circle"),	"#000000"	},	//	03	T
-	{	"brf", __("Border when focused"),	"#505050"	},	//	04	T
-	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//	05	T
-	{	"txt", __("Information text"),		"#858585"	},	//	06	T
-	{	"qum", __("Scale text"),			"#AAAAAA"	},	//	07	T
-	{	"hom", __("Scale markers"),			"#646464"	},	//	08	T
+	{	"fce", __("Main face colour"),		"#141414"	},	//  02  T
+	{	"bri", __("Border inner circle"),	"#000000"	},	//  03  T
+	{	"brf", __("Border when focused"),	"#505050"	},	//  04  T
+	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//  05  T
+	{	"txt", __("Information text"),		"#858585"	},	//  06  T
+	{	"qum", __("Scale text"),			"#AAAAAA"	},	//  07  T
+	{	"hom", __("Scale markers"),			"#646464"	},	//  08  T
 
-	{	"gah", __("Main hand outer"),		"#E0E0E0"	},	//	09
-	{	"gaf", __("Main hand fill"),		"#202020"	},	//	10
-	{	"oth", __("Other hand outer"),		"#808080"	},	//	11
-	{	"otf", __("Other hand fill"),		"#202020"	},	//	12
-	{	"mah", __("Max value hand outer"),	"#E00000"	},	//	13
-	{	"maf", __("Max value hand fill"),	"#200000"	},	//	14
-	{	"mnh", __("Min value hand outer"),	"#0080E0"	},	//	15
-	{	"mnf", __("Min value hand fill"),	"#002020"	},	//	16
-	{	"cec", __("Centre circle outer"),	"#AA0000"	},	//	17
-	{	"cef", __("Centre circle fill"),	"#640000"	},	//	18
-	{	"col", __("Cold zone colour"),		"#0060A0"	},	//	19
-	{	"hot", __("Hot zone colour"),		"#600000"	},	//	20
+	{	"gah", __("Main hand outer"),		"#E0E0E0"	},	//  09
+	{	"gaf", __("Main hand fill"),		"#202020"	},	//  10
+	{	"oth", __("Other hand outer"),		"#808080"	},	//  11
+	{	"otf", __("Other hand fill"),		"#202020"	},	//  12
+	{	"mah", __("Max value hand outer"),	"#E00000"	},	//  13
+	{	"maf", __("Max value hand fill"),	"#200000"	},	//  14
+	{	"mnh", __("Min value hand outer"),	"#0080E0"	},	//  15
+	{	"mnf", __("Min value hand fill"),	"#002020"	},	//  16
+	{	"cec", __("Centre circle outer"),	"#AA0000"	},	//  17
+	{	"cef", __("Centre circle fill"),	"#640000"	},	//  18
+	{	"col", __("Cold zone colour"),		"#0060A0"	},	//  19
+	{	"hot", __("Hot zone colour"),		"#600000"	},	//  20
 	{	NULL, NULL, ""	}
-}; 
+};
 
 char *handNames[HAND_COUNT] =
 {
@@ -92,33 +92,33 @@ const gchar *artists[] =
  ******************************************************************************************************/
 MENU_DESC viewMenuDesc[] =
 {
-	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/*	00	*/
-	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/*	01	*/
-	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*	02	*/
-	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*	03	*/
-	{	"-",					NULL,					NULL,				0	},	/*	04	*/
+	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/*  00  */
+	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/*  01  */
+	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*  02  */
+	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*  03  */
+	{	"-",					NULL,					NULL,				0	},	/*  04  */
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*	05	*/
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*	06	*/
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*	07	*/
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*  05  */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*  06  */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*  07  */
 #else
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/*	05	*/
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/*	06	*/
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/*	07	*/
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/*  05  */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/*  06  */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/*  07  */
 #endif
-	{	NULL, 					NULL,					NULL,				0	}	/*	08	*/
+	{	NULL,					NULL,					NULL,				0	}	/*  08  */
 };
 
 MENU_DESC markerMenuDesc[] =
 {
-	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/*	00	*/
-	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*	01	*/
-	{	"-",					NULL,					NULL,				0	},							/*	02	*/
-	{	__("Show 2"),			dialStepCallback,		NULL,				900,	NULL,	0,	0,	1	},	/*	03	*/
-	{	__("Show 3"),			dialStepCallback,		NULL,				450,	NULL,	0,	0,	1	},	/*	04	*/
-	{	__("Show 6"),			dialStepCallback,		NULL,				180,	NULL,	0,	0,	1	},	/*	05	*/
-	{	__("Show all"),			dialStepCallback,		NULL,				90,		NULL,	0,	0,	1	},	/*	06	*/
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/*  00  */
+	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  01  */
+	{	"-",					NULL,					NULL,				0	},							/*  02  */
+	{	__("Show 2"),			dialStepCallback,		NULL,				900,	NULL,	0,	0,	1	},	/*  03  */
+	{	__("Show 3"),			dialStepCallback,		NULL,				450,	NULL,	0,	0,	1	},	/*  04  */
+	{	__("Show 6"),			dialStepCallback,		NULL,				180,	NULL,	0,	0,	1	},	/*  05  */
+	{	__("Show all"),			dialStepCallback,		NULL,				90,		NULL,	0,	0,	1	},	/*  06  */
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC spaceMenuDesc[] =
@@ -133,23 +133,23 @@ MENU_DESC spaceMenuDesc[] =
 	{	NULL,					harddiskCallback,		NULL,				7,	NULL,	0,	1	},
 	{	NULL,					harddiskCallback,		NULL,				8,	NULL,	0,	1	},
 	{	NULL,					harddiskCallback,		NULL,				9,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC diskMenuDesc[] =
 {
-	{	__("All"),				harddiskCallback,		NULL,			0x1000,	NULL,	0,	0	},
-	{	NULL,					harddiskCallback,		NULL,			0x1001,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1002,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1003,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1004,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1005,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1006,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1007,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1008,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1009,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1010,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,			0	}	
+	{	__("All"),				harddiskCallback,		NULL,			0x1000, NULL,	0,	0	},
+	{	NULL,					harddiskCallback,		NULL,			0x1001, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1002, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1003, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1004, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1005, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1006, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1007, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1008, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1009, NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,			0x1010, NULL,	0,	1	},
+	{	NULL,					NULL,					NULL,			0	}
 };
 
 MENU_DESC harddiskMenuDesc[] =
@@ -160,7 +160,7 @@ MENU_DESC harddiskMenuDesc[] =
 	{	__("Sector Writes"),	harddiskCallback,		NULL,				0x200	},
 	{	"-",					NULL,					NULL,				0		},
 	{	__("Which Disk"),		NULL,					diskMenuDesc,		0		},
-	{	NULL, 					NULL,					NULL,				0		}	
+	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC tideMenuDesc[] =
@@ -168,7 +168,7 @@ MENU_DESC tideMenuDesc[] =
 	{	__("Show Tide"),		tideCallback,			NULL,				0,	},
 	{	"-",					NULL,					NULL,				0	},
 	{	__("Settings"),			tideSettings,			NULL,				0	},
-	{	NULL,					NULL,					NULL,				0	}	
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC weatherMenuDesc[] =
@@ -183,56 +183,56 @@ MENU_DESC weatherMenuDesc[] =
 	{	__("Two days time"),	weatherCallback,		NULL,				6	},
 	{	"-",					NULL,					NULL,				0	},
 	{	__("Settings"),			weatherSettings,		NULL,				0	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sTempMenuDesc[] =
 {
-	{	__("Temp 1"),			sensorTempCallback, 	NULL,				0,	NULL,	0,	1	},
-	{	__("Temp 2"),			sensorTempCallback, 	NULL,				1,	NULL,	0,	1	},
-	{	__("Temp 3"),			sensorTempCallback, 	NULL,				2,	NULL,	0,	1	},
-	{	__("Temp 4"),			sensorTempCallback, 	NULL,				3,	NULL,	0,	1	},
-	{	__("Temp 5"),			sensorTempCallback, 	NULL,				4,	NULL,	0,	1	},
-	{	__("Temp 6"),			sensorTempCallback, 	NULL,				5,	NULL,	0,	1	},
-	{	__("Temp 7"),			sensorTempCallback, 	NULL,				6,	NULL,	0,	1	},
-	{	__("Temp 8"),			sensorTempCallback, 	NULL,				7,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	__("Temp 1"),			sensorTempCallback,		NULL,				0,	NULL,	0,	1	},
+	{	__("Temp 2"),			sensorTempCallback,		NULL,				1,	NULL,	0,	1	},
+	{	__("Temp 3"),			sensorTempCallback,		NULL,				2,	NULL,	0,	1	},
+	{	__("Temp 4"),			sensorTempCallback,		NULL,				3,	NULL,	0,	1	},
+	{	__("Temp 5"),			sensorTempCallback,		NULL,				4,	NULL,	0,	1	},
+	{	__("Temp 6"),			sensorTempCallback,		NULL,				5,	NULL,	0,	1	},
+	{	__("Temp 7"),			sensorTempCallback,		NULL,				6,	NULL,	0,	1	},
+	{	__("Temp 8"),			sensorTempCallback,		NULL,				7,	NULL,	0,	1	},
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sFanMenuDesc[] =
 {
-	{	__("Fan 1"),			sensorFanCallback, 		NULL,				0,	NULL,	0,	1	},
-	{	__("Fan 2"),			sensorFanCallback, 		NULL,				1,	NULL,	0,	1	},
-	{	__("Fan 3"),			sensorFanCallback, 		NULL,				2,	NULL,	0,	1	},
-	{	__("Fan 4"),			sensorFanCallback, 		NULL,				3,	NULL,	0,	1	},
-	{	__("Fan 5"),			sensorFanCallback, 		NULL,				4,	NULL,	0,	1	},
-	{	__("Fan 6"),			sensorFanCallback, 		NULL,				5,	NULL,	0,	1	},
-	{	__("Fan 7"),			sensorFanCallback, 		NULL,				6,	NULL,	0,	1	},
-	{	__("Fan 8"),			sensorFanCallback, 		NULL,				7,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	__("Fan 1"),			sensorFanCallback,		NULL,				0,	NULL,	0,	1	},
+	{	__("Fan 2"),			sensorFanCallback,		NULL,				1,	NULL,	0,	1	},
+	{	__("Fan 3"),			sensorFanCallback,		NULL,				2,	NULL,	0,	1	},
+	{	__("Fan 4"),			sensorFanCallback,		NULL,				3,	NULL,	0,	1	},
+	{	__("Fan 5"),			sensorFanCallback,		NULL,				4,	NULL,	0,	1	},
+	{	__("Fan 6"),			sensorFanCallback,		NULL,				5,	NULL,	0,	1	},
+	{	__("Fan 7"),			sensorFanCallback,		NULL,				6,	NULL,	0,	1	},
+	{	__("Fan 8"),			sensorFanCallback,		NULL,				7,	NULL,	0,	1	},
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sensorMenuDesc[] =
 {
 	{	__("Temperature"),		NULL,					sTempMenuDesc,		0,	NULL,	0,	1	},
 	{	__("Fan Speed"),		NULL,					sFanMenuDesc,		0,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC networkDevDesc[] =
 {
 	{	__("All"),				networkCallback,		NULL,				0x1000	},
-	{	NULL,					networkCallback,		NULL,				0x1001,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1002,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1003,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1004,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1005,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1006,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1007,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1008,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1009,	NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x100A,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	NULL,					networkCallback,		NULL,				0x1001, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1002, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1003, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1004, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1005, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1006, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1007, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1008, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x1009, NULL,	0,	1	},
+	{	NULL,					networkCallback,		NULL,				0x100A, NULL,	0,	1	},
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC networkMenuDesc[] =
@@ -241,7 +241,7 @@ MENU_DESC networkMenuDesc[] =
 	{	__("Bytes Received"),	networkCallback,		NULL,				0x0100	},
 	{	"-",					NULL,					NULL,				0		},
 	{	__("Which Interface"),	NULL,					networkDevDesc,		0		},
-	{	NULL, 					NULL,					NULL,				0		}	
+	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC memoryMenuDesc[] =
@@ -251,71 +251,71 @@ MENU_DESC memoryMenuDesc[] =
 	{	__("Buffers"),			memoryCallback,			NULL,				2	},
 	{	__("Cached"),			memoryCallback,			NULL,				3	},
 	{	__("Swap"),				memoryCallback,			NULL,				4	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC pickCPUMenuDesc[] =
 {
-	{ 	__("All"),				loadCallback,			NULL,				0x1000	},
-	{ 	__("CPU1"),				loadCallback,			NULL,				0x1001	},
-	{ 	__("CPU2"),				loadCallback,			NULL,				0x1002,	NULL,	0,	1	},
-	{ 	__("CPU3"),				loadCallback,			NULL,				0x1003,	NULL,	0,	1	},
-	{ 	__("CPU4"),				loadCallback,			NULL,				0x1004,	NULL,	0,	1	},
-	{ 	__("CPU5"),				loadCallback,			NULL,				0x1005,	NULL,	0,	1	},
-	{ 	__("CPU6"),				loadCallback,			NULL,				0x1006,	NULL,	0,	1	},
-	{ 	__("CPU7"),				loadCallback,			NULL,				0x1007,	NULL,	0,	1	},
-	{ 	__("CPU8"),				loadCallback,			NULL,				0x1008,	NULL,	0,	1	},
-	{	NULL, 					NULL,					NULL,				0x1000	}
+	{	__("All"),				loadCallback,			NULL,				0x1000	},
+	{	__("CPU1"),				loadCallback,			NULL,				0x1001	},
+	{	__("CPU2"),				loadCallback,			NULL,				0x1002, NULL,	0,	1	},
+	{	__("CPU3"),				loadCallback,			NULL,				0x1003, NULL,	0,	1	},
+	{	__("CPU4"),				loadCallback,			NULL,				0x1004, NULL,	0,	1	},
+	{	__("CPU5"),				loadCallback,			NULL,				0x1005, NULL,	0,	1	},
+	{	__("CPU6"),				loadCallback,			NULL,				0x1006, NULL,	0,	1	},
+	{	__("CPU7"),				loadCallback,			NULL,				0x1007, NULL,	0,	1	},
+	{	__("CPU8"),				loadCallback,			NULL,				0x1008, NULL,	0,	1	},
+	{	NULL,					NULL,					NULL,				0x1000	}
 };
 
 MENU_DESC cpuMenuDesc[] =
 {
-	{ 	__("Average"),			loadCallback,	 		NULL,				0x2000	},
+	{	__("Average"),			loadCallback,			NULL,				0x2000	},
 	{	"-",					NULL,					NULL,				0		},
-	{ 	__("Total"),			loadCallback,	 		NULL,				0x0000	},
-	{ 	__("User"),				loadCallback,	 		NULL,				0x0100	},	
-	{ 	__("Nice"),				loadCallback,	 		NULL,				0x0200	},
-	{ 	__("System"),			loadCallback,	 		NULL,				0x0300	},
-	{ 	__("Idle"),				loadCallback,	 		NULL,				0x0400	},
-	{ 	__("ioWait"),			loadCallback,	 		NULL,				0x0500	},
+	{	__("Total"),			loadCallback,			NULL,				0x0000	},
+	{	__("User"),				loadCallback,			NULL,				0x0100	},
+	{	__("Nice"),				loadCallback,			NULL,				0x0200	},
+	{	__("System"),			loadCallback,			NULL,				0x0300	},
+	{	__("Idle"),				loadCallback,			NULL,				0x0400	},
+	{	__("ioWait"),			loadCallback,			NULL,				0x0500	},
 	{	"-",					NULL,					NULL,				0		},
 	{	__("Which CPU"),		NULL,					pickCPUMenuDesc,	0		},
-	{	NULL, 					NULL,					NULL,				0		}
+	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC gaugeMenuDesc[] =
 {
-	{	__("Battery"),			batteryCallback,		NULL,				0,	NULL,	0,	1	},	/*	00	*/
-	{	__("CPU Load"),			NULL,					cpuMenuDesc,		0,	NULL,	0,	1	},	/*	01	*/
-	{	__("Entropy"),			entropyCallback,		NULL,				0,	NULL,	0,	1	},	/*	02	*/
-	{	__("Hard Disk"),		NULL,					harddiskMenuDesc,	0,	NULL,	0,	1	},	/*	03	*/
-	{	__("Memory"),			NULL,					memoryMenuDesc,		0,	NULL,	0,	1	},	/*	04	*/
-	{	__("Moon Phase"),		moonPhaseCallback,		NULL,				0,	NULL,	0,	1	},	/*	05	*/
-	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*	06	*/
-	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*	07	*/
-	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*	08	*/
-	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*	09	*/
-	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*	10	*/
-	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*	11	*/
-	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/*	12	*/
-	{	NULL,					NULL,					NULL,				0	}					/*	13	*/
+	{	__("Battery"),			batteryCallback,		NULL,				0,	NULL,	0,	1	},	/*  00  */
+	{	__("CPU Load"),			NULL,					cpuMenuDesc,		0,	NULL,	0,	1	},	/*  01  */
+	{	__("Entropy"),			entropyCallback,		NULL,				0,	NULL,	0,	1	},	/*  02  */
+	{	__("Hard Disk"),		NULL,					harddiskMenuDesc,	0,	NULL,	0,	1	},	/*  03  */
+	{	__("Memory"),			NULL,					memoryMenuDesc,		0,	NULL,	0,	1	},	/*  04  */
+	{	__("Moon Phase"),		moonPhaseCallback,		NULL,				0,	NULL,	0,	1	},	/*  05  */
+	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*  06  */
+	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*  07  */
+	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*  08  */
+	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*  09  */
+	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*  10  */
+	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*  11  */
+	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/*  12  */
+	{	NULL,					NULL,					NULL,				0	}					/*  13  */
 };
 
 MENU_DESC prefMenuDesc[] =
 {
-	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*	00	*/
-	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*	01	*/
-	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*	02	*/
-	{	"-",					NULL,					NULL,				0	},					/*	03	*/
-	{	__("Markers"),			NULL,					markerMenuDesc,		0	},					/*	04	*/
-	{	__("View"),				NULL,					viewMenuDesc,		0	},					/*	05	*/
-	{	__("Change Font"),		dialFontCallback,		NULL,				0	},					/*	06	*/
-	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},					/*	07	*/
-	{	"-",					NULL,					NULL,				0	},					/*	08	*/
+	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  00  */
+	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  01  */
+	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*  02  */
+	{	"-",					NULL,					NULL,				0	},					/*  03  */
+	{	__("Markers"),			NULL,					markerMenuDesc,		0	},					/*  04  */
+	{	__("View"),				NULL,					viewMenuDesc,		0	},					/*  05  */
+	{	__("Change Font"),		dialFontCallback,		NULL,				0	},					/*  06  */
+	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},					/*  07  */
+	{	"-",					NULL,					NULL,				0	},					/*  08  */
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-	{	__("Save Preferences"),	configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*	12	*/
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
 #else
-	{	__("Save Preferences"),	configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*	12	*/
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*  12  */
 #endif
 	{	__("Save Display"),		dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  10  */
 	{	NULL,					NULL,					NULL,				0	}
@@ -329,10 +329,10 @@ MENU_DESC mainMenuDesc[] =
 	{	__("About"),			aboutCallback,			NULL,				0	},
 	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},
 #else
-	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT	},
+	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT },
 	{	__("Quit"),				quitCallback,			NULL,				0,	GTK_STOCK_QUIT	},
 #endif
-	{	NULL, 					NULL,					NULL,				0	}
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 /******************************************************************************************************
@@ -343,20 +343,20 @@ static GdkPixbuf *defaultIcon;
 /******************************************************************************************************
  *                                                                                                    *
  ******************************************************************************************************/
-static bool alwaysOnTop 		=  0;			/* Saved in the config file */
-static bool stuckOnAll 			=  0;			/* Saved in the config file */
-static bool lockMove 			=  0;			/* Saved in the config file */
+static bool alwaysOnTop			=  0;			/* Saved in the config file */
+static bool stuckOnAll			=  0;			/* Saved in the config file */
+static bool lockMove			=  0;			/* Saved in the config file */
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
-static time_t lastTime 			= -1;
+static time_t lastTime			= -1;
 void updateGauge (void);
 
 /******************************************************************************************************
  *                                                                                                    *
  ******************************************************************************************************/
 GtkAccelGroup *accelGroup;
-int weHaveFocus 				=  0;
-int currentFace 				=  0;			/* Saved in the config file */
+int weHaveFocus					=  0;
+int currentFace					=  0;			/* Saved in the config file */
 int toolTipFace					=  0;
 int sysUpdateID					=  100;
 int allowSaveDisp				=  0;
@@ -364,7 +364,7 @@ FACE_SETTINGS *faceSettings[MAX_FACES];
 char fontName[101]				=  "Sans";		// Saved in the config file
 char configFile[81]				=  ".gaugerc";
 HAND_STYLE handStyle[HAND_COUNT]	=			/* Saved in the config file */
-{ 
+{
 	{ 1, 28, 0, HAND1_COLOUR, HFIL1_COLOUR, 1, 1 },		/* First hand */
 	{ 1, 25, 0, HAND2_COLOUR, HFIL2_COLOUR, 1, 1 },		/* Second hand */
 	{ 9, 28, 0, MAXH__COLOUR, MAXF__COLOUR, 1, 1 },		/* Max hand */
@@ -373,15 +373,15 @@ HAND_STYLE handStyle[HAND_COUNT]	=			/* Saved in the config file */
 char tideURL[129] = "http://www.ukho.gov.uk/easytide/EasyTide/ShowPrediction.aspx?PredictionLength=4&PortID=0113";
 DIAL_CONFIG dialConfig =
 {								/* -- Used by dial library -- */
-	NULL, 						/* mainWindow */
-	NULL, 						/* drawingArea */
+	NULL,						/* mainWindow */
+	NULL,						/* drawingArea */
 	3 * 64,						/* faceSize */
-	1,	 						/* faceWidth */
-	1, 							/* faceHeight */
-	3,	 						/* markerType */
-	20, 						/* markerStep */
-	99, 						/* faceOpacity */
-	0,	 						/* faceGradient */
+	1,							/* faceWidth */
+	1,							/* faceHeight */
+	3,							/* markerType */
+	20,							/* markerStep */
+	99,							/* faceOpacity */
+	0,							/* faceGradient */
 	750,							/* startPoint */
 	&fontName[0],				/* Font name pointer */
 	updateGauge,				/* Update func. */
@@ -395,21 +395,21 @@ GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =
 	{	"weather",		1	},	{	"memory",		1	},	{	"battery",		1	},
 	{	"network",		1	},	{	"entropy",		0	},	{	"tide",			1	},
 	{	"harddisk",		1	},	{	"thermo",		0	},	{	"power",		0	},
-	{	"moonphase",	1	},	{	"wifi",			1,	},	{	NULL, 			0	}
+	{	"moonphase",	1	},	{	"wifi",			1,	},	{	NULL,			0	}
 };
 
 /******************************************************************************************************
  * Prototypes for functions in the tables that are defined later.                                     *
  ******************************************************************************************************/
-static void processCommandLine 		(int argc, char *argv[], int *posX, int *posY);
-static void howTo 					(FILE * outFile, char *format, ...);
-static int  updateMaxMinValues 		(FACE_SETTINGS *faceSetting, int firstValue);
+static void processCommandLine		(int argc, char *argv[], int *posX, int *posY);
+static void howTo					(FILE * outFile, char *format, ...);
+static int	updateMaxMinValues		(FACE_SETTINGS *faceSetting, int firstValue);
 
 static gboolean clockTickCallback	(gpointer data);
-static gboolean windowClickCallback	(GtkWidget * widget, GdkEventButton * event);
+static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event);
 static gboolean windowKeyCallback	(GtkWidget * widget, GdkEventKey * event);
-static gboolean focusInEvent 		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
-static gboolean focusOutEvent 		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
+static gboolean focusInEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
+static gboolean focusOutEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
 
 unsigned int weatherScales;
 char locationKey[41] = "2643743";
@@ -453,7 +453,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("                   :  0=none, 1=Triangle, 2=Circle, 3=Latin, 4=Roman\n"));
 	fprintf (outFile, _("   -n<c|r><num>    :  Set the number of columns and rows\n"));
 	fprintf (outFile, _("                   :  Max clocks %d, no more than 10 in a line\n"), MAX_FACES);
-	fprintf (outFile, _("   -O<opacity>     :  Change the opacity, 0 clear to 100 solid\n"));	
+	fprintf (outFile, _("   -O<opacity>     :  Change the opacity, 0 clear to 100 solid\n"));
 	fprintf (outFile, _("   -s<size>        :  Set the size of each clock\n"));
 	fprintf (outFile, _("   -w              :  Toggle showing on all the desktops\n"));
 	fprintf (outFile, _("   -x<posn>        :  Set the X screen position\n"));
@@ -509,7 +509,7 @@ quitCallback (guint data)
 void
 onTopCallback (guint data)
 {
-	if (data) 
+	if (data)
 	{
 		alwaysOnTop = !alwaysOnTop;
 		configSetBoolValue ("always_on_top", alwaysOnTop);
@@ -528,10 +528,10 @@ onTopCallback (guint data)
  *  \param data Data from the menu.
  *  \result None.
  */
-void 
+void
 stickCallback (guint data)
 {
-	if (data) 
+	if (data)
 	{
 		stuckOnAll = !stuckOnAll;
 		configSetBoolValue ("on_all_desktops", stuckOnAll);
@@ -557,7 +557,7 @@ void
 lockCallback (guint data)
 {
 	prefMenuDesc[MENU_PREF_LOCK].disable = 0;
-	if (data) 
+	if (data)
 	{
 		lockMove = !lockMove;
 		configSetBoolValue ("locked_position", lockMove);
@@ -582,8 +582,8 @@ aboutCallback (guint data)
 
 	sprintf (verString, _("Version: %s"), VERSION);
 	/*------------------------------------------------------------------------------------------------*
-	 * Nice dialog that can be used with newer versions of the GTK API.                               *
-	 *------------------------------------------------------------------------------------------------*/
+     * Nice dialog that can be used with newer versions of the GTK API.                               *
+     *------------------------------------------------------------------------------------------------*/
 	gtk_show_about_dialog (dialConfig.mainWindow,
 			"title", _("About Gauge"),
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
@@ -618,7 +618,7 @@ char *wrapText (char *inText, char top)
 	char space = 0;
 	int i = 0, j = 0, o = 0, points[10];
 	static char outText[121];
-	
+
 	outText[i] = 0;
 	while (inText[i] && i < 120 && j < 10)
 	{
@@ -635,20 +635,20 @@ char *wrapText (char *inText, char top)
 				outText[o++] = ' ';
 				space = 0;
 			}
-			outText[o++] = inText[i]; 
+			outText[o++] = inText[i];
 		}
 		++i;
 	}
-	outText[o] = 0; 
+	outText[o] = 0;
 	if (j)
 	{
 		int diff = strlen (inText);
 		int use = 0, half = diff >> 1;
-		
+
 		for (i = 0; i < j; ++i)
 		{
 			int point = points[i], nDiff;
-			
+
 			if (top) ++point;
 			nDiff = (half > point ? half - point : point - half);
 			if (diff > nDiff)
@@ -657,7 +657,7 @@ char *wrapText (char *inText, char top)
 				diff = nDiff;
 			}
 		}
-		outText[points[use]] = '\n'; 
+		outText[points[use]] = '\n';
 	}
 	return outText;
 }
@@ -680,7 +680,7 @@ void prepareForPopup (void)
 	viewMenuDesc[1].disable = (dialConfig.dialWidth < 2 ? 1 : 0);
 	viewMenuDesc[2].disable = (dialConfig.dialHeight >= 10 || (dialConfig.dialHeight + 1) * dialConfig.dialWidth > MAX_FACES ? 1 : 0);
 	viewMenuDesc[3].disable = (dialConfig.dialHeight < 2 ? 1 : 0);
-	
+
 	for (i = MENU_MARK_STRT; i <= MENU_MARK_STOP; ++i)
 		markerMenuDesc[i].checked = (markerMenuDesc[i].param == dialConfig.markerType ? 1 : 0);
 	for (i = MENU_STEP_STRT; i <= MENU_STEP_STOP; ++i)
@@ -689,7 +689,7 @@ void prepareForPopup (void)
 	prefMenuDesc[MENU_PREF_ONTOP].checked = alwaysOnTop;
 	prefMenuDesc[MENU_PREF_STUCK].checked = stuckOnAll;
 	prefMenuDesc[MENU_PREF_LOCK].checked = lockMove;
-	
+
 	prefMenuDesc[MENU_PREF_SVG].disable = !allowSaveDisp;
 }
 
@@ -730,7 +730,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 			}
 			return TRUE;
 #endif
-			
+
 #ifdef GDK_BUTTON_SECONDARY
 		case GDK_BUTTON_SECONDARY:	/* right button */
 #else
@@ -741,7 +741,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
 			gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
 #else
-			gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
+			gtk_menu_popup (GTK_MENU (popupMenu), NULL, /* parent_menu_shell */
 					NULL,								/* parent_menu_item */
 					NULL,								/* func */
 					NULL,								/* data */
@@ -771,10 +771,10 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 	GtkWidget *popupMenu;
 
 	/*------------------------------------------------------------------------------------------------*
-	 * You can select a face buy pressing and holding the ALT key while typing the number of the      *
-	 * clock facce that you want to select.  In order to do this we track the ALT key press and       *
-	 * release.  Each key must be pressed with in two seconds of the last key press.                  *
-	 *------------------------------------------------------------------------------------------------*/
+     * You can select a face buy pressing and holding the ALT key while typing the number of the      *
+     * clock facce that you want to select.  In order to do this we track the ALT key press and       *
+     * release.  Each key must be pressed with in two seconds of the last key press.                  *
+     *------------------------------------------------------------------------------------------------*/
 	if (event->time < lastKeyPressTime + 2000)
 	{
 		lastKeyPressTime = event->time;
@@ -784,10 +784,10 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 		lastKeyPressTime = 0;
 		keyPressFaceNum = -1;
 	}
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Process key press events                                                                       *
-	 *------------------------------------------------------------------------------------------------*/
+     * Process key press events                                                                       *
+     *------------------------------------------------------------------------------------------------*/
 	if (event->type == GDK_KEY_PRESS)
 	{
 		if (event->keyval == 0xFFE9) /* Alt key has been pressed */
@@ -795,12 +795,12 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 			lastKeyPressTime = event->time;
 			keyPressFaceNum = 0;
 		}
-			
+
 		if (event->state & 8) /* Trial and error showed 8 to be the Alt key flag */
 		{
 			/*----------------------------------------------------------------------------------------*
-			 * Press ALT + M to display the Menu at the current mouse position                        *
-			 *----------------------------------------------------------------------------------------*/
+             * Press ALT + M to display the Menu at the current mouse position                        *
+             *----------------------------------------------------------------------------------------*/
 			if (event->keyval == GDK_KEY_M || event->keyval == GDK_KEY_m)
 			{
 				prepareForPopup ();
@@ -808,7 +808,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
 				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
 #else
-				gtk_menu_popup (GTK_MENU (popupMenu), NULL,	/* parent_menu_shell */
+				gtk_menu_popup (GTK_MENU (popupMenu), NULL, /* parent_menu_shell */
 						NULL,								/* parent_menu_item */
 						NULL,								/* func */
 						NULL,								/* data */
@@ -816,8 +816,8 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 #endif
 			}
 			/*----------------------------------------------------------------------------------------*
-			 * Press ALT + n where n is a number between 1 and 9 to select the face                   *
-			 *----------------------------------------------------------------------------------------*/
+             * Press ALT + n where n is a number between 1 and 9 to select the face                   *
+             *----------------------------------------------------------------------------------------*/
 			if (keyPressFaceNum != -1)
 			{
 				if (event->keyval >= GDK_KEY_0 && event->keyval <= GDK_KEY_9)
@@ -836,8 +836,8 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 		gtk_window_activate_key (GTK_WINDOW (dialConfig.mainWindow), event);
 	}
 	/*------------------------------------------------------------------------------------------------*
-	 * Process key release events                                                                     *
-	 *------------------------------------------------------------------------------------------------*/
+     * Process key release events                                                                     *
+     *------------------------------------------------------------------------------------------------*/
 	else if (event->type == GDK_KEY_RELEASE)
 	{
 		if (event->keyval == 0xFFE9 && keyPressFaceNum != -1)  /* Alt key released */
@@ -896,7 +896,7 @@ int slideValues (int oldValue, int newValue)
 int calcShowValues (FACE_SETTINGS *faceSetting)
 {
 	int update = 0, firstValue = DONT_SHOW, secondValue = DONT_SHOW, scale;
-	
+
 	scale = SCALE_3 / (faceSetting -> faceScaleMax - faceSetting -> faceScaleMin);
 
 	if (faceSetting -> firstValue != DONT_SHOW)
@@ -928,7 +928,7 @@ int calcShowValues (FACE_SETTINGS *faceSetting)
 	}
 	if (updateMaxMinValues (faceSetting, firstValue))
 		++update;
-		
+
 	return update;
 }
 
@@ -1011,8 +1011,8 @@ clockTickCallback (gpointer data)
 			case FACE_TYPE_MAX:
 			default:
 				/*------------------------------------------------------------------------------------*
-				 * Used for drawing the icon on the about box.                                        *
-				 *------------------------------------------------------------------------------------*/
+                 * Used for drawing the icon on the about box.                                        *
+                 *------------------------------------------------------------------------------------*/
 				gaugeReset (face, faceSettings[face] -> showFaceType, 0);
 				faceSettings[face] -> faceFlags |= FACE_SHOWHOT;
 				faceSettings[face] -> faceFlags |= FACE_SHOWCOLD;
@@ -1055,7 +1055,7 @@ clockTickCallback (gpointer data)
  *  \param data Not used.
  *  \result None.
  */
-gboolean 
+gboolean
 focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
 	lastTime = -1;
@@ -1076,7 +1076,7 @@ focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
  *  \param data Not used.
  *  \result None.
  */
-gboolean 
+gboolean
 focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
 	lastTime = -1;
@@ -1133,7 +1133,7 @@ void gaugeReset (int face, int type, int subType)
 	faceSettings[face] -> faceSubType = subType;
 	faceSettings[face] -> nextUpdate = 0;
 	faceSettings[face] -> updateNum = -1;
-	
+
 	setFaceString (faceSettings[face], FACESTR_TIP, 0, "");
 	setFaceString (faceSettings[face], FACESTR_TOP, 0, "");
 	setFaceString (faceSettings[face], FACESTR_BOT, 0, "");
@@ -1221,12 +1221,12 @@ void
 memoryCallback (guint data)
 {
 	if (data > 4) return;
-	
+
 	gaugeReset (currentFace, FACE_TYPE_MEMORY, data);
 	faceSettings[currentFace] -> faceFlags |= FACE_HOT_COLD;
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 3;
-	if (data == 1) 
+	if (data == 1)
 		faceSettings[currentFace] -> faceFlags |= (FACE_HC_REVS | FACE_SHOW_MIN);
 	else
 		faceSettings[currentFace] -> faceFlags |= FACE_SHOW_MAX;
@@ -1298,7 +1298,7 @@ wifiCallback (guint data)
  *  \param data Not used.
  *  \result None.
  */
-void 
+void
 entropyCallback (guint data)
 {
 	gaugeReset (currentFace, FACE_TYPE_ENTROPY, data);
@@ -1318,7 +1318,7 @@ entropyCallback (guint data)
  *  \param data Not used.
  *  \result None.
  */
-void 
+void
 tideCallback (guint data)
 {
 	gaugeReset (currentFace, FACE_TYPE_TIDE, data);
@@ -1339,7 +1339,7 @@ void
 networkCallback (guint data)
 {
 	int faceSubType = data;
-	
+
 	if (faceSettings[currentFace] -> showFaceType == FACE_TYPE_NETWORK)
 	{
 		if (data & 0x1000)
@@ -1376,12 +1376,12 @@ networkCallback (guint data)
 void harddiskCallback (guint data)
 {
 	int faceSubType = data;
-	
+
 	if (faceSettings[currentFace] -> showFaceType == FACE_TYPE_HARDDISK)
 	{
 		if (data & 0x1000)
 		{
-			if (faceSettings[currentFace] -> faceSubType & 0x0F00)	
+			if (faceSettings[currentFace] -> faceSubType & 0x0F00)
 			{
 				faceSubType = faceSettings[currentFace] -> faceSubType & 0x0F00;
 				faceSubType |= (data & 0x00FF);
@@ -1394,7 +1394,7 @@ void harddiskCallback (guint data)
 		}
 		else if (data & 0x0F00)
 		{
-			if (faceSettings[currentFace] -> faceSubType & 0x0F00)	
+			if (faceSettings[currentFace] -> faceSubType & 0x0F00)
 			{
 				faceSubType = faceSettings[currentFace] -> faceSubType & 0x00FF;
 				faceSubType |= (data & 0x0F00);
@@ -1542,7 +1542,7 @@ void configSaveCallback (guint data)
 	configSetIntValue ("gauge_x_pos", posX);
 	configSetIntValue ("gauge_y_pos", posY);
 	configSetIntValue ("gauge_current", currentFace);
-	
+
 	if (home)
 	{
 		strcpy (configPath, home);
@@ -1640,19 +1640,19 @@ static int updateMaxMinValues (FACE_SETTINGS *faceSetting, int firstValue)
 	int i, posn, maxVal = -1, minVal = -1;
 	SAVED_MAX_MIN *saved = &faceSetting -> savedMaxMin;
 	int saveMax = saved -> shownMaxValue, saveMin = saved -> shownMinValue;
-	
+
 	if (time (NULL) > saved -> nextUpdateTime)
 	{
 		++saved -> maxMinPosn;
 		if (saved -> maxMinPosn >= MAX_MIN_COUNT || saved -> maxMinPosn >= saved -> maxMinCount)
 			saved -> maxMinPosn = 0;
-			
+
 		saved -> maxBuffer[saved -> maxMinPosn] = -1;
 		saved -> minBuffer[saved -> maxMinPosn] = -1;
 		saved -> nextUpdateTime = time (NULL) + saved -> updateInterval;
 	}
 	posn = saved -> maxMinPosn;
-	
+
 	if (faceSetting -> shownFirstValue <= firstValue && faceSetting -> faceFlags & FACE_SHOW_MAX)
 	{
 		if (faceSetting -> shownFirstValue > saved -> maxBuffer[posn] || saved -> maxBuffer[posn] == -1)
@@ -1667,7 +1667,7 @@ static int updateMaxMinValues (FACE_SETTINGS *faceSetting, int firstValue)
 	{
 		if ((saved -> maxBuffer[i] != -1 && saved -> maxBuffer[i] > maxVal) || maxVal == -1)
 			maxVal = saved -> maxBuffer[i];
-			
+
 		if ((saved -> minBuffer[i] != -1 && saved -> minBuffer[i] < minVal) || minVal == -1)
 			minVal = saved -> minBuffer[i];
 	}
@@ -1692,7 +1692,7 @@ static int updateMaxMinValues (FACE_SETTINGS *faceSetting, int firstValue)
 		}
 		else
 			saved -> shownMinValue = faceSetting -> shownFirstValue;
-	}		
+	}
 	return (saveMax == saved -> shownMaxValue && saveMin == saved -> shownMinValue) ? 0 : 1;
 }
 
@@ -1721,7 +1721,7 @@ int loadColour (char *fromColour)
 				colour = i;
 				break;
 			}
-		}			
+		}
 		if (colour != -1)
 		{
 			strncpy (colourNames[colour].defColour, &fromColour[3], 60);
@@ -1748,7 +1748,7 @@ void loadHandInfo (char *buff)
 {
 	int style = 0, length = 0, tail = 0, i = 0, j = 0, m = 0;
 	char hand[41], value[81];
-		
+
 	while (buff[i] && m < 4)
 	{
 		if (buff[i] == ':')
@@ -1906,7 +1906,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					{
 						faceSettings[j] = malloc (sizeof (FACE_SETTINGS));
 						memset (faceSettings[j], 0, sizeof (FACE_SETTINGS));
-					}			
+					}
 				}
 				break;
 			case 'O':
@@ -1971,7 +1971,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 		}
 		else
 			invalidOption = 1;
-			
+
 		if (invalidOption)
 		{
 			howTo (stderr, "ERROR: Please check option '%s'\n", argv[i]);
@@ -2038,7 +2038,7 @@ void loadConfig (int *posX, int *posY)
 	int i;
 	char *home = getenv ("HOME");
 	char configPath[1024], value[81], tempName[81];
-	
+
 	configLoad ("/etc/gaugerc");
 	strcpy (configPath, home);
 	strcat (configPath, "/");
@@ -2055,7 +2055,7 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("gauge_mark_type", &dialConfig.markerType);
 	configGetIntValue ("gauge_mark_step", &dialConfig.markerStep);
 	configGetIntValue ("opacity", &dialConfig.dialOpacity);
-	configGetIntValue ("gradient", &dialConfig.dialGradient);	
+	configGetIntValue ("gradient", &dialConfig.dialGradient);
 	configGetIntValue ("gauge_x_pos", posX);
 	configGetIntValue ("gauge_y_pos", posY);
 	configGetValue ("font_name", fontName, 100);
@@ -2141,7 +2141,7 @@ char *shortenWords (char *inString, char *outString, int max)
 {
 	int words, j, k, curWord;
 	char lastChar = 0;
-	
+
 	if (max > 80) max = 80;
 	for (words = 0; words < 10; ++words)
 	{
@@ -2173,7 +2173,7 @@ char *shortenWords (char *inString, char *outString, int max)
 				outString[k] = lastChar = inString[i];
 				outString[++k] = 0;
 				++j;
-			}				
+			}
 			++i;
 		}
 		if (strlen (outString) <= max)
@@ -2277,8 +2277,8 @@ main (int argc, char *argv[])
 	textdomain (PACKAGE);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Initalaise the window.                                                                         *
-	 *------------------------------------------------------------------------------------------------*/
+     * Initalaise the window.                                                                         *
+     *------------------------------------------------------------------------------------------------*/
 	gtk_init (&argc, &argv);
 	g_set_application_name (PACKAGE_NAME);
 	gtk_window_set_default_icon_name (PACKAGE);
@@ -2287,8 +2287,8 @@ main (int argc, char *argv[])
 	gtk_window_set_title (GTK_WINDOW (dialConfig.mainWindow), PACKAGE_NAME);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * There must be at least one face.                                                               *
-	 *------------------------------------------------------------------------------------------------*/
+     * There must be at least one face.                                                               *
+     *------------------------------------------------------------------------------------------------*/
 	faceSettings[0] = malloc (sizeof (FACE_SETTINGS));
 	memset (faceSettings[0], 0, sizeof (FACE_SETTINGS));
 
@@ -2307,7 +2307,7 @@ main (int argc, char *argv[])
 	loadConfig (&posX, &posY);
 	processCommandLine (argc, argv, &posX, &posY);
 	setupDisplay();
-	
+
 	saveFace = currentFace;
 	for (i = 0; i < (dialConfig.dialWidth * dialConfig.dialHeight); i++)
 	{
@@ -2366,30 +2366,29 @@ main (int argc, char *argv[])
 	}
 	currentFace = saveFace;
 
-
 	/*------------------------------------------------------------------------------------------------*
-	 * Do all the other windows initialisation.                                                       *
-	 *------------------------------------------------------------------------------------------------*/
+     * Do all the other windows initialisation.                                                       *
+     *------------------------------------------------------------------------------------------------*/
 	gtk_window_set_resizable (GTK_WINDOW (dialConfig.mainWindow), FALSE);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Icon stuff.                                                                                    *
-	 *------------------------------------------------------------------------------------------------*/
+     * Icon stuff.                                                                                    *
+     *------------------------------------------------------------------------------------------------*/
 	defaultIcon = gdk_pixbuf_new_from_xpm_data ((const char **) &GaugeIcon_xpm);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Final windows configuration.                                                                   *
-	 *------------------------------------------------------------------------------------------------*/
-    dialInit (&dialConfig);
-	
+     * Final windows configuration.                                                                   *
+     *------------------------------------------------------------------------------------------------*/
+	dialInit (&dialConfig);
+
 	/*------------------------------------------------------------------------------------------------*
-	 * This is the first time we can do this because we check the screen size in this routine.        *
-	 *------------------------------------------------------------------------------------------------*/
+     * This is the first time we can do this because we check the screen size in this routine.        *
+     *------------------------------------------------------------------------------------------------*/
 	dialFixFaceSize ();
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Final windows configuration.                                                                   *
-	 *------------------------------------------------------------------------------------------------*/
+     * Final windows configuration.                                                                   *
+     *------------------------------------------------------------------------------------------------*/
 #if GTK_MAJOR_VERSION == 2
 	g_signal_connect (G_OBJECT (dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
 #else
@@ -2399,11 +2398,11 @@ main (int argc, char *argv[])
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
-	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
+	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL);
 
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
- 	eventBox = gtk_event_box_new ();
+	eventBox = gtk_event_box_new ();
 
 	gtk_container_add (GTK_CONTAINER (eventBox), dialConfig.drawingArea);
 	gtk_container_add (GTK_CONTAINER (dialConfig.mainWindow), eventBox);
@@ -2413,8 +2412,8 @@ main (int argc, char *argv[])
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Complete stuff left over from the command line                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Complete stuff left over from the command line                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	if (posX != -1 && posY != -1)
 	{
 		int width = 1024, height = 768;
@@ -2442,8 +2441,8 @@ main (int argc, char *argv[])
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Intitalise all fo the gauges                                                                   *
-	 *------------------------------------------------------------------------------------------------*/
+     * Intitalise all fo the gauges                                                                   *
+     *------------------------------------------------------------------------------------------------*/
 	readCPUInit();
 	readBatteryInit();
 	readEntropyInit();
@@ -2459,8 +2458,8 @@ main (int argc, char *argv[])
 	readWifiInit();
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Called to set any values                                                                       *
-	 *------------------------------------------------------------------------------------------------*/
+     * Called to set any values                                                                       *
+     *------------------------------------------------------------------------------------------------*/
 	accelGroup = gtk_accel_group_new ();
 	gtk_window_add_accel_group (dialConfig.mainWindow, accelGroup);
 	createMenu (mainMenuDesc, accelGroup, FALSE);
@@ -2472,8 +2471,8 @@ main (int argc, char *argv[])
 #endif
 
 	/*------------------------------------------------------------------------------------------------*
-	 * OK all ready lets run it!                                                                      *
-	 *------------------------------------------------------------------------------------------------*/
+     * OK all ready lets run it!                                                                      *
+     *------------------------------------------------------------------------------------------------*/
 	gtk_widget_show_all (GTK_WIDGET (dialConfig.mainWindow));
 	g_timeout_add (200, clockTickCallback, NULL);
 	dialSetOpacity();

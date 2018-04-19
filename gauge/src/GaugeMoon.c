@@ -28,14 +28,14 @@
 #include <time.h>
 
 #define		PI	3.1415926535897932384626433832795
-#define		RAD	(PI/180.0)
-#define         SMALL_FLOAT	(1e-12)
+#define		RAD (PI/180.0)
+#define			SMALL_FLOAT (1e-12)
 
-typedef struct 
+typedef struct
 {
 	int year, month, day;
 	double hour;
-} 
+}
 TimePlace;
 
 #include "GaugeDisp.h"
@@ -127,8 +127,8 @@ void JulianToDate(TimePlace * now, double jd)
 double Julian(int year, int month, double day)
 {
 	/*
-	 * Returns the number of julian days for the specified day. 
-	 */
+     * Returns the number of julian days for the specified day.
+     */
 
 	int a, b = 0, c, e;
 	if (month < 3)
@@ -327,7 +327,7 @@ void readMoonPhaseValues (int face)
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.0f%%)"), buff, p);
 			if (change != 0 && (ip == 0 || ip == 4))
 			{
-				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)\n<b>Last Change</b>: %s"), 
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Moon Phase</b>: %s (%0.1f%%)\n<b>Last Change</b>: %s"),
 						buff, p, (change == -1 ? _("Waning") : change == 1 ? _("Waxing") : _("None")));
 			}
 			else

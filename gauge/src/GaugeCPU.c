@@ -44,7 +44,7 @@ static int myUpdateID[CPU_COUNT + 1];
 static int loadValues[CPU_COUNT + 1][8];
 static unsigned long long startStats[CPU_COUNT + 1][10];
 static unsigned long long endStats[CPU_COUNT + 1][10];
-char *name[8] = 
+char *name[8] =
 {
 	__("Total"),
 	__("User"),
@@ -71,7 +71,7 @@ void readCPUInit (void)
 	if (gaugeEnabled[FACE_TYPE_CPU_LOAD].enabled)
 	{
 		int i = 0;
-		for (i = 0; i < CPU_COUNT; ++i) 
+		for (i = 0; i < CPU_COUNT; ++i)
 		{
 			myUpdateID[i] = 100;
 			readStats (&startStats[i][0], i);
@@ -141,7 +141,7 @@ void readCPUValues (int face)
 				setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_WIN, 0, _("%s %s - Gauge"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f MHz\n%d%%"), (float)clockRates[faceType] / 1000, percent);
-				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>Clock</b>: %0.2f MHz"), cpuName, 
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>Clock</b>: %0.2f MHz"), cpuName,
 						name[faceType], percent, (float)clockRates[faceType] / 1000);
 				for (i = 0; i < 8; i++)
 					startStats[procNumber][i] = endStats[procNumber][i];
@@ -156,11 +156,11 @@ void readCPUValues (int face)
 			setFaceString (faceSetting, FACESTR_WIN, 0, _("Load average - Gauge"));
 			if (readAverage (loadAverages) == 6)
 			{
-				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(%0.2f)"), 
+				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(%0.2f)"),
 						loadAverages[0], loadAverages[1]);
 				setFaceString (faceSetting, FACESTR_TIP, 0, _(
 						"<b>1 min. average</b>: %0.2f\n<b>5 min. average</b>: %0.2f\n<b>15 min. average</b>: %0.2f\n"
-						"<b>Processes</b>: %d\n<b>Running</b>: %d\n<b>Last PID</b>: %d"), 
+						"<b>Processes</b>: %d\n<b>Running</b>: %d\n<b>Last PID</b>: %d"),
 						loadAverages[0], loadAverages[1], loadAverages[2],
 						readCount[1], readCount[0], readCount[2]);
 				faceSetting -> firstValue = loadAverages[0];
@@ -228,7 +228,7 @@ int readStats (unsigned long long *stats, int procNumber)
 	FILE *inCPUFile = fopen ("/proc/stat", "r");
 
 	strcpy (procName, "cpu");
-	if (procNumber)	sprintf (&procName[3], "%d", procNumber - 1);
+	if (procNumber) sprintf (&procName[3], "%d", procNumber - 1);
 
 	while (inCPUFile != NULL && !found)
 	{
@@ -295,9 +295,9 @@ int readAverage (float readAvs[])
 
 	if (readFile != NULL)
 	{
-		retn = fscanf (readFile, "%f %f %f %d/%d %d", 
-				&readAvs[0], &readAvs[1], &readAvs[2], 
-				&readCount[0], &readCount[1], &readCount[2]);		
+		retn = fscanf (readFile, "%f %f %f %d/%d %d",
+				&readAvs[0], &readAvs[1], &readAvs[2],
+				&readCount[0], &readCount[1], &readCount[2]);
 		fclose (readFile);
 	}
 	return retn;
@@ -320,7 +320,7 @@ int readClockRates ()
 	FILE *readFile;
 
 	clockRates[0] = 0;
-	for (i = 0; i < CPU_COUNT; ++i) 
+	for (i = 0; i < CPU_COUNT; ++i)
 	{
 		sprintf (readBuff, "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq", i);
 		if ((readFile = fopen (readBuff, "r")) != NULL)
@@ -339,6 +339,6 @@ int readClockRates ()
 	{
 		clockRates[0] /= retn;
 	}
-	return retn;	
+	return retn;
 }
 

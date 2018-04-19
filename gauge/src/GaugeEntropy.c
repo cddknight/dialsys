@@ -120,5 +120,5 @@ static int readEntropyFile (char *filename, int defValue)
 		fclose (inFile);
 	}
 	return valRead;
-}		
+}
 

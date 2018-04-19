@@ -220,7 +220,7 @@ void *queueGet (void *queueHandle)
 			myQueue -> firstInQueue -> myPrevPtr = NULL;
 		else
 			myQueue -> lastInQueue = NULL;
-			
+
 		myQueue -> itemCount --;
 	}
 	queueUnLock (myQueue);
@@ -314,7 +314,7 @@ void queuePush (void *queueHandle, void *putData)
  *  \param item2 Function used to sort the queue.
  *  \result None.
  */
-void queuePutSort (void *queueHandle, void *putData, 
+void queuePutSort (void *queueHandle, void *putData,
 		int(*Compare)(void *item1, void *item2))
 {
 	QUEUE_HEADER *myQueue = (QUEUE_HEADER *)queueHandle;
@@ -330,16 +330,16 @@ void queuePutSort (void *queueHandle, void *putData,
 	if (myQueue -> firstInQueue)
 	{
 		QUEUE_ITEM *currentItem = myQueue -> firstInQueue;
-	
+
 		while (currentItem)
 		{
 			int comp = Compare (putData, currentItem -> myData);
-			
+
 			if (comp < 0)
 			{
 				newQueueItem -> myPrevPtr = currentItem -> myPrevPtr;
 				newQueueItem -> myNextPtr = currentItem;
-				
+
 				if (newQueueItem -> myPrevPtr)
 				{
 					QUEUE_ITEM *tempItem = newQueueItem -> myPrevPtr;
@@ -433,7 +433,7 @@ unsigned long queueGetFreeData (void *queueHandle)
 {
 	QUEUE_HEADER *myQueue = (QUEUE_HEADER *)queueHandle;
 	unsigned long retn;
-	
+
 	queueLock (myQueue);
 	retn = myQueue -> freeData;
 	queueUnLock (myQueue);
@@ -455,7 +455,7 @@ unsigned long queueGetItemCount (void *queueHandle)
 {
 	QUEUE_HEADER *myQueue = (QUEUE_HEADER *)queueHandle;
 	unsigned long retn;
-	
+
 	queueLock (myQueue);
 	retn = myQueue -> itemCount;
 	queueUnLock (myQueue);

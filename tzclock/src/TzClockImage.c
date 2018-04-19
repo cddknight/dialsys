@@ -65,12 +65,12 @@ typedef enum _layerElements
 	CLOCK_GLASS,
 	CLOCK_FRAME,
 	CLOCK_ELEMENTS
-} 
+}
 layerElements;
 
 RsvgHandle		*g_pSvgHandles[CLOCK_ELEMENTS];
-cairo_surface_t	*g_pBackgroundSurface = NULL;
-cairo_surface_t	*g_pForegroundSurface = NULL;
+cairo_surface_t *g_pBackgroundSurface = NULL;
+cairo_surface_t *g_pForegroundSurface = NULL;
 
 extern const guint gtk_major_version;
 extern const guint gtk_minor_version;
@@ -107,10 +107,10 @@ void makeWindowMask ()
 {
 	int fullHeight, fullWidth, i, j;
 	GdkGC *gc;
-        
+
 	fullHeight = faceHeight * faceSize;
 	fullWidth = faceWidth * faceSize;
-        
+
 	if (windowShapeBitmap)
 	{
 		g_object_unref (windowShapeBitmap);
@@ -131,11 +131,11 @@ void makeWindowMask ()
 	for (i = 0; i < faceWidth; i++)
 	{
 		for (j = 0; j < faceHeight; j++)
-			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * faceSize) - 1, (j * faceSize) - 1, 
+			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * faceSize) - 1, (j * faceSize) - 1,
 					faceSize + 1, faceSize + 1, 0, 360 * 64);
-/*			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * faceSize) + 10, (j * faceSize) + 10, 
- *					faceSize - 21, faceSize - 21, 0, 360 * 64);
- */	}
+/*          gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * faceSize) + 10, (j * faceSize) + 10,
+ *                  faceSize - 21, faceSize - 21, 0, 360 * 64);
+ */ }
 	gtk_widget_shape_combine_mask (mainWindow, windowShapeBitmap, 0, 0);
 
 	g_object_unref (gc);
@@ -159,7 +159,7 @@ void drawText (cairo_t *cr, char *string1, char *string2, int top)
 {
 	int height;
 	cairo_text_extents_t textExtents;
-	
+
 	cairo_set_font_size (cr, 4 + ((faceSize / 64) * 4));
 	gdk_cairo_set_source_color (cr, &clockColours[TEXT__COLOUR]);
 
@@ -167,10 +167,10 @@ void drawText (cairo_t *cr, char *string1, char *string2, int top)
 	cairo_set_font_size (cr, 7);
 	cairo_set_source_rgb (cr, 0.0f, 0.5f, 1.0f);
 	cairo_set_line_width (cr, 3.0f);
-		
+
 	cairo_text_extents (cr, "abcdefgABCDEFG", &textExtents);
 	height = textExtents.height;
-	
+
 	if (string2[0])
 	{
 		cairo_text_extents (cr, string1, &textExtents);
@@ -178,16 +178,16 @@ void drawText (cairo_t *cr, char *string1, char *string2, int top)
 		{
 			cairo_move_to (cr, -textExtents.width / 2.0f, ((double) -g_DimensionData.height / 4.0f) + (height * 1.4f));
 			cairo_show_text (cr, string1);
-			cairo_text_extents (cr, string2, &textExtents);		
+			cairo_text_extents (cr, string2, &textExtents);
 			cairo_move_to (cr, -textExtents.width / 2.0f, ((double) -g_DimensionData.height / 4.0f) + (height * 2.6f));
 			cairo_show_text (cr, string2);
 		}
 		else
 		{
-			cairo_move_to (cr, -textExtents.width / 2.0f, ((double)  g_DimensionData.height / 4.0f) - (height * 1.4f));
+			cairo_move_to (cr, -textExtents.width / 2.0f, ((double)	 g_DimensionData.height / 4.0f) - (height * 1.4f));
 			cairo_show_text (cr, string1);
-			cairo_text_extents (cr, string2, &textExtents);		
-			cairo_move_to (cr, -textExtents.width / 2.0f, ((double)  g_DimensionData.height / 4.0f) - (height * 0.2f));
+			cairo_text_extents (cr, string2, &textExtents);
+			cairo_move_to (cr, -textExtents.width / 2.0f, ((double)	 g_DimensionData.height / 4.0f) - (height * 0.2f));
 			cairo_show_text (cr, string2);
 		}
 	}
@@ -197,7 +197,7 @@ void drawText (cairo_t *cr, char *string1, char *string2, int top)
 		if (top)
 			cairo_move_to (cr, -textExtents.width / 2.0f, ((double) -g_DimensionData.height / 4.0f) + (height * 2.0f));
 		else
-			cairo_move_to (cr, -textExtents.width / 2.0f, ((double)  g_DimensionData.height / 4.0f) - (height * 1.2f));
+			cairo_move_to (cr, -textExtents.width / 2.0f, ((double)	 g_DimensionData.height / 4.0f) - (height * 1.2f));
 		cairo_show_text (cr, string1);
 	}
 	cairo_restore (cr);
@@ -224,11 +224,11 @@ void cairoDrawSurface (cairo_t *cr, int backgound)
 	if (needsUpdate)
 	{
 		GError* pError = NULL;
-		
+
 		for (i = 0; i < CLOCK_ELEMENTS; i++)
 		{
 			char fileName[80];
-		
+
 			strcpy (fileName, "theme/");
 			strcat (fileName, g_pFileNames[i]);
 			g_pSvgHandles[i] = rsvg_handle_new_from_file (fileName, &pError);
@@ -237,7 +237,7 @@ void cairoDrawSurface (cairo_t *cr, int backgound)
 
 		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 		cairo_surface_destroy (backgound ? g_pBackgroundSurface : g_pForegroundSurface);
-			
+
 		pNewSurface = cairo_surface_create_similar (cairo_get_target (cr),
 				CAIRO_CONTENT_COLOR_ALPHA, faceWidth * faceSize, faceHeight * faceSize);
 
@@ -259,7 +259,7 @@ void cairoDrawSurface (cairo_t *cr, int backgound)
 			for (i = 0; i < faceWidth; i++)
 			{
 				cairo_save (pDrawingContext);
-				cairo_translate (pDrawingContext, 
+				cairo_translate (pDrawingContext,
 						(double)(g_DimensionData.width * i),
 						(double)(g_DimensionData.height * j));
 				if (backgound)
@@ -306,7 +306,7 @@ void cairoDrawSurface (cairo_t *cr, int backgound)
  *  \param bounce .
  *  \result .
  */
-gboolean 
+gboolean
 drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 {
 	int i, j, timeZone = faceSettings[face].currentTZ, tempTime;
@@ -316,29 +316,29 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 	struct tm tm;
 
 	/*------------------------------------------------------------------------------------------------*
-	 * The alarm check has moved out of here                                                          *
-	 *------------------------------------------------------------------------------------------------*/	
+     * The alarm check has moved out of here                                                          *
+     *------------------------------------------------------------------------------------------------*/
 	getTheFaceTime (face, &t, &tm);
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Handle the smooth scroll time chage                                                            *
-	 *------------------------------------------------------------------------------------------------*/	
+     * Handle the smooth scroll time chage                                                            *
+     *------------------------------------------------------------------------------------------------*/
 	tempTime = (tm.tm_hour * 60) + tm.tm_min;
-		
+
 	if (!fastSetting)
 	{
 		int gap = 0;
-		
+
 		/*--------------------------------------------------------------------------------------------*
-		 * Don't scroll at midnight                                                                   *
+         * Don't scroll at midnight                                                                   *
 		 *--------------------------------------------------------------------------------------------*/
 		if (tempTime == 0 && faceSettings[face].shownTime == (23 * 60) + 59)
 			gap = 1;
 		else
 			gap = tempTime - faceSettings[face].shownTime;
-		
+
 		if (abs (gap) > 1)
-		{		
+		{
 			/*----------------------------------------------------------------------------------------*
 			 * The maximum gap is 12 hours unless it is a 24 hour clock                               *
 			 *----------------------------------------------------------------------------------------*/
@@ -367,14 +367,14 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 			if (gap < 0)
 				i *= -1;
 
-    	    if (faceSettings[face].stepping < 24)
+			if (faceSettings[face].stepping < 24)
 				faceSettings[face].stepping ++;
 
 			tempTime = faceSettings[face].shownTime + i;
-			
+
 			tm.tm_min = tempTime % 60;
 			tm.tm_hour = tempTime / 60;
-			
+
 			timeSetting = 1;
 		}
 		else
@@ -384,18 +384,18 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Draw the face, it is made up of 3 overlapping circles                                          *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	cairo_save (cr);
 
 	/*--------------------------------------------------------------------------------------------*
 	 * Draw the face, it is made up of 3 overlapping circles                                      *
-	 *--------------------------------------------------------------------------------------------*/	
+	 *--------------------------------------------------------------------------------------------*/
 	if (face == 0)
 	{
 		cairoDrawSurface (cr, 1);
 		cairoDrawSurface (cr, 0);
 		needsUpdate = 0;
-	
+
 		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 		cairo_set_source_surface (cr, g_pBackgroundSurface, 0.0f, 0.0f);
 		cairo_paint (cr);
@@ -408,8 +408,8 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 			(double) faceSize / (double) g_DimensionData.width,
 			(double) faceSize / (double) g_DimensionData.height);
 
-	cairo_translate (cr, 
-			(double)(g_DimensionData.width * posX), 
+	cairo_translate (cr,
+			(double)(g_DimensionData.width * posX),
 			(double)(g_DimensionData.height * posY));
 	cairo_translate (cr, g_DimensionData.width / 2.0f, g_DimensionData.height / 2.0f);
 
@@ -422,7 +422,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 
 	if (!faceSettings[face].stopwatch)
 	{
-		getStringValue (tempString1, tempString2, 50, timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);	
+		getStringValue (tempString1, tempString2, 50, timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);
 		drawText (cr, tempString1, tempString2, 0);
 	}
 
@@ -488,7 +488,6 @@ drawFace (cairo_t *cr, int face, int posX, int posY, time_t t, int bounce)
 		cairo_paint (cr);
 	}
 
-
 	cairo_restore (cr);
 	return TRUE;
 }
@@ -510,7 +509,7 @@ void clockExpose (GtkWidget * widget)
 	cairo_t *cr = gdk_cairo_create (drawingArea -> window);
 	struct timeval tv;
 	struct timezone tz;
-		
+
 	gettimeofday(&tv, &tz);
 	if (showBounceSec)
 	{
@@ -527,7 +526,7 @@ void clockExpose (GtkWidget * widget)
 		tv.tv_sec = forceTime;
 		bounce = 0;
 	}
-		
+
 	for (j = 0; j < faceHeight; j++)
 	{
 		for (i = 0; i < faceWidth; i++)
@@ -538,6 +537,6 @@ void clockExpose (GtkWidget * widget)
 	 * Reset the color and stuff back to the default.                                                 *
 	 *------------------------------------------------------------------------------------------------*/
 	cairo_destroy (cr);
-	cr = NULL;	
+	cr = NULL;
 }
 

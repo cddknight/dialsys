@@ -37,7 +37,7 @@ extern int sysUpdateID;
 
 #if SENSORS_API_VERSION >= 1024
 
-int faceTypes[2] = 
+int faceTypes[2] =
 {
 	SENSORS_SUBFEATURE_TEMP_INPUT,
 	SENSORS_SUBFEATURE_FAN_INPUT
@@ -200,7 +200,7 @@ void readSensorValues (int face)
 							if (count++ == number)
 							{
 								double value;
-	
+
 								if (sensors_get_value (chipset, nr2 - 1, &value) == 0)
 								{
 									switch (type)
@@ -211,7 +211,7 @@ void readSensorValues (int face)
 											setFaceString (faceSetting, FACESTR_TOP, 0, _("Temp %d"), number + 1);
 											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Temp %d - Gauge"), number + 1);
 											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Temp %d</b>: %0.0f\302\260C\n"
-														"<b>Chipset Name</b>: %s"),	number + 1, value, chipset -> prefix);
+														"<b>Chipset Name</b>: %s"), number + 1, value, chipset -> prefix);
 											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\302\260C"), value);
 											faceSetting -> firstValue = value;
 											while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
@@ -228,7 +228,7 @@ void readSensorValues (int face)
 											setFaceString (faceSetting, FACESTR_TOP, 0, _("Fan %d"), number + 1);
 											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Fan %d - Gauge"), number + 1);
 											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Fan %d</b>: %0.0f rpm\n"
-														"<b>Chipset Name</b>: %s"),	number + 1, value, chipset -> prefix);
+														"<b>Chipset Name</b>: %s"), number + 1, value, chipset -> prefix);
 											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\n(rpm)"), value);
 											faceSetting -> firstValue = value / 100;
 											while (faceSetting -> firstValue > faceSetting -> faceScaleMax)

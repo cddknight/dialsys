@@ -31,27 +31,27 @@ extern int sysUpdateID;
 
 int readMemInfo (void);
 
-#define MAX_MEMINFO	6
+#define MAX_MEMINFO 6
 static int myUpdateID = 100;
 static unsigned long memValues[MAX_MEMINFO];
 
-static char *infoName[MAX_MEMINFO] = 
+static char *infoName[MAX_MEMINFO] =
 {
-	"MemTotal:",	/*	0	*/
-	"MemFree:",		/*	1	*/
-	"Buffers:",		/*	2	*/
-	"Cached:",		/*	3	*/
-	"SwapTotal:",	/*	4	*/
-	"SwapFree:"		/*	5	*/
+	"MemTotal:",	/*  0   */
+	"MemFree:",		/*  1   */
+	"Buffers:",		/*  2   */
+	"Cached:",		/*  3   */
+	"SwapTotal:",	/*  4   */
+	"SwapFree:"		/*  5   */
 };
 
-static char *name[] = 
+static char *name[] =
 {
-	__("Programs"),		/*	0	*/
-	__("Free"),			/*	1	*/
-	__("Buffers"),		/*	2	*/
-	__("Cached"),		/*	3	*/
-	__("Swap")			/*	4	*/
+	__("Programs"),		/*  0   */
+	__("Free"),			/*  1   */
+	__("Buffers"),		/*  2   */
+	__("Cached"),		/*  3   */
+	__("Swap")			/*  4   */
 };
 
 /**********************************************************************************************************************
@@ -108,7 +108,6 @@ void readMemoryValues (int face)
 
 		faceSetting -> firstValue = 0;
 		faceSetting -> secondValue = 0;
-	
 
 		if (faceType == 4)
 		{
@@ -117,7 +116,7 @@ void readMemoryValues (int face)
 			else
 			{
 				value = total - memValues[5];
-			
+
 				faceSetting -> firstValue = (value * 100) / total;
 				totalMem = (double)total / 1024000;
 				value /= 1024000;
@@ -145,9 +144,9 @@ void readMemoryValues (int face)
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Memory\n(%s)"), gettext (name[faceType]));
 		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%0.1fGB"), faceSetting -> firstValue, totalMem);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s</b>: %0.1f%% (%0.1fGB)\n<b>Total Size</b>: %0.1fGB"), 
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s</b>: %0.1f%% (%0.1fGB)\n<b>Total Size</b>: %0.1fGB"),
 				gettext (name[faceType]), faceSetting -> firstValue, value, totalMem);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Memory %s: %0.1f%% - Gauge"), gettext (name[faceType]), 
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Memory %s: %0.1f%% - Gauge"), gettext (name[faceType]),
 				faceSetting -> firstValue);
 	}
 }

@@ -55,28 +55,28 @@ static int myUpdateID = 100;
 static long lastTime;
 static char *deviceStats = "/proc/net/dev";
 static char *typeNames[] = { "Rx", "Tx" };
-DEVICE_INFO deviceActivity[MAX_DEVICES + 1] = 
-{ 
-	{ "All" } 
+DEVICE_INFO deviceActivity[MAX_DEVICES + 1] =
+{
+	{ "All" }
 };
 
 static char *speedName[] =
 {
-	"B/s",			//	0
-	"10B/s",		//	1
-	"100B/s",		//	2
-	"KB/s",			//	3
-	"10KB/s",		//	4
-	"100KB/s",		//	5
-	"MB/s",			//	6
-	"10MB/s",		//	7
-	"100MB/s",		//	8
-	"GB/s",			//	9
-	"10GB/s",		//	10
-	"100GB/s",		//	11
-	"TB/s",			//	12
-	"10TB/s",		//	13
-	"100TB/s",		//	14
+	"B/s",			//  0
+	"10B/s",		//  1
+	"100B/s",		//  2
+	"KB/s",			//  3
+	"10KB/s",		//  4
+	"100KB/s",		//  5
+	"MB/s",			//  6
+	"10MB/s",		//  7
+	"100MB/s",		//  8
+	"GB/s",			//  9
+	"10GB/s",		//  10
+	"100GB/s",		//  11
+	"TB/s",			//  12
+	"10TB/s",		//  13
+	"100TB/s",		//  14
 };
 
 /**********************************************************************************************************************
@@ -99,7 +99,7 @@ int getScaleShiftCount (int scale)
 		++retn;
 	}
 	return retn;
-}		
+}
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -200,7 +200,7 @@ void readDeviceValues(int lockScale)
 						deviceActivity[device].dataRead.rate = (diff * 1000) / readTime;
 						deviceActivity[device].dataRead.value = value;
 						deviceActivity[0].dataRead.value += diff;
-					}	
+					}
 					if (w == 10)
 					{
 						unsigned long long diff;
@@ -222,7 +222,7 @@ void readDeviceValues(int lockScale)
 						networkDevDesc[device].menuName = deviceActivity[device].name;
 						gaugeMenuDesc[MENU_GAUGE_NETWORK].disable = 0;
 						++device;
-					}	
+					}
 					j = 0;
 				}
 				++i;

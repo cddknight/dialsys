@@ -27,7 +27,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/HTMLparser.h>
- 
+
 #include "GaugeDisp.h"
 
 extern FACE_SETTINGS *faceSettings[];
@@ -39,7 +39,7 @@ extern char tideURL[];
 
 #define MAX_SAVE_TIDES	21
 
-struct MemoryStruct 
+struct MemoryStruct
 {
   char *memory;
   size_t size;
@@ -137,7 +137,7 @@ static void properCaseWord (char *word)
 		}
 		else if (word[i] >= 'a' && word[i] <= 'z')
 		{
-			if (start) word[i] = (word[i] - 'a') + 'A';			
+			if (start) word[i] = (word[i] - 'a') + 'A';
 			start = 0;
 		}
 		else
@@ -227,7 +227,7 @@ static void processProcessATide(int mDay, int mon, char type, int hour, int min,
 	struct tm tideTime, *timeNow;
 	time_t now = time(NULL);
 
-/*	printf ("Tide[%d]: %d/%d %c %d:%02d %f\n", lastReadTide, mDay, mon, type, hour, min, height); */
+/*  printf ("Tide[%d]: %d/%d %c %d:%02d %f\n", lastReadTide, mDay, mon, type, hour, min, height); */
 	timeNow = gmtime (&now);
 	memcpy (&tideTime, timeNow, sizeof (tideTime));
 	tideTime.tm_mday = mDay;
@@ -262,7 +262,7 @@ static void processCurrentDay()
 {
 	char words[41][11];
 	int i = 0, j = 0, w = 0, tideCount = 0;
-	
+
 	memset (&words, 0, sizeof (words));
 	do
 	{
@@ -286,7 +286,7 @@ static void processCurrentDay()
 			if (j < 10)
 			{
 				char ch = tideReadLine[i];
-				if ((ch >= 'A' && ch <='Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9') || 
+				if ((ch >= 'A' && ch <='Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9') ||
 						ch == '.' || ch == '-')
 				{
 					words[w][j] = tideReadLine[i];
@@ -304,9 +304,9 @@ static void processCurrentDay()
 		int i;
 		for (i = 0; i < tideCount; ++i)
 		{
-			processProcessATide (atoi (words[1]), getMonth(words[2]), words[3 + i][0], 
-					atoi ((const char *)&words[3 + tideCount + (i * 2)]), 
-					atoi ((const char *)&words[4 + tideCount + (i * 2)]), 
+			processProcessATide (atoi (words[1]), getMonth(words[2]), words[3 + i][0],
+					atoi ((const char *)&words[3 + tideCount + (i * 2)]),
+					atoi ((const char *)&words[4 + tideCount + (i * 2)]),
 					atof ((const char *)&words[3 + (tideCount * 3) + i]));
 		}
 	}
@@ -333,7 +333,7 @@ writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
 	struct MemoryStruct *mem = (struct MemoryStruct *)data;
 
 	mem -> memory = realloc (mem -> memory, mem -> size + realsize + 1);
-	if (mem -> memory == NULL) 
+	if (mem -> memory == NULL)
 		return realsize;
 
 	memcpy (&(mem -> memory[mem->size]), ptr, realsize);
@@ -360,18 +360,18 @@ static void
 processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 {
 	xmlChar *key;
-    xmlNode *curNode = NULL;
-    char fullPath[1024];
-	char *matchPath[3] = 
+	xmlNode *curNode = NULL;
+	char fullPath[1024];
+	char *matchPath[3] =
 	{
 		"/html/body/div/form/div/div/ul/li/span",
 		"/html/body/div/form/div/div/div/div/table/tr",
 		"/html/body/div/form/div/div/p/span"
 	};
 
-    for (curNode = aNode; curNode; curNode = curNode->next) 
-    {
-       	int saveLevel = readLevel;
+	for (curNode = aNode; curNode; curNode = curNode->next)
+	{
+		int saveLevel = readLevel;
 
 		if (curNode -> name != NULL)
 		{
@@ -385,8 +385,8 @@ processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 			strcat (fullPath, (char *)curNode -> name);
 		}
 
-        if (curNode->type == XML_ELEMENT_NODE) 
-        {
+		if (curNode->type == XML_ELEMENT_NODE)
+		{
 			++readLevel;
 			if (!strncmp (fullPath, matchPath[0], strlen (matchPath[0])))
 			{
@@ -425,7 +425,7 @@ processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 			if (!strncmp (fullPath, matchPath[2], strlen (matchPath[2])))
 			{
 				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
-				if (key) 
+				if (key)
 				{
 					if (!strncmp (removePrefix, (char *)key, strlen (removePrefix)))
 					{
@@ -433,10 +433,10 @@ processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
 					}
 				}
 			}
-        }
-        processElementNames (doc, curNode->children, fullPath, readLevel);
-        readLevel = saveLevel;
-    }
+		}
+		processElementNames (doc, curNode->children, fullPath, readLevel);
+		readLevel = saveLevel;
+	}
 }
 
 /**********************************************************************************************************************
@@ -496,7 +496,7 @@ static void processBuffer (char *buffer, size_t size)
  *  \brief Get the tide times using curl.
  *  \result None.
  */
-void getTideTimes () 
+void getTideTimes ()
 {
 	CURL *curlHandle;
 	struct MemoryStruct chunk;
@@ -507,10 +507,10 @@ void getTideTimes ()
 	curl_global_init(CURL_GLOBAL_ALL);
 	curlHandle = curl_easy_init();
 	curl_easy_setopt(curlHandle, CURLOPT_URL, &tideURL[0]);
-/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=6400&PredictionLength=3"); */
-/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=2679&PredictionLength=3"); */
-/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=1570&PredictionLength=3"); */
-/*	curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=0108&PredictionLength=3"); */
+/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=6400&PredictionLength=3"); */
+/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=2679&PredictionLength=3"); */
+/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=1570&PredictionLength=3"); */
+/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=0108&PredictionLength=3"); */
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_easy_setopt(curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -581,7 +581,7 @@ void readTideValues (int face)
 		}
 		if (myUpdateID != sysUpdateID)
 		{
-			time_t now = time (NULL);		
+			time_t now = time (NULL);
 			if (tideInfo.readTime < now || myUpdateID == -1)
 			{
 				getTideTimes();
@@ -618,7 +618,7 @@ void readTideValues (int face)
 
 		setFaceString (faceSetting, FACESTR_TOP, 22, "%s", tideInfo.location);
 		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s %s\n%s"), tideDirStr, tideTimeStr, tideHeightStr);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"), 
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("Tide %s: %0.1f%% Gauge"),
 				tideInfo.tideTimes[nextTide].tideType == 'H' ? _("coming in") : _("going out"),
 				faceSetting -> firstValue);
 		sprintf (toolTip, "<b>Port</b>: %s, %s\n<b>Tide Level</b>: %s %0.1f%%",
@@ -676,13 +676,13 @@ void tideSettings (guint data)
 	}
 	else
 	{
-		strcpy (portCode, "113");	
+		strcpy (portCode, "113");
 	}
 
 #if GTK_MAJOR_VERSION == 2
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
 
 	vbox = GTK_DIALOG (dialog)->vbox;
@@ -705,7 +705,7 @@ void tideSettings (guint data)
 #else
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			_("_OK"), GTK_RESPONSE_ACCEPT, _("_Cancel"), GTK_RESPONSE_REJECT, NULL);
 
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
@@ -714,7 +714,7 @@ void tideSettings (guint data)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
 	gtk_box_pack_start (GTK_BOX (contentArea), vbox, TRUE, TRUE, 0);
 	grid = gtk_grid_new ();
-	
+
 	label = gtk_label_new (_("Prediction from: "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 1, 1, 1);

@@ -47,7 +47,7 @@ extern GtkWidget *drawingArea;
 char *removeExtra (char *tempBuff)
 {
 	int i = strlen (tempBuff);
-	
+
 	while (i)
 	{
 		--i;
@@ -79,38 +79,38 @@ char *removeExtra (char *tempBuff)
  *  \param circ Should background be a circle or a square.
  *  \result None.
  */
-gboolean 
+gboolean
 drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 {
 	int i, maxVal, minVal, col;
 	FACE_SETTINGS *faceSetting = faceSettings[face];
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the face, it is made up of 3 overlapping circles                                          *
-	 *------------------------------------------------------------------------------------------------*/	
+     * Draw the face, it is made up of 3 overlapping circles                                          *
+     *------------------------------------------------------------------------------------------------*/
 	dialDrawStart (cr, posX, posY);
 
 	col = (weHaveFocus && face == currentFace) ? FACE3_COLOUR : FACE4_COLOUR;
 	if (circ)
 	{
 		dialCircleGradient (64, col, 1);
-/*		dialDrawCircle (64, col, -1); */
+/*      dialDrawCircle (64, col, -1); */
 	}
 	else
 	{
 		dialSquareGradient (64, col, 1);
-/*		dialDrawSquare (64, col, -1); */
+/*      dialDrawSquare (64, col, -1); */
 	}
 
 	dialCircleGradient (62, FACE2_COLOUR, 0);
 	dialCircleGradient (58, FACE1_COLOUR, 1);
 
-/*	dialDrawCircle (62, FACE3_COLOUR, -1); */
-/*	dialDrawCircle (60, FACE4_COLOUR, -1); */
+/*  dialDrawCircle (62, FACE3_COLOUR, -1); */
+/*  dialDrawCircle (60, FACE4_COLOUR, -1); */
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hot and cold markers                                                                  *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hot and cold markers                                                                  *
+     *------------------------------------------------------------------------------------------------*/
 	if (faceSetting -> faceFlags & FACE_SHOWHOT)
 	{
 		col = (faceSetting -> faceFlags & FACE_HC_REVS) ? COLD__COLOUR : HOT___COLOUR;
@@ -123,30 +123,30 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
-	 *------------------------------------------------------------------------------------------------*/
+     * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
+     *------------------------------------------------------------------------------------------------*/
 	if (faceSetting -> text[FACESTR_TOP])
 		dialDrawText (0, faceSetting -> text[FACESTR_TOP], TEXT__COLOUR);
 	if (faceSetting -> text[FACESTR_BOT])
 		dialDrawText (1, faceSetting -> text[FACESTR_BOT], TEXT__COLOUR);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hour markers                                                                          *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hour markers                                                                          *
+     *------------------------------------------------------------------------------------------------*/
 	for (i = 0; i <= 10 ; ++i)
 	{
 		char tempBuff[15];
 		int markAngle = i * 90;
 		float scale = ((faceSetting -> faceScaleMax - faceSetting -> faceScaleMin) * i) / 10;
-		
+
 		sprintf (tempBuff, "%0.3f", scale + faceSetting -> faceScaleMin);
 		dialDrawMark (markAngle, 29, QMARK_COLOUR, QMARK_COLOUR, removeExtra (tempBuff));
 		dialDrawMinute (29, 1, markAngle, HMARK_COLOUR);
 	}
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hands                                                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hands                                                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	maxVal = faceSetting -> savedMaxMin.shownMaxValue;
 	minVal = faceSetting -> savedMaxMin.shownMinValue;
 	if (minVal != -1)
@@ -203,15 +203,15 @@ void clockExpose (GtkWidget *widget)
 				}
 			}
 #endif
-			++face;			
+			++face;
 		}
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Reset the color and stuff back to the default.                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Reset the color and stuff back to the default.                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	cairo_destroy (cr);
-	cr = NULL;	
+	cr = NULL;
 }
 
 /**********************************************************************************************************************
@@ -248,7 +248,7 @@ void clockExpose (cairo_t *cr)
 					gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
 				}
 			}
-			++face;			
+			++face;
 		}
 	}
 }
@@ -266,7 +266,7 @@ void clockExpose (cairo_t *cr)
  *  \param fileName Name of the file to save the SVG in.
  *  \result None.
  */
-void dialSave(char *fileName) 
+void dialSave(char *fileName)
 {
 	cairo_surface_t *surface;
 	int i, j, face = 0;

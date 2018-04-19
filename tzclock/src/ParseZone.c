@@ -45,7 +45,7 @@ extern TZ_INFO *timeZones;
 extern int nTimeZones;
 
 static char timeNames[FIRST_CITY + 3][31] = { "Local Time", "Greenwich Mean Time", "-" };
-static char *areaSwap[] = 
+static char *areaSwap[] =
 {
 	"Arctic", "Arctic Ocean",
 	"Atlantic", "Atlantic Ocean",
@@ -71,10 +71,9 @@ static char *areaSwap[] =
 int getAreaAndCity (char *inBuffer, char *area, char *subArea, char *city)
 {
 	int i = 0, j = 0, word = 0;
-	
-	
+
 	area[0] = subArea[0] = city[0] = 0;
-	
+
 	while (inBuffer[i] && word < 4)
 	{
 		if (inBuffer[i] <= ' ')
@@ -132,12 +131,12 @@ AREAINFO *findAreaInfo (void *areaInfoList, char *area)
 {
 	int i = 0;
 	AREAINFO *retnAreaInfo;
-	
+
 	while ((retnAreaInfo = (AREAINFO *)queueRead (areaInfoList, i)) != NULL)
 	{
 		if (strcmp (retnAreaInfo -> areaName, area) == 0)
 			break;
-			
+
 		i++;
 	}
 	return retnAreaInfo;
@@ -158,7 +157,7 @@ char *tidyName (char *name)
 {
 	int i = 0;
 	char *retnName;
-	
+
 	if ((retnName = (char *)malloc (strlen(name) + 1)) != NULL)
 	{
 		while (name[i])
@@ -167,7 +166,7 @@ char *tidyName (char *name)
 				retnName[i] = ' ';
 			else
 				retnName[i] = name[i];
-						
+
 			retnName[++i] = 0;
 		}
 	}
@@ -190,7 +189,7 @@ int compareArea (void *item1, void *item2)
 {
 	AREAINFO *areaInfo1 = (AREAINFO *)item1;
 	AREAINFO *areaInfo2 = (AREAINFO *)item2;
-	
+
 	return (strcmp (areaInfo1 -> areaName, areaInfo2 -> areaName));
 }
 
@@ -229,7 +228,7 @@ int addAreaAndCity (void *areaInfoList, char *area, char *subArea, char *city)
 {
 	AREAINFO *areaInfo = NULL, *subAreaInfo = NULL;
 	char *tempArea, *tempSubArea, *tempCity;
-	
+
 	if ((areaInfo = findAreaInfo (areaInfoList, area)) == NULL)
 	{
 		if ((areaInfo = (AREAINFO *)malloc (sizeof (AREAINFO))) == NULL)
@@ -246,10 +245,10 @@ int addAreaAndCity (void *areaInfoList, char *area, char *subArea, char *city)
 		areaInfo -> cityList = queueCreate();
 		areaInfo -> subAreaList = queueCreate();
 		areaCount ++;
-		
+
 		queuePutSort (areaInfoList, areaInfo, compareArea);
 	}
-	
+
 	if (subArea[0])
 	{
 		if ((subAreaInfo = findAreaInfo (areaInfo -> subAreaList, subArea)) == NULL)
@@ -268,18 +267,18 @@ int addAreaAndCity (void *areaInfoList, char *area, char *subArea, char *city)
 			subAreaInfo -> cityList = queueCreate();
 			subAreaInfo -> subAreaList = NULL;
 			subAreaCount ++;
-		
+
 			queuePutSort (areaInfo -> subAreaList, subAreaInfo, compareArea);
 		}
 	}
-	
+
 	if ((tempCity = (char *)malloc (strlen (city) + 1)) == NULL)
 	{
 		return 0;
 	}
 	strcpy (tempCity, city);
 	cityCount ++;
-	
+
 	if (subAreaInfo)
 	{
 		queuePutSort (subAreaInfo -> cityList, tempCity, compareCity);
@@ -317,7 +316,7 @@ int buildAreaInfo (void *areaInfoList)
 	}
 	memset (timeZones, 0, sizeof (TZ_INFO) * zoneSize);
 	timeZone = timeZones;
-	
+
 	if ((timeZoneMenu = (MENU_DESC *)malloc (sizeof (MENU_DESC) * (areaCount + 4))) == NULL)
 	{
 		free (timeZoneMenu);
@@ -327,8 +326,8 @@ int buildAreaInfo (void *areaInfoList)
 	menuDesc = timeZoneMenu;
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Localtime menu                                                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Localtime menu                                                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	strcpy (tempBuff, "Local/Time");
 	if ((timeZone -> envName = (char *)malloc (strlen (tempBuff) + 1)) != NULL)
 	{
@@ -345,15 +344,15 @@ int buildAreaInfo (void *areaInfoList)
 
 		menuDesc -> menuName = timeNames[ac + 2];
 		++menuDesc;
-		
+
 		strcpy (timeZone -> envName, tempBuff);
 		timeZone -> value = ac++;
 		++timeZone;
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Other GMT options                                                                              *
-	 *------------------------------------------------------------------------------------------------*/
+     * Other GMT options                                                                              *
+     *------------------------------------------------------------------------------------------------*/
 	for (;ac < FIRST_CITY; ac++)
 	{
 		if (ac == GMT_ZERO)
@@ -379,13 +378,13 @@ int buildAreaInfo (void *areaInfoList)
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 *                                                                                                *
-	 *------------------------------------------------------------------------------------------------*/
+     *                                                                                                *
+     *------------------------------------------------------------------------------------------------*/
 	while ((areaInfo = (AREAINFO *)queueGet (areaInfoList)) != NULL)
 	{
 		int swapped = 0, i;
 		menuSize = queueGetItemCount(areaInfo -> subAreaList) + queueGetItemCount(areaInfo -> cityList) + 2;
-				
+
 		for (i = 0; areaSwap[i]; i += 2)
 		{
 			if (strcmp (areaInfo -> areaName, areaSwap[i]) == 0)
@@ -399,12 +398,12 @@ int buildAreaInfo (void *areaInfoList)
 		{
 			menuDesc -> menuName = tidyName (areaInfo -> areaName);
 		}
-		
+
 		menuDesc -> subMenuDesc = menuSubDesc = (MENU_DESC *)malloc (menuSize * sizeof (MENU_DESC));
 		memset (menuSubDesc, 0, menuSize * sizeof (MENU_DESC));
 		menuDesc -> param = 0;
 		++menuDesc;
-		
+
 		while ((subAreaInfo = (AREAINFO *)queueGet (areaInfo -> subAreaList)) != NULL)
 		{
 			menuSize = queueGetItemCount(subAreaInfo -> cityList) + 2;
@@ -413,7 +412,7 @@ int buildAreaInfo (void *areaInfoList)
 			memset (menuCityDesc, 0, menuSize * sizeof (MENU_DESC));
 			menuSubDesc -> param = 0;
 			++menuSubDesc;
-			
+
 			while ((cityName = (char *)queueGet (subAreaInfo -> cityList)) != NULL)
 			{
 				sprintf (tempBuff, "%s/%s/%s", areaInfo -> areaName, subAreaInfo -> areaName, cityName);
@@ -432,7 +431,7 @@ int buildAreaInfo (void *areaInfoList)
 			free (subAreaInfo -> areaName);
 			free (subAreaInfo);
 		}
-		
+
 		while ((cityName = (char *)queueGet (areaInfo -> cityList)) != NULL)
 		{
 			sprintf (tempBuff, "%s/%s", areaInfo -> areaName, cityName);
@@ -440,7 +439,7 @@ int buildAreaInfo (void *areaInfoList)
 			{
 				menuSubDesc -> menuName = tidyName (cityName);
 				menuSubDesc -> funcCallBack = setTimeZoneCallback;
-				menuSubDesc -> param = ac;	
+				menuSubDesc -> param = ac;
 				strcpy (timeZone -> envName, tempBuff);
 				timeZone -> value = ac++;
 				++menuSubDesc;
@@ -471,7 +470,7 @@ int parseZone (void)
 	int retn = 0;
 	char inBuffer[161], area[41], subArea[41], city[41];
 	void *areaInfoList;
-	
+
 	areaInfoList = queueCreate ();
 	if ((inFile = fopen ("/usr/share/zoneinfo/zone.tab", "r")) == NULL)
 	{
@@ -483,7 +482,7 @@ int parseZone (void)
 		{
 			if (inBuffer[0] == '#' || inBuffer[0] <= ' ')
 				continue;
-			
+
 			if (getAreaAndCity (inBuffer, area, subArea, city))
 			{
 				addAreaAndCity (areaInfoList, area, subArea, city);
@@ -492,7 +491,7 @@ int parseZone (void)
 		fclose (inFile);
 	}
 	retn = buildAreaInfo (areaInfoList);
-	queueDelete (areaInfoList);	
+	queueDelete (areaInfoList);
 	return retn;
 }
 

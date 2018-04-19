@@ -51,7 +51,7 @@ int getFontSize (char *fontName);
 /******************************************************************************************************
  * Change the font size as the window gets bigger.                                                    *
  ******************************************************************************************************/
-static int fontSizes[16] = 
+static int fontSizes[16] =
 {
 	 6, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64,
 };
@@ -70,10 +70,10 @@ void makeWindowMask ()
 {
 	int fullHeight, fullWidth, i, j;
 	GdkGC *gc;
-	
+
 	fullHeight = faceHeight * faceSize;
 	fullWidth = faceWidth * faceSize;
-	
+
 	if (windowShapeBitmap)
 	{
 		g_object_unref (windowShapeBitmap);
@@ -94,11 +94,11 @@ void makeWindowMask ()
 	for (i = 0; i < faceWidth; i++)
 	{
 		for (j = 0; j < faceHeight; j++)
-			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * faceSize) - 1, (j * faceSize) - 1, 
+			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * faceSize) - 1, (j * faceSize) - 1,
 					faceSize, faceSize, 0, 360 * 64);
 	}
 	gtk_widget_shape_combine_mask (mainWindow, windowShapeBitmap, 0, 0);
-	
+
 	g_object_unref (gc);
 }
 
@@ -124,7 +124,7 @@ void drawMinute (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, in
 		int colour)
 {
 	gdk_gc_set_foreground (gc, &faceColours[colour]);
-	
+
 	if (len < size)
 	{
 		gdk_gc_set_line_attributes (gc, 1, GDK_LINE_SOLID, GDK_CAP_ROUND, GDK_JOIN_MITER);
@@ -136,9 +136,9 @@ void drawMinute (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, in
 	}
 	else
 	{
-		gdk_gc_set_line_attributes (gc, (faceSize/256) + 1, GDK_LINE_SOLID, GDK_CAP_ROUND, 
+		gdk_gc_set_line_attributes (gc, (faceSize/256) + 1, GDK_LINE_SOLID, GDK_CAP_ROUND,
 				GDK_JOIN_MITER);
-		gdk_draw_line (widget->window, gc, 
+		gdk_draw_line (widget->window, gc,
 				posX + xSinCos ((faceSize * size) / 64, angle + 180, 0),
 				posY - xSinCos ((faceSize * size) / 64, angle + 180, 1),
 				posX + xSinCos ((faceSize * (size + len)) / 64, angle, 0),
@@ -169,20 +169,20 @@ void drawCircle (GtkWidget * widget, GdkGC *gc, int posX, int posY, int size, in
 	{
 		gdk_gc_set_foreground (gc, &faceColours[colFill]);
 		gdk_draw_arc (widget->window, gc, TRUE,
-				posX - ((faceSize * size) / 128), 
-				posY - ((faceSize * size) / 128), 
-				(faceSize * size) / 64, 
-				(faceSize * size) / 64, 
+				posX - ((faceSize * size) / 128),
+				posY - ((faceSize * size) / 128),
+				(faceSize * size) / 64,
+				(faceSize * size) / 64,
 				0, 64 * 360);
 	}
 	if (colOut != -1)
 	{
 		gdk_gc_set_foreground (gc, &faceColours[colOut]);
 		gdk_draw_arc (widget->window, gc, FALSE,
-				posX - ((faceSize * size) / 128), 
-				posY - ((faceSize * size) / 128), 
-				(faceSize * size) / 64, 
-				(faceSize * size) / 64, 
+				posX - ((faceSize * size) / 128),
+				posY - ((faceSize * size) / 128),
+				(faceSize * size) / 64,
+				(faceSize * size) / 64,
 				0, 64 * 360);
 	}
 }
@@ -224,18 +224,18 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
 		points[2].x = posX + xSinCos ((faceSize * size) >> 6, angle, 0);
 		points[2].y = posY - xSinCos ((faceSize * size) >> 6, angle, 1);
 		points[3].x = posX + xSinCos (faceSize >> 6, angle + 600, 0);
-		points[3].y = posY - xSinCos (faceSize >> 6, angle + 600, 1); 
+		points[3].y = posY - xSinCos (faceSize >> 6, angle + 600, 1);
 		numPoints = 4;
 		fill = 1;
 		break;
 
 	case 1:
 		/* Single triangle */
-		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) 
+		points[0].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0)
 					+ xSinCos (faceSize >> 6, angle + 200, 0);
 		points[0].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1)
 					- xSinCos (faceSize >> 6, angle + 200, 1);
-		points[1].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0) 
+		points[1].x = posX + xSinCos ((faceSize * tail) >> 6, angle + 400, 0)
 					+ xSinCos (faceSize >> 6, angle + 600, 0);
 		points[1].y = posY - xSinCos ((faceSize * tail) >> 6, angle + 400, 1)
 					- xSinCos (faceSize >> 6, angle + 600, 1);
@@ -339,7 +339,7 @@ void drawHand (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, HAND
  *  \param faceMax Max Value.
  *  \result None.
  */
-void drawMark (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, int size, 
+void drawMark (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, int size,
 		int colFill, int colOut, int hour, int faceMin, int faceMax)
 {
 	if (markerStep == 0) markerStep = 1;
@@ -351,12 +351,12 @@ void drawMark (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, int 
 		case 0:
 			/* No markers */
 			break;
-	
+
 		case 1:
 			/* Triangle markers */
 			{
 				GdkPoint points[3];
-	
+
 				points[0].x = posX + xSinCos ((faceSize * size) / 64, angle + 2, 0);
 				points[0].y = posY - xSinCos ((faceSize * size) / 64, angle + 2, 1);
 				points[1].x = posX + xSinCos ((faceSize * (size - 3)) / 64, angle, 0);
@@ -409,7 +409,7 @@ void drawMark (GtkWidget *widget, GdkGC *gc, int posX, int posY, int angle, int 
 int getFontSize (char *fontName)
 {
 	int size = 0, i = strlen (fontName), n = 1;
-	
+
 	while (i)
 	{
 		i --;
@@ -454,13 +454,13 @@ void drawText (GtkWidget * widget, GdkGC *gc, int posX, int posY, char *dispStri
 	layout = gtk_widget_create_pango_layout (mainWindow, NULL);
 	fontDesc = pango_font_description_from_string (fontName);
 	pango_font_description_set_size (fontDesc, PANGO_SCALE * fontSize);
- 	pango_layout_set_font_description (layout, fontDesc); 
+	pango_layout_set_font_description (layout, fontDesc);
 	pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 	pango_layout_set_text (layout, dispString, -1);
 	pango_layout_get_pixel_size (layout, &posW, &posH);
 	gdk_draw_layout_with_colors (widget->window, gc,
-			posX - (posW / 2), posY - (posH / 2), layout, 
-			&faceColours[colour == -1 ? TEXT__COLOUR : colour], 
+			posX - (posW / 2), posY - (posH / 2), layout,
+			&faceColours[colour == -1 ? TEXT__COLOUR : colour],
 			&faceColours[FACE4_COLOUR]);
 
 	g_object_unref (layout);
@@ -482,7 +482,7 @@ void drawText (GtkWidget * widget, GdkGC *gc, int posX, int posY, char *dispStri
  *  \param posY Position Y.
  *  \result None.
  */
-gboolean 
+gboolean
 drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
 {
 	int i, maxVal, minVal;
@@ -490,8 +490,8 @@ drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
 	int centerX = posX + (faceSize >> 1), centerY = posY + (faceSize >> 1);
 
 	/*--------------------------------------------------------------------------------------------*
-	 * Draw the face, it is made up of 3 overlapping circles                                      *
-	 *--------------------------------------------------------------------------------------------*/	
+     * Draw the face, it is made up of 3 overlapping circles                                      *
+     *--------------------------------------------------------------------------------------------*/
 	gdk_gc_set_foreground (gc, &faceColours[(weHaveFocus && face == currentFace ? FACE1_COLOUR : FACE2_COLOUR)]);
 	gdk_draw_rectangle (widget->window, gc, TRUE, posX, posY, faceSize, faceSize);
 
@@ -499,8 +499,8 @@ drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
 	drawCircle (widget, gc, centerX, centerY, 60, FACE4_COLOUR, -1);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hot and cold markers                                                                  *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hot and cold markers                                                                  *
+     *------------------------------------------------------------------------------------------------*/
 	if (faceSetting -> faceFlags & FACE_SHOWHOT)
 	{
 		int colour = (faceSetting -> faceFlags & FACE_HC_REVS) ? COLD__COLOUR : HOT___COLOUR;
@@ -508,7 +508,7 @@ drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
 		gdk_gc_set_foreground (gc, &faceColours[colour]);
 		gdk_gc_set_line_attributes (gc, faceSize / 18, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_MITER);
 
-		gdk_draw_arc (widget->window, gc, FALSE, centerX - ((faceSize * 54) / 128), centerY - ((faceSize * 54) / 128), 
+		gdk_draw_arc (widget->window, gc, FALSE, centerX - ((faceSize * 54) / 128), centerY - ((faceSize * 54) / 128),
 				(faceSize * 54) / 64, (faceSize * 54) / 64, 0, -8 * 360);
 	}
 	if (faceSetting -> faceFlags & FACE_SHOWCOLD)
@@ -517,20 +517,20 @@ drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
 
 		gdk_gc_set_foreground (gc, &faceColours[colour]);
 		gdk_gc_set_line_attributes (gc, faceSize / 18, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_MITER);
-		gdk_draw_arc (widget->window, gc, FALSE, centerX - ((faceSize * 54) / 128), centerY - ((faceSize * 54) / 128), 
+		gdk_draw_arc (widget->window, gc, FALSE, centerX - ((faceSize * 54) / 128), centerY - ((faceSize * 54) / 128),
 				(faceSize * 54) / 64, (faceSize * 54) / 64, 32 * 360, 8 * 360);
 	}
 	gdk_gc_set_line_attributes (gc, (faceSize/256) + 1, GDK_LINE_SOLID, GDK_CAP_ROUND, GDK_JOIN_MITER);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
-	 *------------------------------------------------------------------------------------------------*/
+     * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
+     *------------------------------------------------------------------------------------------------*/
 	drawText (widget, gc, centerX, posY + ((faceSize * 5) >> 4), faceSetting -> titleTop, -1, 0);
 	drawText (widget, gc, centerX, posY + ((faceSize * 11) >> 4), faceSetting -> titleBot, -1, 0);
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hour markers                                                                          *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hour markers                                                                          *
+     *------------------------------------------------------------------------------------------------*/
 	for (i = 0; i <= 20 ; ++i)
 	{
 		int markAngle = i * 30;
@@ -539,10 +539,10 @@ drawFace (GtkWidget * widget, GdkGC *gc, int face, int posX, int posY)
 		if (!(i & 1))
 			drawMinute (widget, gc, centerX , centerY, 29, 1, markAngle, QMARK_COLOUR);
 	}
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hands                                                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hands                                                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	maxVal = faceSetting -> savedMaxMin.shownMaxValue;
 	minVal = faceSetting -> savedMaxMin.shownMinValue;
 	if (minVal != -1)
@@ -592,8 +592,8 @@ void clockExpose (GtkWidget * widget)
 	GdkGC *gc;
 
 	/*--------------------------------------------------------------------------------------------*
-	 * Reset the color and stuff back to the default.                                             *
-	 *--------------------------------------------------------------------------------------------*/
+     * Reset the color and stuff back to the default.                                             *
+     *--------------------------------------------------------------------------------------------*/
 	gc = widget->style->fg_gc[GTK_WIDGET_STATE (widget)];
 	gdk_gc_get_values (gc, &saved);
 
@@ -606,9 +606,9 @@ void clockExpose (GtkWidget * widget)
 	}
 
 	/*--------------------------------------------------------------------------------------------*
-	 * Reset the color and stuff back to the default.                                             *
-	 *--------------------------------------------------------------------------------------------*/
-	gdk_gc_set_values (gc, &saved, 
+     * Reset the color and stuff back to the default.                                             *
+     *--------------------------------------------------------------------------------------------*/
+	gdk_gc_set_values (gc, &saved,
 			GDK_GC_FOREGROUND | GDK_GC_BACKGROUND | GDK_GC_LINE_WIDTH | GDK_GC_LINE_STYLE);
 }
 

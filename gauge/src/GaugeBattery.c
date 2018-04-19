@@ -123,13 +123,13 @@ void readBatteryValues (int face)
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Battery\n%s"), currentState.status);
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f%%"), faceSetting -> firstValue);
 			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Status</b>: %s\n<b>Voltage Now</b>: %0.1f V\n"
-					"<b>Charge Now</b>: %d mAh\n<b>Charge Full</b>: %d mAh\n<b>Charge Design</b>: %d mAh"), 
-					currentState.status, (double)(currentState.voltageNow) / 1E6, 
-					currentState.chargeNow / 1000, currentState.chargeFull / 1000, 
+					"<b>Charge Now</b>: %d mAh\n<b>Charge Full</b>: %d mAh\n<b>Charge Design</b>: %d mAh"),
+					currentState.status, (double)(currentState.voltageNow) / 1E6,
+					currentState.chargeNow / 1000, currentState.chargeFull / 1000,
 					currentState.chargeDesign / 1000);
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.0f%% Full - Gauge"), 
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Battery: %0.0f%% Full - Gauge"),
 					faceSetting -> firstValue);
-		}	
+		}
 		else
 		{
 			faceSetting -> firstValue = 0;
@@ -156,7 +156,7 @@ static int readBatteryDir ()
 	char fullPath[256];
 	struct dirent *dirEntry;
 	DIR *dir = opendir(batteryRoot);
-	
+
 	currentState.readBat = 0;
 	if (dir)
 	{
@@ -177,7 +177,6 @@ static int readBatteryDir ()
 	}
 	return currentState.readBat;
 }
-
 
 /**********************************************************************************************************************
  *                                                                                                                    *

@@ -55,55 +55,55 @@ int configLoad (const char *configFile)
 	FILE *inFile;
 	char readBuff[512], configName[81], configValue[256];
 	int i, j, quote;
-	
+
 	if (configQueue == NULL)
 	{
 		if ((configQueue = queueCreate ()) == NULL)
 			return 0;
 	}
-	
+
 	if (configFile[0] == 0)
 		return 0;
-	
+
 	fileLoaded = true;
 	if ((inFile = fopen (configFile, "r")) == NULL)
 		return 0;
 
- 	while (fgets (readBuff, 512, inFile))
+	while (fgets (readBuff, 512, inFile))
 	{
 		i = 0;
 		quote = 0;
-		
+
 		/* Skip leading white space */
 		/*================================================== */
 		while (readBuff[i] <= ' ')
 			i++;
-			
+
 		/* Skip comments */
 		/*================================================== */
 		if (readBuff[i] == '#')
 			continue;
-		
+
 		/* Read parameter name */
 		/*================================================== */
-		j = 0;	
+		j = 0;
 		while (readBuff[i] > ' ' && readBuff[i] != '=' && j < 80)
 		{
 			configName[j++] = readBuff[i];
 			configName[j] = 0;
 			i ++;
 		}
-		
+
 		/* Skip to equal sign */
 		/*================================================== */
 		while (readBuff[i] != 0 && readBuff[i] != '=')
 			i++;
-			
+
 		/* No equal sign then this is not a config line */
 		/*================================================== */
 		if (readBuff[i] == 0)
 			continue;
-			
+
 		/* Skip while space after the equal sign */
 		/*================================================== */
 		i++;
@@ -123,13 +123,13 @@ int configLoad (const char *configFile)
 			{
 				if (quote == 0 && (readBuff[i] <= ' ' || readBuff[i] == '#'))
 					break;
-									
+
 				configValue[j++] = readBuff[i];
 				configValue[j] = 0;
 			}
 			i ++;
 		}
-		
+
 		/* Save the name and value */
 		/*================================================== */
 		configSetValue (configName, configValue);
@@ -224,7 +224,7 @@ static CONFIG_ENTRY *configFindEntry (const char *configName)
 {
 	int rec = 0;
 	CONFIG_ENTRY *foundEntry = NULL;
-	
+
 	if (configQueue != NULL)
 	{
 		while ((foundEntry = queueRead (configQueue, rec)) != NULL)
@@ -252,25 +252,25 @@ static CONFIG_ENTRY *configFindEntry (const char *configName)
 int configSetValue (const char *configName, char *configValue)
 {
 	CONFIG_ENTRY *newEntry = NULL;
-	
+
 	if (configQueue == NULL)
 	{
 		if ((configQueue = queueCreate ()) == NULL)
 			return 0;
 	}
-	
+
 	if ((newEntry = configFindEntry (configName)) == NULL)
 	{
 		if ((newEntry = malloc (sizeof (CONFIG_ENTRY))) == NULL)
 			return 0;
-			
+
 		if ((newEntry -> configName = malloc (strlen (configName) + 1)) == NULL)
 		{
 			free (newEntry);
 			return 0;
 		}
 		strcpy (newEntry -> configName, configName);
-		
+
 		if ((newEntry -> configValue = malloc (strlen (configValue) + 1)) == NULL)
 		{
 			free (newEntry -> configName);
@@ -279,7 +279,7 @@ int configSetValue (const char *configName, char *configValue)
 		}
 		strcpy (newEntry -> configValue, configValue);
 		newEntry -> saveInFile = fileLoaded;
-		
+
 		queuePut (configQueue, newEntry);
 	}
 	else
@@ -294,8 +294,8 @@ int configSetValue (const char *configName, char *configValue)
 		newEntry -> saveInFile = fileLoaded;
 	}
 	return 1;
-}	
-		
+}
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C O N F I G  S E T  I N T  V A L U E                                                                              *
@@ -311,9 +311,9 @@ int configSetValue (const char *configName, char *configValue)
 int configSetIntValue (const char *configName, int configValue)
 {
 	char numBuffer[21];
-	
+
 	sprintf (numBuffer, "%d", configValue);
-	
+
 	return configSetValue (configName, numBuffer);
 }
 
@@ -333,7 +333,7 @@ int configSetBoolValue (const char *configName, bool configValue)
 {
 	return configSetValue (configName, configValue ? "true" : "false");
 }
-	
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C O N F I G  G E T  V A L U E                                                                                     *

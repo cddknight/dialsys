@@ -61,9 +61,9 @@ static char *diskTypes[] = { "ext2","ext3","ext4","btrfs","xfs","cifs","nfs","us
 static char *diskInfo = "/proc/mounts"; /* /etc/fstab */
 static char *diskStats = "/proc/diskstats";
 static char *typeNames[] = { "Reads", "Writes" };
-DISK_INFO diskActivity[MAX_DISKS + 1] = 
-{ 
-	{ __("All") } 
+DISK_INFO diskActivity[MAX_DISKS + 1] =
+{
+	{ __("All") }
 };
 
 /**********************************************************************************************************************
@@ -162,7 +162,7 @@ void readPartitionNames()
 							}
 							++j;
 						}
-					}	
+					}
 					j = 0;
 				}
 				++i;
@@ -187,10 +187,10 @@ void readPartitionNames()
  */
 float getPartitionFreeSpace (int disk, unsigned long long *partTotal, unsigned long long *partSize)
 {
-    struct statvfs stats;
+	struct statvfs stats;
 	if (diskNames[disk])
 	{
-	   	if (statvfs (diskNames[disk], &stats) == 0)
+		if (statvfs (diskNames[disk], &stats) == 0)
 		{
 			unsigned long long total = (unsigned long long)stats.f_blocks * stats.f_frsize / 1024;
 			unsigned long long available = (unsigned long long)stats.f_bavail * stats.f_frsize / 1024;
@@ -202,7 +202,7 @@ float getPartitionFreeSpace (int disk, unsigned long long *partTotal, unsigned l
 			nonroot_total = used + available;
 			*partTotal = total;
 			*partSize = used;
-			return (float)u100 / nonroot_total;			
+			return (float)u100 / nonroot_total;
 		}
 	}
 	*partTotal = *partSize = 0;
@@ -288,7 +288,7 @@ void readActivityValues()
 					{
 						if (strlen(readWord) != 3)
 							break;
-						if ((readWord[0] != 's' && readWord[0] != 'h') || 
+						if ((readWord[0] != 's' && readWord[0] != 'h') ||
 								readWord[1] != 'd' || readWord[2] < 'a' || readWord[2] > 'z')
 							break;
 						strcpy (diskActivity[disk].name, readWord);
@@ -306,7 +306,7 @@ void readActivityValues()
 						diskActivity[disk].secRead.rate = (diff * 1000) / readTime;
 						diskActivity[disk].secRead.value = value;
 						diskActivity[0].secRead.value += diff;
-					}	
+					}
 					if (w == 10)
 					{
 						unsigned long long diff;
@@ -327,7 +327,7 @@ void readActivityValues()
 						diskMenuDesc[disk].disable = 0;
 						diskMenuDesc[disk].menuName = diskActivity[disk].name;
 						++disk;
-					}	
+					}
 					j = 0;
 				}
 				++i;
@@ -389,9 +389,9 @@ char *sizeToString (unsigned long long partSize, char *sizeStr)
 		sprintf (sizeStr, "%0.1f%c", (float)partSize / (float)divider, codes[step]);
 	else
 		sprintf (sizeStr, "%0.2f%c", (float)partSize / (float)divider, codes[step]);
-		
+
 	return sizeStr;
-}	
+}
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -462,13 +462,13 @@ void readHarddiskValues (int face)
 		{
 			char sizeStr[2][41];
 			unsigned long long partTotal, partSize;
-		
+
 			faceSetting -> firstValue = getPartitionFreeSpace(faceSetting -> faceSubType, &partTotal, &partSize);
 			sizeToString (partTotal, sizeStr[0]);
 			sizeToString (partSize, sizeStr[1]);
-		
+
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("Partition\n%s"), tidyNames[faceSetting -> faceSubType]);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Used Space</b>: %0.1f%% (%s)\n<b>Total Size</b>: %s"), 
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Used Space</b>: %0.1f%% (%s)\n<b>Total Size</b>: %s"),
 					faceSetting -> firstValue, sizeStr[1], sizeStr[0]);
 			setFaceString (faceSetting, FACESTR_WIN, 0, _("Partition Space: %0.1f%% Used - Gauge"), faceSetting -> firstValue);
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%s"), faceSetting -> firstValue, sizeStr[0]);

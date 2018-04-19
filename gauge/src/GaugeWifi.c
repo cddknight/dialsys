@@ -46,28 +46,28 @@ static char *findSignalStr = "Signal level=";
  */
 int huntForQuality (char *inStr, char *findStr)
 {
-    int matched = 0, len = strlen (findStr), i = 0;
+	int matched = 0, len = strlen (findStr), i = 0;
 
-    while (inStr[i] != 0 && matched < len)
-    {
+	while (inStr[i] != 0 && matched < len)
+	{
 		int retry;
 		do
 		{
 			retry = 0;
 			if (inStr[i] == findStr[matched])
-    	    {
-    	        ++matched;
-    	    }
-    	    else if (matched)
-    	    {
+			{
+				++matched;
+			}
+			else if (matched)
+			{
 				matched = 0;
 				retry = 1;
-    	    }
+			}
 		}
 		while (retry);
 		++i;
-    }
-    return (matched == len ? i - len : -1);
+	}
+	return (matched == len ? i - len : -1);
 }
 
 /**********************************************************************************************************************
@@ -177,7 +177,7 @@ void readWifiValues (int face)
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Wifi\nQuality"));
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Wifi - Gauge"));
 		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%"), linkQuality);
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Wifi Quality</b>: %0.1f%%\n<b>Signal Level</b>: %0.0f dBm"),  
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Wifi Quality</b>: %0.1f%%\n<b>Signal Level</b>: %0.0f dBm"),
 				linkQuality, signalLevel);
 		faceSetting -> firstValue = linkQuality;
 	}

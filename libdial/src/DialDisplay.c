@@ -73,9 +73,9 @@ GtkWidget *dialInit (DIAL_CONFIG *dialConfigIn)
 	dialFillSinCosTables ();
 	dialMaxColours = dialCreateColours();
 	dialConfig -> drawingArea = gtk_drawing_area_new ();
-	gtk_widget_set_size_request (dialConfig -> drawingArea, dialConfig -> dialWidth * dialConfig -> dialSize, 
+	gtk_widget_set_size_request (dialConfig -> drawingArea, dialConfig -> dialWidth * dialConfig -> dialSize,
 			dialConfig -> dialHeight * dialConfig -> dialSize);
-	
+
 	dialWindowMask();
 	return dialConfig -> drawingArea;
 }
@@ -95,32 +95,32 @@ GtkWidget *dialInit (DIAL_CONFIG *dialConfigIn)
 void dialGetScreenSize (int *width, int *height)
 {
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
-        GdkDisplay *display;
-        GdkMonitor *monitor;
-        GdkRectangle monitor_geometry;
+		GdkDisplay *display;
+		GdkMonitor *monitor;
+		GdkRectangle monitor_geometry;
 
-        display = gdk_display_get_default ();
-        monitor = gdk_display_get_monitor (display, 0);
-        gdk_monitor_get_geometry (monitor, &monitor_geometry);
+		display = gdk_display_get_default ();
+		monitor = gdk_display_get_monitor (display, 0);
+		gdk_monitor_get_geometry (monitor, &monitor_geometry);
 
-        if (width != NULL)
-        {
-                *width = monitor_geometry.width;
-        }
-        if (height != NULL)
-        {
-                *height = monitor_geometry.height;
-        }
+		if (width != NULL)
+		{
+				*width = monitor_geometry.width;
+		}
+		if (height != NULL)
+		{
+				*height = monitor_geometry.height;
+		}
 #else
-        if (width != NULL)
-        {
-                *width = gdk_screen_width();
-        }
-        if (height != NULL)
-        {
-                *height = gdk_screen_height();
-        }
-#endif  
+		if (width != NULL)
+		{
+				*width = gdk_screen_width();
+		}
+		if (height != NULL)
+		{
+				*height = gdk_screen_height();
+		}
+#endif
 }
 
 /**********************************************************************************************************************
@@ -143,10 +143,10 @@ void dialDrawStart (cairo_t *cr, int posX, int posY)
 	saveCentreX = posX + (dialConfig -> dialSize >> 1);
 	saveCentreY = posY + (dialConfig -> dialSize >> 1);
 	saveCairo = cr;
-	
+
 	cairo_save (saveCairo);
 	cairo_set_line_cap (saveCairo, CAIRO_LINE_CAP_BUTT);
-	cairo_set_line_join (saveCairo, CAIRO_LINE_JOIN_MITER);	
+	cairo_set_line_join (saveCairo, CAIRO_LINE_JOIN_MITER);
 }
 
 /**********************************************************************************************************************
@@ -184,7 +184,7 @@ GdkRGBA
 {
 	if (i < 0 || i >= dialMaxColours)
 		return &dialConfig -> colourDetails[0].dialColour;
-		
+
 	return &dialConfig -> colourDetails[i].dialColour;
 }
 
@@ -224,10 +224,10 @@ void dialWindowMask (void)
 
 	int fullHeight, fullWidth, i, j;
 	GdkGC *gc;
-        
+
 	fullHeight = dialConfig -> dialHeight * dialConfig -> dialSize;
 	fullWidth = dialConfig -> dialWidth * dialConfig -> dialSize;
-        
+
 	if (windowShapeBitmap)
 	{
 		g_object_unref (windowShapeBitmap);
@@ -248,7 +248,7 @@ void dialWindowMask (void)
 	for (i = 0; i < dialConfig -> dialWidth; i++)
 	{
 		for (j = 0; j < dialConfig -> dialHeight; j++)
-			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * dialConfig -> dialSize) - 1, (j * dialConfig -> dialSize) - 1, 
+			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * dialConfig -> dialSize) - 1, (j * dialConfig -> dialSize) - 1,
 					dialConfig -> dialSize + 1, dialConfig -> dialSize + 1, 0, 360 * 64);
 	}
 	gtk_widget_shape_combine_mask (GTK_WIDGET (dialConfig -> mainWindow), windowShapeBitmap, 0, 0);
@@ -274,9 +274,9 @@ void dialWindowMask (void)
 			{
 				int centerX = (dialConfig -> dialSize * i) + (dialConfig -> dialSize >> 1);
 				int centerY = (dialConfig -> dialSize * j) + (dialConfig -> dialSize >> 1);
-				
+
 				cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0);
-		 		cairo_arc (cr, centerX, centerY, (dialConfig -> dialSize * 64) >> 7, 0, 2 * M_PI);
+				cairo_arc (cr, centerX, centerY, (dialConfig -> dialSize * 64) >> 7, 0, 2 * M_PI);
 				cairo_fill (cr);
 				cairo_stroke (cr);
 			}
@@ -388,19 +388,19 @@ void dialDrawCircle (int size, int colFill, int colOut)
 void dialDrawCircleX (int posX, int posY, int size, int colFill, int colOut)
 {
 	int trueSize = (dialConfig -> dialSize * size) >> 7;
-	
+
 	cairo_set_line_width (saveCairo, 1.0f + ((float)dialConfig -> dialSize / 256.0f));
 	if (colFill != -1)
 	{
 		dialSetColour (colFill);
- 		cairo_arc (saveCairo, posX, posY, trueSize, 0, 2 * M_PI);
+		cairo_arc (saveCairo, posX, posY, trueSize, 0, 2 * M_PI);
 		cairo_fill (saveCairo);
 		cairo_stroke (saveCairo);
 	}
 	if (colOut != -1)
 	{
 		dialSetColour (colOut);
- 		cairo_arc (saveCairo, posX, posY, trueSize, 0, 2 * M_PI);
+		cairo_arc (saveCairo, posX, posY, trueSize, 0, 2 * M_PI);
 		cairo_stroke (saveCairo);
 	}
 }
@@ -465,11 +465,11 @@ void dialCircleGradientX (int posX, int posY, int size, int colFill, int style)
 		if (col[i][2] > 1) col[i][2] = 1;
 	}
 	pat = cairo_pattern_create_linear (0.0, 0.0, patSize, patSize);
-	
+
 	x1 = j;
 	x1 /= (2 * k);
 	x2 = x1 + ((float)1 / k);
-	
+
 	cairo_pattern_add_color_stop_rgb (pat, x1, col[0][1], col[1][1], col[2][1]);
 	cairo_pattern_add_color_stop_rgb (pat, x2, col[0][2], col[1][2], col[2][2]);
 	cairo_arc (saveCairo, posX, posY, (dialConfig -> dialSize * size) >> 7, 0, 2 * M_PI);
@@ -541,16 +541,16 @@ void dialSquareGradientX (int posX, int posY, int size, int colFill, int style)
 		if (col[i][2] > 1) col[i][2] = 1;
 	}
 	pat = cairo_pattern_create_linear (0.0, 0.0, patSize, patSize);
-	
+
 	x1 = j;
 	x1 /= (2 * k);
 	x2 = x1 + ((float)1 / k);
-	
+
 	cairo_pattern_add_color_stop_rgb (pat, x1, col[0][1], col[1][1], col[2][1]);
 	cairo_pattern_add_color_stop_rgb (pat, x2, col[0][2], col[1][2], col[2][2]);
 	cairo_rectangle (saveCairo, posX, posY, trueSize, trueSize);
 	cairo_set_source(saveCairo, pat);
-/*	dialSetColour (colFill); */
+/*  dialSetColour (colFill); */
 	cairo_fill (saveCairo);
 	cairo_stroke (saveCairo);
 
@@ -593,7 +593,7 @@ void dialHotCold (int size, int colFill, int cold)
 void dialHotColdX (int posX, int posY, int size, int colFill, int cold)
 {
 	int trueSize = (dialConfig -> dialSize * size) >> 7;
-	
+
 	cairo_set_line_width (saveCairo, 1.0f + ((float)dialConfig -> dialSize / 18.0f));
 	dialSetColour (colFill);
 	if (cold)
@@ -639,7 +639,7 @@ void dialDrawSquare (int size, int colFill, int colOut)
 void dialDrawSquareX (int posX, int posY, int size, int colFill, int colOut)
 {
 	int trueSize = (dialConfig -> dialSize * size) >> 6;
-	
+
 	cairo_set_line_width (saveCairo, 1.0f + ((float)dialConfig -> dialSize / 256.0f));
 	if (colFill != -1)
 	{
@@ -715,18 +715,18 @@ void dialDrawHandX (int posX, int posY, int angle, HAND_STYLE *handStyle)
 		points[4] = posX + dialSin ((dialConfig -> dialSize * size) >> 6, angle);
 		points[5] = posY - dialCos ((dialConfig -> dialSize * size) >> 6, angle);
 		points[6] = posX + dialSin (dialConfig -> dialSize >> 6, angle + SCALE_3);
-		points[7] = posY - dialCos (dialConfig -> dialSize >> 6, angle + SCALE_3); 
+		points[7] = posY - dialCos (dialConfig -> dialSize >> 6, angle + SCALE_3);
 		numPoints = 4;
 		fill = 1;
 		break;
 
 	case 1:
 		/* Single triangle */
-		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) 
+		points[0] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2)
 					+ dialSin (dialConfig -> dialSize >> 6, angle + SCALE_1);
 		points[1] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2)
 					- dialCos (dialConfig -> dialSize >> 6, angle + SCALE_1);
-		points[2] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2) 
+		points[2] = posX + dialSin ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2)
 					+ dialSin (dialConfig -> dialSize >> 6, angle + SCALE_3);
 		points[3] = posY - dialCos ((dialConfig -> dialSize * tail) >> 6, angle + SCALE_2)
 					- dialCos (dialConfig -> dialSize >> 6, angle + SCALE_3);
@@ -879,7 +879,7 @@ void dialDrawMarkX (int posX, int posY, int angle, int size, int colFill, int co
 		case 0:
 			/* No markers */
 			break;
-	
+
 		case 1:
 			/* Triangle markers */
 			{
@@ -898,7 +898,7 @@ void dialDrawMarkX (int posX, int posY, int angle, int size, int colFill, int co
 					cairo_line_to (saveCairo, points[2], points[3]);
 					cairo_line_to (saveCairo, points[4], points[5]);
 					cairo_close_path (saveCairo);
-					if (i == 0)	cairo_fill (saveCairo);
+					if (i == 0) cairo_fill (saveCairo);
 					cairo_stroke (saveCairo);
 				}
 			}
@@ -937,7 +937,7 @@ float dialGetFontSize (char *fontName)
 {
 	int i = strlen (fontName);
 	float size = 0;
-	
+
 	while (i)
 	{
 		i --;
@@ -970,7 +970,7 @@ void dialDrawText (int posn, char *string1, int colour)
 	if (string1[0])
 	{
 		int posY;
-		
+
 		if (posn == 0)
 			posY = savePosY + ((dialConfig -> dialSize * 5) >> 4);
 		else
@@ -1014,7 +1014,7 @@ void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
 		PangoFontDescription *fontDesc = pango_font_description_from_string (dialConfig -> fontName);
 
 		pango_font_description_set_size (fontDesc, PANGO_SCALE * fontSize);
- 		pango_layout_set_font_description (layout, fontDesc); 
+		pango_layout_set_font_description (layout, fontDesc);
 		pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 
 		dialSetColour (colour);
@@ -1147,8 +1147,8 @@ void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
  */
 void dialScaleChanged (GtkRange *range, gpointer data)
 {
-    char scale = data == NULL ? 0 : 1;
-	
+	char scale = data == NULL ? 0 : 1;
+
 	if (scale == 0)
 	{
 		dialConfig -> dialGradient = (int)gtk_range_get_value (range);
@@ -1190,13 +1190,13 @@ dialColourCallback (guint data)
 #endif
 
 	dialog = gtk_dialog_new_with_buttons (_("Pick the clock colour"), dialConfig -> mainWindow,
-		    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 			_("Apply"), GTK_RESPONSE_APPLY,
-			_("Close"), GTK_RESPONSE_ACCEPT, 
+			_("Close"), GTK_RESPONSE_ACCEPT,
 #else
 			GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
-			GTK_STOCK_CLOSE, GTK_RESPONSE_ACCEPT, 
+			GTK_STOCK_CLOSE, GTK_RESPONSE_ACCEPT,
 #endif
 			NULL);
 
@@ -1222,7 +1222,7 @@ dialColourCallback (guint data)
 	gtk_color_selection_set_current_color (GTK_COLOR_SELECTION (colourSel), &dialConfig -> colourDetails[2].dialColour);
 #else
 	colourSel = gtk_color_chooser_widget_new ();
-	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true); 
+	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true);
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), &dialConfig -> colourDetails[2].dialColour);
 	gradLabel = gtk_label_new (_("Gradent"));
 	gradScale = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 99, 1);
@@ -1231,7 +1231,7 @@ dialColourCallback (guint data)
 	gtk_range_set_value ((GtkRange *)gradScale, (gdouble)dialConfig -> dialGradient);
 	gtk_range_set_value ((GtkRange *)opacScale, (gdouble)dialConfig -> dialOpacity);
 	g_signal_connect (G_OBJECT(gradScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)0);
-    g_signal_connect (G_OBJECT(opacScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)1);
+	g_signal_connect (G_OBJECT(opacScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)1);
 #endif
 	g_signal_connect (comboBox, "changed", G_CALLBACK (dialColourComboCallback), colourSel);
 
@@ -1264,7 +1264,7 @@ dialColourCallback (guint data)
 				colString = gdk_color_to_string (&setColour);
 #else
 				colString = g_malloc (10);
-				sprintf (colString, "#%02X%02X%02X", setColour.red / 256, setColour.green / 256, 
+				sprintf (colString, "#%02X%02X%02X", setColour.red / 256, setColour.green / 256,
 						setColour.blue / 256);
 #endif
 #else
@@ -1292,7 +1292,7 @@ dialColourCallback (guint data)
 #endif
 	gtk_widget_destroy (comboBox);
 	gtk_widget_destroy (colourSel);
-	gtk_widget_destroy (dialog); 
+	gtk_widget_destroy (dialog);
 }
 
 /**********************************************************************************************************************
@@ -1340,7 +1340,7 @@ dialCreateColours ()
 void dialFillSinCosTables ()
 {
 	int i, x = dialConfig -> startPoint;
-	
+
 	for (i = 0; i < SCALE_4; i++)
 	{
 		sinTable[i] = sin (((double) x * M_PI) / SCALE_2);
@@ -1366,7 +1366,7 @@ int dialSin (int number, int angle)
 {
 	while (angle < 0) angle += SCALE_4;
 	angle %= SCALE_4;
-	
+
 	return (int)rint(number * sinTable[angle]);
 }
 
@@ -1386,7 +1386,7 @@ int dialCos (int number, int angle)
 {
 	while (angle < 0) angle += SCALE_4;
 	angle %= SCALE_4;
-	
+
 	return (int)rint(number * cosTable[angle]);
 }
 
@@ -1405,7 +1405,7 @@ void dialFixFaceSize (void)
 	int max = 1024, width = 0, height = 0;
 
 	dialGetScreenSize (&width, &height);
-	
+
 	if (max * dialConfig -> dialWidth > width)
 	{
 		max = ((width / dialConfig -> dialWidth) * 64) / 64;
@@ -1453,11 +1453,11 @@ dialZoomCallback (guint data)
 	case 3:
 		dialConfig -> dialSize = 1024;
 		break;
-	}	
+	}
 	dialFixFaceSize ();
 	dialWindowMask();
 	gtk_widget_set_size_request (dialConfig -> drawingArea, dialConfig -> dialWidth * dialConfig -> dialSize, dialConfig -> dialHeight * dialConfig -> dialSize);
-	
+
 	if (dialConfig -> UpdateFunc) dialConfig -> UpdateFunc();
 }
 
@@ -1535,7 +1535,7 @@ dialAddDelCallback (guint data)
 	gtk_widget_set_size_request (dialConfig -> drawingArea, dialConfig -> dialWidth * dialConfig -> dialSize, dialConfig -> dialHeight * dialConfig -> dialSize);
 
 	if (dialConfig -> UpdateFunc) dialConfig -> UpdateFunc();
-}	
+}
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -1559,14 +1559,14 @@ void dialSaveCallback (guint data)
 				GTK_FILE_CHOOSER_ACTION_SAVE,
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 				_("Save"), GTK_RESPONSE_ACCEPT,
-				_("Cancel"), GTK_RESPONSE_CANCEL, 
+				_("Cancel"), GTK_RESPONSE_CANCEL,
 #else
 				GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 #endif
 				NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-	
+
 		if (saveFilePath[0])
 			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), saveFilePath);
 		else
@@ -1575,7 +1575,7 @@ void dialSaveCallback (guint data)
 		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 		{
 			char *filename;
-	
+
 			filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 			strcpy (saveFilePath, filename);
 			dialConfig -> DialSave (saveFilePath);

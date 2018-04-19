@@ -35,33 +35,33 @@
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
-	{	"blk", __("Black"),					"#000000"	},	//	00
-	{	"wht", __("White"),					"#FFFFFF"	},	//	01
+	{	"blk", __("Black"),					"#000000"	},	//  00
+	{	"wht", __("White"),					"#FFFFFF"	},	//  01
 
-	{	"fce", __("Main face colour"),		"#141414"	},	//	02	T
-	{	"bri", __("Border inner circle"),	"#000000"	},	//	03	T
-	{	"brf", __("Border when focused"),	"#505050"	},	//	04	T
-	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//	05	T
-	{	"txt", __("Information text"),		"#858585"	},	//	06	T
-	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	//	07	T
-	{	"quf", __("Quarter markers fill"),	"#646464"	},	//	08	T
-	{	"hom", __("Hour markers"),			"#646464"	},	//	09	T
+	{	"fce", __("Main face colour"),		"#141414"	},	//  02  T
+	{	"bri", __("Border inner circle"),	"#000000"	},	//  03  T
+	{	"brf", __("Border when focused"),	"#505050"	},	//  04  T
+	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//  05  T
+	{	"txt", __("Information text"),		"#858585"	},	//  06  T
+	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	//  07  T
+	{	"quf", __("Quarter markers fill"),	"#646464"	},	//  08  T
+	{	"hom", __("Hour markers"),			"#646464"	},	//  09  T
 
-	{	"fsw", __("Stopwatch dial"),		"#000000"	},	//	10
-	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	//	11
-	{	"hof", __("Hour hand fill"),		"#202020"	},	//	12
-	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	//	13
-	{	"mif", __("Minute hand fill"),		"#202020"	},	//	14
-	{	"seh", __("Second hand outer"),		"#FF0000"	},	//	15
-	{	"sef", __("Second hand fill"),		"#800000"	},	//	16
-	{	"alh", __("Alarm hand outer"),		"#008000"	},	//	17
-	{	"alf", __("Alarm hand fill"),		"#004000"	},	//	18
-	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	//	19
-	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	//	20
-	{	"mim", __("Minute markers"),		"#3C3C3C"	},	//	21
-	{	"stm", __("Stopwatch markers"),		"#828282"	},	//	22
+	{	"fsw", __("Stopwatch dial"),		"#000000"	},	//  10
+	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	//  11
+	{	"hof", __("Hour hand fill"),		"#202020"	},	//  12
+	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	//  13
+	{	"mif", __("Minute hand fill"),		"#202020"	},	//  14
+	{	"seh", __("Second hand outer"),		"#FF0000"	},	//  15
+	{	"sef", __("Second hand fill"),		"#800000"	},	//  16
+	{	"alh", __("Alarm hand outer"),		"#008000"	},	//  17
+	{	"alf", __("Alarm hand fill"),		"#004000"	},	//  18
+	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	//  19
+	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	//  20
+	{	"mim", __("Minute markers"),		"#3C3C3C"	},	//  21
+	{	"stm", __("Stopwatch markers"),		"#828282"	},	//  22
 	{	NULL, NULL, ""	}
-}; 
+};
 
 char *handNames[HAND_COUNT] =
 {
@@ -71,35 +71,35 @@ char *handNames[HAND_COUNT] =
 
 char *nameFormats[TXT_COUNT] =
 {
-	"ftl", "ftz", "stl", "stz", "fbl", "fbz", "sbl", "sbz", 
+	"ftl", "ftz", "stl", "stz", "fbl", "fbz", "sbl", "sbz",
 	"wtl", "wtz", "cbl", "cbz", "cdl", "cdz", "ctl", "ctz",
 	"ttl", "ttz"
 };
 
 char displayString[TXT_COUNT][81] =
 {
-	"%a. %e %b.",					/* Clock top 		(localtime)		00 */
-	"%#",							/* Clock top		(timezone) 		01 */
-	"%e %b.%n%a.",					/* Clock SW top 	(localtime)		02 */
-	"%#%n",							/* Clock SW top		(timezone) 		03 */
-	"- %Z -",						/* Clock bottom		(localtime)		04 */
-	"- %p -",						/* Clock bottom		(timezone) 		05 */
-	"%Z",							/* Clock SW bottom	(localtime)		06 */
-	"%p",							/* Clock SW bottom	(timezone) 		07 */	
-	"%R, %A %e %B",					/* Window title 	(localtime)		08 */
-	"%*, %R, %A %e %B",				/* Window title		(timezone) 		09 */
-	"%A, %e %B %Y, %X",				/* Copy date time 	(localtime)		10 */
-	"%A, %e %B %Y, %X, %*",			/* Copy date time	(timezone) 		11 */
-	"%A, %e %B %Y",					/* Copy date 		(localtime)		12 */
-	"%A, %e %B %Y, %*",				/* Copy date		(timezone) 		13 */
-	"%X",							/* Copy time 		(localtime)		14 */
-	"%X, %Z",						/* Copy time		(timezone) 		15 */
+	"%a. %e %b.",					/* Clock top        (localtime)     00 */
+	"%#",							/* Clock top        (timezone)      01 */
+	"%e %b.%n%a.",					/* Clock SW top     (localtime)     02 */
+	"%#%n",							/* Clock SW top     (timezone)      03 */
+	"- %Z -",						/* Clock bottom     (localtime)     04 */
+	"- %p -",						/* Clock bottom     (timezone)      05 */
+	"%Z",							/* Clock SW bottom  (localtime)     06 */
+	"%p",							/* Clock SW bottom  (timezone)      07 */
+	"%R, %A %e %B",					/* Window title     (localtime)     08 */
+	"%*, %R, %A %e %B",				/* Window title     (timezone)      09 */
+	"%A, %e %B %Y, %X",				/* Copy date time   (localtime)     10 */
+	"%A, %e %B %Y, %X, %*",			/* Copy date time   (timezone)      11 */
+	"%A, %e %B %Y",					/* Copy date        (localtime)     12 */
+	"%A, %e %B %Y, %*",				/* Copy date        (timezone)      13 */
+	"%X",							/* Copy time        (localtime)     14 */
+	"%X, %Z",						/* Copy time        (timezone)      15 */
 	"<b>Time</b>: %X%n"
 	"<b>Date</b>: %A, %e %B%n"
-	"<b>Alarm</b>: %$",				/* Tool tip		 	(localtime)		16 */
+	"<b>Alarm</b>: %$",				/* Tool tip         (localtime)     16 */
 	"<b>City</b>: %*%n"
 	"<b>Time</b>: %X%n"
-	"<b>Date</b>: %A, %e %B"		/* Tool tip			(timezone) 		17 */
+	"<b>Date</b>: %A, %e %B"		/* Tool tip         (timezone)      17 */
 };
 
 /*----------------------------------------------------------------------------------------------------*
@@ -133,79 +133,79 @@ MENU_DESC stopWMenuDesc[] =
 {
 	{	__("Enable"),			stopwatchCallback,		NULL,				0,	NULL,	0,	0,	1	},
 	{	__("Start+Stop"),		swStartCallback,		NULL,				0,	NULL,	GDK_KEY_A	},
-	{	__("Reset"),			swResetCallback,		NULL,		  		0,	NULL,	GDK_KEY_Z	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	__("Reset"),			swResetCallback,		NULL,				0,	NULL,	GDK_KEY_Z	},
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC editMenuDesc[] =
 {
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-	{	__("Copy Date & Time"),	copyCallback,			NULL,				0,	NULL,	GDK_KEY_C	},
+	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	NULL,	GDK_KEY_C	},
 #else
-	{	__("Copy Date & Time"),	copyCallback,			NULL,				0,	GTK_STOCK_COPY	},
+	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	GTK_STOCK_COPY	},
 #endif
 	{	__("Copy Date"),		copyCallback,			NULL,				1	},
 	{	__("Copy Time"),		copyCallback,			NULL,				2	},
-	{	NULL, 					NULL,					NULL,				0	}	
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC viewMenuDesc[] =
 {
-	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/*	00	*/
-	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/*	01	*/
-	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*	02	*/
-	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*	03	*/
-	{	"-",					NULL,					NULL,				0	},	/*	04	*/
+	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/*  00  */
+	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/*  01  */
+	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*  02  */
+	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*  03  */
+	{	"-",					NULL,					NULL,				0	},	/*  04  */
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*	05	*/
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*	06	*/
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*	07	*/
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*  05  */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*  06  */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*  07  */
 #else
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/*	05	*/
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/*	06	*/
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/*	07	*/
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/*  05  */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/*  06  */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/*  07  */
 #endif
-	{	NULL, 					NULL,					NULL,				0	}	/*	08	*/
+	{	NULL,					NULL,					NULL,				0	}	/*  08  */
 };
 
 MENU_DESC markerMenuDesc[] =
 {
-	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/*	00	*/
-	{	__("Triangles"),		dialMarkerCallback,		NULL,				1,		NULL,	0,	0,	1	},	/*	01	*/
-	{	__("Circles"),			dialMarkerCallback,		NULL,				2,		NULL,	0,	0,	1	},	/*	02	*/
-	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*	03	*/
-	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/*	04	*/
+	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/*  00  */
+	{	__("Triangles"),		dialMarkerCallback,		NULL,				1,		NULL,	0,	0,	1	},	/*  01  */
+	{	__("Circles"),			dialMarkerCallback,		NULL,				2,		NULL,	0,	0,	1	},	/*  02  */
+	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  03  */
+	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/*  04  */
 	{	"-",					NULL,					NULL,				0		},
-	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*	06	*/
-	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*	07	*/
-	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*	08	*/
-	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*	09	*/
-	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*	10	*/
-	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*	11	*/
-	{	NULL, 					NULL,					NULL,				0		}
+	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  06  */
+	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  07  */
+	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  08  */
+	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  09  */
+	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*  10  */
+	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*  11  */
+	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC prefMenuDesc[] =
 {
-	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*	00	*/
-	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*	01	*/
-	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*	02	*/
-	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/*	03	*/
-	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/*	04	*/
-	{	"-",					NULL,					NULL,				0	},			/*	05	*/
-	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*	06	*/
-	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*	07	*/
-	{	__("Set-up Alarm"),		alarmCallback,			NULL,				0	},			/*  08	*/	
-	{	__("Change Font"),		dialFontCallback,		NULL,				0	},			/*	09	*/
-	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},			/*	10	*/
-	{	"-",					NULL,					NULL,				0	},			/*	11	*/
+	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  00  */
+	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  01  */
+	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*  02  */
+	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/*  03  */
+	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/*  04  */
+	{	"-",					NULL,					NULL,				0	},			/*  05  */
+	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  06  */
+	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  07  */
+	{	__("Set-up Alarm"),		alarmCallback,			NULL,				0	},			/*  08  */
+	{	__("Change Font"),		dialFontCallback,		NULL,				0	},			/*  09  */
+	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},			/*  10  */
+	{	"-",					NULL,					NULL,				0	},			/*  11  */
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-	{	__("Save Preferences"),	configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*	12	*/
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
 #else
-	{	__("Save Preferences"),	configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*	12	*/
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*  12  */
 #endif
 	{	__("Save Display"),		dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  13  */
-	{	NULL,					NULL,					NULL,				0	}			/*	14	*/
+	{	NULL,					NULL,					NULL,				0	}			/*  14  */
 };
 
 MENU_DESC mainMenuDesc[] =
@@ -220,10 +220,10 @@ MENU_DESC mainMenuDesc[] =
 	{	__("About"),			aboutCallback,			NULL,				0	},
 	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},
 #else
-	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT	},
+	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT },
 	{	__("Quit"),				quitCallback,			NULL,				0,	GTK_STOCK_QUIT	},
 #endif
-	{	NULL, 					NULL,					NULL,				0	}
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 /*----------------------------------------------------------------------------------------------------*
@@ -235,13 +235,13 @@ void updateClock (void);
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
  *----------------------------------------------------------------------------------------------------*/
-static bool alwaysOnTop 		=  FALSE;			/* Saved in the config file */
-static bool stuckOnAll 			=  FALSE;			/* Saved in the config file */
-static bool lockMove 			=  FALSE;			/* Saved in the config file */
+static bool alwaysOnTop			=  FALSE;			/* Saved in the config file */
+static bool stuckOnAll			=  FALSE;			/* Saved in the config file */
+static bool lockMove			=  FALSE;			/* Saved in the config file */
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
 static int stopwatchActive		=  0;
-static time_t lastTime 			= -1;
+static time_t lastTime			= -1;
 static int bounceSec			=  0;
 
 /*----------------------------------------------------------------------------------------------------*
@@ -249,30 +249,30 @@ static int bounceSec			=  0;
  *----------------------------------------------------------------------------------------------------*/
 CLOCK_INST clockInst =
 {
-	NULL, 							/* accelGroup */
-	FALSE, 							/* fastSetting */
-	FALSE,  						/* showBounceSec */
-	FALSE, 							/* clockDecorated */
-	0,	 							/* weHaveFocus */
-	0,	 							/* currentFace */
-	0,	 							/* toolTipFace */
-	0,	 							/* timeSetting */
-	0,	 							/* allowSaveDisp */
-	-1, 							/* forceTime */
-	"Sans", 						// fontName
-	".tzclockrc", 					// configFile
-	"", 							// windowTitle
+	NULL,							/* accelGroup */
+	FALSE,							/* fastSetting */
+	FALSE,							/* showBounceSec */
+	FALSE,							/* clockDecorated */
+	0,								/* weHaveFocus */
+	0,								/* currentFace */
+	0,								/* toolTipFace */
+	0,								/* timeSetting */
+	0,								/* allowSaveDisp */
+	-1,								/* forceTime */
+	"Sans",							// fontName
+	".tzclockrc",					// configFile
+	"",								// windowTitle
 	"",								// windowToolTip
 	{								/* -- Used by dial library -- */
-		NULL, 						/* mainWindow */
-		NULL, 						/* drawingArea */
+		NULL,						/* mainWindow */
+		NULL,						/* drawingArea */
 		3 * 64,						/* faceSize */
-		1,	 						/* faceWidth */
-		1, 							/* faceHeight */
-		3,	 						/* markerType */
-		300, 						/* markerStep */
-		99, 						/* faceOpacity */
-		0,	 						/* faceGradient */
+		1,							/* faceWidth */
+		1,							/* faceHeight */
+		3,							/* markerType */
+		300,						/* markerStep */
+		99,							/* faceOpacity */
+		0,							/* faceGradient */
 		0,							/* startPoint */
 		&clockInst.fontName[0],		/* Font name pointer */
 		updateClock,				/* Update func. */
@@ -281,37 +281,37 @@ CLOCK_INST clockInst =
 	}
 };
 
-HAND_STYLE handStyle[HAND_COUNT] =  				/* Saved in the config file */
-{ 
-	{ 0, 19, 5, HOUR__COLOUR, HFILL_COLOUR, 1, 0 },	/* Hour hand */
+HAND_STYLE handStyle[HAND_COUNT] =					/* Saved in the config file */
+{
+	{ 0, 19, 5, HOUR__COLOUR, HFILL_COLOUR, 1, 0 }, /* Hour hand */
 	{ 0, 28, 7, MIN___COLOUR, MFILL_COLOUR, 1, 0 }, /* Minute hand */
-	{ 9, 28, 9, SEC___COLOUR, SFILL_COLOUR, 1, 0 },	/* Second hand */
-	{ 9,  7, 0, SEC___COLOUR, SFILL_COLOUR, 1, 0 },	/* Sub-second hand */
-	{ 9, 19, 0, ALARM_COLOUR, AFILL_COLOUR, 1, 0 },	/* Alarm hand */
-	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 },	/* Stopwatch hands */
-	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 },	/* Stopwatch hands */
+	{ 9, 28, 9, SEC___COLOUR, SFILL_COLOUR, 1, 0 }, /* Second hand */
+	{ 9,  7, 0, SEC___COLOUR, SFILL_COLOUR, 1, 0 }, /* Sub-second hand */
+	{ 9, 19, 0, ALARM_COLOUR, AFILL_COLOUR, 1, 0 }, /* Alarm hand */
+	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 }, /* Stopwatch hands */
+	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 }, /* Stopwatch hands */
 	{ 9,  7, 0, WATCH_COLOUR, WFILL_COLOUR, 1, 0 }	/* Stopwatch hands */
 };
 
 /*----------------------------------------------------------------------------------------------------*
  * Prototypes for functions in the tables that are defined later.                                     *
  *----------------------------------------------------------------------------------------------------*/
-static void splitTimeZone 			(char *timeZone, char *area, char *city, char *display, int doUpper);
+static void splitTimeZone			(char *timeZone, char *area, char *city, char *display, int doUpper);
 
-static void processCommandLine 		(int argc, char *argv[], int *posX, int *posY);
-static void howTo 					(FILE * outFile, char *format, ...);
-static void checkForAlarm 			(FACE_SETTINGS *faceSetting, struct tm *tm);
+static void processCommandLine		(int argc, char *argv[], int *posX, int *posY);
+static void howTo					(FILE * outFile, char *format, ...);
+static void checkForAlarm			(FACE_SETTINGS *faceSetting, struct tm *tm);
 
 static gboolean clockTickCallback	(gpointer data);
-static gboolean windowClickCallback	(GtkWidget * widget, GdkEventButton * event);
+static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event);
 static gboolean windowKeyCallback	(GtkWidget * widget, GdkEventKey * event);
-static gboolean focusInEvent 		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
-static gboolean focusOutEvent 		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
+static gboolean focusInEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
+static gboolean focusOutEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
 #if GTK_MAJOR_VERSION == 2
-static gboolean exposeCallback 		(GtkWidget * widget, GdkEventExpose * event, gpointer data);
+static gboolean exposeCallback		(GtkWidget * widget, GdkEventExpose * event, gpointer data);
 static int alarmCounter				=  0;
 #else
-static gboolean drawCallback 		(GtkWidget *widget, cairo_t *cr, gpointer data);
+static gboolean drawCallback		(GtkWidget *widget, cairo_t *cr, gpointer data);
 #endif
 
 /**********************************************************************************************************************
@@ -355,7 +355,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -n<c|r><num>    :  Set the number of columns and rows\n"));
 	fprintf (outFile, _("                   :  Max clocks %d, no more than 10 in a line\n"), MAX_FACES);
 	fprintf (outFile, _("   -o<city>        :  Specify you own city name for a timezone\n"));
-	fprintf (outFile, _("   -O<opacity>     :  Change the opacity, 0 clear to 100 solid\n"));	
+	fprintf (outFile, _("   -O<opacity>     :  Change the opacity, 0 clear to 100 solid\n"));
 	fprintf (outFile, _("   -q              :  Toggle quick time setting, no smooth scroll\n"));
 	fprintf (outFile, _("   -s<size>        :  Set the size of each clock\n"));
 	fprintf (outFile, _("   -S              :* Toggle enabling the stopwatch\n"));
@@ -377,24 +377,24 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, "------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format strings: -dnnn:format (nnn Format name)\n\n"));
 
-	fprintf (outFile, _("   %s : Clock top in local time\n"), 		nameFormats[0]);
-	fprintf (outFile, _("   %s : Clock top for time zone\n"), 		nameFormats[1]);
-	fprintf (outFile, _("   %s : Stopwatch top in local time\n"), 	nameFormats[2]);
-	fprintf (outFile, _("   %s : Stopwatch top for time zone\n"), 	nameFormats[3]);
-	fprintf (outFile, _("   %s : Clock bottom in local time\n"), 	nameFormats[4]);
-	fprintf (outFile, _("   %s : Clock bottom for time zone\n"), 	nameFormats[5]);
+	fprintf (outFile, _("   %s : Clock top in local time\n"),		nameFormats[0]);
+	fprintf (outFile, _("   %s : Clock top for time zone\n"),		nameFormats[1]);
+	fprintf (outFile, _("   %s : Stopwatch top in local time\n"),	nameFormats[2]);
+	fprintf (outFile, _("   %s : Stopwatch top for time zone\n"),	nameFormats[3]);
+	fprintf (outFile, _("   %s : Clock bottom in local time\n"),	nameFormats[4]);
+	fprintf (outFile, _("   %s : Clock bottom for time zone\n"),	nameFormats[5]);
 	fprintf (outFile, _("   %s : Stopwatch bottom in local time\n"), nameFormats[6]);
 	fprintf (outFile, _("   %s : Stopwatch bottom for time zone\n"), nameFormats[7]);
-	fprintf (outFile, _("   %s : Window title in local time\n"), 	nameFormats[8]);
-	fprintf (outFile, _("   %s : Window title for time zone\n"), 	nameFormats[9]);
-	fprintf (outFile, _("   %s : Copy date time in local time\n"), 	nameFormats[10]);
-	fprintf (outFile, _("   %s : Copy date time for time zone\n"), 	nameFormats[11]);
-	fprintf (outFile, _("   %s : Copy date in local time\n"), 		nameFormats[12]);
-	fprintf (outFile, _("   %s : Copy date for time zone\n"), 		nameFormats[13]);
-	fprintf (outFile, _("   %s : Copy time in local time\n"), 		nameFormats[14]);
-	fprintf (outFile, _("   %s : Copy time for time zone\n"), 		nameFormats[15]);
-	fprintf (outFile, _("   %s : Tool tip text for local time\n"), 	nameFormats[16]);
-	fprintf (outFile, _("   %s : Tool tip text for time zone\n"), 	nameFormats[17]);
+	fprintf (outFile, _("   %s : Window title in local time\n"),	nameFormats[8]);
+	fprintf (outFile, _("   %s : Window title for time zone\n"),	nameFormats[9]);
+	fprintf (outFile, _("   %s : Copy date time in local time\n"),	nameFormats[10]);
+	fprintf (outFile, _("   %s : Copy date time for time zone\n"),	nameFormats[11]);
+	fprintf (outFile, _("   %s : Copy date in local time\n"),		nameFormats[12]);
+	fprintf (outFile, _("   %s : Copy date for time zone\n"),		nameFormats[13]);
+	fprintf (outFile, _("   %s : Copy time in local time\n"),		nameFormats[14]);
+	fprintf (outFile, _("   %s : Copy time for time zone\n"),		nameFormats[15]);
+	fprintf (outFile, _("   %s : Tool tip text for local time\n"),	nameFormats[16]);
+	fprintf (outFile, _("   %s : Tool tip text for time zone\n"),	nameFormats[17]);
 	fprintf (outFile, "------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format options:\n\n"));
 
@@ -570,9 +570,9 @@ setTimeZoneCallback (guint data)
 {
 	char value[81];
 	int timeZone = (int) data;
-	
+
 	clockInst.faceSettings[clockInst.currentFace] -> currentTZ = timeZones[timeZone].value;
-	splitTimeZone (timeZones[timeZone].envName, clockInst.faceSettings[clockInst.currentFace] -> currentTZArea, 
+	splitTimeZone (timeZones[timeZone].envName, clockInst.faceSettings[clockInst.currentFace] -> currentTZArea,
 			clockInst.faceSettings[clockInst.currentFace] -> currentTZCity, clockInst.faceSettings[clockInst.currentFace] -> currentTZDisp,
 			clockInst.faceSettings[clockInst.currentFace] -> upperCity);
 
@@ -595,7 +595,7 @@ setTimeZoneCallback (guint data)
 void
 onTopCallback (guint data)
 {
-	if (data) 
+	if (data)
 	{
 		alwaysOnTop = !alwaysOnTop;
 		configSetBoolValue ("always_on_top", alwaysOnTop);
@@ -614,10 +614,10 @@ onTopCallback (guint data)
  *  \param data Is this from the menu.
  *  \result None.
  */
-void 
+void
 stickCallback (guint data)
 {
-	if (data) 
+	if (data)
 	{
 		stuckOnAll = !stuckOnAll;
 		configSetBoolValue ("on_all_desktops", stuckOnAll);
@@ -643,7 +643,7 @@ void
 lockCallback (guint data)
 {
 	prefMenuDesc[MENU_PREF_LOCK].disable = 0;
-	if (data) 
+	if (data)
 	{
 		lockMove = !lockMove;
 		configSetBoolValue ("locked_position", lockMove);
@@ -683,13 +683,13 @@ calendarCallback (guint data)
 		setenv ("TZ", timeZones[timeZone].envName, 1);
 	}
 	localtime (&t);
-	
+
 	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
-						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-						_("Close"), 
+						_("Close"),
 #else
-						GTK_STOCK_CLOSE, 
+						GTK_STOCK_CLOSE,
 #endif
 						GTK_RESPONSE_NONE, NULL);
 
@@ -709,7 +709,6 @@ calendarCallback (guint data)
 
 }
 
-
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  A L A R M  S E T  A N G L E                                                                                       *
@@ -723,8 +722,8 @@ calendarCallback (guint data)
  */
 void alarmSetAngle (int face)
 {
-	short angle = clockInst.faceSettings[face] -> show24Hour ? 
-			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 50)  + ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 72): 
+	short angle = clockInst.faceSettings[face] -> show24Hour ?
+			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 50)	+ ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 72):
 			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 100) + ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 36);
 	if (angle != clockInst.faceSettings[face] -> handPosition[HAND_ALARM])
 		clockInst.faceSettings[face] -> handPosition[HAND_ALARM] = angle;
@@ -754,14 +753,14 @@ alarmCallback (guint data)
 #if GTK_MAJOR_VERSION != 2
 	GtkWidget *contentArea;
 #endif
-	
+
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
-			_("Close"), 
+			_("Close"),
 #else
 			GTK_STOCK_CLOSE,
 #endif
@@ -777,10 +776,10 @@ alarmCallback (guint data)
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 #endif
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, TRUE, 0);
-	
+
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the hour spinner                                                                           *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	label = gtk_label_new (_("Hour :"));
 #if GTK_MAJOR_VERSION == 2
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -792,7 +791,7 @@ alarmCallback (guint data)
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
-	adj = (GtkAdjustment *) gtk_adjustment_new 
+	adj = (GtkAdjustment *) gtk_adjustment_new
 			(clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmHour, 0, 23, 1, 4, 0);
 	spinner1 = gtk_spin_button_new (adj, 0, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner1), TRUE);
@@ -803,7 +802,7 @@ alarmCallback (guint data)
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the minute spinner                                                                         *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	label = gtk_label_new (_("Min :"));
 #if GTK_MAJOR_VERSION == 2
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -826,7 +825,7 @@ alarmCallback (guint data)
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the message entry                                                                          *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	label = gtk_label_new (_("Show message :"));
 #if GTK_MAJOR_VERSION == 2
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -842,7 +841,7 @@ alarmCallback (guint data)
 	gtk_entry_set_width_chars (GTK_ENTRY (entry1), 30);
 	gtk_entry_set_max_length (GTK_ENTRY (entry1), 40);
 	gtk_entry_set_text (GTK_ENTRY (entry1), clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message);
-    gtk_box_pack_start (GTK_BOX(vbox2), entry1, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox2), entry1, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Run command :"));
 #if GTK_MAJOR_VERSION == 2
@@ -855,7 +854,7 @@ alarmCallback (guint data)
 	entry2 = gtk_entry_new ();
 	gtk_entry_set_max_length (GTK_ENTRY (entry2), 40);
 	gtk_entry_set_text (GTK_ENTRY (entry2), clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.command);
-    gtk_box_pack_start (GTK_BOX(vbox2), entry2, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox2), entry2, TRUE, TRUE, 0);
 
 	check = gtk_check_button_new_with_label (_("Weekdays only"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check), clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.onlyWeekdays);
@@ -863,7 +862,7 @@ alarmCallback (guint data)
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Display it, if OK pressed the save the new values                                              *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	gtk_widget_show_all (dialog);
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
@@ -871,7 +870,7 @@ alarmCallback (guint data)
 		strcpy (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message, gtk_entry_get_text (GTK_ENTRY(entry1)));
 		strcpy (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.command, gtk_entry_get_text (GTK_ENTRY(entry2)));
 		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmHour = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner1));
-		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmMin  = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
+		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmMin	 = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
 		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.showAlarm = (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message[0] != 0);
 		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.onlyWeekdays = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
 
@@ -904,7 +903,7 @@ alarmCallback (guint data)
  */
 void
 aboutCallback (guint data)
-{	
+{
 	char comment[256];
 	char verString[81];
 
@@ -944,7 +943,7 @@ aboutCallback (guint data)
 void prepareForPopup (void)
 {
 	int i;
-	
+
 	viewMenuDesc[0].disable = (clockInst.dialConfig.dialWidth >= 10 || (clockInst.dialConfig.dialWidth + 1) * clockInst.dialConfig.dialHeight > MAX_FACES ? 1 : 0);
 	viewMenuDesc[1].disable = (clockInst.dialConfig.dialWidth < 2 ? 1 : 0);
 	viewMenuDesc[2].disable = (clockInst.dialConfig.dialHeight >= 10 || (clockInst.dialConfig.dialHeight + 1) * clockInst.dialConfig.dialWidth > MAX_FACES ? 1 : 0);
@@ -957,11 +956,11 @@ void prepareForPopup (void)
 	prefMenuDesc[MENU_PREF_SUBS].checked = clockInst.faceSettings[clockInst.currentFace] -> subSecond;
 	prefMenuDesc[MENU_PREF_SUBS].disable = !clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
 	prefMenuDesc[MENU_PREF_SVG].disable = !clockInst.allowSaveDisp;
-	
+
 	stopWMenuDesc[MENU_STPW_ENBL].checked = clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	stopWMenuDesc[MENU_STPW_START].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	stopWMenuDesc[MENU_STPW_RESET].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
-	
+
 	for (i = MENU_MARK_STRT; i <= MENU_MARK_STOP; ++i)
 		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.dialConfig.markerType ? 1 : 0);
 	for (i = MENU_STEP_STRT; i <= MENU_STEP_STOP; ++i)
@@ -1003,7 +1002,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 			}
 			return TRUE;
 #endif
-			
+
 #ifdef GDK_BUTTON_SECONDARY
 		case GDK_BUTTON_SECONDARY:	/* right button */
 #else
@@ -1059,7 +1058,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 		lastKeyPressTime = 0;
 		keyPressFaceNum = -1;
 	}
-	
+
 	/*------------------------------------------------------------------------------------------------*
 	 * Process key press events                                                                       *
 	 *------------------------------------------------------------------------------------------------*/
@@ -1070,7 +1069,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 			lastKeyPressTime = event->time;
 			keyPressFaceNum = 0;
 		}
-			
+
 		if (event->state & 8) /* Trial and error showed 8 to be the Alt key flag */
 		{
 			/*----------------------------------------------------------------------------------------*
@@ -1152,26 +1151,26 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Handle the smooth scroll time change                                                           *
-	 *------------------------------------------------------------------------------------------------*/	
+	 *------------------------------------------------------------------------------------------------*/
 	tempTime = (tm -> tm_hour * 60) + tm -> tm_min;
-		
+
 	if (!clockInst.fastSetting)
 	{
 		int gap = 0;
-		
+
 		/*--------------------------------------------------------------------------------------------*
 		 * Don't scroll at midnight                                                                   *
-		 *--------------------------------------------------------------------------------------------*/
+         *--------------------------------------------------------------------------------------------*/
 		if (tempTime == 0 && faceSetting -> shownTime == (23 * 60) + 59)
 			gap = 1;
 		else
 			gap = tempTime - faceSetting -> shownTime;
-		
+
 		if (abs (gap) > 1)
-		{		
+		{
 			/*----------------------------------------------------------------------------------------*
-			 * The maximum gap is 12 hours unless it is a 24 hour clock                               *
-			 *----------------------------------------------------------------------------------------*/
+             * The maximum gap is 12 hours unless it is a 24 hour clock                               *
+             *----------------------------------------------------------------------------------------*/
 			if (abs(gap) > TWELVEHOURS && !faceSetting -> show24Hour)
 			{
 				if (gap > 0)
@@ -1197,14 +1196,14 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 			if (gap < 0)
 				i *= -1;
 
-    	    if (faceSetting -> stepping < 24)
+			if (faceSetting -> stepping < 24)
 				faceSetting -> stepping ++;
 
 			tempTime = faceSetting -> shownTime + i;
-			
+
 			tm -> tm_min = tempTime % 60;
 			tm -> tm_hour = tempTime / 60;
-			
+
 			clockInst.timeSetting = 1;
 		}
 		else
@@ -1213,10 +1212,10 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 	faceSetting -> shownTime = tempTime;
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Calculate second hand position                                                                 *
-	 *------------------------------------------------------------------------------------------------*/	
+     * Calculate second hand position                                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	angle = (tm -> tm_sec * 20);
-	if (bounceSec) angle += 3; 
+	if (bounceSec) angle += 3;
 	if (angle != faceSetting -> handPosition[HAND_SECS])
 	{
 		faceSetting -> handPosition[HAND_SECS] = angle;
@@ -1245,48 +1244,48 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		}
 	}
 	/*------------------------------------------------------------------------------------------------*
-	 * Calculate minute hand position                                                                 *
-	 *------------------------------------------------------------------------------------------------*/	
+     * Calculate minute hand position                                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	angle = (tm -> tm_min * 20) + (tm -> tm_sec / 3);
 	if (angle != faceSetting -> handPosition[HAND_MINUTE])
 	{
 		faceSetting -> handPosition[HAND_MINUTE] = angle;
 		update = 1;
 		/*--------------------------------------------------------------------------------------------*
-		 * Calculate hour hand position                                                               *
-		 *--------------------------------------------------------------------------------------------*/	
-		angle = faceSetting -> show24Hour ? 
-				((tm -> tm_hour * 50)  + ((tm -> tm_min * 60 + tm -> tm_sec) / 72)): 
+         * Calculate hour hand position                                                               *
+         *--------------------------------------------------------------------------------------------*/
+		angle = faceSetting -> show24Hour ?
+				((tm -> tm_hour * 50)  + ((tm -> tm_min * 60 + tm -> tm_sec) / 72)):
 				((tm -> tm_hour * 100) + ((tm -> tm_min * 60 + tm -> tm_sec) / 36));
 		if (angle != faceSetting -> handPosition[HAND_HOUR])
 		{
 			faceSetting -> handPosition[HAND_HOUR] = angle;
 			update = 1;
-		}	
+		}
 	}
 
 	if (faceSetting -> stopwatch)
 	{
 		int swTime = getStopwatchTime(faceSetting);
 		/*--------------------------------------------------------------------------------------------*
-		 * Calculate stopwatch tenths hand position                                                   *
-		 *--------------------------------------------------------------------------------------------*/	
+         * Calculate stopwatch tenths hand position                                                   *
+         *--------------------------------------------------------------------------------------------*/
 		angle = (swTime % 100) * 12;
 		if (angle != faceSetting -> handPosition[HAND_STOPWT])
 		{
 			faceSetting -> handPosition[HAND_STOPWT] = angle;
 			update = 1;
 			/*----------------------------------------------------------------------------------------*
-			 * Calculate stopwatch secons hand position                                               *
-			 *----------------------------------------------------------------------------------------*/	
+             * Calculate stopwatch secons hand position                                               *
+             *----------------------------------------------------------------------------------------*/
 			angle = (swTime / 100) * 20;
 			if (angle != faceSetting -> handPosition[HAND_STOPWS])
 			{
 				faceSetting -> handPosition[HAND_STOPWS] = angle;
 				update = 1;
 				/*------------------------------------------------------------------------------------*
-				 * Calculate stopwatch minute hand position                                           *
-				 *------------------------------------------------------------------------------------*/	
+                 * Calculate stopwatch minute hand position                                           *
+                 *------------------------------------------------------------------------------------*/
 				angle = (swTime / 6000) * 40;
 				if (angle != faceSetting -> handPosition[HAND_STOPWM])
 				{
@@ -1319,10 +1318,10 @@ gboolean
 clockTickCallback (gpointer data)
 {
 	struct tm tm;
-    struct timeval tv;
+	struct timeval tv;
 	time_t t = time (NULL);
 	int update = 0, i, faceCount = clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth;
-	
+
 	if (clockInst.forceTime != -1)
 		t = clockInst.forceTime;
 	if (lastTime == -1)
@@ -1331,10 +1330,10 @@ clockTickCallback (gpointer data)
 
 	tv.tv_sec = 0;
 	for (i = 0; i < faceCount; ++i)
-	{	
+	{
 		FACE_SETTINGS *faceSetting = clockInst.faceSettings[i];
 
-		if (faceSetting -> stepping || (faceSetting -> stopwatch && faceSetting -> swStartTime != -1) || 
+		if (faceSetting -> stepping || (faceSetting -> stopwatch && faceSetting -> swStartTime != -1) ||
 				faceSetting -> timeShown != t || faceSetting -> updateFace || bounceSec)
 		{
 			getTheFaceTime (faceSetting, &t, &tm);
@@ -1342,7 +1341,7 @@ clockTickCallback (gpointer data)
 			if (clockInst.showBounceSec && faceSetting -> showSeconds)
 			{
 				if (tv.tv_sec == 0)
-			        gettimeofday(&tv, NULL);		
+					gettimeofday(&tv, NULL);
 				bounceSec = tv.tv_usec < 50000 ? 1 : 0;
 			}
 			update += getHandPositions (i, faceSetting, &tm, t);
@@ -1372,7 +1371,7 @@ clockTickCallback (gpointer data)
  *  \param data not used.
  *  \result True.
  */
-gboolean 
+gboolean
 focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
 	lastTime = -1;
@@ -1393,7 +1392,7 @@ focusInEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
  *  \param data not used.
  *  \result True.
  */
-gboolean 
+gboolean
 focusOutEvent (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
 	lastTime = -1;
@@ -1516,7 +1515,7 @@ swStartCallback (guint data)
 	if (clockInst.faceSettings[clockInst.currentFace] -> stopwatch)
 	{
 		struct timeval tv;
-	
+
 		if (clockInst.faceSettings[clockInst.currentFace] -> swStartTime == -1)
 		{
 			if (gettimeofday(&tv, NULL) == 0)
@@ -1534,8 +1533,8 @@ swStartCallback (guint data)
 			if (gettimeofday(&tv, NULL) == 0)
 			{
 				long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
-				
-				tempTime -= clockInst.faceSettings[clockInst.currentFace] -> swStartTime;		
+
+				tempTime -= clockInst.faceSettings[clockInst.currentFace] -> swStartTime;
 				clockInst.faceSettings[clockInst.currentFace] -> swRunTime = tempTime;
 				clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
 				clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
@@ -1563,11 +1562,11 @@ swResetCallback (guint data)
 	if (clockInst.faceSettings[clockInst.currentFace] -> stopwatch)
 	{
 		int oldStartTime = clockInst.faceSettings[clockInst.currentFace] -> swStartTime;
-		
+
 		clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
 		clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
 		clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
-		
+
 		if (oldStartTime != -1)
 		{
 			swStartCallback (data);
@@ -1597,7 +1596,7 @@ void configSaveCallback (guint data)
 	configSetIntValue ("clock_x_pos", posX);
 	configSetIntValue ("clock_y_pos", posY);
 	configSetIntValue ("current_face", clockInst.currentFace);
-	
+
 	if (home)
 	{
 		strcpy (configPath, home);
@@ -1618,11 +1617,11 @@ void configSaveCallback (guint data)
  *  \param faceSetting Face settings .
  *  \result time to show.
  */
-int 
+int
 getStopwatchTime (FACE_SETTINGS *faceSetting)
 {
 	struct timeval tv;
-		
+
 	if (faceSetting -> swStartTime == -1)
 	{
 		return faceSetting -> swRunTime;
@@ -1681,7 +1680,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 			case '*':				/* Timezone's city un-wrapped */
 			{
 				int k = 0;
-				char *text = faceSetting -> overwriteMesg[0] ? 
+				char *text = faceSetting -> overwriteMesg[0] ?
 					faceSetting -> overwriteMesg : faceSetting -> currentTZDisp;
 
 				while (text[k])
@@ -1693,7 +1692,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 				break;
 			}
 			case '#':				/* Timezone's city wrapped */
-				strncpy (tempAddStr, (faceSetting -> overwriteMesg[0] ? faceSetting -> overwriteMesg : 
+				strncpy (tempAddStr, (faceSetting -> overwriteMesg[0] ? faceSetting -> overwriteMesg :
 						faceSetting -> currentTZDisp), 100);
 				tempCommand[j = 0] = 0;
 				break;
@@ -1706,7 +1705,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 				int swTime = getStopwatchTime (faceSetting);
 				sprintf (tempAddStr, "%d:%02d:%02d.%02d",
 						swTime / 360000, (swTime / 6000) % 60, (swTime / 100) % 60, swTime % 100);
-				tempCommand[j = 0] = 0;				
+				tempCommand[j = 0] = 0;
 				break;
 			}
 			case '$':
@@ -1738,7 +1737,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 		{
 			if (strlen (tempAddStr) + strlen (addBuffer) < maxSize)
 			{
-				strcat (addBuffer, tempAddStr);	
+				strcat (addBuffer, tempAddStr);
 			}
 			tempAddStr[0] = 0;
 		}
@@ -1869,10 +1868,10 @@ void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm)
 	else
 	{
 		setenv ("TZ", timeZones[timeZone].envName, 1);
-	} 
+	}
 	tzset ();
 	localtime_r (t, tm);
-}			
+}
 
 #if GTK_MAJOR_VERSION == 2
 /**********************************************************************************************************************
@@ -1895,7 +1894,7 @@ void alarmDialogDestroy (GtkWidget *widget)
 #ifdef STATUS_ICON
 		if (!alarmCounter)
 		{
-			gtk_status_icon_set_blinking (statusIcon, 0);				
+			gtk_status_icon_set_blinking (statusIcon, 0);
 			gtk_status_icon_set_visible (statusIcon, 0);
 		}
 #endif
@@ -1960,7 +1959,7 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 				}
 #endif
 				gdk_beep();
-				alarmCounter ++;			
+				alarmCounter ++;
 				gtk_window_set_keep_above (GTK_WINDOW (dialog), true);
 				g_signal_connect_swapped (dialog, "response", G_CALLBACK (alarmDialogDestroy), dialog);
 				gtk_widget_show_all (dialog);
@@ -1975,11 +1974,11 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 				notify_notification_show (note, &error);
 				g_object_unref(G_OBJECT(note));
 #endif
-		   	}
+			}
 		}
-	   	else if (faceSetting -> alarmInfo.alarmShown)
-	   	{
-	   		faceSetting -> alarmInfo.alarmShown = 0;
+		else if (faceSetting -> alarmInfo.alarmShown)
+		{
+			faceSetting -> alarmInfo.alarmShown = 0;
 		}
 	}
 }
@@ -1999,7 +1998,7 @@ int loadColour (char *fromColour)
 {
 	int i, colour = -1;
 	char value[81];
-	
+
 	if (strlen (fromColour) > 3)
 	{
 		for (i = 2; i < MAX__COLOURS; i++)
@@ -2009,7 +2008,7 @@ int loadColour (char *fromColour)
 				colour = i;
 				break;
 			}
-		}			
+		}
 		if (colour != -1)
 		{
 			strncpy (colourNames[colour].defColour, &fromColour[3], 60);
@@ -2048,12 +2047,12 @@ void loadDateFormat (char *newFormat)
 					format = i;
 					break;
 				}
-			}			
+			}
 			if (format != -1)
 			{
 				i = 4;
 				foundStr[j] = 0;
-				
+
 				while (newFormat[i] >= ' ' && j < 80)
 				{
 					foundStr[j++] = newFormat[i++];
@@ -2086,7 +2085,7 @@ void loadAlarmInfo (int face, char *buff)
 {
 	int alHour = 0, alMin = 0, i = 0, j = 0, m = 0;
 	char msg[41];
-	
+
 	msg[0] = 0;
 	while (buff[i] && m < 3)
 	{
@@ -2135,7 +2134,7 @@ void loadHandInfo (char *buff)
 {
 	int style = 0, length = 0, tail = 0, i = 0, j = 0, m = 0;
 	char hand[41], value[81];
-		
+
 	while (buff[i] && m < 4)
 	{
 		if (buff[i] == ':')
@@ -2237,7 +2236,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					invalidOption = 1;
 				break;
 			case 'd':							/* Set the date format */
-				loadDateFormat (&argv[i][2]);	
+				loadDateFormat (&argv[i][2]);
 				break;
 			case 'D':
 				clockInst.clockDecorated = !clockInst.clockDecorated;
@@ -2318,7 +2317,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 					{
 						clockInst.faceSettings[j] = malloc (sizeof (FACE_SETTINGS));
 						memset (clockInst.faceSettings[j], 0, sizeof (FACE_SETTINGS));
-					}			
+					}
 				}
 				break;
 			case 'o':							/* Overwrite current city name */
@@ -2425,7 +2424,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 		}
 		else
 			invalidOption = 1;
-			
+
 		if (invalidOption)
 		{
 			howTo (stderr, _("ERROR: Please check option '%s'\n"), argv[i]);
@@ -2447,7 +2446,7 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 void updateClock (void)
 {
 	int i;
-	
+
 	for (i = 0; i < (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth); i++)
 	{
 		if (clockInst.faceSettings[i] == NULL)
@@ -2492,7 +2491,7 @@ void loadConfig (int *posX, int *posY)
 	int i, j;
 	char *home = getenv ("HOME");
 	char configPath[1024], value[81], tempName[81];
-	
+
 	configLoad ("/etc/tzclockrc");
 	strcpy (configPath, home);
 	strcat (configPath, "/");
@@ -2511,8 +2510,8 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("clock_current", &clockInst.currentFace);
 	configGetIntValue ("clock_mark_type", &clockInst.dialConfig.markerType);
 	configGetIntValue ("clock_mark_step", &clockInst.dialConfig.markerStep);
-	configGetIntValue ("opacity", &clockInst.dialConfig.dialOpacity);	
-	configGetIntValue ("gradient", &clockInst.dialConfig.dialGradient);	
+	configGetIntValue ("opacity", &clockInst.dialConfig.dialOpacity);
+	configGetIntValue ("gradient", &clockInst.dialConfig.dialGradient);
 	configGetIntValue ("clock_x_pos", posX);
 	configGetIntValue ("clock_y_pos", posY);
 	configGetValue ("font_name", clockInst.fontName, 100);
@@ -2602,103 +2601,103 @@ void loadConfig (int *posX, int *posY)
 int
 main (int argc, char *argv[])
 {
-        int posX = -1, posY = -1, saveFace, i;
-        GtkWidget *eventBox;
+		int posX = -1, posY = -1, saveFace, i;
+		GtkWidget *eventBox;
 
-        setlocale (LC_ALL, "");
-        bindtextdomain (PACKAGE, NULL);
-        textdomain (PACKAGE);
+		setlocale (LC_ALL, "");
+		bindtextdomain (PACKAGE, NULL);
+		textdomain (PACKAGE);
 
-        /*------------------------------------------------------------------------------------------------*
+		/*------------------------------------------------------------------------------------------------*
          * Initalaise the window.                                                                         *
          *------------------------------------------------------------------------------------------------*/
-        gtk_init (&argc, &argv);
-        g_set_application_name (PACKAGE_NAME);
-        gtk_window_set_default_icon_name ("tzclock");
+		gtk_init (&argc, &argv);
+		g_set_application_name (PACKAGE_NAME);
+		gtk_window_set_default_icon_name ("tzclock");
 
-        clockInst.dialConfig.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
-        gtk_window_set_title (clockInst.dialConfig.mainWindow, PACKAGE_NAME);
+		clockInst.dialConfig.mainWindow = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+		gtk_window_set_title (clockInst.dialConfig.mainWindow, PACKAGE_NAME);
 
-        for (i = 1; i < argc; i++)
-        {
-                if (argv[i][0] == '-')
-                {
-                        if (argv[i][1] == 'C')
-                        {
-                                strncpy (clockInst.configFile, &argv[i][2], 80);
-                                clockInst.configFile[80] = 0;
-                        }
-                }
-        }
-        
-        parseZone ();
-        loadConfig (&posX, &posY);
-        processCommandLine (argc, argv, &posX, &posY);
-        mainMenuDesc[0].subMenuDesc = timeZoneMenu;
+		for (i = 1; i < argc; i++)
+		{
+				if (argv[i][0] == '-')
+				{
+						if (argv[i][1] == 'C')
+						{
+								strncpy (clockInst.configFile, &argv[i][2], 80);
+								clockInst.configFile[80] = 0;
+						}
+				}
+		}
 
-        saveFace = clockInst.currentFace;
-        for (i = 0; i < (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth); i++)
-        {
-                clockInst.currentFace = i;
-                if (clockInst.faceSettings[i] == NULL)
-                {
-                        clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
-                        memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
-                }
-                setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
-                clockInst.faceSettings[i] -> swStartTime = -1;
-                alarmSetAngle (i);
-        }
-        clockInst.currentFace = clockInst.toolTipFace = saveFace;
-        
-        /*------------------------------------------------------------------------------------------------*
+		parseZone ();
+		loadConfig (&posX, &posY);
+		processCommandLine (argc, argv, &posX, &posY);
+		mainMenuDesc[0].subMenuDesc = timeZoneMenu;
+
+		saveFace = clockInst.currentFace;
+		for (i = 0; i < (clockInst.dialConfig.dialHeight * clockInst.dialConfig.dialWidth); i++)
+		{
+				clockInst.currentFace = i;
+				if (clockInst.faceSettings[i] == NULL)
+				{
+						clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
+						memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
+				}
+				setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
+				clockInst.faceSettings[i] -> swStartTime = -1;
+				alarmSetAngle (i);
+		}
+		clockInst.currentFace = clockInst.toolTipFace = saveFace;
+
+		/*------------------------------------------------------------------------------------------------*
          * Do all the other windows initialisation.                                                       *
          *------------------------------------------------------------------------------------------------*/
-        gtk_window_set_resizable (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
+		gtk_window_set_resizable (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
 
-        /*------------------------------------------------------------------------------------------------*
+		/*------------------------------------------------------------------------------------------------*
          * Icon stuff.                                                                                    *
          *------------------------------------------------------------------------------------------------*/
-        defaultIcon = gdk_pixbuf_new_from_xpm_data ((const char **) &TzClockIcon_xpm);
+		defaultIcon = gdk_pixbuf_new_from_xpm_data ((const char **) &TzClockIcon_xpm);
 
-        /*------------------------------------------------------------------------------------------------*
+		/*------------------------------------------------------------------------------------------------*
          * Final windows configuration.                                                                   *
          *------------------------------------------------------------------------------------------------*/
-        dialInit (&clockInst.dialConfig);
-        
-        /*------------------------------------------------------------------------------------------------*
+		dialInit (&clockInst.dialConfig);
+
+		/*------------------------------------------------------------------------------------------------*
          * This is the first time we can do this because we check the screen size in this routine.        *
          *------------------------------------------------------------------------------------------------*/
-        dialFixFaceSize ();
+		dialFixFaceSize ();
 
 #if GTK_MAJOR_VERSION == 2
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
 #else
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
 #endif
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL); 
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "destroy", G_CALLBACK (quitCallback), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "motion-notify-event", G_CALLBACK(userActive), NULL);
 
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
-        g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
-        eventBox = gtk_event_box_new ();
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "focus-in-event", G_CALLBACK(focusInEvent), NULL);
+		g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "focus-out-event", G_CALLBACK(focusOutEvent), NULL);
+		eventBox = gtk_event_box_new ();
 
-        gtk_container_add (GTK_CONTAINER (eventBox), clockInst.dialConfig.drawingArea);
-        gtk_container_add (GTK_CONTAINER (clockInst.dialConfig.mainWindow), eventBox);
+		gtk_container_add (GTK_CONTAINER (eventBox), clockInst.dialConfig.drawingArea);
+		gtk_container_add (GTK_CONTAINER (clockInst.dialConfig.mainWindow), eventBox);
 
-        if (!clockInst.clockDecorated)
-        {
-                gtk_window_set_decorated (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
-        }
+		if (!clockInst.clockDecorated)
+		{
+				gtk_window_set_decorated (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
+		}
 
-        /*------------------------------------------------------------------------------------------------*
+		/*------------------------------------------------------------------------------------------------*
          * Complete stuff left over from the command line                                                 *
          *------------------------------------------------------------------------------------------------*/
-        if (posX != -1 && posY != -1)
-        {
+		if (posX != -1 && posY != -1)
+		{
 			int width = 1024, height = 768;
 
 			dialGetScreenSize (&width, &height);
@@ -2717,37 +2716,37 @@ main (int argc, char *argv[])
 				posY = height - 64;
 
 			gtk_window_move (clockInst.dialConfig.mainWindow, posX, posY);
-        }
+		}
 #if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-        gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.dialConfig.mainWindow), "TzClock");
+		gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.dialConfig.mainWindow), "TzClock");
 #endif
 
-        /*------------------------------------------------------------------------------------------------*
+		/*------------------------------------------------------------------------------------------------*
          * Called to set any values                                                                       *
          *------------------------------------------------------------------------------------------------*/
-        clockInst.accelGroup = gtk_accel_group_new ();
-        gtk_window_add_accel_group (GTK_WINDOW (clockInst.dialConfig.mainWindow), clockInst.accelGroup);
-        createMenu (mainMenuDesc, clockInst.accelGroup, TRUE);
+		clockInst.accelGroup = gtk_accel_group_new ();
+		gtk_window_add_accel_group (GTK_WINDOW (clockInst.dialConfig.mainWindow), clockInst.accelGroup);
+		createMenu (mainMenuDesc, clockInst.accelGroup, TRUE);
 
-        stickCallback (0);
-        onTopCallback (0);
-        if (!clockInst.clockDecorated)
-        {
-                lockCallback (0);
-        }
+		stickCallback (0);
+		onTopCallback (0);
+		if (!clockInst.clockDecorated)
+		{
+				lockCallback (0);
+		}
 
-        /*------------------------------------------------------------------------------------------------*
+		/*------------------------------------------------------------------------------------------------*
          * OK all ready lets run it!                                                                      *
          *------------------------------------------------------------------------------------------------*/
-        gtk_widget_show_all (GTK_WIDGET (clockInst.dialConfig.mainWindow));
-        g_timeout_add (50, clockTickCallback, NULL);
-        dialSetOpacity ();
+		gtk_widget_show_all (GTK_WIDGET (clockInst.dialConfig.mainWindow));
+		g_timeout_add (50, clockTickCallback, NULL);
+		dialSetOpacity ();
 		{
 			prepareForPopup ();
 			createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
 		}
-        i = nice (5);
-        gtk_main ();
-        exit (0);
+		i = nice (5);
+		gtk_main ();
+		exit (0);
 }
 

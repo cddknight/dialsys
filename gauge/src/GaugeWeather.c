@@ -63,7 +63,7 @@ struct {
 	char tempUnit;
 	int tempMin, tempMax;
 	char *tempText;
-} 
+}
 tempUnits[] =
 {
 	{
@@ -76,7 +76,7 @@ struct {
 	char speedUnit;
 	int speedMin, speedMax;
 	char *speedText;
-} 
+}
 speedUnits[] =
 {
 	{0, 0, 100, "kph"},
@@ -89,7 +89,7 @@ struct {
 	char pressureUnit;
 	int pressureMin, pressureMax;
 	char *pressureText;
-} 
+}
 pressureUnits[] =
 {
 	{0, 95, 105, "mb"},
@@ -134,7 +134,7 @@ typedef struct {
 	char sunset[21];
 	int pressure;
 	int uvRisk;
-	
+
 	double showTempMax;
 	double showTempMin;
 	double showWindSpeed;
@@ -331,8 +331,8 @@ static size_t writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
 		if (mem->memory == NULL)
 		{
 			/*
-			 * out of memory! 
-			 */
+             * out of memory!
+             */
 			printf("not enough memory (realloc returned NULL)\n");
 			exit(EXIT_FAILURE);
 		}
@@ -438,9 +438,9 @@ void splitOutTitle(char *value)
 void splitOutForcastTitle(char *value, int level)
 {
 	/*
-	 * Temperature: 21°C (70°F), Wind Direction: Southerly, Wind Speed:
-	 * 8mph, Humidity: 68%, Pressure: 1028mb, Falling, Visibility: Very Good 
-	 */
+     * Temperature: 21°C (70°F), Wind Direction: Southerly, Wind Speed:
+     * 8mph, Humidity: 68%, Pressure: 1028mb, Falling, Visibility: Very Good
+     */
 	int i = 0, b = 0, c = 0, n;
 	char buffers[2][81];
 
@@ -498,9 +498,9 @@ void splitOutForcastTitle(char *value, int level)
 void splitOutDescription(char *value, int level)
 {
 	/*
-	 * Temperature: 21°C (70°F), Wind Direction: Southerly, Wind Speed:
-	 * 8mph, Humidity: 68%, Pressure: 1028mb, Falling, Visibility: Very Good 
-	 */
+     * Temperature: 21°C (70°F), Wind Direction: Southerly, Wind Speed:
+     * 8mph, Humidity: 68%, Pressure: 1028mb, Falling, Visibility: Very Good
+     */
 	int i = 0, b = 0, c = 0;
 	char buffers[2][81];
 
@@ -550,7 +550,7 @@ void splitOutDescription(char *value, int level)
 					else
 					{
 						myWeather.forecast[level - 1].windspeedmph = atoi(&buffers[1][0]);
-						myWeather.forecast[level - 1].windspeedKmph = 
+						myWeather.forecast[level - 1].windspeedKmph =
 							myWeather.forecast[level - 1].windspeedmph * 1.609344;
 					}
 				}
@@ -637,7 +637,7 @@ void splitOutDescription(char *value, int level)
  */
 static void processWeatherKey(int readLevel, const char *name, char *value)
 {
-//	char *titleStr = "BBC Weather - Observations for  ";
+//  char *titleStr = "BBC Weather - Observations for  ";
 	char *titleStr = "BBC Weather - Forecast for  ";
 
 	if (readLevel > 0 && readLevel <= FORECAST_NUM && strcmp(name, "description") == 0)
@@ -725,7 +725,7 @@ int gzipInflate (Bytef *compressedBytes, int compressedSize, Bytef *uncompressed
 	strm.next_in = compressedBytes;
 	strm.avail_in = compressedSize;
 	strm.next_out = uncompressedBytes;
-	strm.avail_out = uncompressedSize;	
+	strm.avail_out = uncompressedSize;
 	strm.total_out = 0;
 	strm.zalloc = Z_NULL;
 	strm.zfree = Z_NULL;
@@ -761,9 +761,9 @@ static void processBuffer(char *buffer, size_t size)
 	xmlNode *rootElement = NULL;
 	xmlChar *xmlBuffer = NULL;
 
-/*	printf("Init: %0X:%0X %c%c\n", buffer[0], buffer[1],
-		   buffer[0] > ' ' && buffer[0] < 127 ? buffer[0] : '-',
-		   buffer[1] > ' ' && buffer[1] < 127 ? buffer[1] : '-');
+/*  printf("Init: %0X:%0X %c%c\n", buffer[0], buffer[1],
+           buffer[0] > ' ' && buffer[0] < 127 ? buffer[0] : '-',
+           buffer[1] > ' ' && buffer[1] < 127 ? buffer[1] : '-');
 */
 	if (size > 10 && buffer[0] == '\037' && buffer[1] == '\213')
 	{
@@ -771,16 +771,16 @@ static void processBuffer(char *buffer, size_t size)
 		char *tempBuff = (char *)malloc(8001);
 		if (tempBuff == NULL)
 			return;
-			
+
 		if ((retn = gzipInflate ((Bytef *)buffer, size, (Bytef *)tempBuff, 8000)) == 0)
 		{
 			free(tempBuff);
 			return;
-		}			
-/*		printf("Unpk: %0X:%0X %c%c\n", (unsigned int)tempBuff[0], (unsigned int)tempBuff[1],
-			   tempBuff[0] > ' ' && tempBuff[0] < 127 ? tempBuff[0] : '-',
-			   tempBuff[1] > ' ' && tempBuff[1] < 127 ? tempBuff[1] : '-');
-*/					   
+		}
+/*      printf("Unpk: %0X:%0X %c%c\n", (unsigned int)tempBuff[0], (unsigned int)tempBuff[1],
+               tempBuff[0] > ' ' && tempBuff[0] < 127 ? tempBuff[0] : '-',
+               tempBuff[1] > ' ' && tempBuff[1] < 127 ? tempBuff[1] : '-');
+*/
 		tempBuff[retn] = 0;
 		xmlBuffer = xmlCharStrndup(tempBuff, retn);
 		free(tempBuff);
@@ -1067,13 +1067,13 @@ void readWeatherValues(int face)
 							"<b>Feels like</b>: %0.1f%s\n"
 							"<b>Summary</b>: %s\n"
 							"<b>Update</b>: %s"),
-							myWeather.queryName, 
+							myWeather.queryName,
 							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
 							gettext(changeText[myWeather.changed[CHNG_TEMP][0] + 1]),
 							myWeather.showApparent, tempUnits[myWeather.tUnits].tempText,
-							myWeather.weatherDesc, 
+							myWeather.weatherDesc,
 							myWeather.updateTime);
-				setFaceString(faceSetting, FACESTR_WIN, 0, 
+				setFaceString(faceSetting, FACESTR_WIN, 0,
 							_("Temp: %0.1f%s Feels: %0.1f%s - Gauge"),
 							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
 							myWeather.showApparent, tempUnits[myWeather.tUnits].tempText);
@@ -1084,11 +1084,11 @@ void readWeatherValues(int face)
 							_("<b>Location</b>: %s\n"
 							"<b>Temperature</b>: %0.1f%s (%s)\n"
 							"<b>Summary</b>: %s\n"
-							"<b>Update</b>: %s"), 
+							"<b>Update</b>: %s"),
 							myWeather.queryName,
 							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
 							gettext(changeText[myWeather.changed[CHNG_TEMP][0] + 1]),
-							myWeather.weatherDesc, 
+							myWeather.weatherDesc,
 							myWeather.updateTime);
 				setFaceString(faceSetting, FACESTR_WIN, 0, _("Temperature: %0.1%s - Gauge"),
 							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText);
@@ -1118,7 +1118,7 @@ void readWeatherValues(int face)
 							_("<b>Location</b>: %s\n"
 							"<b>Humidity</b>: %d%% (%s)\n"
 							"<b>Dew point</b>: %0.1f%s\n"
-							"<b>Update</b>: %s"), 
+							"<b>Update</b>: %s"),
 							myWeather.queryName,
 							myWeather.humidity, gettext(changeText[myWeather.changed[CHNG_HUMI][0] + 1]),
 							myWeather.showDewPoint, tempUnits[myWeather.tUnits].tempText,
@@ -1137,11 +1137,11 @@ void readWeatherValues(int face)
 							_("<b>Location</b>: %s\n"
 							"<b>Pressure</b>: %0.2f%s (%s)\n"
 							"<b>Visibility</b>: %s\n"
-							"<b>Update</b>: %s"), 
+							"<b>Update</b>: %s"),
 							myWeather.queryName,
 							myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText,
 							gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
-							myWeather.visView, 
+							myWeather.visView,
 							myWeather.updateTime);
 				setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.2f%s - Gauge"),
 							myWeather.pressure, pressureUnits[myWeather.pUnits].pressureText);
@@ -1154,11 +1154,11 @@ void readWeatherValues(int face)
 							_("<b>Location</b>: %s\n"
 							"<b>Pressure</b>: %0.0f%s (%s)\n"
 							"<b>Visibility</b>: %s\n"
-							"<b>Update</b>: %s"), 
+							"<b>Update</b>: %s"),
 							myWeather.queryName,
 							myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText,
 							gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
-							myWeather.visView, 
+							myWeather.visView,
 							myWeather.updateTime);
 				setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.0f%s - Gauge"),
 							myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText);
@@ -1174,13 +1174,13 @@ void readWeatherValues(int face)
 							speedUnits[myWeather.sUnits].speedText);
 			setFaceString(faceSetting, FACESTR_TIP, 0,
 							_("<b>Location</b>: %s\n"
-						  	"<b>Wind speed</b>: %0.1f%s (%s)\n"
+							"<b>Wind speed</b>: %0.1f%s (%s)\n"
 							"<b>Direction</b>: %s\n"
-							"<b>Update</b>: %s"), 
+							"<b>Update</b>: %s"),
 							myWeather.queryName,
 							myWeather.showWindSpeed, speedUnits[myWeather.sUnits].speedText,
 							gettext(changeText[myWeather.changed[CHNG_WIND][0] + 1]),
-							myWeather.winddirPoint, 
+							myWeather.winddirPoint,
 							myWeather.updateTime);
 			setFaceString(faceSetting, FACESTR_WIN, 0, _("Wind Speed: %0.1f%s - Gauge"),
 							myWeather.showWindSpeed, speedUnits[myWeather.sUnits].speedText);
@@ -1194,25 +1194,25 @@ void readWeatherValues(int face)
 			setFaceString(faceSetting, FACESTR_TOP, 16, "%s", myWeather.forecast[i].date);
 			if (myWeather.forecast[i].evening)
 			{
-				setFaceString(faceSetting, FACESTR_BOT, 0, 
+				setFaceString(faceSetting, FACESTR_BOT, 0,
 							"%0.1f%s\n(%s)",
 							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
 							"Min");
 				setFaceString(faceSetting, FACESTR_TIP, 0,
 							_("<b>Location</b>: %s\n"
 							"<b>Summary</b>: %s\n"
-						 	"<b>Temp Min</b>: %0.1f%s\n"
-						  	"<b>Pressure</b>: %0.2f%s\n"
-						  	"<b>Wind</b>: %s, %0.1f%s\n"
+							"<b>Temp Min</b>: %0.1f%s\n"
+							"<b>Pressure</b>: %0.2f%s\n"
+							"<b>Wind</b>: %s, %0.1f%s\n"
 							"<b>Pollution</b>: %s, <b>UV Risk</b>: %d\n"
-						  	"<b>Sun Set</b>: %s\n"
-						  	"<b>Update</b>: %s"),
-							myWeather.queryName, 
+							"<b>Sun Set</b>: %s\n"
+							"<b>Update</b>: %s"),
+							myWeather.queryName,
 							myWeather.forecast[i].weatherDesc,
-							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText, 
+							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
 							myWeather.forecast[i].showPressure, pressureUnits[myWeather.pUnits].pressureText,
-							myWeather.forecast[i].winddirPoint, 
-							myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText, 
+							myWeather.forecast[i].winddirPoint,
+							myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText,
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunset,
 							myWeather.updateTime);
@@ -1232,13 +1232,13 @@ void readWeatherValues(int face)
 							"<b>Pollution</b>: %s, <b>UV Risk</b>: %d\n"
 							"<b>Sun Rise</b>: %s, <b>Set</b>: %s\n"
 							"<b>Update</b>: %s"),
-							myWeather.queryName, 
+							myWeather.queryName,
 							myWeather.forecast[i].weatherDesc,
-							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText, 
-							myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText, 
+							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
+							myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText,
 							myWeather.forecast[i].showPressure, pressureUnits[myWeather.pUnits].pressureText,
-							myWeather.forecast[i].winddirPoint, 
-							myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText, 
+							myWeather.forecast[i].winddirPoint,
+							myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText,
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunrise, myWeather.forecast[i].sunset,
 							myWeather.updateTime);
@@ -1354,7 +1354,7 @@ void weatherSettings(guint data)
 
 #if GTK_MAJOR_VERSION == 2
 
-    dialog = gtk_dialog_new_with_buttons ("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
+	dialog = gtk_dialog_new_with_buttons ("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
 
@@ -1417,7 +1417,7 @@ void weatherSettings(guint data)
 #else
 
 	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			_("_OK"), GTK_RESPONSE_ACCEPT, _("_Cancel"), GTK_RESPONSE_REJECT, NULL);
 
 	contentArea = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
@@ -1433,7 +1433,6 @@ void weatherSettings(guint data)
 	label = gtk_label_new(_("http://www.bbc.co.uk/weather/"));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach(GTK_GRID(grid), label, 2, 1, 1, 1);
-
 
 	label = gtk_label_new(_("Location code: "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);

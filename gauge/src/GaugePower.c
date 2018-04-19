@@ -57,7 +57,7 @@ void readPowerMeterInit (void)
 	{
 		char addr[20];
 		int clientSock = -1;
-	
+
 		if (GetAddressFromName (powerServer, addr))
 		{
 			clientSock = ConnectClientSocket (addr, powerPort);
@@ -98,7 +98,7 @@ static void processPowerKey (int readLevel, const char *name, char *value)
 	if (readLevel == 1 && strcmp (name, "dayavg") == 0)
 		myPowerReading[5] = atof (value);
 	if (readLevel == 1 && strcmp (name, "monthavg") == 0)
-		myPowerReading[6] = atof (value);		
+		myPowerReading[6] = atof (value);
 	if (readLevel == 1 && strcmp (name, "yearavg") == 0)
 		myPowerReading[7] = atof (value);
 }
@@ -119,13 +119,13 @@ static void processPowerKey (int readLevel, const char *name, char *value)
 static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 {
 	xmlChar *key;
-    xmlNode *curNode = NULL;
+	xmlNode *curNode = NULL;
 
-    for (curNode = aNode; curNode; curNode = curNode->next) 
-    {
-        if (curNode->type == XML_ELEMENT_NODE) 
-        {
-			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"power"))) 
+	for (curNode = aNode; curNode; curNode = curNode->next)
+	{
+		if (curNode->type == XML_ELEMENT_NODE)
+		{
+			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"power")))
 			{
 				++readLevel;
 			}
@@ -133,11 +133,11 @@ static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 			{
 				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
 				processPowerKey (readLevel, (const char *)curNode -> name, (char *)key);
-		    	xmlFree (key);
-		    }
-        }
-        processElementNames (doc, curNode->children, readLevel);
-    }
+				xmlFree (key);
+			}
+		}
+		processElementNames (doc, curNode->children, readLevel);
+	}
 }
 
 /**********************************************************************************************************************
@@ -193,7 +193,7 @@ void readPowerMeterInfo ()
 {
 	char buffer[512] = "", addr[20];
 	int clientSock = -1, bytesRead = 0;
-	
+
 	if (GetAddressFromName (powerServer, addr))
 	{
 		clientSock = ConnectClientSocket (addr, powerPort);
@@ -269,13 +269,13 @@ void readPowerMeterValues (int face)
 			getPowerStr (myPowerReading[i], &powerStr[i][0]);
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
-		setFaceString (faceSetting, FACESTR_TIP, 0, 
+		setFaceString (faceSetting, FACESTR_TIP, 0,
 				_("<b>Current</b>: %s\n"
 				"<b>Maximum</b>: %s\n"
 				"<b>Minimum</b>: %s\n"
 				"<b>Hour Average</b>: %s\n"
 				"<b>Day Average</b>: %s\n"
-				"<b>Month Average</b>: %s"), 
+				"<b>Month Average</b>: %s"),
 				powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5], powerStr[6]);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Day Average: %s"),
 				powerStr[0], powerStr[5]);

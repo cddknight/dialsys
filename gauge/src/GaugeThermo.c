@@ -57,7 +57,7 @@ void readThermometerInit (void)
 	{
 		char addr[20];
 		int clientSock = -1;
-	
+
 		if (GetAddressFromName (thermoServer, addr))
 		{
 			clientSock = ConnectClientSocket (addr, thermoPort);
@@ -113,13 +113,13 @@ static void processThermoKey (int readLevel, const char *name, char *value)
 static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 {
 	xmlChar *key;
-    xmlNode *curNode = NULL;
+	xmlNode *curNode = NULL;
 
-    for (curNode = aNode; curNode; curNode = curNode->next) 
-    {
-        if (curNode->type == XML_ELEMENT_NODE) 
-        {
-			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"sensors"))) 
+	for (curNode = aNode; curNode; curNode = curNode->next)
+	{
+		if (curNode->type == XML_ELEMENT_NODE)
+		{
+			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"sensors")))
 			{
 				++readLevel;
 			}
@@ -127,11 +127,11 @@ static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 			{
 				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
 				processThermoKey (readLevel, (const char *)curNode -> name, (char *)key);
-		    	xmlFree (key);
-		    }
-        }
-        processElementNames (doc, curNode->children, readLevel);
-    }
+				xmlFree (key);
+			}
+		}
+		processElementNames (doc, curNode->children, readLevel);
+	}
 }
 
 /**********************************************************************************************************************
@@ -187,7 +187,7 @@ void readThermometerInfo ()
 {
 	char buffer[512] = "", addr[20];
 	int clientSock = -1, bytesRead = 0;
-	
+
 	if (GetAddressFromName (thermoServer, addr))
 	{
 		clientSock = ConnectClientSocket (addr, thermoPort);
@@ -237,11 +237,11 @@ void readThermometerValues (int face)
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Thermometer");
 		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Outside</b>: %0.1f\302\260C\n<b>Inside</b>: %0.1f\302\260C\n"
-				"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%"), 
+				"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%"),
 				myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4]);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Outside: %0.1f%s, Inside: %0.1f%s"),
 				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
-		setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n(%0.1f%s)", 
+		setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n(%0.1f%s)",
 				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
 		faceSetting -> firstValue = myThermoReading[0];
 		faceSetting -> secondValue = myThermoReading[1];

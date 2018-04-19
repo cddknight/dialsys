@@ -42,7 +42,7 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 {
 	int i = 0;
 	GtkWidget *menuItem, *thisMenu;
-	
+
 	if (bar)
 		thisMenu = gtk_menu_bar_new ();
 	else
@@ -63,7 +63,7 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 				if (createMenuDesc[i].checkbox)
 				{
 					menuItem = gtk_check_menu_item_new_with_label (gettext(createMenuDesc[i].menuName));
-					gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuItem), 
+					gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menuItem),
 							createMenuDesc[i].checked ? TRUE : FALSE);
 				}
 				else if (createMenuDesc[i].stockItem)
@@ -72,7 +72,7 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 					menuItem = gtk_menu_item_new_with_label (gettext(createMenuDesc[i].menuName));
 #else
 					menuItem = gtk_image_menu_item_new_from_stock  (createMenuDesc[i].stockItem,
-                    		accelGroup);
+							accelGroup);
 #endif
 				}
 				else
@@ -83,12 +83,12 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 				gtk_menu_shell_append (GTK_MENU_SHELL (thisMenu), menuItem);
 				if (createMenuDesc[i].funcCallBack)
 				{
-					g_signal_connect_swapped (menuItem, "activate", G_CALLBACK (createMenuDesc[i].funcCallBack), 
+					g_signal_connect_swapped (menuItem, "activate", G_CALLBACK (createMenuDesc[i].funcCallBack),
 							(gpointer)createMenuDesc[i].param);
 					if (createMenuDesc[i].accelKey)
 					{
 						gtk_widget_add_accelerator (menuItem, "activate", accelGroup,
-								createMenuDesc[i].accelKey, GDK_CONTROL_MASK, 
+								createMenuDesc[i].accelKey, GDK_CONTROL_MASK,
 								GTK_ACCEL_VISIBLE);
 					}
 				}
@@ -101,7 +101,7 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 			gtk_widget_show (menuItem);
 		}
 		++i;
-	}	
+	}
 	return thisMenu;
 }
 

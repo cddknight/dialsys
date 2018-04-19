@@ -113,7 +113,7 @@ int ServerSocketAccept (int socket, char *address)
 	clientSocket = accept (socket, (struct sockaddr *) &mAddress, (socklen_t *) &addr_length);
 	if (clientSocket != -1 && address)
 	{
-		sprintf (address, "%d.%d.%d.%d", 
+		sprintf (address, "%d.%d.%d.%d",
 				mAddress.sin_addr.s_addr & 0xFF,
 				mAddress.sin_addr.s_addr >> 8  & 0xFF,
 				mAddress.sin_addr.s_addr >> 16 & 0xFF,
@@ -154,7 +154,7 @@ int ConnectClientSocket (char *host, int port)
 	mAddress.sin_family = AF_INET;
 	mAddress.sin_port = htons (port);
 
-	if (inet_pton (AF_INET, host, &mAddress.sin_addr) == EAFNOSUPPORT) 
+	if (inet_pton (AF_INET, host, &mAddress.sin_addr) == EAFNOSUPPORT)
 	{
 		close (mSocket);
 		return -1;
@@ -274,10 +274,10 @@ int GetAddressFromName (char *name, char *address)
 	{
 		if (hostEntry -> h_addr_list[0])
 		{
-			sprintf (address, "%d.%d.%d.%d", 
-					(int)hostEntry -> h_addr_list[0][0] & 0xFF, 
+			sprintf (address, "%d.%d.%d.%d",
+					(int)hostEntry -> h_addr_list[0][0] & 0xFF,
 					(int)hostEntry -> h_addr_list[0][1] & 0xFF,
-					(int)hostEntry -> h_addr_list[0][2] & 0xFF, 
+					(int)hostEntry -> h_addr_list[0][2] & 0xFF,
 					(int)hostEntry -> h_addr_list[0][3] & 0xFF);
 			return 1;
 		}

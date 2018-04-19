@@ -35,7 +35,7 @@ extern GtkWidget *drawingArea;
 /*------------------------------------------------------------------------------------------------*
  * Change the font size as the window gets bigger.                                                *
  *------------------------------------------------------------------------------------------------*/
-char *roman[25] = 
+char *roman[25] =
 {
 	"-", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII",
 	"XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII",
@@ -57,7 +57,7 @@ char *roman[25] =
  *  \param circ .
  *  \result .
  */
-gboolean 
+gboolean
 drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 {
 	FACE_SETTINGS *faceSetting = clockInst.faceSettings[face];
@@ -69,51 +69,51 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	struct tm tm;
 
 	/*------------------------------------------------------------------------------------------------*
-	 * The alarm check has moved out of here                                                          *
-	 *------------------------------------------------------------------------------------------------*/	
+     * The alarm check has moved out of here                                                          *
+     *------------------------------------------------------------------------------------------------*/
 	getTheFaceTime (faceSetting, &t, &tm);
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the face, it is made up of 3 overlapping circles                                          *
-	 *------------------------------------------------------------------------------------------------*/	
+     * Draw the face, it is made up of 3 overlapping circles                                          *
+     *------------------------------------------------------------------------------------------------*/
 	dialDrawStart (cr, posX, posY);
 
 	col = (clockInst.weHaveFocus && face == clockInst.currentFace) ? FACE3_COLOUR : FACE4_COLOUR;
 	if (circ)
 	{
 		dialCircleGradient (64, col, 1);
-/*		dialDrawCircle (64, col, -1); */
+/*      dialDrawCircle (64, col, -1); */
 	}
 	else
 	{
 		dialSquareGradient (64, col, 1);
-/*		dialDrawSquare (64, col, -1); */
+/*      dialDrawSquare (64, col, -1); */
 	}
 
 	dialCircleGradient (62, FACE2_COLOUR, 0);
 	dialCircleGradient (58, FACE1_COLOUR, 1);
 
-/*	dialDrawCircle (62, FACE3_COLOUR, -1); */
-/*	dialDrawCircle (60, FACE4_COLOUR, -1); */
-	
+/*  dialDrawCircle (62, FACE3_COLOUR, -1); */
+/*  dialDrawCircle (60, FACE4_COLOUR, -1); */
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
-	 *------------------------------------------------------------------------------------------------*/
+     * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
+     *------------------------------------------------------------------------------------------------*/
 	showSubSec = (faceSetting -> showSeconds && (faceSetting -> stopwatch || faceSetting -> subSecond)) ? 1 : 0;
 
 	getStringValue (tempString, 100, faceSetting -> stopwatch ?
 			(timeZone ? TXT_TOPSW_Z : TXT_TOPSW_L) : (timeZone ? TXT_TOP_Z : TXT_TOP_L), face, t);
 	dialDrawText (0, tempString, TEXT__COLOUR);
-	 
+
 	if (!showSubSec)
 	{
-		getStringValue (tempString, 100, timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);	
+		getStringValue (tempString, 100, timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);
 		dialDrawText (1, tempString, TEXT__COLOUR);
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Calculate which markers to draw                                                                *
-	 *------------------------------------------------------------------------------------------------*/
+     * Calculate which markers to draw                                                                *
+     *------------------------------------------------------------------------------------------------*/
 	if (clockInst.dialConfig.markerType > 2)
 	{
 		if (showSubSec)
@@ -143,12 +143,12 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 				markerFlags &= ~(1 << 3);
 				markerFlags &= ~(1 << 9);
 			}
-		}		
+		}
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hour markers                                                                          *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hour markers                                                                          *
+     *------------------------------------------------------------------------------------------------*/
 	j = faceSetting -> show24Hour ? 120 : 60;
 
 	for (i = 0; i < j ; i++)
@@ -177,18 +177,18 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw other clock faces                                                                         *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw other clock faces                                                                         *
+     *------------------------------------------------------------------------------------------------*/
 	if (showSubSec)
 	{
 		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 21, FACE5_COLOUR, -1);
 	}
 	if (faceSetting -> stopwatch)
 	{
-		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);			
+		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);
 		dialDrawCircleX (posX + (3 * clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);
-	}	
-	
+	}
+
 	if (showSubSec || faceSetting -> stopwatch)
 	{
 		for (i = 0; i < 60 ; i++)
@@ -212,10 +212,10 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			}
 		}
 	}
-	
+
 	/*------------------------------------------------------------------------------------------------*
-	 * Draw the hands                                                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Draw the hands                                                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	if (faceSetting -> alarmInfo.showAlarm)
 	{
 		dialDrawHand (faceSetting -> handPosition[HAND_ALARM], &handStyle[HAND_ALARM]);
@@ -229,7 +229,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	{
 		dialDrawHandX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, faceSetting -> handPosition[HAND_STOPWT], &handStyle[HAND_STOPWT]);
 		dialDrawHandX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY, faceSetting -> handPosition[HAND_STOPWM], &handStyle[HAND_STOPWM]);
-		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);			
+		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);
 		dialDrawCircleX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY, 2, WFILL_COLOUR, WATCH_COLOUR);
 	}
 
@@ -288,10 +288,10 @@ void clockExpose (GtkWidget *widget)
 	}
 
 	/*------------------------------------------------------------------------------------------------*
-	 * Reset the color and stuff back to the default.                                                 *
-	 *------------------------------------------------------------------------------------------------*/
+     * Reset the color and stuff back to the default.                                                 *
+     *------------------------------------------------------------------------------------------------*/
 	cairo_destroy (cr);
-	cr = NULL;	
+	cr = NULL;
 }
 
 /**********************************************************************************************************************
@@ -333,7 +333,7 @@ void clockExpose (cairo_t *cr)
  *  \param fileName Name of the file to save the SVG in.
  *  \result None.
  */
-void dialSave(char *fileName) 
+void dialSave(char *fileName)
 {
 	cairo_surface_t *surface;
 	int i, j, face = 0;
