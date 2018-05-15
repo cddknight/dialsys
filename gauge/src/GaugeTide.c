@@ -235,7 +235,7 @@ static void processProcessATide(int mDay, int mon, char type, int hour, int min,
 	tideTime.tm_hour = hour;
 	tideTime.tm_min = min;
 	tideTime.tm_sec = 0;
-	tideTime.tm_isdst = -1;
+	tideTime.tm_isdst = 0;
 
 	if (lastReadTide < MAX_SAVE_TIDES)
 	{
