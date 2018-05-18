@@ -181,12 +181,15 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
      *------------------------------------------------------------------------------------------------*/
 	if (showSubSec)
 	{
-		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 21, FACE5_COLOUR, -1);
+		dialCircleGradientX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 21, FACE2_COLOUR, 1);
+		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 19, FACE5_COLOUR, -1);
 	}
 	if (faceSetting -> stopwatch)
 	{
-		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);
-		dialDrawCircleX (posX + (3 * clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE5_COLOUR, -1);
+		dialCircleGradientX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE2_COLOUR, 1);
+		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 19, FACE5_COLOUR, -1);
+		dialCircleGradientX (posX + (3 * clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE2_COLOUR, 1);
+		dialDrawCircleX (posX + (3 * clockInst.dialConfig.dialSize >> 2), centerY, 19, FACE5_COLOUR, -1);
 	}
 
 	if (showSubSec || faceSetting -> stopwatch)
