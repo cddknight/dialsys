@@ -36,7 +36,7 @@ AC_STRUCT_TM
 # Checks for library functions.
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([nl_langinfo])
-REVISION=2
+REVISION=3
 AC_SUBST([REVISION])
 
 AC_CONFIG_FILES([Makefile gauge.spec])
