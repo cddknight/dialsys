@@ -1148,7 +1148,6 @@ void readWeatherValues(int face)
 			{
 				char vis[81];
 				strcpy (vis, myWeather.visView);
-				printf ("%s:%s\n", vis, myWeather.forecast[0].visView);
 				if (strncmp (vis, "--", 2) == 0)
 				{
 					strcpy (vis, myWeather.forecast[0].visView);
