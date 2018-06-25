@@ -37,12 +37,14 @@ extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern DIAL_CONFIG dialConfig;
 
-enum {
+enum 
+{
 	COL_NAME = 0,
 	NUM_COLS
 };
 
-enum {
+enum 
+{
 	CHNG_TEMP = 0,
 	CHNG_HUMI,
 	CHNG_PRES,
@@ -53,26 +55,27 @@ void saveCurrentWeather(void);
 
 extern int weatherScales;
 
-char *changeText[] = {
+char *changeText[] = 
+{
 	__("Falling"),
 	__("No change"),
 	__("Rising")
 };
 
-struct {
+struct 
+{
 	char tempUnit;
 	int tempMin, tempMax;
 	char *tempText;
 }
 tempUnits[] =
 {
-	{
-	0, -10, 40, "\302\260C"},
-	{
-	1, 10, 110, "\302\260F"}
+	{0, -10, 40, "\302\260C"},
+	{1, 10, 110, "\302\260F"}
 };
 
-struct {
+struct 
+{
 	char speedUnit;
 	int speedMin, speedMax;
 	char *speedText;
@@ -85,7 +88,8 @@ speedUnits[] =
 	{3, 0, 50, "knots"}
 };
 
-struct {
+struct 
+{
 	char pressureUnit;
 	int pressureMin, pressureMax;
 	char *pressureText;
@@ -97,7 +101,8 @@ pressureUnits[] =
 	{2, 28, 31, "inHg"}
 };
 
-struct MemoryStruct {
+struct MemoryStruct 
+{
 	char *memory;
 	size_t size;
 };
@@ -109,14 +114,16 @@ char *weatherTFCURL = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss
 int observations = 0;
 extern char locationKey[];
 
-char *daysOfWeek[7] = {
+char *daysOfWeek[7] = 
+{
 	__("Sunday"), __("Monday"), __("Tuesday"), __("Wednesday"), __("Thursday"), __("Friday"),
-		__("Saturday")
+	__("Saturday")
 };
 
 #define FORECAST_NUM	3
 
-typedef struct {
+typedef struct 
+{
 	int day;
 	int evening;
 	char date[21];
@@ -141,7 +148,8 @@ typedef struct {
 	double showPressure;
 } weatherForecast;
 
-typedef struct {
+typedef struct 
+{
 	char updateTime[61];
 	int tempC;
 	char weatherDesc[81];
@@ -297,7 +305,7 @@ void readWeatherInit(void)
 		strcpy(myWeather.winddirPoint, _("Updating"));
 		strcpy(myWeather.visView, _("Updating"));
 		if (locationKey[0] == 0)
-			strcpy(locationKey, "2643743");
+			strcpy(locationKey, "2647216");
 		myWeather.updateNum = -1;
 	}
 }
@@ -1056,59 +1064,68 @@ void readWeatherValues(int face)
 		switch (subType)
 		{
 		case 0:					/* Temp */
-			setFaceString(faceSetting, FACESTR_TOP, 16, myWeather.weatherDesc);
-			setFaceString(faceSetting, FACESTR_BOT, 0, "%0.1f%s", myWeather.showTemp,
-						  tempUnits[myWeather.tUnits].tempText);
-			if (myWeather.showTemp != myWeather.showApparent)
 			{
-				setFaceString(faceSetting, FACESTR_TIP, 0,
-							_("<b>Location</b>: %s\n"
-							"<b>Temperature</b>: %0.1f%s (%s)\n"
-							"<b>Feels like</b>: %0.1f%s\n"
-							"<b>Summary</b>: %s\n"
-							"<b>Update</b>: %s"),
-							myWeather.queryName,
-							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
-							gettext(changeText[myWeather.changed[CHNG_TEMP][0] + 1]),
-							myWeather.showApparent, tempUnits[myWeather.tUnits].tempText,
-							myWeather.weatherDesc,
-							myWeather.updateTime);
-				setFaceString(faceSetting, FACESTR_WIN, 0,
-							_("Temp: %0.1f%s Feels: %0.1f%s - Gauge"),
-							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
-							myWeather.showApparent, tempUnits[myWeather.tUnits].tempText);
+				char summary[81];
+				strcpy (summary, myWeather.weatherDesc);
+				if (strncmp (summary, "Not Available", 13) == 0)
+				{
+					strcpy (summary, myWeather.forecast[0].weatherDesc);
+					strcat (summary, "*");
+				}
+				setFaceString(faceSetting, FACESTR_TOP, 16, summary);
+				setFaceString(faceSetting, FACESTR_BOT, 0, "%0.1f%s", myWeather.showTemp,
+							  tempUnits[myWeather.tUnits].tempText);
+				if (myWeather.showTemp != myWeather.showApparent)
+				{
+					setFaceString(faceSetting, FACESTR_TIP, 0,
+								_("<b>Location</b>: %s\n"
+								"<b>Temperature</b>: %0.1f%s (%s)\n"
+								"<b>Feels like</b>: %0.1f%s\n"
+								"<b>Summary</b>: %s\n"
+								"<b>Update</b>: %s"),
+								myWeather.queryName,
+								myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
+								gettext(changeText[myWeather.changed[CHNG_TEMP][0] + 1]),
+								myWeather.showApparent, tempUnits[myWeather.tUnits].tempText,
+								summary,
+								myWeather.updateTime);
+					setFaceString(faceSetting, FACESTR_WIN, 0,
+								_("Temp: %0.1f%s Feels: %0.1f%s - Gauge"),
+								myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
+								myWeather.showApparent, tempUnits[myWeather.tUnits].tempText);
+				}
+				else
+				{
+					setFaceString(faceSetting, FACESTR_TIP, 0,
+								_("<b>Location</b>: %s\n"
+								"<b>Temperature</b>: %0.1f%s (%s)\n"
+								"<b>Summary</b>: %s\n"
+								"<b>Update</b>: %s"),
+								myWeather.queryName,
+								myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
+								gettext(changeText[myWeather.changed[CHNG_TEMP][0] + 1]),
+								summary,
+								myWeather.updateTime);
+					setFaceString(faceSetting, FACESTR_WIN, 0, _("Temperature: %0.1%s - Gauge"),
+								myWeather.showTemp, tempUnits[myWeather.tUnits].tempText);
+				}
+				while (myWeather.showTemp < faceSetting->faceScaleMin
+					   || myWeather.showApparent < faceSetting->faceScaleMin)
+				{
+					faceSetting->faceScaleMin -= 5;
+					faceSetting->faceScaleMax -= 5;
+					maxMinReset(&faceSetting->savedMaxMin, 24, 3600);
+				}
+				while (myWeather.showTemp > faceSetting->faceScaleMax
+					   || myWeather.showApparent > faceSetting->faceScaleMax)
+				{
+					faceSetting->faceScaleMin += 5;
+					faceSetting->faceScaleMax += 5;
+					maxMinReset(&faceSetting->savedMaxMin, 24, 3600);
+				}
+				faceSetting->firstValue = myWeather.showTemp;
+				faceSetting->secondValue = myWeather.showApparent;
 			}
-			else
-			{
-				setFaceString(faceSetting, FACESTR_TIP, 0,
-							_("<b>Location</b>: %s\n"
-							"<b>Temperature</b>: %0.1f%s (%s)\n"
-							"<b>Summary</b>: %s\n"
-							"<b>Update</b>: %s"),
-							myWeather.queryName,
-							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText,
-							gettext(changeText[myWeather.changed[CHNG_TEMP][0] + 1]),
-							myWeather.weatherDesc,
-							myWeather.updateTime);
-				setFaceString(faceSetting, FACESTR_WIN, 0, _("Temperature: %0.1%s - Gauge"),
-							myWeather.showTemp, tempUnits[myWeather.tUnits].tempText);
-			}
-			while (myWeather.showTemp < faceSetting->faceScaleMin
-				   || myWeather.showApparent < faceSetting->faceScaleMin)
-			{
-				faceSetting->faceScaleMin -= 5;
-				faceSetting->faceScaleMax -= 5;
-				maxMinReset(&faceSetting->savedMaxMin, 24, 3600);
-			}
-			while (myWeather.showTemp > faceSetting->faceScaleMax
-				   || myWeather.showApparent > faceSetting->faceScaleMax)
-			{
-				faceSetting->faceScaleMin += 5;
-				faceSetting->faceScaleMax += 5;
-				maxMinReset(&faceSetting->savedMaxMin, 24, 3600);
-			}
-			faceSetting->firstValue = myWeather.showTemp;
-			faceSetting->secondValue = myWeather.showApparent;
 			break;
 		case 1:					/* Humidity */
 			setFaceString(faceSetting, FACESTR_TOP, 0, _("%0.1f%s\nDew point"), myWeather.showDewPoint,
@@ -1128,45 +1145,53 @@ void readWeatherValues(int face)
 			faceSetting->secondValue = DONT_SHOW;
 			break;
 		case 2:					/* Pressure */
-			setFaceString(faceSetting, FACESTR_TOP, 0, wrapText(myWeather.visView, 1));
-			if (faceSetting->faceFlags & FACE_SHOW_POINT)
 			{
-				setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.2f\n(%s)"), myWeather.showPressure,
-							pressureUnits[myWeather.pUnits].pressureText);
-				setFaceString(faceSetting, FACESTR_TIP, 0,
-							_("<b>Location</b>: %s\n"
-							"<b>Pressure</b>: %0.2f%s (%s)\n"
-							"<b>Visibility</b>: %s\n"
-							"<b>Update</b>: %s"),
-							myWeather.queryName,
-							myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText,
-							gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
-							myWeather.visView,
-							myWeather.updateTime);
-				setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.2f%s - Gauge"),
-							myWeather.pressure, pressureUnits[myWeather.pUnits].pressureText);
+				char vis[81];
+				strcpy (vis, myWeather.visView);
+				printf ("%s:%s\n", vis, myWeather.forecast[0].visView);
+				if (strncmp (vis, "--", 2) == 0)
+				{
+					strcpy (vis, myWeather.forecast[0].visView);
+					strcat (vis, "*");
+				}
+				setFaceString(faceSetting, FACESTR_TOP, 0, wrapText(vis, 1));
+				if (faceSetting->faceFlags & FACE_SHOW_POINT)
+				{
+					setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.2f\n(%s)"), myWeather.showPressure,
+								pressureUnits[myWeather.pUnits].pressureText);
+					setFaceString(faceSetting, FACESTR_TIP, 0,
+								_("<b>Location</b>: %s\n"
+								"<b>Pressure</b>: %0.2f%s (%s)\n"
+								"<b>Visibility</b>: %s\n"
+								"<b>Update</b>: %s"),
+								myWeather.queryName,
+								myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText,
+								gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
+								vis, myWeather.updateTime);
+					setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.2f%s - Gauge"),
+								myWeather.pressure, pressureUnits[myWeather.pUnits].pressureText);
+				}
+				else
+				{
+					setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.0f\n(%s)"), myWeather.showPressure,
+								  pressureUnits[myWeather.pUnits].pressureText);
+					setFaceString(faceSetting, FACESTR_TIP, 0,
+								_("<b>Location</b>: %s\n"
+								"<b>Pressure</b>: %0.0f%s (%s)\n"
+								"<b>Visibility</b>: %s\n"
+								"<b>Update</b>: %s"),
+								myWeather.queryName,
+								myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText,
+								gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
+								vis, myWeather.updateTime);
+					setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.0f%s - Gauge"),
+								myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText);
+				}
+				faceSetting->firstValue = myWeather.showPressure;
+				if (pressureUnits[myWeather.pUnits].pressureUnit == 0)
+					faceSetting->firstValue /= 10;
+				faceSetting->secondValue = DONT_SHOW;
 			}
-			else
-			{
-				setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.0f\n(%s)"), myWeather.showPressure,
-							  pressureUnits[myWeather.pUnits].pressureText);
-				setFaceString(faceSetting, FACESTR_TIP, 0,
-							_("<b>Location</b>: %s\n"
-							"<b>Pressure</b>: %0.0f%s (%s)\n"
-							"<b>Visibility</b>: %s\n"
-							"<b>Update</b>: %s"),
-							myWeather.queryName,
-							myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText,
-							gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
-							myWeather.visView,
-							myWeather.updateTime);
-				setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.0f%s - Gauge"),
-							myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText);
-			}
-			faceSetting->firstValue = myWeather.showPressure;
-			if (pressureUnits[myWeather.pUnits].pressureUnit == 0)
-				faceSetting->firstValue /= 10;
-			faceSetting->secondValue = DONT_SHOW;
 			break;
 		case 3:					/* Wind Speed */
 			setFaceString(faceSetting, FACESTR_TOP, 16, myWeather.winddirPoint);
