@@ -146,7 +146,8 @@ typedef struct
 	double showTempMin;
 	double showWindSpeed;
 	double showPressure;
-} weatherForecast;
+} 
+weatherForecast;
 
 typedef struct 
 {
@@ -179,7 +180,8 @@ typedef struct
 	int pUnits;
 	int sUnits;
 	int dUnits;
-} weatherInfo;
+} 
+weatherInfo;
 
 weatherInfo myWeather;
 
@@ -545,39 +547,72 @@ void splitOutDescription(char *value, int level)
 				else if (strcmp(&buffers[0][0], "Minimum Temperature") == 0)
 				{
 					if (!observations)
+					{
 						myWeather.forecast[level - 1].tempMinC = atoi(&buffers[1][0]);
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Wind Speed") == 0)
 				{
+					int speed = atoi(&buffers[1][0]);
 					if (observations)
 					{
-						myWeather.windspeedmph =
-							updateChange(CHNG_WIND, atoi(&buffers[1][0]), myWeather.windspeedmph);
-						myWeather.windspeedKmph = myWeather.windspeedmph * 1.609344;
+						if (strncmp (&buffers[1][0], "--", 2))
+						{
+							myWeather.windspeedmph = updateChange(CHNG_WIND, speed, myWeather.windspeedmph);
+							myWeather.windspeedKmph = speed * 1.609344;
+						}
+						else
+						{
+							myWeather.windspeedmph = 
+									updateChange(CHNG_WIND, myWeather.forecast[0].windspeedmph, myWeather.windspeedmph);
+							myWeather.windspeedKmph = myWeather.forecast[0].windspeedKmph;
+						}
 					}
 					else
 					{
-						myWeather.forecast[level - 1].windspeedmph = atoi(&buffers[1][0]);
-						myWeather.forecast[level - 1].windspeedKmph =
-							myWeather.forecast[level - 1].windspeedmph * 1.609344;
+						myWeather.forecast[level - 1].windspeedmph = speed;
+						myWeather.forecast[level - 1].windspeedKmph = speed * 1.609344;
 					}
 				}
 				else if (strcmp(&buffers[0][0], "Pressure") == 0)
 				{
+					int press = atoi(&buffers[1][0]);
 					if (observations)
-						myWeather.pressure =
-							updateChange(CHNG_PRES, atoi(&buffers[1][0]), myWeather.pressure);
+					{
+						if (strncmp (&buffers[1][0], "--", 2))
+						{
+							myWeather.pressure = updateChange(CHNG_PRES, press, myWeather.pressure);
+						}
+						else
+						{
+							myWeather.pressure = 
+									updateChange(CHNG_PRES, myWeather.forecast[0].pressure, myWeather.pressure);
+						}
+					}
 					else
-						myWeather.forecast[level - 1].pressure = atoi(&buffers[1][0]);
-
+					{
+						myWeather.forecast[level - 1].pressure = press;
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Humidity") == 0)
 				{
+					int humid = atoi(&buffers[1][0]);
 					if (observations)
-						myWeather.humidity =
-							updateChange(CHNG_HUMI, atoi(&buffers[1][0]), myWeather.humidity);
+					{
+						if (strncmp (&buffers[1][0], "--", 2))
+						{
+							myWeather.humidity = updateChange(CHNG_HUMI, humid, myWeather.humidity);
+						}
+						else
+						{
+							myWeather.humidity = 
+									updateChange(CHNG_HUMI, myWeather.forecast[0].humidity, myWeather.humidity);
+						}
+					}
 					else
-						myWeather.forecast[level - 1].humidity = atoi(&buffers[1][0]);
+					{
+						myWeather.forecast[level - 1].humidity = humid;
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Wind Direction") == 0)
 				{
@@ -928,10 +963,10 @@ void updateWeatherInfo()
 	{
 		myWeather.updateTime[0] = 0;
 
-		observations = 1;
-		doUpdateWeatherInfo(weatherOBSURL);
 		observations = 0;
 		doUpdateWeatherInfo(weatherTFCURL);
+		observations = 1;
+		doUpdateWeatherInfo(weatherOBSURL);
 
 		if (myWeather.updateTime[0])
 		{
@@ -1193,23 +1228,31 @@ void readWeatherValues(int face)
 			}
 			break;
 		case 3:					/* Wind Speed */
-			setFaceString(faceSetting, FACESTR_TOP, 16, myWeather.winddirPoint);
-			setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.1f\n(%s)"), myWeather.showWindSpeed,
-							speedUnits[myWeather.sUnits].speedText);
-			setFaceString(faceSetting, FACESTR_TIP, 0,
-							_("<b>Location</b>: %s\n"
-							"<b>Wind speed</b>: %0.1f%s (%s)\n"
-							"<b>Direction</b>: %s\n"
-							"<b>Update</b>: %s"),
-							myWeather.queryName,
-							myWeather.showWindSpeed, speedUnits[myWeather.sUnits].speedText,
-							gettext(changeText[myWeather.changed[CHNG_WIND][0] + 1]),
-							myWeather.winddirPoint,
-							myWeather.updateTime);
-			setFaceString(faceSetting, FACESTR_WIN, 0, _("Wind Speed: %0.1f%s - Gauge"),
-							myWeather.showWindSpeed, speedUnits[myWeather.sUnits].speedText);
-			faceSetting->firstValue = myWeather.showWindSpeed;
-			faceSetting->secondValue = DONT_SHOW;
+			{
+				char direc[81];
+				strcpy (direc, myWeather.winddirPoint);
+				if (strncmp (direc, "Direction not avail", 19) == 0)
+				{
+					strcpy (direc, myWeather.forecast[0].winddirPoint);
+					strcat (direc, "*");
+				}
+				setFaceString(faceSetting, FACESTR_TOP, 16, direc);
+				setFaceString(faceSetting, FACESTR_BOT, 0, _("%0.1f\n(%s)"), myWeather.showWindSpeed,
+								speedUnits[myWeather.sUnits].speedText);
+				setFaceString(faceSetting, FACESTR_TIP, 0,
+								_("<b>Location</b>: %s\n"
+								"<b>Wind speed</b>: %0.1f%s (%s)\n"
+								"<b>Direction</b>: %s\n"
+								"<b>Update</b>: %s"),
+								myWeather.queryName,
+								myWeather.showWindSpeed, speedUnits[myWeather.sUnits].speedText,
+								gettext(changeText[myWeather.changed[CHNG_WIND][0] + 1]), direc,
+								myWeather.updateTime);
+				setFaceString(faceSetting, FACESTR_WIN, 0, _("Wind Speed: %0.1f%s - Gauge"),
+								myWeather.showWindSpeed, speedUnits[myWeather.sUnits].speedText);
+				faceSetting->firstValue = myWeather.showWindSpeed;
+				faceSetting->secondValue = DONT_SHOW;
+			}
 			break;
 		case 4:					/* Temp. forecast */
 		case 5:
