@@ -12,7 +12,11 @@ BuildRequires: desktop-file-utils
 BuildRequires: libcurl-devel
 BuildRequires: libxml2-devel
 BuildRequires: libdial libdial-devel
+%if 0%{?suse_version}
+BuildRequires: libsensors4-devel
+%else
 BuildRequires: lm_sensors-devel
+%endif
 BuildRequires: pango-devel
 BuildRequires: zlib-devel
 BuildRequires: @REQUIRES@
