@@ -8,8 +8,7 @@ Packager: Chris Knight <chris@theknight.co.uk>
 Group: Applications/Productivity
 Source: https://www.theknight.co.uk/releases/source/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: pkgconfig desktop-file-utils
-BuildRequires: pango-devel
+BuildRequires: pkgconfig desktop-file-utils gcc pango-devel
 BuildRequires: libdial libdial-devel
 BuildRequires: @REQUIRES@
 

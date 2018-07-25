@@ -8,17 +8,13 @@ Packager: Chris Knight <chris@theknight.co.uk>
 Group: Applications/Productivity
 Source: https://www.theknight.co.uk/releases/source/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: desktop-file-utils
-BuildRequires: libcurl-devel
-BuildRequires: libxml2-devel
+BuildRequires: desktop-file-utils libcurl-devel libxml2-devel pango-devel zlib-devel gcc
 BuildRequires: libdial libdial-devel
 %if 0%{?suse_version}
 BuildRequires: libsensors4-devel
 %else
 BuildRequires: lm_sensors-devel
 %endif
-BuildRequires: pango-devel
-BuildRequires: zlib-devel
 BuildRequires: @REQUIRES@
 
 %description
