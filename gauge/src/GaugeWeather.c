@@ -308,6 +308,7 @@ void readWeatherInit(void)
 		strcpy(myWeather.visView, _("Updating"));
 		if (locationKey[0] == 0)
 			strcpy(locationKey, "2647216");
+		myWeather.nextUpdate = time(NULL) + 2;
 		myWeather.updateNum = -1;
 	}
 }
@@ -703,9 +704,12 @@ static void processWeatherKey(int readLevel, const char *name, char *value)
 		if (value)
 			splitOutForcastTitle(value, readLevel);
 	}
-	else if (observations == 1 && readLevel == 0 && strcmp(name, "pubDate") == 0)
+	else if (readLevel == 0 && strcmp(name, "pubDate") == 0)
 	{
-		strncpy(myWeather.updateTime, value, 60);
+		if (value[0] != 0)
+		{
+			strncpy(myWeather.updateTime, value, 60);
+		}
 	}
 }
 
