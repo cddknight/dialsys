@@ -139,6 +139,7 @@ typedef struct
 	char pollution[21];
 	char sunrise[21];
 	char sunset[21];
+	char updateTime[61];
 	int pressure;
 	int uvRisk;
 
@@ -704,11 +705,15 @@ static void processWeatherKey(int readLevel, const char *name, char *value)
 		if (value)
 			splitOutForcastTitle(value, readLevel);
 	}
-	else if (readLevel == 0 && strcmp(name, "pubDate") == 0)
+	else if (strcmp(name, "pubDate") == 0)
 	{
-		if (value[0] != 0)
+		if (observations == 1 && readLevel == 0 && value[0] != 0)
 		{
-			strncpy(myWeather.updateTime, value, 60);
+			strncpy (myWeather.updateTime, value, 60);
+		}
+		else if (observations == 0 && (readLevel >= 1 && readLevel <= 3) && value[0] != 0)
+		{
+			strncpy (myWeather.forecast[readLevel - 1].updateTime, value, 60);
 		}
 	}
 }
@@ -1286,7 +1291,7 @@ void readWeatherValues(int face)
 							myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText,
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunset,
-							myWeather.updateTime);
+							myWeather.forecast[i].updateTime);
 				faceSetting->secondValue = DONT_SHOW;
 			}
 			else
@@ -1312,7 +1317,7 @@ void readWeatherValues(int face)
 							myWeather.forecast[i].showWindSpeed, speedUnits[myWeather.sUnits].speedText,
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunrise, myWeather.forecast[i].sunset,
-							myWeather.updateTime);
+							myWeather.forecast[i].updateTime);
 				faceSetting->secondValue = myWeather.forecast[i].showTempMax;
 			}
 			faceSetting->firstValue = myWeather.forecast[i].showTempMin;
