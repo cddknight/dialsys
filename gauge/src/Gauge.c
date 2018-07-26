@@ -412,7 +412,7 @@ static gboolean focusInEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer
 static gboolean focusOutEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
 
 unsigned int weatherScales;
-char locationKey[41] = "2643743";
+char locationKey[41] = "2647216";
 char thermoServer[41] = "tinyfour";
 int thermoPort = 30302;
 char powerServer[41] = "littleone";
