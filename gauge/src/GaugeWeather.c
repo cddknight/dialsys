@@ -1112,7 +1112,7 @@ void readWeatherValues(int face)
 					strcat (summary, "*");
 				}
 				setFaceString(faceSetting, FACESTR_TOP, 16, summary);
-				setFaceString(faceSetting, FACESTR_BOT, 0, "%0.1f%s", myWeather.showTemp,
+				setFaceString(faceSetting, FACESTR_BOT, 0, "%0.0f%s", myWeather.showTemp,
 							  tempUnits[myWeather.tUnits].tempText);
 				if (myWeather.showTemp != myWeather.showApparent)
 				{
@@ -1167,7 +1167,7 @@ void readWeatherValues(int face)
 			}
 			break;
 		case 1:					/* Humidity */
-			setFaceString(faceSetting, FACESTR_TOP, 0, _("%0.1f%s\nDew point"), myWeather.showDewPoint,
+			setFaceString(faceSetting, FACESTR_TOP, 0, _("%0.0f%s\nDew point"), myWeather.showDewPoint,
 						  tempUnits[myWeather.tUnits].tempText);
 			setFaceString(faceSetting, FACESTR_BOT, 0, _("%d%%"), myWeather.humidity);
 			setFaceString(faceSetting, FACESTR_TIP, 0,
@@ -1207,7 +1207,7 @@ void readWeatherValues(int face)
 								gettext(changeText[myWeather.changed[CHNG_PRES][0] + 1]),
 								vis, myWeather.updateTime);
 					setFaceString(faceSetting, FACESTR_WIN, 0, _("Air Pressure: %0.2f%s - Gauge"),
-								myWeather.pressure, pressureUnits[myWeather.pUnits].pressureText);
+								myWeather.showPressure, pressureUnits[myWeather.pUnits].pressureText);
 				}
 				else
 				{
@@ -1266,7 +1266,7 @@ void readWeatherValues(int face)
 			if (myWeather.forecast[i].evening)
 			{
 				setFaceString(faceSetting, FACESTR_BOT, 0,
-							"%0.1f%s\n(%s)",
+							"%0.0f%s\n(%s)",
 							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
 							"Min");
 				setFaceString(faceSetting, FACESTR_TIP, 0,
@@ -1291,7 +1291,7 @@ void readWeatherValues(int face)
 			}
 			else
 			{
-				setFaceString(faceSetting, FACESTR_BOT, 0, "%0.1f%s\n%0.1f%s",
+				setFaceString(faceSetting, FACESTR_BOT, 0, "%0.0f%s\n%0.0f%s",
 							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
 							myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText);
 				setFaceString(faceSetting, FACESTR_TIP, 0,
