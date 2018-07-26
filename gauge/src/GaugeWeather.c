@@ -1106,7 +1106,7 @@ void readWeatherValues(int face)
 			{
 				char summary[81];
 				strcpy (summary, myWeather.weatherDesc);
-				if (strncmp (summary, "Not Available", 13) == 0)
+				if (strncasecmp (summary, "not available", 13) == 0)
 				{
 					strcpy (summary, myWeather.forecast[0].weatherDesc);
 					strcat (summary, "*");
@@ -1235,7 +1235,7 @@ void readWeatherValues(int face)
 			{
 				char direc[81];
 				strcpy (direc, myWeather.winddirPoint);
-				if (strncmp (direc, "Direction not avail", 19) == 0)
+				if (strncasecmp (direc, "direction not avail", 19) == 0)
 				{
 					strcpy (direc, myWeather.forecast[0].winddirPoint);
 					strcat (direc, "*");
