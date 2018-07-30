@@ -1497,6 +1497,9 @@ stopwatchCallback (guint data)
 	clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
 	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
 	lastTime = -1;
+
+	prepareForPopup ();
+	createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
 }
 
 /**********************************************************************************************************************
