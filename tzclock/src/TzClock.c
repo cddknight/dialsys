@@ -1493,7 +1493,6 @@ stopwatchCallback (guint data)
 	clockInst.faceSettings[clockInst.currentFace] -> stopwatch = newVal;
 	sprintf (value, "stopwatch_%d", clockInst.currentFace + 1);
 	configSetBoolValue (value, newVal);
-printf ("configSetBoolValue: %s - %d\n", value, newVal);
 	clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
 	clockInst.faceSettings[clockInst.currentFace] -> swRunTime = 0;
 	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
@@ -1605,7 +1604,6 @@ void configSaveCallback (guint data)
 		strcat (configPath, "/");
 		strcat (configPath, clockInst.configFile);
 		configSave (configPath);
-printf ("configSave: %s\n", configPath);
 	}
 }
 
