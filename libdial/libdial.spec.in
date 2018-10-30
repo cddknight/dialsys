@@ -28,7 +28,11 @@ This package contains necessary header files for libdial development.
 %setup -q
 
 %build
+%if 0%{?mageia}
+%configure2_5x
+%else
 %configure 
+%endif
 make CDEBUGFLAGS="$RPM_OPT_FLAGS" CXXDEBUGFLAGS="$RPM_OPT_FLAGS"
 
 %install
