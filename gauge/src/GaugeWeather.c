@@ -471,7 +471,7 @@ void splitOutForcastTitle(char *value, int level)
 				/* &buffers[0][0], &buffers[1][0]); */
 				for (n = 0; n < 7; ++n)
 				{
-					if (strcmp(daysOfWeek[n], &buffers[0][0]) == 0)
+					if (strcmp(daysOfWeek[n], &buffers[0][0]) == 0 || (strcmp("Today", &buffers[0][0]) == 0 && level == 1))
 					{
 						strncpy(myWeather.forecast[level - 1].date, &buffers[0][0], 20);
 						strncpy(myWeather.forecast[level - 1].weatherDesc, &buffers[1][0], 80);
