@@ -143,7 +143,14 @@ void readMemoryValues (int face)
 		}
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Memory\n(%s)"), gettext (name[faceType]));
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%0.1fGB"), faceSetting -> firstValue, totalMem);
+		if (totalMem > 10.0)
+		{
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%0.0fGB"), faceSetting -> firstValue, totalMem);
+		}
+		else
+		{
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%0.1fGB"), faceSetting -> firstValue, totalMem);
+		}
 		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s</b>: %0.1f%% (%0.1fGB)\n<b>Total Size</b>: %0.1fGB"),
 				gettext (name[faceType]), faceSetting -> firstValue, value, totalMem);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Memory %s: %0.1f%% - Gauge"), gettext (name[faceType]),
