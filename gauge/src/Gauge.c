@@ -594,7 +594,7 @@ aboutCallback (guint data)
 			"comments", _("Gauge is a highly configurable analogue gauge,\n"
 						  "capable of monitoring many different system\n"
 						  "and environmental values."),
-			"copyright", "Copyright © 2005 - 2018 Chris Knight <chris@theknight.co.uk>",
+			"copyright", "Copyright © 2005 - 2019 Chris Knight <chris@theknight.co.uk>",
 			"logo", defaultIcon,
 			"version", verString,
 			"website", "https://www.TheKnight.co.uk/",
