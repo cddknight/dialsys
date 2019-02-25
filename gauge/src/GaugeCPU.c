@@ -44,6 +44,7 @@ static int myUpdateID[CPU_COUNT + 1];
 static int loadValues[CPU_COUNT + 1][8];
 static unsigned long long startStats[CPU_COUNT + 1][10];
 static unsigned long long endStats[CPU_COUNT + 1][10];
+static int cpuCount = 0;
 char *name[8] =
 {
 	__("Total"),
@@ -141,8 +142,8 @@ void readCPUValues (int face)
 				setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_WIN, 0, _("%s %s - Gauge"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f MHz\n%d%%"), (float)clockRates[faceType] / 1000, percent);
-				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>Clock</b>: %0.2f MHz"), cpuName,
-						name[faceType], percent, (float)clockRates[faceType] / 1000);
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>CPU Count</b>: %d\n<b>Clock</b>: %0.2f MHz"), 
+						cpuName, name[faceType], percent, cpuCount, (float)clockRates[faceType] / 1000);
 				for (i = 0; i < 8; i++)
 					startStats[procNumber][i] = endStats[procNumber][i];
 			}
@@ -319,12 +320,14 @@ int readClockRates ()
 	char readBuff[512];
 	FILE *readFile;
 
+	cpuCount = 0;
 	clockRates[0] = 0;
 	for (i = 0; i < CPU_COUNT; ++i)
 	{
 		sprintf (readBuff, "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq", i);
 		if ((readFile = fopen (readBuff, "r")) != NULL)
 		{
+			++cpuCount;
 			if (fgets(readBuff, 510, readFile))
 			{
 				clockRates[++retn] = atoi (readBuff) / 1000;
