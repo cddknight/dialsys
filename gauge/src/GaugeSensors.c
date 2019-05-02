@@ -25,7 +25,12 @@
 #include <stdlib.h>
 
 #include "GaugeDisp.h"
+#include "config.h"
+#ifdef HAVE_SENSORS_SENSORS_H
 #include <sensors/sensors.h>
+#else
+#define SENSORS_API_VERSION 0
+#endif
 
 extern FACE_SETTINGS *faceSettings[];
 extern GAUGE_ENABLED gaugeEnabled[];

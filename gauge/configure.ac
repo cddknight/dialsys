@@ -27,7 +27,7 @@ AC_SUBST(DEPS_LIBS)
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([langinfo.h ctype.h math.h stdarg.h stdbool.h stdint.h stdio.h stdlib.h string.h time.h])
+AC_CHECK_HEADERS([langinfo.h ctype.h math.h stdarg.h stdbool.h stdint.h stdio.h stdlib.h string.h time.h sensors/sensors.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
