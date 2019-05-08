@@ -185,7 +185,8 @@ void readDeviceValues(int lockScale)
 				{
 					if (w == 1)
 					{
-						strncpy (deviceActivity[device].name, readWord, 40);
+						readWord[40] = 0;
+						strcpy (deviceActivity[device].name, readWord);
 					}
 					if (w == 2)
 					{

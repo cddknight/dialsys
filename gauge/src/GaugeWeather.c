@@ -309,7 +309,7 @@ void readWeatherInit(void)
 		strcpy(myWeather.visView, _("Updating"));
 		if (locationKey[0] == 0)
 			strcpy(locationKey, "2647216");
-		myWeather.nextUpdate = time(NULL) + 2;
+		myWeather.nextUpdate = time(NULL);
 		myWeather.updateNum = -1;
 	}
 }
@@ -423,7 +423,7 @@ void splitOutTitle(char *value)
 		{
 			if (value[i] == ',')
 			{
-				strncpy(myWeather.weatherDesc, buffer, 80);
+				strncpy(myWeather.weatherDesc, buffer, 81);
 				break;
 			}
 			buffer[c] = value[i];
@@ -473,8 +473,9 @@ void splitOutForcastTitle(char *value, int level)
 				{
 					if (strcmp(daysOfWeek[n], &buffers[0][0]) == 0 || (strcmp("Today", &buffers[0][0]) == 0 && level == 1))
 					{
-						strncpy(myWeather.forecast[level - 1].date, &buffers[0][0], 20);
-						strncpy(myWeather.forecast[level - 1].weatherDesc, &buffers[1][0], 80);
+						buffers[0][20] = buffers[1][80] = 0;
+						strcpy(myWeather.forecast[level - 1].date, &buffers[0][0]);
+						strcpy(myWeather.forecast[level - 1].weatherDesc, &buffers[1][0]);
 						break;
 					}
 				}
@@ -619,21 +620,36 @@ void splitOutDescription(char *value, int level)
 				else if (strcmp(&buffers[0][0], "Wind Direction") == 0)
 				{
 					if (observations)
-						strncpy(myWeather.winddirPoint, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.winddirPoint, &buffers[1][0]);
+					}
 					else
-						strncpy(myWeather.forecast[level - 1].winddirPoint, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.forecast[level - 1].winddirPoint, &buffers[1][0]);
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Visibility") == 0)
 				{
 					if (observations)
-						strncpy(myWeather.visView, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.visView, &buffers[1][0]);
+					}
 					else
-						strncpy(myWeather.forecast[level - 1].visView, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.forecast[level - 1].visView, &buffers[1][0]);
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Pollution") == 0)
 				{
 					if (!observations)
-						strncpy(myWeather.forecast[level - 1].pollution, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.forecast[level - 1].pollution, &buffers[1][0]);
+					}
 				}
 				else if (strcmp(&buffers[0][0], "UV Risk") == 0)
 				{
@@ -643,12 +659,18 @@ void splitOutDescription(char *value, int level)
 				else if (strcmp(&buffers[0][0], "Sunrise") == 0)
 				{
 					if (!observations)
-						strncpy(myWeather.forecast[level - 1].sunrise, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.forecast[level - 1].sunrise, &buffers[1][0]);
+					}
 				}
 				else if (strcmp(&buffers[0][0], "Sunset") == 0)
 				{
 					if (!observations)
-						strncpy(myWeather.forecast[level - 1].sunset, &buffers[1][0], 20);
+					{
+						buffers[1][20] = 0;
+						strcpy(myWeather.forecast[level - 1].sunset, &buffers[1][0]);
+					}
 				}
 			}
 			buffers[b = 0][c = 0] = 0;
@@ -972,10 +994,14 @@ void updateWeatherInfo()
 	{
 		myWeather.updateTime[0] = 0;
 
-		observations = 0;
-		doUpdateWeatherInfo(weatherTFCURL);
-		observations = 1;
+		if (observations == 0)
+		{
+			doUpdateWeatherInfo(weatherTFCURL);
+			observations = 1;
+			return;
+		}
 		doUpdateWeatherInfo(weatherOBSURL);
+		observations = 0;
 
 		if (myWeather.updateTime[0])
 		{
@@ -1088,19 +1114,20 @@ void readWeatherValues(int face)
 			showErrorMessage(showMsg);
 			free(showMsg);
 		}
+
 		if (faceSetting->faceFlags & FACE_REDRAW)
 		{
 			;
 		}
-		else if (faceSetting->nextUpdate)
+		else if (faceSetting->nextUpdate > 0)
 		{
 			faceSetting->nextUpdate -= 1;
 			return;
 		}
-		else if (!faceSetting->nextUpdate)
+		else if (faceSetting->nextUpdate == 0)
 		{
 			updateWeatherInfo();
-			faceSetting->nextUpdate = 20;
+			faceSetting->nextUpdate = 10;
 			if (myWeather.updateNum == faceSetting->updateNum)
 				return;
 		}

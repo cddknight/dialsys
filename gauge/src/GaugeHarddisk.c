@@ -142,7 +142,8 @@ void readPartitionNames()
 					{
 						if (strncmp (readWord, "/proc", 5) == 0)
 							break;
-						strncpy (diskNames[disk], readWord, 78);
+						readWord[78] = 0;
+						strcpy (diskNames[disk], readWord);
 						if (diskNames[disk][j - 1] != '/') strcat (diskNames[disk], "/");
 						strcat (diskNames[disk], ".");
 					}
