@@ -1042,7 +1042,7 @@ clockTickCallback (gpointer data)
 				faceSettings[face] -> faceFlags |= FACE_SHOWHOT;
 				faceSettings[face] -> faceFlags |= FACE_SHOWCOLD;
 				setFaceString (faceSettings[face], FACESTR_TOP, 0, "Gauge");
-				setFaceString (faceSettings[face], FACESTR_BOT, 0, VERSION);
+				setFaceString (faceSettings[face], FACESTR_BOT, 0, "CPU");
 				faceSettings[face] -> showFaceType = FACE_TYPE_MAX;
 				faceSettings[face] -> firstValue = 0;
 				break;
