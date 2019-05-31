@@ -33,5 +33,6 @@ cp @PACKAGE@.spec $DIR/SPECS/
 cp @PACKAGE@-@VERSION@.tar.bz2 $DIR/SOURCES/
 
 cd $DIR/SPECS
-rpmbuild -ba --sign -v @PACKAGE@.spec
+rpmbuild -ba -v @PACKAGE@.spec
+rpmsign --addsign $DIR/RPMS/$(uname -p)/@PACKAGE@-@VERSION@-@REVISION@.*.$(uname -p).rpm
 
