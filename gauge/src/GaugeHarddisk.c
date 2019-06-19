@@ -288,6 +288,11 @@ void readActivityValues()
 					if (w == 3)
 					{
 						int k, f = 0;
+						if (strncmp (readWord, "ram", 3) == 0 || strncmp (readWord, "loop", 4) == 0)
+						{
+							/* Ignore ram and loop diska */
+							break;
+						}
 						for (k = 1; k < disk; ++k)
 						{
 							if (strncmp (diskActivity[k].name, readWord, strlen (diskActivity[k].name)) == 0)
