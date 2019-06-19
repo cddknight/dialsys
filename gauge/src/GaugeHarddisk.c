@@ -47,7 +47,7 @@ struct diskValues
 
 typedef struct _diskInfo
 {
-	char name[5];
+	char name[41];
 	struct diskValues secRead;
 	struct diskValues secWrite;
 }
@@ -287,12 +287,23 @@ void readActivityValues()
 				{
 					if (w == 3)
 					{
-						if (strlen(readWord) != 3)
+						int k, f = 0;
+						for (k = 1; k < disk; ++k)
+						{
+							if (strncmp (diskActivity[k].name, readWord, strlen (diskActivity[k].name)) == 0)
+							{
+								f = 1;
+								break;
+							}
+						}
+						if (f)
+						{
 							break;
-						if ((readWord[0] != 's' && readWord[0] != 'h') ||
-								readWord[1] != 'd' || readWord[2] < 'a' || readWord[2] > 'z')
-							break;
-						strcpy (diskActivity[disk].name, readWord);
+						}
+						else
+						{
+							strncpy (diskActivity[disk].name, readWord, 40);
+						}
 					}
 					if (w == 6)
 					{
@@ -444,7 +455,7 @@ void readHarddiskValues (int face)
 				faceSetting -> firstValue = value = diskActivity[disk].secWrite.rate;
 			}
 			faceSetting -> firstValue /= scale;
-			setFaceString (faceSetting, FACESTR_TOP, 0, _("Sector\n%s (%s)"), gettext (nameT), nameD);
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), gettext (nameT), nameD);
 			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sector %s</b>: %lu/sec (%s)"), gettext (nameT), value, nameD);
 			if (scale > 1)
 				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec\nx%d"), faceSetting -> firstValue, scale);
