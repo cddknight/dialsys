@@ -1,7 +1,7 @@
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  S O C K E T . H                                                                                                   *
- *  ===============                                                                                                   *
+ *  S O C K E T  C . H                                                                                                *
+ *  ==================                                                                                                *
  *                                                                                                                    *
  *  This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public         *
  *  License version 2 as published by the Free Software Foundation.  Note that I am not granting permission to        *
@@ -18,18 +18,22 @@
  **********************************************************************************************************************/
 /**
  *  \file
- *  \brief Functions for sock access.
+ *  \brief .
  */
 #ifndef MY_SOCKET_H
 #define MY_SOCKET_H
 
 int ServerSocketSetup (int port);
+int ServerSocketFile (char *fileName);
 int ServerSocketAccept (int socket, char *address);
-int ConnectClientSocket (char *host, int port);
+int ConnectSocketFile (char *fileName);
+int ConnectClientSocket (char *host, int port, char *address);
 int SendSocket (int socket, char *buffer, int size);
 int RecvSocket (int socket, char *buffer, int size);
+int WaitSocket (int socket, int secs);
 int CloseSocket (int *socket);
 int SocketValid (int socket);
+void setNonBlocking(int socket, int set);
 int GetAddressFromName (char *name, char *address);
 
 #endif

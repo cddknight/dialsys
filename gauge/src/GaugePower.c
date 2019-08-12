@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <time.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -30,7 +31,7 @@
 #include <libxml/tree.h>
 
 #include "config.h"
-#include "socket.h"
+#include "socketC.h"
 #include "GaugeDisp.h"
 
 extern FACE_SETTINGS *faceSettings[];
@@ -55,13 +56,7 @@ void readPowerMeterInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
-		char addr[20];
-		int clientSock = -1;
-
-		if (GetAddressFromName (powerServer, addr))
-		{
-			clientSock = ConnectClientSocket (addr, powerPort);
-		}
+		int clientSock = ConnectClientSocket (powerServer, powerPort, NULL);
 		if (SocketValid (clientSock))
 		{
 			gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
@@ -191,16 +186,16 @@ static void processBuffer (char *buffer, size_t size)
  */
 void readPowerMeterInfo ()
 {
-	char buffer[512] = "", addr[20];
-	int clientSock = -1, bytesRead = 0;
+	char buffer[512] = "";
+	int bytesRead = 0;
 
-	if (GetAddressFromName (powerServer, addr))
-	{
-		clientSock = ConnectClientSocket (addr, powerPort);
-	}
+	int clientSock = ConnectClientSocket (powerServer, powerPort, NULL);
 	if (SocketValid (clientSock))
 	{
-		bytesRead = RecvSocket (clientSock, buffer, 511);
+		if (WaitSocket (clientSock, 2) > 0)
+		{
+			bytesRead = RecvSocket (clientSock, buffer, 511);
+		}
 		CloseSocket (&clientSock);
 	}
 	if (bytesRead)
