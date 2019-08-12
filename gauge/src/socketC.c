@@ -95,8 +95,9 @@ int ServerSocketFile (char *fileName)
 	struct sockaddr_un mAddress;
 
 	if (!SocketValid (mSocket))
+	{
 		return -1;
-
+	}
 	mAddress.sun_family = AF_UNIX;
 	strcpy (mAddress.sun_path, fileName);
 	unlink (mAddress.sun_path);
@@ -107,7 +108,6 @@ int ServerSocketFile (char *fileName)
 		close (mSocket);
 		return -1;
 	}
-
 	if (listen (mSocket, MAXCONNECTIONS) == -1)
 	{
 		close (mSocket);
@@ -198,6 +198,51 @@ int ConnectSocketFile (char *fileName)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  T I M E D  C O N N E C T                                                                                          *
+ *  ========================                                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Make a timed connection attempt.
+ *  \param socket Handle for the socket.
+ *  \param secs Time to wait for.
+ *  \param addr Address to connecto to.
+ *  \param addrSize Size of the address.
+ *  \result 0 if connected OK.
+ */
+int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
+{
+	int selRetn, conRetn;
+	fd_set connfd;
+	struct timeval timeout;
+	char dummyBuff[10];
+
+	setNonBlocking (socket, 1);
+	conRetn = connect (socket, addr, addrSize);
+	if (conRetn != 0 && errno == EINPROGRESS)
+	{
+		timeout.tv_sec = secs;
+		timeout.tv_usec = 0;
+
+		FD_ZERO(&connfd);
+		FD_SET (socket, &connfd);
+
+		selRetn = select (FD_SETSIZE, NULL, &connfd, NULL, &timeout);
+		if (selRetn > 0)
+		{
+			setNonBlocking (socket, 0);
+			if (recv (socket, dummyBuff, 0, 0) == 0)
+			{
+				return 0;
+			}
+		}
+		conRetn = -1;
+	}
+	return conRetn;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  C O N N E C T  C L I E N T  S O C K E T                                                                           *
  *  =======================================                                                                           *
  *                                                                                                                    *
@@ -209,12 +254,12 @@ int ConnectSocketFile (char *fileName)
  *  \param retnAddr Optional (can be NULL) pointer to return used address.
  *  \result Handle of socket or -1 if failed.
  */
-int ConnectClientSocket (char *host, int port, char *retnAddr)
+int ConnectClientSocket (char *host, int port, int timeout, char *retnAddr)
 {
 	struct addrinfo *result;
 	struct addrinfo *res;
 	struct addrinfo addrInfoHint;
-	int on = 1, error, connected = 0;
+	int error, connected = 0;
 	int mSocket = -1;
 
 	/* only get all stream addresses */
@@ -233,18 +278,15 @@ int ConnectClientSocket (char *host, int port, char *retnAddr)
 			case AF_INET:
 				if ((mSocket = socket (AF_INET, SOCK_STREAM, 0)) != -1)
 				{
-					if (setsockopt (mSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof (on)) == 0)
+					struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
+					if (retnAddr != NULL)
 					{
-						struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
-						if (retnAddr != NULL)
-						{
-							inet_ntop (AF_INET, &(address4->sin_addr), retnAddr, INET_ADDRSTRLEN);
-						}
-						address4 -> sin_port = htons (port);
-						if (connect (mSocket, (struct sockaddr *)address4, sizeof (struct sockaddr_in)) == 0)
-						{
-							connected = 1;
-						}
+						inet_ntop (AF_INET, &(address4->sin_addr), retnAddr, INET_ADDRSTRLEN);
+					}
+					address4 -> sin_port = htons (port);
+					if (TimedConnect (mSocket, timeout, (struct sockaddr *)address4, sizeof (struct sockaddr_in)) == 0)
+					{
+						connected = 1;
 					}
 				}
 				break;
@@ -252,18 +294,15 @@ int ConnectClientSocket (char *host, int port, char *retnAddr)
 			case AF_INET6:
 				if ((mSocket = socket (AF_INET6, SOCK_STREAM, 0)) != -1)
 				{
-					if (setsockopt (mSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof (on)) == 0)
+					struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
+					if (retnAddr != NULL)
 					{
-						struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
-						if (retnAddr != NULL)
-						{
-							inet_ntop(AF_INET6, &(address6->sin6_addr), retnAddr, INET6_ADDRSTRLEN);
-						}
-						address6 -> sin6_port = htons (port);
-						if (connect (mSocket, (struct sockaddr *)address6, sizeof (struct sockaddr_in6)) == 0)
-						{
-							connected = 1;
-						}
+						inet_ntop(AF_INET6, &(address6->sin6_addr), retnAddr, INET6_ADDRSTRLEN);
+					}
+					address6 -> sin6_port = htons (port);
+					if (TimedConnect (mSocket, timeout, (struct sockaddr *)address6, sizeof (struct sockaddr_in6)) == 0)
+					{
+						connected = 1;
 					}
 				}
 				break;
@@ -430,6 +469,7 @@ int SocketValid (int socket)
  */
 int GetAddressFromName (char *name, char *address)
 {
+	int retn = 0;
 	struct addrinfo *result;
 	struct addrinfo *res;
 	struct addrinfo addrInfoHint;
@@ -445,19 +485,31 @@ int GetAddressFromName (char *name, char *address)
 		/* loop over all returned results and do inverse lookup */
 		for (res = result; res != NULL; res = res->ai_next)
 		{
-			char addrstr[100];
-			char hostname[NI_MAXHOST] = "";
+                        switch (res->ai_family)
+                        {
+                        case AF_INET:
+				{
+					struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
+					if (inet_ntop (AF_INET, &(address4->sin_addr), address, INET_ADDRSTRLEN) != NULL)
+					{
+						retn = 1;
+					}
+				}
+				break;
 
-			if (getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0) != 0)
-			{
-				continue;
+                        case AF_INET6:
+				{
+					struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
+					if (inet_ntop(AF_INET6, &(address6->sin6_addr), address, INET6_ADDRSTRLEN) != NULL)
+					{
+						retn = 1;
+					}
+				}
+				break;
 			}
-			inet_ntop (res->ai_family, res->ai_addr->sa_data, addrstr, 100);
-			strcpy (address, addrstr);
-			return 1;
 		}
 		freeaddrinfo (result);
 	}
-	return 0;
+	return retn;
 }
 

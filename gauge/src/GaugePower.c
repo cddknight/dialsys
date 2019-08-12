@@ -56,7 +56,7 @@ void readPowerMeterInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
-		int clientSock = ConnectClientSocket (powerServer, powerPort, NULL);
+		int clientSock = ConnectClientSocket (powerServer, powerPort, 3, NULL);
 		if (SocketValid (clientSock))
 		{
 			gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
@@ -189,7 +189,7 @@ void readPowerMeterInfo ()
 	char buffer[512] = "";
 	int bytesRead = 0;
 
-	int clientSock = ConnectClientSocket (powerServer, powerPort, NULL);
+	int clientSock = ConnectClientSocket (powerServer, powerPort, 3, NULL);
 	if (SocketValid (clientSock))
 	{
 		if (WaitSocket (clientSock, 2) > 0)
