@@ -159,7 +159,7 @@ int ServerSocketAccept (int socket, char *address)
 		if (inet_ntop (AF_INET6, &clientaddr.sin6_addr, str, sizeof(str))) 
 		{
 			strcpy (address, str);
-        }
+	        }
 	}
 	return clientSocket;
 }
@@ -212,7 +212,7 @@ int ConnectSocketFile (char *fileName)
  */
 int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
 {
-	int selRetn, conRetn;
+	int conRetn;
 	fd_set connfd;
 	struct timeval timeout;
 	char dummyBuff[10];
@@ -221,6 +221,7 @@ int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
 	conRetn = connect (socket, addr, addrSize);
 	if (conRetn != 0 && errno == EINPROGRESS)
 	{
+		int selRetn;
 		timeout.tv_sec = secs;
 		timeout.tv_usec = 0;
 
@@ -230,9 +231,11 @@ int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
 		selRetn = select (FD_SETSIZE, NULL, &connfd, NULL, &timeout);
 		if (selRetn > 0)
 		{
-			setNonBlocking (socket, 0);
-			if (recv (socket, dummyBuff, 0, 0) == 0)
+			int recRetn;
+			recRetn = recv (socket, dummyBuff, 0, MSG_DONTWAIT);
+			if (recRetn == 0 || (recRetn == -1 && errno == EAGAIN))
 			{
+				setNonBlocking (socket, 0);
 				return 0;
 			}
 		}
@@ -251,6 +254,7 @@ int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
  *  \brief Connect to a remote socket.
  *  \param host Host address to connecto to.
  *  \param port Host port to connect to.
+ *  \param timeout Seconds to wait for the connect.
  *  \param retnAddr Optional (can be NULL) pointer to return used address.
  *  \result Handle of socket or -1 if failed.
  */
@@ -259,7 +263,7 @@ int ConnectClientSocket (char *host, int port, int timeout, char *retnAddr)
 	struct addrinfo *result;
 	struct addrinfo *res;
 	struct addrinfo addrInfoHint;
-	int error, connected = 0;
+	int on = 1, error, connected = 0;
 	int mSocket = -1;
 
 	/* only get all stream addresses */
@@ -370,6 +374,30 @@ int SendSocket (int socket, char *buffer, int size)
 	return send (socket, buffer, size, MSG_NOSIGNAL);
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  W A I T  R E C V  S O C K E T                                                                                     *
+ *  =============================                                                                                     *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Wait before reading data from the socket.
+ *  \param socket Socket to wait and receive on.
+ *  \param buffer Buffer to read to.
+ *  \param size Size to read.
+ *  \param secs Seconds to wait.
+ *  \result Size of data read.
+ */
+int WaitRecvSocket (int socket, char *buffer, int size, int secs)
+{
+	int retn = WaitSocket (socket, secs);
+
+	if (retn == 1)
+	{
+		retn = RecvSocket (socket, buffer, size);
+	}
+	return retn;
+}
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -483,11 +511,11 @@ int GetAddressFromName (char *name, char *address)
 	if (getaddrinfo(name, NULL, &addrInfoHint, &result) == 0)
 	{
 		/* loop over all returned results and do inverse lookup */
-		for (res = result; res != NULL; res = res->ai_next)
+		for (res = result; res != NULL && retn == 0; res = res->ai_next)
 		{
-                        switch (res->ai_family)
-                        {
-                        case AF_INET:
+			switch (res->ai_family)
+			{
+				case AF_INET:
 				{
 					struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
 					if (inet_ntop (AF_INET, &(address4->sin_addr), address, INET_ADDRSTRLEN) != NULL)
@@ -497,7 +525,7 @@ int GetAddressFromName (char *name, char *address)
 				}
 				break;
 
-                        case AF_INET6:
+				case AF_INET6:
 				{
 					struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
 					if (inet_ntop(AF_INET6, &(address6->sin6_addr), address, INET6_ADDRSTRLEN) != NULL)
