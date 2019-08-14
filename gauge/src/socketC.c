@@ -263,7 +263,7 @@ int ConnectClientSocket (char *host, int port, int timeout, char *retnAddr)
 	struct addrinfo *result;
 	struct addrinfo *res;
 	struct addrinfo addrInfoHint;
-	int on = 1, error, connected = 0;
+	int error, connected = 0;
 	int mSocket = -1;
 
 	/* only get all stream addresses */
@@ -334,7 +334,7 @@ int ConnectClientSocket (char *host, int port, int timeout, char *retnAddr)
  *  \param set Set or clear non-blocking flag.
  *  \result None.
  */
-void setNonBlocking(int socket, int set)
+void setNonBlocking (int socket, int set)
 {
 	if (socket != -1)
 	{
@@ -413,7 +413,6 @@ int WaitRecvSocket (int socket, char *buffer, int size, int secs)
  */
 int WaitSocket (int socket, int secs)
 {
-	int selRetn;
 	fd_set readfds;
 	struct timeval timeout;
 
@@ -423,8 +422,7 @@ int WaitSocket (int socket, int secs)
 	FD_ZERO(&readfds);
 	FD_SET (socket, &readfds);
 
-	selRetn = select(FD_SETSIZE, &readfds, NULL, NULL, &timeout);
-	return selRetn;
+	return select(FD_SETSIZE, &readfds, NULL, NULL, &timeout);
 }
 
 /**********************************************************************************************************************
@@ -480,7 +478,7 @@ int CloseSocket (int *socket)
  */
 int SocketValid (int socket)
 {
-	return (socket != -1);
+	return (socket < 0 ? 0 : 1);
 }
 
 /**********************************************************************************************************************
