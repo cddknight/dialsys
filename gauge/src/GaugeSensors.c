@@ -40,6 +40,9 @@ extern MENU_DESC sFanMenuDesc[];
 extern MENU_DESC sensorMenuDesc[];
 extern int sysUpdateID;
 
+static char *piThermalFile = "/sys/class/thermal/thermal_zone0/temp";
+static int initSensorsOK = 0;
+
 #if SENSORS_API_VERSION >= 1024
 
 int faceTypes[2] =
@@ -47,14 +50,6 @@ int faceTypes[2] =
 	SENSORS_SUBFEATURE_TEMP_INPUT,
 	SENSORS_SUBFEATURE_FAN_INPUT
 };
-
-#endif
-
-static char *piThermalFile = "/sys/class/thermal/thermal_zone0/temp";
-
-#if SENSORS_API_VERSION >= 1024
-
-static int initSensorsOK = 0;
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -115,7 +110,6 @@ void findSensors ()
 	if (tempCount || fanCount)
 		gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
 }
-
 #endif
 
 /**********************************************************************************************************************
@@ -152,8 +146,8 @@ void readSensorInit (void)
 			}
 			fclose (inputFile);
 		}
-	}
 #endif
+	}
 }
 
 /**********************************************************************************************************************
@@ -171,17 +165,15 @@ void readSensorValues (int face)
 {
 	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
 	{
-		int nr = 0, count = 0;
 		FACE_SETTINGS *faceSetting = faceSettings[face];
-		int type = faceSetting -> showFaceType;
-		int number = faceSetting -> faceSubType;
 
 #if SENSORS_API_VERSION >= 1024
-
+		int nr = 0, count = 0;
+		int type = faceSetting -> showFaceType;
+		int number = faceSetting -> faceSubType;
 		const sensors_chip_name *chipset;
 		const sensors_feature *feature;
 		const sensors_subfeature *subfeature;
-
 #endif
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
@@ -219,7 +211,6 @@ void readSensorValues (int face)
 			}
 
 #if SENSORS_API_VERSION >= 1024
-
 			chipset = sensors_get_detected_chips (NULL, &nr);
 			while (chipset)
 			{
