@@ -50,6 +50,8 @@ int faceTypes[2] =
 
 #endif
 
+static char *piThermalFile = "/sys/class/thermal/thermal_zone0/temp";
+
 #if SENSORS_API_VERSION >= 1024
 
 static int initSensorsOK = 0;
@@ -128,11 +130,19 @@ void findSensors ()
  */
 void readSensorInit (void)
 {
-#if SENSORS_API_VERSION >= 1024
 	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
 	{
-		FILE *inputFile;
-
+		FILE *inputFile = fopen (piThermalFile, "r");
+		if (inputFile != NULL)
+		{
+			sTempMenuDesc[0].disable = 0;
+			sensorMenuDesc[MENU_SENSOR_TEMP].disable = 0;
+			gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
+			initSensorsOK = 1;
+			fclose (inputFile);
+			return;
+		}
+#if SENSORS_API_VERSION >= 1024
 		if ((inputFile = fopen ("/etc/sensors3.conf", "r")) != NULL)
 		{
 			if (sensors_init(inputFile) == 0)
@@ -183,10 +193,33 @@ void readSensorValues (int face)
 			return;
 		}
 
-#if SENSORS_API_VERSION >= 1024
-
 		if (initSensorsOK)
 		{
+			FILE *thermFile = fopen (piThermalFile, "r");
+			if (thermFile != NULL)
+			{
+				int readTemp;
+				if (fscanf(thermFile, "%d", &readTemp) == 1)
+				{
+					faceSetting -> firstValue = (float)readTemp / 1000;
+					setFaceString (faceSetting, FACESTR_TOP, 0, _("RPi Temp"));
+					setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Temp %0.1f - Gauge"), 
+							faceSetting -> firstValue);
+					setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Temp</b>: %0.0f\302\260C"),
+							faceSetting -> firstValue);
+					setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\302\260C"), faceSetting -> firstValue);
+					while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+					{
+						faceSetting -> faceScaleMax += 25;
+						maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+					}
+				}
+				fclose (thermFile);
+				return;
+			}
+
+#if SENSORS_API_VERSION >= 1024
+
 			chipset = sensors_get_detected_chips (NULL, &nr);
 			while (chipset)
 			{
@@ -254,8 +287,8 @@ void readSensorValues (int face)
 				}
 				chipset = sensors_get_detected_chips (NULL, &nr);
 			}
-		}
 #endif
+		}
 	}
 }
 
