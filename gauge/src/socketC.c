@@ -258,7 +258,7 @@ int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
  *  \param retnAddr Optional (can be NULL) pointer to return used address.
  *  \result Handle of socket or -1 if failed.
  */
-int ConnectClientSocket (char *host, int port, int timeout, char *retnAddr)
+int ConnectClientSocket (char *host, int port, int timeout, int useIPVer, char *retnAddr)
 {
 	struct addrinfo *result;
 	struct addrinfo *res;
@@ -280,33 +280,39 @@ int ConnectClientSocket (char *host, int port, int timeout, char *retnAddr)
 			switch (res->ai_family)
 			{
 			case AF_INET:
-				if ((mSocket = socket (AF_INET, SOCK_STREAM, 0)) != -1)
+				if (useIPVer & USE_IPV4)
 				{
-					struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
-					if (retnAddr != NULL)
+					if ((mSocket = socket (AF_INET, SOCK_STREAM, 0)) != -1)
 					{
-						inet_ntop (AF_INET, &(address4->sin_addr), retnAddr, INET_ADDRSTRLEN);
-					}
-					address4 -> sin_port = htons (port);
-					if (TimedConnect (mSocket, timeout, (struct sockaddr *)address4, sizeof (struct sockaddr_in)) == 0)
-					{
-						connected = 1;
+						struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
+						if (retnAddr != NULL)
+						{
+							inet_ntop (AF_INET, &(address4->sin_addr), retnAddr, INET_ADDRSTRLEN);
+						}
+						address4 -> sin_port = htons (port);
+						if (TimedConnect (mSocket, timeout, (struct sockaddr *)address4, sizeof (struct sockaddr_in)) == 0)
+						{
+							connected = 1;
+						}
 					}
 				}
 				break;
 
 			case AF_INET6:
-				if ((mSocket = socket (AF_INET6, SOCK_STREAM, 0)) != -1)
+				if (useIPVer & USE_IPV6)
 				{
-					struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
-					if (retnAddr != NULL)
+					if ((mSocket = socket (AF_INET6, SOCK_STREAM, 0)) != -1)
 					{
-						inet_ntop(AF_INET6, &(address6->sin6_addr), retnAddr, INET6_ADDRSTRLEN);
-					}
-					address6 -> sin6_port = htons (port);
-					if (TimedConnect (mSocket, timeout, (struct sockaddr *)address6, sizeof (struct sockaddr_in6)) == 0)
-					{
-						connected = 1;
+						struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
+						if (retnAddr != NULL)
+						{
+							inet_ntop(AF_INET6, &(address6->sin6_addr), retnAddr, INET6_ADDRSTRLEN);
+						}
+						address6 -> sin6_port = htons (port);
+						if (TimedConnect (mSocket, timeout, (struct sockaddr *)address6, sizeof (struct sockaddr_in6)) == 0)
+						{
+							connected = 1;
+						}
 					}
 				}
 				break;

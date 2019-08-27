@@ -23,11 +23,15 @@
 #ifndef MY_SOCKET_H
 #define MY_SOCKET_H
 
+#define USE_IPV4	1
+#define USE_IPV6	2
+#define USE_ANY		3
+
 int ServerSocketSetup (int port);
 int ServerSocketFile (char *fileName);
 int ServerSocketAccept (int socket, char *address);
 int ConnectSocketFile (char *fileName);
-int ConnectClientSocket (char *host, int port, int timeout, char *address);
+int ConnectClientSocket (char *host, int port, int timeout, int useIPVer, char *address);
 int SendSocket (int socket, char *buffer, int size);
 int WaitRecvSocket (int socket, char *buffer, int size, int secs);
 int RecvSocket (int socket, char *buffer, int size);

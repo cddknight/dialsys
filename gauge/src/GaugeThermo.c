@@ -56,7 +56,7 @@ void readThermometerInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_THERMO].enabled)
 	{
-		int clientSock = ConnectClientSocket (thermoServer, thermoPort, 3, NULL);
+		int clientSock = ConnectClientSocket (thermoServer, thermoPort, 3, USE_ANY, NULL);
 		if (SocketValid (clientSock))
 		{
 			gaugeMenuDesc[MENU_GAUGE_THERMO].disable = 0;
@@ -183,7 +183,7 @@ void readThermometerInfo ()
 	char buffer[512] = "";
 	int bytesRead = 0;
 
-	int clientSock = ConnectClientSocket (thermoServer, thermoPort, 3, NULL);
+	int clientSock = ConnectClientSocket (thermoServer, thermoPort, 3, USE_ANY, NULL);
 	if (SocketValid (clientSock))
 	{
 		if (WaitSocket (clientSock, 2) > 0)
