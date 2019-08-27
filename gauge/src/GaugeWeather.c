@@ -1320,6 +1320,7 @@ void readWeatherValues(int face)
 							myWeather.forecast[i].sunset,
 							myWeather.forecast[i].updateTime);
 				faceSetting->secondValue = DONT_SHOW;
+				faceSetting->firstValue = myWeather.forecast[i].showTempMin;
 			}
 			else
 			{
@@ -1345,9 +1346,9 @@ void readWeatherValues(int face)
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunrise, myWeather.forecast[i].sunset,
 							myWeather.forecast[i].updateTime);
-				faceSetting->secondValue = myWeather.forecast[i].showTempMax;
+				faceSetting->firstValue = myWeather.forecast[i].showTempMax;
+				faceSetting->secondValue = myWeather.forecast[i].showTempMin;
 			}
-			faceSetting->firstValue = myWeather.forecast[i].showTempMin;
 			break;
 		}
 		if (myWeather.updateNum != -1)
