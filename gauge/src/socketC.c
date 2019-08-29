@@ -51,25 +51,24 @@ int ServerSocketSetup (int port)
 	int on = 1, mSocket = socket (AF_INET6, SOCK_STREAM, 0);
 
 	if (!SocketValid (mSocket))
+	{
 		return -1;
-
+	}
 	if (setsockopt (mSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof (on)) == -1)
 	{
 		close (mSocket);
 		return -1;
 	}
-
 	memset (&mAddress, 0, sizeof(mAddress));
-    mAddress.sin6_family = AF_INET6;
-	mAddress.sin6_addr   = in6addr_any;
-	mAddress.sin6_port   = htons(port);
+	mAddress.sin6_family = AF_INET6;
+	mAddress.sin6_addr	 = in6addr_any;
+	mAddress.sin6_port	 = htons(port);
 
 	if (bind (mSocket, (struct sockaddr *) &mAddress, sizeof (mAddress)) == -1)
 	{
 		close (mSocket);
 		return -1;
 	}
-
 	if (listen (mSocket, MAXCONNECTIONS) == -1)
 	{
 		close (mSocket);
@@ -152,14 +151,14 @@ int ServerSocketAccept (int socket, char *address)
 	if (clientSocket != -1)
 	{
 		struct sockaddr_in6 clientaddr;
-		socklen_t addrlen=sizeof(clientaddr);		
+		socklen_t addrlen=sizeof(clientaddr);
 		char str[INET6_ADDRSTRLEN];
 
 		getpeername (clientSocket, (struct sockaddr *)&clientaddr, &addrlen);
-		if (inet_ntop (AF_INET6, &clientaddr.sin6_addr, str, sizeof(str))) 
+		if (inet_ntop (AF_INET6, &clientaddr.sin6_addr, str, sizeof(str)))
 		{
 			strcpy (address, str);
-	        }
+		}
 	}
 	return clientSocket;
 }
@@ -184,10 +183,10 @@ int ConnectSocketFile (char *fileName)
 	{
 		return -1;
 	}
-
 	mAddress.sun_family = AF_UNIX;
 	strcpy(mAddress.sun_path, fileName);
 	len = strlen(mAddress.sun_path) + sizeof(mAddress.sun_family);
+
 	if (connect (mSocket, (struct sockaddr *)&mAddress, len) == -1)
 	{
 		close (mSocket);
@@ -219,6 +218,7 @@ int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
 
 	setNonBlocking (socket, 1);
 	conRetn = connect (socket, addr, addrSize);
+
 	if (conRetn != 0 && errno == EINPROGRESS)
 	{
 		int selRetn;
@@ -290,6 +290,7 @@ int ConnectClientSocket (char *host, int port, int timeout, int useIPVer, char *
 							inet_ntop (AF_INET, &(address4->sin_addr), retnAddr, INET_ADDRSTRLEN);
 						}
 						address4 -> sin_port = htons (port);
+
 						if (TimedConnect (mSocket, timeout, (struct sockaddr *)address4, sizeof (struct sockaddr_in)) == 0)
 						{
 							connected = 1;
@@ -309,6 +310,7 @@ int ConnectClientSocket (char *host, int port, int timeout, int useIPVer, char *
 							inet_ntop(AF_INET6, &(address6->sin6_addr), retnAddr, INET6_ADDRSTRLEN);
 						}
 						address6 -> sin6_port = htons (port);
+
 						if (TimedConnect (mSocket, timeout, (struct sockaddr *)address6, sizeof (struct sockaddr_in6)) == 0)
 						{
 							connected = 1;
@@ -344,9 +346,8 @@ void setNonBlocking (int socket, int set)
 {
 	if (socket != -1)
 	{
-		int opts;
+		int opts = fcntl (socket, F_GETFL);
 
-		opts = fcntl (socket, F_GETFL);
 		if (opts >= 0)
 		{
 			if (set)
@@ -499,7 +500,7 @@ int SocketValid (int socket)
  *  \param address Out out the address here.
  *  \result 1 if address resolved.
  */
-int GetAddressFromName (char *name, char *address)
+int GetAddressFromName (char *name, char *address, int useIPVer)
 {
 	int retn = 0;
 	struct addrinfo *result;
@@ -519,7 +520,8 @@ int GetAddressFromName (char *name, char *address)
 		{
 			switch (res->ai_family)
 			{
-				case AF_INET:
+			case AF_INET:
+				if (useIPVer & USE_IPV4)
 				{
 					struct sockaddr_in *address4 = (struct sockaddr_in *)res -> ai_addr;
 					if (inet_ntop (AF_INET, &(address4->sin_addr), address, INET_ADDRSTRLEN) != NULL)
@@ -529,7 +531,8 @@ int GetAddressFromName (char *name, char *address)
 				}
 				break;
 
-				case AF_INET6:
+			case AF_INET6:
+				if (useIPVer & USE_IPV6)
 				{
 					struct sockaddr_in6 *address6 = (struct sockaddr_in6 *)res -> ai_addr;
 					if (inet_ntop(AF_INET6, &(address6->sin6_addr), address, INET6_ADDRSTRLEN) != NULL)

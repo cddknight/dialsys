@@ -39,7 +39,7 @@ int WaitSocket (int socket, int secs);
 int CloseSocket (int *socket);
 int SocketValid (int socket);
 void setNonBlocking(int socket, int set);
-int GetAddressFromName (char *name, char *address);
+int GetAddressFromName (char *name, char *address, int useIPVer);
 
 #endif
 
