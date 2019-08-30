@@ -197,9 +197,9 @@ void readSensorValues (int face)
 			return;
 		}
 
+#if SENSORS_API_VERSION >= 1024
 		if (initSensorsOK == 1)
 		{
-#if SENSORS_API_VERSION >= 1024
 			chipset = sensors_get_detected_chips (NULL, &nr);
 			while (chipset)
 			{
