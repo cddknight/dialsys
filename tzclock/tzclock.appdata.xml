@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 Chris Knight <chris@theknight.co.uk> -->
+<!-- Copyright 2019 Chris Knight <chris@theknight.co.uk> -->
 <application>
- <id type="desktop">txclock.desktop</id>
+ <id type="desktop">tzclock.desktop</id>
  <licence>CC0</licence>
  <name>Timezone Clock</name>
  <summary>Show time around the world</summary>
@@ -28,6 +28,6 @@
  <screenshots>
   <screenshot type="default" width="640" height="480">http://www.tzclock.org/image/screenShot.png</screenshot>
  </screenshots>
- <url type="homepage">http://www.tzclock.org</url>
+ <url type="homepage">http://www.theknight.co.uk/</url>
  <updatecontact>chris@theknight.co.uk</updatecontact>
 </application>
