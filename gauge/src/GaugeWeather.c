@@ -300,15 +300,18 @@ void readWeatherInit(void)
 {
 	if (gaugeEnabled[FACE_TYPE_WEATHER].enabled)
 	{
+		int i;
+
 		gaugeMenuDesc[MENU_GAUGE_WEATHER].disable = 0;
 		myWeather.tempC = myWeather.apparent = tempUnits[myWeather.tUnits].tempMin;
 		myWeather.windspeedKmph = speedUnits[myWeather.sUnits].speedMin;
 		myWeather.pressure = pressureUnits[myWeather.pUnits].pressureMin;
+		for (i = 0; i < FORECAST_NUM; ++i)
+			myWeather.forecast[i].evening = 1;
 		strcpy(myWeather.weatherDesc, _("Updating"));
 		strcpy(myWeather.winddirPoint, _("Updating"));
 		strcpy(myWeather.visView, _("Updating"));
-		if (locationKey[0] == 0)
-			strcpy(locationKey, "2647216");
+		if (locationKey[0] == 0) strcpy(locationKey, "2647216");
 		myWeather.nextUpdate = time(NULL);
 		myWeather.updateNum = -1;
 	}
@@ -1320,8 +1323,8 @@ void readWeatherValues(int face)
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunset,
 							myWeather.forecast[i].updateTime);
-				faceSetting->secondValue = DONT_SHOW;
 				faceSetting->firstValue = myWeather.forecast[i].showTempMin;
+				faceSetting->secondValue = DONT_SHOW;
 			}
 			else
 			{
