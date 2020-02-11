@@ -1329,8 +1329,8 @@ void readWeatherValues(int face)
 			else
 			{
 				setFaceString(faceSetting, FACESTR_BOT, 0, "%0.0f%s\n%0.0f%s",
-							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText,
-							myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText);
+							myWeather.forecast[i].showTempMax, tempUnits[myWeather.tUnits].tempText,
+							myWeather.forecast[i].showTempMin, tempUnits[myWeather.tUnits].tempText);
 				setFaceString(faceSetting, FACESTR_TIP, 0,
 							_("<b>Location</b>: %s\n"
 							"<b>Summary</b>: %s\n"
