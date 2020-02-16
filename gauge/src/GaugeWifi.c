@@ -89,8 +89,7 @@ int huntForQuality (char *inStr, char *findStr)
  **********************************************************************************************************************/
 /**
  *  \brief Read the link quality by running iwconfig.
- *  \param qualityValue Link quality value.
- *  \param signalValue Signal level value.
+ *  \param readInfo Pointer to buffer or read info.
  *  \result 1 if a value was read, 0 if not.
  */
 int readLinkQuality(struct sReadInfo *readInfo)

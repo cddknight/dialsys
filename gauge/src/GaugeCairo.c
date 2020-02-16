@@ -167,7 +167,6 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 }
 
 #if GTK_MAJOR_VERSION == 2
-
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C L O C K  E X P O S E                                                                                            *
@@ -176,7 +175,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
  **********************************************************************************************************************/
 /**
  *  \brief Call when the gauge needs to be drawn.
- *  \param widget .
+ *  \param widget Calling Widget.
  *  \result None.
  */
 void clockExpose (GtkWidget *widget)
@@ -214,6 +213,7 @@ void clockExpose (GtkWidget *widget)
 	cr = NULL;
 }
 
+#else
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C L O C K  E X P O S E                                                                                            *
@@ -225,8 +225,6 @@ void clockExpose (GtkWidget *widget)
  *  \param cr .
  *  \result .
  */
-#else
-
 void clockExpose (cairo_t *cr)
 {
 	int i, j, face = 0;
@@ -252,7 +250,6 @@ void clockExpose (cairo_t *cr)
 		}
 	}
 }
-
 #endif
 
 /**********************************************************************************************************************

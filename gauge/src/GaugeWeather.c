@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <zlib.h>
+#include <pthread.h>
 #include <curl/curl.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -150,8 +151,17 @@ typedef struct
 } 
 weatherForecast;
 
+#define READ_STATE_IDLE		0
+#define READ_STATE_PENDING	1
+#define READ_STATE_UPDATED	2
+#define READ_STATE_SHOWN	3
+#define READ_STATE_ERROR	4
+
 typedef struct 
 {
+	int readState;
+	pthread_t threadHandle;
+
 	char updateTime[61];
 	int tempC;
 	char weatherDesc[81];
@@ -990,34 +1000,58 @@ void doUpdateWeatherInfo(char *weatherURL)
  **********************************************************************************************************************/
 /**
  *  \brief Update the weather information.
+ *  \param arg .
  *  \result None.
  */
-void updateWeatherInfo()
+void *updateWeatherInfo (void *arg)
+{
+	myWeather.updateTime[0] = 0;
+
+	if (observations == 0)
+	{
+		doUpdateWeatherInfo(weatherTFCURL);
+		observations = 1;
+	}
+	doUpdateWeatherInfo(weatherOBSURL);
+	observations = 0;
+
+	if (myWeather.updateTime[0])
+	{
+		myWeather.nextUpdate = time(NULL) + (15 * 60);
+		if (++myWeather.updateNum == 100)
+			myWeather.updateNum = 0;
+
+		fixupShowValues();
+	}
+	else
+	{
+		myWeather.nextUpdate = time(NULL) + 15;
+	}
+	myWeather.readState = READ_STATE_UPDATED;
+	return NULL;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  S T A R T  U P D A T E  W E A T H E R  I N F O                                                                    *
+ *  ==============================================                                                                    *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief .
+ *  \result .
+ */
+void startUpdateWeatherInfo()
 {
 	if (time(NULL) >= myWeather.nextUpdate)
 	{
-		myWeather.updateTime[0] = 0;
-
-		if (observations == 0)
+		if (pthread_create (&myWeather.threadHandle, NULL, updateWeatherInfo, NULL) == 0)
 		{
-			doUpdateWeatherInfo(weatherTFCURL);
-			observations = 1;
-			return;
-		}
-		doUpdateWeatherInfo(weatherOBSURL);
-		observations = 0;
-
-		if (myWeather.updateTime[0])
-		{
-			myWeather.nextUpdate = time(NULL) + (15 * 60);
-			if (++myWeather.updateNum == 100)
-				myWeather.updateNum = 0;
-
-			fixupShowValues();
+			myWeather.readState = READ_STATE_PENDING;
 		}
 		else
 		{
-			myWeather.nextUpdate = time(NULL) + 15;
+			myWeather.readState = READ_STATE_ERROR;
 		}
 	}
 }
@@ -1130,11 +1164,21 @@ void readWeatherValues(int face)
 		}
 		else if (faceSetting->nextUpdate == 0)
 		{
-			updateWeatherInfo();
-			faceSetting->nextUpdate = 10;
-			if (myWeather.updateNum == faceSetting->updateNum)
-				return;
+			if (myWeather.readState != READ_STATE_UPDATED)
+			{
+				if (myWeather.readState != READ_STATE_PENDING)
+				{
+					startUpdateWeatherInfo();
+					return;
+				}
+				faceSetting->nextUpdate = 10;
+				if (myWeather.updateNum == faceSetting->updateNum)
+					return;
+			}
 		}
+
+		if (myWeather.readState == READ_STATE_UPDATED)
+			myWeather.readState = READ_STATE_SHOWN;
 
 		switch (subType)
 		{
@@ -1601,6 +1645,7 @@ void weatherSettings(guint data)
 		if (textUpdate)
 		{
 			weatherGaugeReset();
+			myWeather.readState = READ_STATE_IDLE;
 			myWeather.updateNum = -1;
 			myWeather.nextUpdate = 0;
 		}

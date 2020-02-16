@@ -20,6 +20,7 @@ PKG_CHECK_MODULES([DEPS], [gtk+-3.0 libcurl libxml-2.0 zlib dial],
 		[REQUIRES="gtk2-devel cairo-devel libgnomeui-devel"])])
 AC_CHECK_LIB(sensors, sensors_init, [DEPS_LIBS="$DEPS_LIBS -lsensors"]) 
 AC_CHECK_LIB(m, lrint, [DEPS_LIBS="$DEPS_LIBS -lm"]) 
+AC_CHECK_LIB(pthread, pthread_create, [DEPS_LIBS="$DEPS_LIBS -lpthread"]) 
 
 AC_SUBST(REQUIRES)
 AC_SUBST(DEPS_CFLAGS)

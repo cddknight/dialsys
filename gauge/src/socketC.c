@@ -255,6 +255,7 @@ int TimedConnect (int socket, int secs, struct sockaddr *addr, int addrSize)
  *  \param host Host address to connecto to.
  *  \param port Host port to connect to.
  *  \param timeout Seconds to wait for the connect.
+ *  \param useIPVer What IP version to use.
  *  \param retnAddr Optional (can be NULL) pointer to return used address.
  *  \result Handle of socket or -1 if failed.
  */
@@ -498,6 +499,7 @@ int SocketValid (int socket)
  *  \brief Convert and addess to an IP address with a lookup.
  *  \param name Name to look up.
  *  \param address Out out the address here.
+ *  \param useIPVer What IP version to use.
  *  \result 1 if address resolved.
  */
 int GetAddressFromName (char *name, char *address, int useIPVer)

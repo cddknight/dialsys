@@ -110,6 +110,7 @@ int getScaleShiftCount (int scale)
 /**
  *  \brief Calculate the best scale for this gauge.
  *  \param values Values to scale.
+ *  \param lockScale Alter the scale after it is changed.
  *  \result None (saved in structure).
  */
 void setDeviceScale (struct devValues *values, int lockScale)
@@ -139,6 +140,7 @@ void setDeviceScale (struct devValues *values, int lockScale)
  **********************************************************************************************************************/
 /**
  *  \brief Read the number of sectors read.
+ *  \param lockScale Alter the scale after it is changed.
  *  \result None.
  */
 void readDeviceValues(int lockScale)
