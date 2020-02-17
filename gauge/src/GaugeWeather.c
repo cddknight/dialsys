@@ -151,11 +151,8 @@ typedef struct
 } 
 weatherForecast;
 
-#define READ_STATE_IDLE		0
+#define READ_STATE_UPDATED	0
 #define READ_STATE_PENDING	1
-#define READ_STATE_UPDATED	2
-#define READ_STATE_SHOWN	3
-#define READ_STATE_ERROR	4
 
 typedef struct 
 {
@@ -1049,10 +1046,6 @@ void startUpdateWeatherInfo()
 		{
 			myWeather.readState = READ_STATE_PENDING;
 		}
-		else
-		{
-			myWeather.readState = READ_STATE_ERROR;
-		}
 	}
 }
 
@@ -1164,21 +1157,17 @@ void readWeatherValues(int face)
 		}
 		else if (faceSetting->nextUpdate == 0)
 		{
-			if (myWeather.readState != READ_STATE_UPDATED)
+			faceSetting->nextUpdate = 20;
+			if (myWeather.updateNum == faceSetting->updateNum)
 			{
-				if (myWeather.readState != READ_STATE_PENDING)
+				if (myWeather.readState == READ_STATE_UPDATED)
 				{
 					startUpdateWeatherInfo();
 					return;
 				}
-				faceSetting->nextUpdate = 10;
-				if (myWeather.updateNum == faceSetting->updateNum)
-					return;
+				return;
 			}
 		}
-
-		if (myWeather.readState == READ_STATE_UPDATED)
-			myWeather.readState = READ_STATE_SHOWN;
 
 		switch (subType)
 		{
@@ -1645,7 +1634,7 @@ void weatherSettings(guint data)
 		if (textUpdate)
 		{
 			weatherGaugeReset();
-			myWeather.readState = READ_STATE_IDLE;
+			myWeather.readState = READ_STATE_UPDATED;
 			myWeather.updateNum = -1;
 			myWeather.nextUpdate = 0;
 		}
