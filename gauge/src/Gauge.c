@@ -603,9 +603,9 @@ lockCallback (guint data)
 void
 aboutCallback (guint data)
 {
-	char verString[81];
+	char verString[241];
 
-	sprintf (verString, _("Version: %s"), VERSION);
+	sprintf (verString, _("Version: %s\nBuilt: %s %s"), VERSION, __DATE__, __TIME__);
 	/*------------------------------------------------------------------------------------------------*
      * Nice dialog that can be used with newer versions of the GTK API.                               *
      *------------------------------------------------------------------------------------------------*/

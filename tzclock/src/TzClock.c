@@ -905,9 +905,9 @@ void
 aboutCallback (guint data)
 {
 	char comment[256];
-	char verString[81];
+	char verString[241];
 
-	sprintf (verString, _("Version: %s"), VERSION);
+	sprintf (verString, _("Version: %s\nBuilt: %s %s"), VERSION, __DATE__, __TIME__);
 	sprintf (comment, _("Timezone Clock is a highly configurable analogue clock, capable\n"
 					  "of showing the time in many different countries and cities.\n"
 					  "Loaded time zones: %d"), nTimeZones - FIRST_CITY);
