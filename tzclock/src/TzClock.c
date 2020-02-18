@@ -21,6 +21,7 @@
  *  \brief Main clock sources.
  */
 #include "config.h"
+#include "buildDate.h"
 #include "TzClockDisp.h"
 #include "ParseZone.h"
 
@@ -907,7 +908,7 @@ aboutCallback (guint data)
 	char comment[256];
 	char verString[241];
 
-	sprintf (verString, _("Version: %s\nBuilt: %s %s"), VERSION, __DATE__, __TIME__);
+	sprintf (verString, _("Version: %s\nBuilt: %s"), VERSION, buildDate);
 	sprintf (comment, _("Timezone Clock is a highly configurable analogue clock, capable\n"
 					  "of showing the time in many different countries and cities.\n"
 					  "Loaded time zones: %d"), nTimeZones - FIRST_CITY);
