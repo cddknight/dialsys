@@ -22,6 +22,7 @@
  */
 #include <libintl.h>
 #include "config.h"
+#include "buildDate.h"
 #include "GaugeDisp.h"
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
@@ -605,7 +606,7 @@ aboutCallback (guint data)
 {
 	char verString[241];
 
-	sprintf (verString, _("Version: %s\nBuilt: %s %s"), VERSION, __DATE__, __TIME__);
+	sprintf (verString, _("Version: %s\nBuilt: %s %s"), VERSION, buildDate);
 	/*------------------------------------------------------------------------------------------------*
      * Nice dialog that can be used with newer versions of the GTK API.                               *
      *------------------------------------------------------------------------------------------------*/
