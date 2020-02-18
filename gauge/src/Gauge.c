@@ -606,7 +606,7 @@ aboutCallback (guint data)
 {
 	char verString[241];
 
-	sprintf (verString, _("Version: %s\nBuilt: %s %s"), VERSION, buildDate);
+	sprintf (verString, _("Version: %s\nBuilt: %s"), VERSION, buildDate);
 	/*------------------------------------------------------------------------------------------------*
      * Nice dialog that can be used with newer versions of the GTK API.                               *
      *------------------------------------------------------------------------------------------------*/
