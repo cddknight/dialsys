@@ -141,9 +141,20 @@ void readCPUValues (int face)
 				readClockRates ();
 				setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_WIN, 0, _("%s %s - Gauge"), cpuName, name[faceType]);
-				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f MHz\n%d%%"), (float)clockRates[faceType] / 1000, percent);
-				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>CPU Count</b>: %d\n<b>Clock</b>: %0.2f MHz"), 
-						cpuName, name[faceType], percent, cpuCount, (float)clockRates[faceType] / 1000);
+				if (clockRates[faceType] < 100)
+				{
+					setFaceString (faceSetting, FACESTR_BOT, 0, _("%d%%"), percent);
+					setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%"), 
+							cpuName, name[faceType], percent);
+				}
+				else
+				{
+					setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f MHz\n%d%%"), 
+							(float)clockRates[faceType] / 1000, percent);
+					setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>CPU Count</b>: %d\n"
+							"<b>Clock</b>: %0.2f MHz"), 
+							cpuName, name[faceType], percent, cpuCount, (float)clockRates[faceType] / 1000);
+				}
 				for (i = 0; i < 8; i++)
 					startStats[procNumber][i] = endStats[procNumber][i];
 			}
