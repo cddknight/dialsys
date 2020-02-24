@@ -38,6 +38,11 @@ extern int sysUpdateID;
 extern char tideURL[];
 
 #define MAX_SAVE_TIDES	21
+#define TIDE_STATE_UPDATED	0
+#define TIDE_STATE_PENDING	1
+
+static int tideState;
+static pthread_t threadHandle;
 
 struct MemoryStruct
 {
@@ -494,9 +499,10 @@ static void processBuffer (char *buffer, size_t size)
  **********************************************************************************************************************/
 /**
  *  \brief Get the tide times using curl.
+ *  \param arg Not used.
  *  \result None.
  */
-void getTideTimes ()
+void *getTideTimes (void *arg)
 {
 	CURL *curlHandle;
 	struct MemoryStruct chunk;
@@ -507,10 +513,6 @@ void getTideTimes ()
 	curl_global_init(CURL_GLOBAL_ALL);
 	curlHandle = curl_easy_init();
 	curl_easy_setopt(curlHandle, CURLOPT_URL, &tideURL[0]);
-/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=6400&PredictionLength=3"); */
-/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=2679&PredictionLength=3"); */
-/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=1570&PredictionLength=3"); */
-/*  curl_easy_setopt(curlHandle, CURLOPT_URL, "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PortID=0108&PredictionLength=3"); */
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
 	curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_easy_setopt(curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -527,6 +529,29 @@ void getTideTimes ()
 		free(chunk.memory);
 	}
 	curl_global_cleanup();
+	tideState = TIDE_STATE_UPDATED;
+	return NULL;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  S T A R T  U P D A T E  T I D E  I N F O                                                                          *
+ *  ========================================                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Create a thread to read the tide times..
+ *  \result None.
+ */
+void startUpdateTideInfo()
+{
+	if (tideState != TIDE_STATE_PENDING)
+	{
+		if (pthread_create (&threadHandle, NULL, getTideTimes, NULL) == 0)
+		{
+			tideState = TIDE_STATE_PENDING;
+		}
+	}
 }
 
 /**********************************************************************************************************************
@@ -584,7 +609,7 @@ void readTideValues (int face)
 			time_t now = time (NULL);
 			if (tideInfo.readTime < now || myUpdateID == -1)
 			{
-				getTideTimes();
+				startUpdateTideInfo();
 			}
 			myUpdateID = sysUpdateID;
 		}
@@ -743,7 +768,7 @@ void tideSettings (guint data)
 			strcpy (tideURL, urlPrefix);
 			sprintf (&tideURL[strlen(urlPrefix)], "%04d", atoi (saveText));
 			configSetValue ("tide_info_url", tideURL);
-			getTideTimes ();
+			startUpdateTideInfo ();
 			myUpdateID = -1;
 		}
 	}
