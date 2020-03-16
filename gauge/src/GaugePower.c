@@ -40,7 +40,7 @@ extern MENU_DESC gaugeMenuDesc[];
 extern char powerServer[];
 extern int powerPort;
 
-double myPowerReading[8];
+double myPowerReading[18];
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -56,11 +56,14 @@ void readPowerMeterInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
-		int clientSock = ConnectClientSocket (powerServer, powerPort, 3, USE_ANY, NULL);
+		int i, clientSock = ConnectClientSocket (powerServer, powerPort, 3, USE_ANY, NULL);
 		if (SocketValid (clientSock))
 		{
 			gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
 			CloseSocket (&clientSock);
+
+			for (i = 0; i < 18; ++i)
+				myPowerReading[i] = -1;
 		}
 	}
 }
@@ -80,22 +83,45 @@ void readPowerMeterInit (void)
  */
 static void processPowerKey (int readLevel, const char *name, char *value)
 {
-	if (readLevel == 1 && strcmp (name, "now") == 0)
-		myPowerReading[0] = atof (value);
-	if (readLevel == 1 && strcmp (name, "max") == 0)
-		myPowerReading[1] = atof (value);
-	if (readLevel == 1 && strcmp (name, "min") == 0)
-		myPowerReading[2] = atof (value);
-	if (readLevel == 1 && strcmp (name, "minavg") == 0)
-		myPowerReading[3] = atof (value);
-	if (readLevel == 1 && strcmp (name, "houravg") == 0)
-		myPowerReading[4] = atof (value);
-	if (readLevel == 1 && strcmp (name, "dayavg") == 0)
-		myPowerReading[5] = atof (value);
-	if (readLevel == 1 && strcmp (name, "monthavg") == 0)
-		myPowerReading[6] = atof (value);
-	if (readLevel == 1 && strcmp (name, "yearavg") == 0)
-		myPowerReading[7] = atof (value);
+	if (readLevel == 1)
+	{
+		if (strcmp (name, "now") == 0)
+			myPowerReading[0] = atof (value);
+		else if (strcmp (name, "max") == 0)
+			myPowerReading[1] = atof (value);
+		else if (strcmp (name, "min") == 0)
+			myPowerReading[2] = atof (value);
+		else if (strcmp (name, "minavg") == 0)
+			myPowerReading[3] = atof (value);
+		else if (strcmp (name, "houravg") == 0)
+			myPowerReading[4] = atof (value);
+		else if (strcmp (name, "dayavg") == 0)
+			myPowerReading[5] = atof (value);
+		else if (strcmp (name, "monthavg") == 0)
+			myPowerReading[6] = atof (value);
+		else if (strcmp (name, "yearavg") == 0)
+			myPowerReading[7] = atof (value);
+		else if (strcmp (name, "minmin") == 0)
+			myPowerReading[8] = atof (value);
+		else if (strcmp (name, "hourmin") == 0)
+			myPowerReading[9] = atof (value);
+		else if (strcmp (name, "daymin") == 0)
+			myPowerReading[10] = atof (value);
+		else if (strcmp (name, "monthmin") == 0)
+			myPowerReading[11] = atof (value);
+		else if (strcmp (name, "yearmin") == 0)
+			myPowerReading[12] = atof (value);
+		else if (strcmp (name, "minmax") == 0)
+			myPowerReading[13] = atof (value);
+		else if (strcmp (name, "hourmax") == 0)
+			myPowerReading[14] = atof (value);
+		else if (strcmp (name, "daymax") == 0)
+			myPowerReading[15] = atof (value);
+		else if (strcmp (name, "monthmax") == 0)
+			myPowerReading[16] = atof (value);
+		else if (strcmp (name, "yearmax") == 0)
+			myPowerReading[17] = atof (value);
+	}
 }
 
 /**********************************************************************************************************************
@@ -219,7 +245,7 @@ void readPowerMeterInfo ()
 void getPowerStr (double reading, char *buffer)
 {
 	if (reading == -1)
-		strcpy (buffer, "Unknown");
+		strcpy (buffer, "NA");
 	else if (reading >= 1000)
 		sprintf (buffer, "%0.1fKW", reading / 1000);
 	else
@@ -242,7 +268,7 @@ void readPowerMeterValues (int face)
 	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
-		char powerStr[8][41];
+		char powerStr[18][41];
 		int i;
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
@@ -260,7 +286,7 @@ void readPowerMeterValues (int face)
 			faceSetting -> nextUpdate = 30;
 		}
 
-		for (i = 0; i < 8; ++i)
+		for (i = 0; i < 18; ++i)
 			getPowerStr (myPowerReading[i], &powerStr[i][0]);
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
@@ -268,10 +294,13 @@ void readPowerMeterValues (int face)
 				_("<b>Current</b>: %s\n"
 				"<b>Maximum</b>: %s\n"
 				"<b>Minimum</b>: %s\n"
-				"<b>Hour Average</b>: %s\n"
-				"<b>Day Average</b>: %s\n"
-				"<b>Month Average</b>: %s"),
-				powerStr[0], powerStr[1], powerStr[2], powerStr[4], powerStr[5], powerStr[6]);
+				"<b>Hour Average</b>: %s (%s to %s)\n"
+				"<b>Day Average</b>: %s (%s to %s)\n"
+				"<b>Month Average</b>: %s (%s to %s)"),
+				powerStr[0], powerStr[1], powerStr[2], 
+				powerStr[4], powerStr[9], powerStr[14],
+				powerStr[5], powerStr[10], powerStr[15],
+				powerStr[6], powerStr[11], powerStr[16]);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Day Average: %s"),
 				powerStr[0], powerStr[5]);
 		setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);
