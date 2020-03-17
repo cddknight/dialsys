@@ -294,9 +294,9 @@ void readPowerMeterValues (int face)
 				_("<b>Current</b>: %s\n"
 				"<b>Maximum</b>: %s\n"
 				"<b>Minimum</b>: %s\n"
-				"<b>Hour Average</b>: %s (%s to %s)\n"
-				"<b>Day Average</b>: %s (%s to %s)\n"
-				"<b>Month Average</b>: %s (%s to %s)"),
+				"<b>Hour</b>: %s (%s to %s)\n"
+				"<b>Day</b>: %s (%s to %s)\n"
+				"<b>Month</b>: %s (%s to %s)"),
 				powerStr[0], powerStr[1], powerStr[2], 
 				powerStr[4], powerStr[9], powerStr[14],
 				powerStr[5], powerStr[10], powerStr[15],
