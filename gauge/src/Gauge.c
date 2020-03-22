@@ -197,6 +197,7 @@ MENU_DESC sTempMenuDesc[] =
 	{	__("Temp 6"),			sensorTempCallback,		NULL,				5,	NULL,	0,	1	},
 	{	__("Temp 7"),			sensorTempCallback,		NULL,				6,	NULL,	0,	1	},
 	{	__("Temp 8"),			sensorTempCallback,		NULL,				7,	NULL,	0,	1	},
+	{	__("System"),			sensorTempCallback,		NULL,				8,	NULL,	0,	1	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 

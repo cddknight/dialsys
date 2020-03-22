@@ -142,22 +142,19 @@ void readSensorInit (void)
 			{
 				if (findSensors() > 0)
 				{
-					initSensorsOK = 1;
+					initSensorsOK |= 1;
 				}
 			}
 			fclose (inputFile);
 		}
 #endif
-		if (!initSensorsOK)
+		if ((inputFile = fopen (sysThermalFile, "r")) != NULL)
 		{
-			if ((inputFile = fopen (sysThermalFile, "r")) != NULL)
-			{
-				sTempMenuDesc[0].disable = 0;
-				sensorMenuDesc[MENU_SENSOR_TEMP].disable = 0;
-				gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
-				initSensorsOK = 2;
-				fclose (inputFile);
-			}
+			sTempMenuDesc[8].disable = 0;
+			sensorMenuDesc[MENU_SENSOR_TEMP].disable = 0;
+			gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
+			initSensorsOK |= 2;
+			fclose (inputFile);
 		}
 	}
 }
@@ -198,7 +195,7 @@ void readSensorValues (int face)
 		}
 
 #if SENSORS_API_VERSION >= 1024
-		if (initSensorsOK == 1)
+		if (initSensorsOK & 1)
 		{
 			chipset = sensors_get_detected_chips (NULL, &nr);
 			while (chipset)
@@ -269,28 +266,31 @@ void readSensorValues (int face)
 			}
 		}
 #endif
-		if (initSensorsOK == 2)
+		if (initSensorsOK & 2)
 		{
-			FILE *thermFile = fopen (sysThermalFile, "r");
-			if (thermFile != NULL)
+			if (faceSetting -> faceSubType == 8)
 			{
-				int readTemp;
-				if (fscanf(thermFile, "%d", &readTemp) == 1)
+				FILE *thermFile = fopen (sysThermalFile, "r");
+				if (thermFile != NULL)
 				{
-					faceSetting -> firstValue = (float)readTemp / 1000;
-					setFaceString (faceSetting, FACESTR_TOP, 0, _("System\nTemp"));
-					setFaceString (faceSetting, FACESTR_WIN, 0, _("System Temp %0.1f - Gauge"), 
-							faceSetting -> firstValue);
-					setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>System Temp</b>: %0.0f\302\260C"),
-							faceSetting -> firstValue);
-					setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\302\260C"), faceSetting -> firstValue);
-					while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+					int readTemp;
+					if (fscanf(thermFile, "%d", &readTemp) == 1)
 					{
-						faceSetting -> faceScaleMax += 25;
-						maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+						faceSetting -> firstValue = (float)readTemp / 1000;
+						setFaceString (faceSetting, FACESTR_TOP, 0, _("System\nTemp"));
+						setFaceString (faceSetting, FACESTR_WIN, 0, _("System Temp %0.1f - Gauge"), 
+								faceSetting -> firstValue);
+						setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>System Temp</b>: %0.0f\302\260C"),
+								faceSetting -> firstValue);
+						setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f\302\260C"), faceSetting -> firstValue);
+						while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+						{
+							faceSetting -> faceScaleMax += 25;
+							maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+						}
 					}
+					fclose (thermFile);
 				}
-				fclose (thermFile);
 			}
 		}
 	}
