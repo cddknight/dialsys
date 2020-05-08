@@ -298,6 +298,7 @@ MENU_DESC pickCPUMenuDesc[] =
 MENU_DESC cpuMenuDesc[] =
 {
 	{	__("Average"),			loadCallback,			NULL,				0x2000	},
+	{	__("Clock Speed"),			loadCallback,			NULL,				0x4000	},
 	{	"-",					NULL,					NULL,				0		},
 	{	__("Total"),			loadCallback,			NULL,				0x0000	},
 	{	__("User"),				loadCallback,			NULL,				0x0100	},
@@ -1201,6 +1202,10 @@ loadCallback (guint data)
 	{
 		faceSubType = 0x0F00;
 	}
+	else if (data & 0x4000)
+	{
+		faceSubType = 0x0E00 + (faceSettings[currentFace] -> faceSubType & 0x00FF);
+	}
 	else if (faceSettings[currentFace] -> showFaceType == FACE_TYPE_CPU_LOAD)
 	{
 		if (data & 0x1000)
@@ -1213,8 +1218,8 @@ loadCallback (guint data)
 			faceSubType = faceSettings[currentFace] -> faceSubType & 0x00FF;
 			faceSubType |= (data & 0x0F00);
 		}
+		faceSubType &= 0x0FFF;
 	}
-	faceSubType &= 0x0FFF;
 
 	gaugeReset (currentFace, FACE_TYPE_CPU_LOAD, faceSubType);
 	faceSettings[currentFace] -> faceFlags |= FACE_HOT_COLD;
@@ -1227,10 +1232,21 @@ loadCallback (guint data)
 		faceSettings[currentFace] -> faceFlags |= (FACE_SHOW_POINT | FACE_SHOW_MAX);
 		faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	}
+	else if ((faceSettings[currentFace] -> faceSubType & 0x0F00) == 0x0E00)
+	{
+		faceSettings[currentFace] -> faceScaleMin = 0;
+		faceSettings[currentFace] -> faceScaleMax = 5;
+		faceSettings[currentFace] -> faceFlags |= (FACE_SHOW_MAX);
+		faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
+	}
 	else if ((faceSettings[currentFace] -> faceSubType & 0x0F00) == 0x0400)
+	{
 		faceSettings[currentFace] -> faceFlags |= (FACE_HC_REVS | FACE_SHOW_MIN);
+	}
 	else
+	{
 		faceSettings[currentFace] -> faceFlags |= FACE_SHOW_MAX;
+	}
 }
 
 /**********************************************************************************************************************

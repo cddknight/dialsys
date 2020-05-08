@@ -109,7 +109,58 @@ void readCPUValues (int face)
 			faceSetting -> firstValue = newVal;
 			update = 1;
 		}
-		if (faceType != 0x0F)
+
+		if (faceType == 0x0F)
+		{
+			if (!update && sysUpdateID % 5 != 0)
+				return;
+
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("Load\nAverage"));
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("Load average - Gauge"));
+			if (readAverage (loadAverages) == 6)
+			{
+				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(%0.2f)"),
+						loadAverages[0], loadAverages[1]);
+				setFaceString (faceSetting, FACESTR_TIP, 0, _(
+						"<b>1 min. average</b>: %0.2f\n<b>5 min. average</b>: %0.2f\n<b>15 min. average</b>: %0.2f\n"
+						"<b>Processes</b>: %d\n<b>Running</b>: %d\n<b>Last PID</b>: %d"),
+						loadAverages[0], loadAverages[1], loadAverages[2],
+						readCount[1], readCount[0], readCount[2]);
+				faceSetting -> firstValue = loadAverages[0];
+				faceSetting -> secondValue = loadAverages[1];
+				while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+				{
+					faceSetting -> faceScaleMax *= 2;
+					maxMinReset (&faceSetting -> savedMaxMin, 5, 1);
+				}
+			}
+			else
+			{
+				setFaceString (faceSetting, FACESTR_BOT, 0, _("0.00\n(0.00)"));
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("Missing load average"));
+				faceSetting -> firstValue = faceSetting -> secondValue = 0;
+			}
+		}
+		else if (faceType == 0x0E)
+		{
+			if (!update && sysUpdateID % 5 != 0)
+				return;
+
+			strcpy (cpuName, _("CPU"));
+			if (procNumber)
+			{
+				sprintf (&cpuName[3], "%d", procNumber);
+			}
+			faceSetting -> firstValue = (float)clockRates[procNumber] / 1000;
+			faceSetting -> secondValue = DONT_SHOW;
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\nClock Speed"), cpuName);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("%s Clock Speed - Gauge"));
+			readClockRates ();
+			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f Mhz"), faceSetting -> firstValue);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s Clock Speed</b>: %0.2f Mhz"), 
+					cpuName, faceSetting -> firstValue);
+		}
+		else
 		{
 			if (!update && sysUpdateID % 2 != 0)
 				return;
@@ -141,7 +192,7 @@ void readCPUValues (int face)
 				readClockRates ();
 				setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_WIN, 0, _("%s %s - Gauge"), cpuName, name[faceType]);
-				if (clockRates[faceType] < 100)
+				if (clockRates[procNumber] < 100)
 				{
 					setFaceString (faceSetting, FACESTR_BOT, 0, _("%d%%"), percent);
 					setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%"), 
@@ -150,44 +201,13 @@ void readCPUValues (int face)
 				else
 				{
 					setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f MHz\n%d%%"), 
-							(float)clockRates[faceType] / 1000, percent);
+							(float)clockRates[procNumber] / 1000, percent);
 					setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s %s</b>: %d%%\n<b>CPU Count</b>: %d\n"
 							"<b>Clock</b>: %0.2f MHz"), 
-							cpuName, name[faceType], percent, cpuCount, (float)clockRates[faceType] / 1000);
+							cpuName, name[faceType], percent, cpuCount, (float)clockRates[procNumber] / 1000);
 				}
 				for (i = 0; i < 8; i++)
 					startStats[procNumber][i] = endStats[procNumber][i];
-			}
-		}
-		else
-		{
-			if (!update && sysUpdateID % 5 != 0)
-				return;
-
-			setFaceString (faceSetting, FACESTR_TOP, 0, _("Load\nAverage"));
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("Load average - Gauge"));
-			if (readAverage (loadAverages) == 6)
-			{
-				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(%0.2f)"),
-						loadAverages[0], loadAverages[1]);
-				setFaceString (faceSetting, FACESTR_TIP, 0, _(
-						"<b>1 min. average</b>: %0.2f\n<b>5 min. average</b>: %0.2f\n<b>15 min. average</b>: %0.2f\n"
-						"<b>Processes</b>: %d\n<b>Running</b>: %d\n<b>Last PID</b>: %d"),
-						loadAverages[0], loadAverages[1], loadAverages[2],
-						readCount[1], readCount[0], readCount[2]);
-				faceSetting -> firstValue = loadAverages[0];
-				faceSetting -> secondValue = loadAverages[1];
-				while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
-				{
-					faceSetting -> faceScaleMax *= 2;
-					maxMinReset (&faceSetting -> savedMaxMin, 5, 1);
-				}
-			}
-			else
-			{
-				setFaceString (faceSetting, FACESTR_BOT, 0, _("0.00\n(0.00)"));
-				setFaceString (faceSetting, FACESTR_TIP, 0, _("Missing load average"));
-				faceSetting -> firstValue = faceSetting -> secondValue = 0;
 			}
 		}
 	}
