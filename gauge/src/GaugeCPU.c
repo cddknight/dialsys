@@ -153,11 +153,11 @@ void readCPUValues (int face)
 			}
 			faceSetting -> firstValue = (float)clockRates[procNumber] / 1000;
 			faceSetting -> secondValue = DONT_SHOW;
-			setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\nClock Speed"), cpuName);
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("%s Clock Speed - Gauge"));
+			setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\nSpeed"), cpuName);
+			setFaceString (faceSetting, FACESTR_WIN, 0, _("%s CPU Speed - Gauge"));
 			readClockRates ();
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f Mhz"), faceSetting -> firstValue);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s Clock Speed</b>: %0.2f Mhz"), 
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s CPU Speed</b>: %0.2f Mhz"), 
 					cpuName, faceSetting -> firstValue);
 		}
 		else
