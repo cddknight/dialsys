@@ -391,13 +391,13 @@ void readHarddiskInit (void)
  */
 char *sizeToString (unsigned long long partSize, char *sizeStr)
 {
-	char codes[] = "KMGTXXX";
+	char codes[] = "KMGTPEZY";
 	unsigned long long divider = 1;
 	int step = 0;
 
 	while (partSize / divider > 1000)
 	{
-		divider *= 1024;
+		divider *= 1000;
 		++step;
 	}
 	if (partSize / divider > 100)
