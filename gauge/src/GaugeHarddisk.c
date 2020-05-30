@@ -23,11 +23,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/statvfs.h>
+#include <dialsys.h>
 
 #include "GaugeDisp.h"
 
-#define MAX_PARTITIONS	10
-#define MAX_DISKS		10
+#define MAX_PARTITIONS	20
+#define MAX_DISKS		20
 #define MAX_SCALE_MEM	20
 
 extern FACE_SETTINGS *faceSettings[];
@@ -53,18 +54,36 @@ typedef struct _diskInfo
 }
 DISK_INFO;
 
+typedef struct _partInfo
+{
+	char diskName[81];
+	char tidyName[41];
+}
+PARTITION_INFO;
+
 static int myUpdateID = 100;
 static long lastTime;
-static char diskNames[MAX_PARTITIONS][81];
-static char tidyNames[MAX_PARTITIONS][41];
 static char *diskTypes[] = { "ext2","ext3","ext4","btrfs","xfs","cifs","nfs","usbfs","vfat","fuseblk",NULL };
 static char *diskInfo = "/proc/mounts"; /* /etc/fstab */
 static char *diskStats = "/proc/diskstats";
 static char *typeNames[] = { "Reads", "Writes" };
-DISK_INFO diskActivity[MAX_DISKS + 1] =
+
+void *diskActivity;
+void *partitionInfo;
+
+int partQueueComp (void *item1, void *item2)
 {
-	{ __("All") }
-};
+	PARTITION_INFO *partOne = (PARTITION_INFO *)item1;
+	PARTITION_INFO *partTwo = (PARTITION_INFO *)item2;
+	return strcmp (partOne -> tidyName, partTwo -> tidyName);
+}
+
+int diskQueueComp (void *item1, void *item2)
+{
+	DISK_INFO *diskOne = (DISK_INFO *)item1;
+	DISK_INFO *diskTwo = (DISK_INFO *)item2;
+	return strcmp (diskOne -> name, diskTwo -> name);
+}
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -78,27 +97,25 @@ DISK_INFO diskActivity[MAX_DISKS + 1] =
  *  \param fullName Full partition name.
  *  \result None.
  */
-void tidyPartitionName (int disk, char *fullName)
+void tidyPartitionName (PARTITION_INFO *partInfo)
 {
 	int i = 0, j = 0;
-	if (disk < 10)
+
+	while (partInfo -> diskName[i])
 	{
-		while (fullName[i])
+		if (partInfo -> diskName[i] == '.' || partInfo -> diskName[i] <= ' ')
+			;
+		else if (partInfo -> diskName[i] == '/')
+			j = 0;
+		else if (j < 40)
 		{
-			if (fullName[i] == '.' || fullName[i] <= ' ')
-				;
-			else if (fullName[i] == '/')
-				j = 0;
-			else if (j < 40)
-			{
-				tidyNames[disk][j] = fullName[i];
-				tidyNames[disk][++j] = 0;
-			}
-			++i;
+			partInfo -> tidyName[j] = partInfo -> diskName[i];
+			partInfo -> tidyName[++j] = 0;
 		}
-		if (tidyNames[disk][0] == 0)
-			strcpy (tidyNames[disk], "root");
+		++i;
 	}
+	if (partInfo -> tidyName[0] == 0)
+		strcpy (partInfo -> tidyName, "root");
 }
 
 /**********************************************************************************************************************
@@ -115,13 +132,16 @@ void readPartitionNames()
 {
 	FILE *fstab;
 	char readBuff[256], readWord[256];
-	int disk = 0;
+	int disk = 0, menu = 0;
 
 	if ((fstab = fopen (diskInfo, "r")) != NULL)
 	{
 		while (fgets (readBuff, 255, fstab) && disk < MAX_PARTITIONS)
 		{
 			int i = 0, j = 0, w = 0;
+			char diskName[81];
+
+			diskName[0] = 0;
 			while (readBuff[i])
 			{
 				if (readBuff[0] == '#' && w == 0)
@@ -143,9 +163,9 @@ void readPartitionNames()
 						if (strncmp (readWord, "/proc", 5) == 0)
 							break;
 						readWord[78] = 0;
-						strcpy (diskNames[disk], readWord);
-						if (diskNames[disk][j - 1] != '/') strcat (diskNames[disk], "/");
-						strcat (diskNames[disk], ".");
+						strcpy (diskName, readWord);
+						if (diskName[j - 1] != '/') strcat (diskName, "/");
+						strcat (diskName, ".");
 					}
 					if (w == 3)
 					{
@@ -154,10 +174,11 @@ void readPartitionNames()
 						{
 							if (strcmp (readWord, diskTypes[j]) == 0)
 							{
-								tidyPartitionName (disk, diskNames[disk]);
-								spaceMenuDesc[disk].disable = 0;
-								spaceMenuDesc[disk].menuName = tidyNames[disk];
-								gaugeMenuDesc[MENU_GAUGE_HARDDISK].disable = 0;
+								PARTITION_INFO *partInfo = (PARTITION_INFO *)malloc (sizeof (PARTITION_INFO));
+								memset (partInfo, 0, sizeof (PARTITION_INFO));
+								strcpy (partInfo -> diskName, diskName);
+								tidyPartitionName (partInfo);
+								queuePutSort (partitionInfo, partInfo, partQueueComp);
 								++disk;
 								break;
 							}
@@ -168,6 +189,17 @@ void readPartitionNames()
 				}
 				++i;
 			}
+		}
+		while (menu < disk)
+		{
+			PARTITION_INFO *partInfo = queueRead (partitionInfo, menu);
+			if (partInfo != NULL)
+			{
+				spaceMenuDesc[menu].disable = 0;
+				spaceMenuDesc[menu].menuName = partInfo -> tidyName;
+				gaugeMenuDesc[MENU_GAUGE_HARDDISK].disable = 0;
+			}
+			++menu;
 		}
 		fclose (fstab);
 	}
@@ -186,25 +218,23 @@ void readPartitionNames()
  *  \param partSize Return the used size.
  *  \result Percent of disk used.
  */
-float getPartitionFreeSpace (int disk, unsigned long long *partTotal, unsigned long long *partSize)
+float getPartitionFreeSpace (PARTITION_INFO *partInfo, unsigned long long *partTotal, unsigned long long *partSize)
 {
 	struct statvfs stats;
-	if (diskNames[disk])
-	{
-		if (statvfs (diskNames[disk], &stats) == 0)
-		{
-			unsigned long long total = (unsigned long long)stats.f_blocks * stats.f_frsize / 1024;
-			unsigned long long available = (unsigned long long)stats.f_bavail * stats.f_frsize / 1024;
-			unsigned long long free = (unsigned long long)stats.f_bfree * stats.f_frsize / 1024;
-			unsigned long long used = total - free;
-			unsigned long long u100 = 0, nonroot_total = 0;
 
-			u100 = used * 100;
-			nonroot_total = used + available;
-			*partTotal = total;
-			*partSize = used;
-			return (float)u100 / nonroot_total;
-		}
+	if (statvfs (partInfo -> diskName, &stats) == 0)
+	{
+		unsigned long long total = (unsigned long long)stats.f_blocks * stats.f_frsize / 1024;
+		unsigned long long available = (unsigned long long)stats.f_bavail * stats.f_frsize / 1024;
+		unsigned long long free = (unsigned long long)stats.f_bfree * stats.f_frsize / 1024;
+		unsigned long long used = total - free;
+		unsigned long long u100 = 0, nonroot_total = 0;
+
+		u100 = used * 100;
+		nonroot_total = used + available;
+		*partTotal = total;
+		*partSize = used;
+		return (float)u100 / nonroot_total;
 	}
 	*partTotal = *partSize = 0;
 	return 0;
@@ -251,6 +281,7 @@ void readActivityValues()
 {
 	FILE *diskstats;
 	struct timeval tvTaken;
+	DISK_INFO *allDiskInfo = NULL, *thisDiskInfo;
 	char readBuff[256], readWord[256];
 	long thisTime = 0, readTime;
 	int disk = 1;
@@ -261,8 +292,9 @@ void readActivityValues()
 	lastTime = thisTime;
 	if (!readTime) return;
 
-	diskActivity[0].secRead.value = diskActivity[0].secRead.rate = 0;
-	diskActivity[0].secWrite.value = diskActivity[0].secWrite.rate = 0;
+	allDiskInfo = queueRead (diskActivity, 0);
+	allDiskInfo -> secRead.value = allDiskInfo -> secRead.rate = 0;
+	allDiskInfo -> secWrite.value = allDiskInfo -> secWrite.rate = 0;
 
 	if ((diskstats = fopen (diskStats, "r")) != NULL)
 	{
@@ -287,62 +319,79 @@ void readActivityValues()
 				{
 					if (w == 3)
 					{
-						int k, f = 0;
+						int k = 0, f = 0;
+						DISK_INFO *tmpDiskInfo = NULL;
+
 						if (strncmp (readWord, "ram", 3) == 0 || strncmp (readWord, "loop", 4) == 0)
 						{
 							/* Ignore ram and loop diska */
 							break;
 						}
-						for (k = 1; k < disk; ++k)
+						/* Find this disk, only look for sda ignore sda1 */
+						do
 						{
-							if (strncmp (diskActivity[k].name, readWord, strlen (diskActivity[k].name)) == 0)
+							tmpDiskInfo = queueRead (diskActivity, ++k);
+							if (tmpDiskInfo != NULL)
 							{
-								f = 1;
-								break;
+								if (strcmp (tmpDiskInfo -> name, readWord) == 0)
+								{
+									thisDiskInfo = tmpDiskInfo;
+									f = 1;
+								}
+								else if (strncmp (tmpDiskInfo -> name, readWord, strlen (tmpDiskInfo -> name)) == 0)
+								{
+									f = 2;
+								}
 							}
 						}
-						if (f)
+						while (tmpDiskInfo != NULL && !f);
+
+						if (f == 2)
 						{
 							break;
 						}
-						else
+						else if (f == 0)
 						{
-							strncpy (diskActivity[disk].name, readWord, 40);
+							/* Create a new entry for this disk */
+							thisDiskInfo = (DISK_INFO *)malloc (sizeof (DISK_INFO));
+							memset (thisDiskInfo, 0, sizeof (DISK_INFO));
+							strncpy (thisDiskInfo -> name, readWord, 40);
+							queuePut (diskActivity, thisDiskInfo);
 						}
 					}
 					if (w == 6)
 					{
 						unsigned long long diff;
 						unsigned long long value = atoll (readWord);
-						if (value < diskActivity[disk].secRead.value)
+						if (value < thisDiskInfo -> secRead.value)
 						{
-							diskActivity[disk].secRead.value = value;
+							thisDiskInfo -> secRead.value = value;
 							break;
 						}
-						diff = value - diskActivity[disk].secRead.value;
-						diskActivity[disk].secRead.rate = (diff * 1000) / readTime;
-						diskActivity[disk].secRead.value = value;
-						diskActivity[0].secRead.value += diff;
+						diff = value - thisDiskInfo -> secRead.value;
+						thisDiskInfo -> secRead.rate = (diff * 1000) / readTime;
+						thisDiskInfo -> secRead.value = value;
+						allDiskInfo -> secRead.value += diff;
 					}
 					if (w == 10)
 					{
 						unsigned long long diff;
 						unsigned long long value = atoll (readWord);
-						if (value < diskActivity[disk].secWrite.value)
+						if (value < thisDiskInfo -> secWrite.value)
 						{
-							diskActivity[disk].secWrite.value = value;
+							thisDiskInfo -> secWrite.value = value;
 							break;
 						}
-						diff = value - diskActivity[disk].secWrite.value;
-						diskActivity[disk].secWrite.rate = (diff * 1000) / readTime;
-						diskActivity[disk].secWrite.value = value;
-						diskActivity[0].secWrite.value += diff;
+						diff = value - thisDiskInfo -> secWrite.value;
+						thisDiskInfo -> secWrite.rate = (diff * 1000) / readTime;
+						thisDiskInfo -> secWrite.value = value;
+						allDiskInfo -> secWrite.value += diff;
 
-						setActivityScale (&diskActivity[disk].secRead);
-						setActivityScale (&diskActivity[disk].secWrite);
+						setActivityScale (&thisDiskInfo -> secRead);
+						setActivityScale (&thisDiskInfo -> secWrite);
 
 						diskMenuDesc[disk].disable = 0;
-						diskMenuDesc[disk].menuName = diskActivity[disk].name;
+						diskMenuDesc[disk].menuName = thisDiskInfo -> name;
 						++disk;
 					}
 					j = 0;
@@ -352,10 +401,10 @@ void readActivityValues()
 		}
 		fclose (diskstats);
 	}
-	diskActivity[0].secRead.rate = (diskActivity[0].secRead.value * 1000) / readTime;
-	diskActivity[0].secWrite.rate = (diskActivity[0].secWrite.value * 1000) / readTime;
-	setActivityScale (&diskActivity[0].secRead);
-	setActivityScale (&diskActivity[0].secWrite);
+	allDiskInfo -> secRead.rate = (allDiskInfo -> secRead.value * 1000) / readTime;
+	allDiskInfo -> secWrite.rate = (allDiskInfo -> secWrite.value * 1000) / readTime;
+	setActivityScale (&allDiskInfo -> secRead);
+	setActivityScale (&allDiskInfo -> secWrite);
 }
 
 /**********************************************************************************************************************
@@ -372,6 +421,12 @@ void readHarddiskInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_HARDDISK].enabled)
 	{
+		DISK_INFO *diskInfo = (DISK_INFO *)malloc (sizeof (DISK_INFO));
+		memset (diskInfo, 0, sizeof (DISK_INFO));
+		strcpy (diskInfo -> name, "All");
+		diskActivity = queueCreate();
+		queuePut (diskActivity, diskInfo);
+		partitionInfo = queueCreate();
 		readPartitionNames();
 		readActivityValues();
 	}
@@ -442,53 +497,62 @@ void readHarddiskValues (int face)
 		}
 		if (faceSetting -> faceSubType & 0x0300)
 		{
+			DISK_INFO *thisDiskInfo = NULL;
 			int scale, disk = faceSetting -> faceSubType & 0x00FF;
 			unsigned long value = 0;
 			char *nameT, *nameD;
 
-			nameD = diskActivity[disk].name;
-			if (faceSetting -> faceSubType & 0x0100)
+			thisDiskInfo = queueRead (diskActivity, disk);
+			if (thisDiskInfo != NULL)
 			{
-				nameT = typeNames[0];
-				scale = diskActivity[disk].secRead.useScale;
-				faceSetting -> firstValue = value = diskActivity[disk].secRead.rate;
-			}
-			else
-			{
-				nameT = typeNames[1];
-				scale = diskActivity[disk].secWrite.useScale;
-				faceSetting -> firstValue = value = diskActivity[disk].secWrite.rate;
-			}
-			faceSetting -> firstValue /= scale;
-			setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), gettext (nameT), nameD);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sector %s</b>: %lu/sec (%s)"), gettext (nameT), value, nameD);
-			if (scale > 1)
-				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec\nx%d"), faceSetting -> firstValue, scale);
-			else
-				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec"), faceSetting -> firstValue);
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("Sector %s - Gauge"), nameT);
+				nameD = thisDiskInfo -> name;
+				if (faceSetting -> faceSubType & 0x0100)
+				{
+					nameT = typeNames[0];
+					scale = thisDiskInfo -> secRead.useScale;
+					faceSetting -> firstValue = value = thisDiskInfo -> secRead.rate;
+				}
+				else
+				{
+					nameT = typeNames[1];
+					scale = thisDiskInfo -> secWrite.useScale;
+					faceSetting -> firstValue = value = thisDiskInfo -> secWrite.rate;
+				}
+				faceSetting -> firstValue /= scale;
+				setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), gettext (nameT), nameD);
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sector %s</b>: %lu/sec (%s)"), gettext (nameT), value, nameD);
+				if (scale > 1)
+					setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec\nx%d"), faceSetting -> firstValue, scale);
+				else
+					setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f/sec"), faceSetting -> firstValue);
+				setFaceString (faceSetting, FACESTR_WIN, 0, _("Sector %s - Gauge"), nameT);
 
-			if (faceSetting -> updateNum != scale)
-			{
-				maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
-				faceSetting -> faceFlags |= FACE_REDRAW;
-				faceSetting -> updateNum = scale;
+				if (faceSetting -> updateNum != scale)
+				{
+					maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+					faceSetting -> faceFlags |= FACE_REDRAW;
+					faceSetting -> updateNum = scale;
+				}
 			}
 		}
 		else
 		{
-			char sizeStr[2][41];
-			unsigned long long partTotal, partSize;
+			PARTITION_INFO *partInfo = queueRead (partitionInfo, faceSetting -> faceSubType);
+			if (partInfo != NULL)
+			{
+				char sizeStr[2][41];
+				unsigned long long partTotal, partSize;
 
-			faceSetting -> firstValue = getPartitionFreeSpace(faceSetting -> faceSubType, &partTotal, &partSize);
-			sizeToString (partTotal, sizeStr[0]);
-			sizeToString (partSize, sizeStr[1]);
+				faceSetting -> firstValue = getPartitionFreeSpace(partInfo, &partTotal, &partSize);
+				sizeToString (partTotal, sizeStr[0]);
+				sizeToString (partSize, sizeStr[1]);
 
-			setFaceString (faceSetting, FACESTR_TOP, 0, _("Partition\n%s"), tidyNames[faceSetting -> faceSubType]);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Used Space</b>: %0.1f%% (%s)\n<b>Total Size</b>: %s"),
-					faceSetting -> firstValue, sizeStr[1], sizeStr[0]);
-			setFaceString (faceSetting, FACESTR_WIN, 0, _("Partition Space: %0.1f%% Used - Gauge"), faceSetting -> firstValue);
-			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%s"), faceSetting -> firstValue, sizeStr[0]);
+				setFaceString (faceSetting, FACESTR_TOP, 0, _("Partition\n%s"), partInfo -> tidyName);
+				setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Used Space</b>: %0.1f%% (%s)\n<b>Total Size</b>: %s"),
+						faceSetting -> firstValue, sizeStr[1], sizeStr[0]);
+				setFaceString (faceSetting, FACESTR_WIN, 0, _("Partition Space: %0.1f%% Used - Gauge"), faceSetting -> firstValue);
+				setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.1f%%\n%s"), faceSetting -> firstValue, sizeStr[0]);
+			}
 		}
 	}
 }
