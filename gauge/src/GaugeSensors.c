@@ -51,26 +51,50 @@ int faceTypes[2] =
 	SENSORS_SUBFEATURE_FAN_INPUT
 };
 
-char *copyStr (char *inStr, char *outStr, int maxLen)
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C O P Y  S T R                                                                                                    *
+ *  ==============                                                                                                    *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Append extra info in words upto max size.
+ *  \param inStr Extra info to add.
+ *  \param outStr Where to add it to.
+ *  \param maxLen Max final string length.
+ *  \result Pointer to out string.
+ */
+char *appendExtra (char *inStr, char *outStr, int maxLen)
 {
-	int i = 0, j = 0, sep = 0;
+	char word[81];
+	int i = 0, j = 0, w = 0;
+	
+	outStr[0] = 0;
 	while (inStr[i] != 0 && i < maxLen)
 	{	
 		if (inStr[i] <= ' ')
 		{
-			sep = 1;
+			if (j > 0 && (strlen (word) + strlen (outStr) + 1) < maxLen)
+			{
+				strcat (outStr, w == 0 ? "\n" : " ");
+				strcat (outStr, word);
+				j = 0;
+				++w;
+			}
 		}
 		else
 		{
-			if (sep)
-			{
-				outStr[++j] = ' ';
-				sep = 0;
-			}
-			outStr[j] = inStr[i]; 
-			outStr[++j] = 0; 
+			word[j] = inStr[i]; 
+			word[++j] = 0;
+			if (j >= 80) j = 79;
 		}
 		++i;
+	}
+	if (inStr[i] == 0 && j > 0 && (strlen (word) + strlen (outStr) + 1) < maxLen)
+	{
+		strcat (outStr, w == 0 ? "\n" : " ");
+		strcat (outStr, word);
+		j = 0;
 	}
 	return outStr;
 }
@@ -242,7 +266,7 @@ void readSensorValues (int face)
 
 								if (sensors_get_value (chipset, nr2 - 1, &value) == 0)
 								{
-									char *label, sensorName[81];;
+									char *label, sensorName[41];
 
 									switch (type)
 									{
@@ -252,8 +276,7 @@ void readSensorValues (int face)
 											sprintf (sensorName, _("Temp %d"), number + 1);
 											if ((label = sensors_get_label (chipset, feature)) != NULL)
 											{
-												strcat (sensorName, "\n");
-												copyStr (label, &sensorName[strlen (sensorName)], 10);
+												appendExtra (label, &sensorName[strlen (sensorName)], 12);
 												free (label);
 											}	
 											setFaceString (faceSetting, FACESTR_TOP, 0, sensorName);
@@ -276,8 +299,7 @@ void readSensorValues (int face)
 											sprintf (sensorName, _("Fan %d"), number + 1);
 											if ((label = sensors_get_label (chipset, feature)) != NULL)
 											{
-												strcat (sensorName, "\n");
-												copyStr (label, &sensorName[strlen (sensorName)], 10);
+												appendExtra (label, &sensorName[strlen (sensorName)], 12);
 												free (label);
 											}
 											setFaceString (faceSetting, FACESTR_TOP, 0, _("Fan %d"), number + 1);
