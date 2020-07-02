@@ -51,6 +51,30 @@ int faceTypes[2] =
 	SENSORS_SUBFEATURE_FAN_INPUT
 };
 
+char *copyStr (char *inStr, char *outStr, int maxLen)
+{
+	int i = 0, j = 0, sep = 0;
+	while (inStr[i] != 0 && i < maxLen)
+	{	
+		if (inStr[i] <= ' ')
+		{
+			sep = 1;
+		}
+		else
+		{
+			if (sep)
+			{
+				outStr[++j] = ' ';
+				sep = 0;
+			}
+			outStr[j] = inStr[i]; 
+			outStr[++j] = 0; 
+		}
+		++i;
+	}
+	return outStr;
+}
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  F I N D  S E N S O R S                                                                                            *
@@ -218,12 +242,21 @@ void readSensorValues (int face)
 
 								if (sensors_get_value (chipset, nr2 - 1, &value) == 0)
 								{
+									char *label, sensorName[81];;
+
 									switch (type)
 									{
 									case FACE_TYPE_SENSOR_TEMP:
 										if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled)
 										{
-											setFaceString (faceSetting, FACESTR_TOP, 0, _("Temp %d"), number + 1);
+											sprintf (sensorName, _("Temp %d"), number + 1);
+											if ((label = sensors_get_label (chipset, feature)) != NULL)
+											{
+												strcat (sensorName, "\n");
+												copyStr (label, &sensorName[strlen (sensorName)], 10);
+												free (label);
+											}	
+											setFaceString (faceSetting, FACESTR_TOP, 0, sensorName);
 											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Temp %d - Gauge"), number + 1);
 											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Temp %d</b>: %0.0f\302\260C\n"
 														"<b>Chipset Name</b>: %s"), number + 1, value, chipset -> prefix);
@@ -238,8 +271,15 @@ void readSensorValues (int face)
 										break;
 
 									case FACE_TYPE_SENSOR_FAN:
-										if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled)
+										if (gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
 										{
+											sprintf (sensorName, _("Fan %d"), number + 1);
+											if ((label = sensors_get_label (chipset, feature)) != NULL)
+											{
+												strcat (sensorName, "\n");
+												copyStr (label, &sensorName[strlen (sensorName)], 10);
+												free (label);
+											}
 											setFaceString (faceSetting, FACESTR_TOP, 0, _("Fan %d"), number + 1);
 											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Fan %d - Gauge"), number + 1);
 											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Fan %d</b>: %0.0f rpm\n"
