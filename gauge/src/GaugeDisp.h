@@ -226,6 +226,7 @@ void sensorFanCallback		(guint data);
 void weatherCallback		(guint data);
 void weatherSettings		(guint data);
 void tideSettings			(guint data);
+void thermometerSettings	(guint data);
 void thermometerCallback	(guint data);
 void powerMeterCallback		(guint data);
 void configSaveCallback		(guint data);

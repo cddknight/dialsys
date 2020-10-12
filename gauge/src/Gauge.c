@@ -322,7 +322,7 @@ MENU_DESC gaugeMenuDesc[] =
 	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*  06  */
 	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*  07  */
 	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*  08  */
-	{	__("Thermometer"),		thermometerCallback,	NULL,				0,	NULL,	0,	1	},	/*  09  */
+	{	__("Thermometer"),		thermometerCallback,	NULL,				1,	NULL,	0,	1	},	/*  09  */
 	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*  10  */
 	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*  11  */
 	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/*  12  */
@@ -443,7 +443,7 @@ unsigned int weatherScales;
 char locationKey[41] = "2647216";
 char thermoServer[41] = "tinyfour";
 int thermoPort = 30302;
-char powerServer[41] = "littleone";
+char powerServer[41] = "tinyseven";
 int powerPort = 30303;
 
 /**********************************************************************************************************************
@@ -1534,6 +1534,11 @@ weatherCallback (guint data)
 void
 thermometerCallback (guint data)
 {
+	if (data == 1)
+	{
+		/* Called from the menu so select server */
+		thermometerSettings (0);
+	}	
 	gaugeReset (currentFace, FACE_TYPE_THERMO, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_HOT_COLD);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
