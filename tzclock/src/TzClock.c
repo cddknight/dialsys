@@ -177,7 +177,7 @@ MENU_DESC markerMenuDesc[] =
 	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  03  */
 	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/*  04  */
 	{	"-",					NULL,					NULL,				0		},
-	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  06  */
+	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  07  */
 	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  07  */
 	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  08  */
 	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  09  */
@@ -259,7 +259,9 @@ CLOCK_INST clockInst =
 	0,								/* toolTipFace */
 	0,								/* timeSetting */
 	0,								/* allowSaveDisp */
+	0,								/* removeTaskbar */
 	-1,								/* forceTime */
+	0,								/* reConfigTime */
 	"Sans",							// fontName
 	".tzclockrc",					// configFile
 	"",								// windowTitle
@@ -302,6 +304,7 @@ static void splitTimeZone			(char *timeZone, char *area, char *city, char *displ
 static void processCommandLine		(int argc, char *argv[], int *posX, int *posY);
 static void howTo					(FILE * outFile, char *format, ...);
 static void checkForAlarm			(FACE_SETTINGS *faceSetting, struct tm *tm);
+static void reReadConfig			();
 
 static gboolean clockTickCallback	(gpointer data);
 static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event);
@@ -1325,6 +1328,15 @@ clockTickCallback (gpointer data)
 
 	if (clockInst.forceTime != -1)
 		t = clockInst.forceTime;
+	if (clockInst.reConfigTime != 0)
+	{
+		if (t >= clockInst.reConfigTime)
+		{
+			reReadConfig();
+			update = 1;
+			clockInst.reConfigTime = t + 300;
+		}
+	}
 	if (lastTime == -1)
 		update = 1;
 	lastTime = t;
@@ -2342,6 +2354,9 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				clockInst.fastSetting = !clockInst.fastSetting;
 				configSetBoolValue ("fast_setting", clockInst.fastSetting);
 				break;
+			case 'r':
+				clockInst.reConfigTime = ((time (NULL) / 300) * 300) + 300;
+				break;
 			case 'S':							/* Enable the stopwatch */
 				clockInst.faceSettings[face] -> stopwatch = !clockInst.faceSettings[face] -> stopwatch;
 				sprintf (value, "stopwatch_%d", face + 1);
@@ -2355,6 +2370,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				break;
 			case 'T':							/* Force the clock to show a fixed time */
 				clockInst.forceTime = atoi (&argv[i][2]);
+				break;
+			case 't':
+				clockInst.removeTaskbar = !clockInst.removeTaskbar;
+				configSetBoolValue ("remove_taskbar", clockInst.removeTaskbar);
 				break;
 			case 'u':							/* Uppercase the city name */
 				clockInst.faceSettings[face] -> upperCity = !clockInst.faceSettings[face] -> upperCity;
@@ -2509,6 +2528,7 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("fast_setting", &clockInst.fastSetting);
 	configGetBoolValue ("bounce_seconds", &clockInst.showBounceSec);
 	configGetBoolValue ("decorated", &clockInst.clockDecorated);
+	configGetBoolValue ("remove_taskbar", &clockInst.removeTaskbar);
 	configGetIntValue ("face_size", &clockInst.dialConfig.dialSize);
 	configGetIntValue ("clock_num_col", &clockInst.dialConfig.dialWidth);
 	configGetIntValue ("clock_num_row", &clockInst.dialConfig.dialHeight);
@@ -2589,6 +2609,37 @@ void loadConfig (int *posX, int *posY)
 			}
 		}
 	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  R E  R E A D  C O N F I G                                                                                         *
+ *  =========================                                                                                         *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Reload the config and use the new colours.
+ *  \result None.
+ */
+void reReadConfig ()
+{
+	int i;
+	char *home = getenv ("HOME");
+	char configPath[1024], value[81], tempName[81];
+
+	configLoad ("/etc/tzclockrc");
+	strcpy (configPath, home);
+	strcat (configPath, "/");
+	strcat (configPath, clockInst.configFile);
+	configLoad (configPath);
+	for (i = 2; i < MAX__COLOURS; i++)
+	{
+		sprintf (value, "colour_%s", colourNames[i].shortName);
+		strcpy (tempName, colourNames[i].shortName);
+		configGetValue (value, &tempName[strlen (tempName)], 60);
+		loadColour (tempName);
+	}
+	dialCreateColours();
 }
 
 /**********************************************************************************************************************
@@ -2731,6 +2782,8 @@ main (int argc, char *argv[])
 	*------------------------------------------------------------------------------------------------*/
 	clockInst.accelGroup = gtk_accel_group_new ();
 	gtk_window_add_accel_group (GTK_WINDOW (clockInst.dialConfig.mainWindow), clockInst.accelGroup);
+	if (clockInst.removeTaskbar)
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (clockInst.dialConfig.mainWindow), TRUE);
 
 	stickCallback (0);
 	onTopCallback (0);

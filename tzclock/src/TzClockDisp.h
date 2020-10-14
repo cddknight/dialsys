@@ -197,7 +197,9 @@ typedef struct _clockInst
 	int toolTipFace;
 	int timeSetting;
 	int allowSaveDisp;
+	bool removeTaskbar;
 	time_t forceTime;
+	time_t reConfigTime;
 	char fontName[128];			/* Saved in the config file */
 	char configFile[128];
 	char windowTitle[128];

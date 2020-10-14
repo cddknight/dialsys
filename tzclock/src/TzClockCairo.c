@@ -49,7 +49,7 @@ char *roman[25] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
+ *  \brief ooops.
  *  \param cr .
  *  \param face .
  *  \param posX .
@@ -166,7 +166,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			if (markerFlags & (1 << (i / 5)))
 			{
 				char buff[11] = "";
-				int hour = i == 0 ? (faceSetting -> show24Hour ? 24 : 12) : i / 5;
+				int hour = (i == 0 ? (faceSetting -> show24Hour ? 24 : 12) : i / 5);
 				if (clockInst.dialConfig.markerType == 3)
 					sprintf (buff, "%d", hour);
 				if (clockInst.dialConfig.markerType == 4)
@@ -274,7 +274,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
  **********************************************************************************************************************/
 /**
  *  \brief Call when the gauge needs to be drawn.
- *  \param widget .
+ *  \param widget oooops.
  *  \result None.
  */
 void clockExpose (GtkWidget *widget)
@@ -297,6 +297,8 @@ void clockExpose (GtkWidget *widget)
 	cr = NULL;
 }
 
+#else
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C L O C K  E X P O S E                                                                                            *
@@ -304,12 +306,10 @@ void clockExpose (GtkWidget *widget)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param cr .
- *  \result .
+ *  \brief Call when the gauge needs to be drawn.
+ *  \param widget oooops.
+ *  \result None.
  */
-#else
-
 void clockExpose (cairo_t *cr)
 {
 	int i, j, face = 0;

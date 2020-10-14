@@ -178,6 +178,7 @@ void dialMarkerCallback	(guint data);
 void dialStepCallback	(guint data);
 void dialAddDelCallback	(guint data);
 void dialSaveCallback	(guint data);
+int dialCreateColours	();
 
 #endif
 

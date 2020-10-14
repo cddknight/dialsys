@@ -281,7 +281,7 @@ void readActivityValues()
 {
 	FILE *diskstats;
 	struct timeval tvTaken;
-	DISK_INFO *allDiskInfo = NULL, *thisDiskInfo;
+	DISK_INFO *allDiskInfo = NULL, *thisDiskInfo = NULL;
 	char readBuff[256], readWord[256];
 	long thisTime = 0, readTime;
 	int disk = 1;
@@ -356,6 +356,7 @@ void readActivityValues()
 							thisDiskInfo = (DISK_INFO *)malloc (sizeof (DISK_INFO));
 							memset (thisDiskInfo, 0, sizeof (DISK_INFO));
 							strncpy (thisDiskInfo -> name, readWord, 40);
+							thisDiskInfo -> name[40] = 0;
 							queuePut (diskActivity, thisDiskInfo);
 						}
 					}
@@ -377,6 +378,7 @@ void readActivityValues()
 					{
 						unsigned long long diff;
 						unsigned long long value = atoll (readWord);
+
 						if (value < thisDiskInfo -> secWrite.value)
 						{
 							thisDiskInfo -> secWrite.value = value;
@@ -490,11 +492,6 @@ void readHarddiskValues (int face)
 		{
 			return;
 		}
-		if (myUpdateID != sysUpdateID)
-		{
-			readActivityValues();
-			myUpdateID = sysUpdateID;
-		}
 		if (faceSetting -> faceSubType & 0x0300)
 		{
 			DISK_INFO *thisDiskInfo = NULL;
@@ -502,6 +499,11 @@ void readHarddiskValues (int face)
 			unsigned long value = 0;
 			char *nameT, *nameD;
 
+			if (myUpdateID != sysUpdateID)
+			{
+				readActivityValues();
+				myUpdateID = sysUpdateID;
+			}
 			thisDiskInfo = queueRead (diskActivity, disk);
 			if (thisDiskInfo != NULL)
 			{

@@ -374,6 +374,7 @@ static GdkPixbuf *defaultIcon;
 static bool alwaysOnTop			=  0;			/* Saved in the config file */
 static bool stuckOnAll			=  0;			/* Saved in the config file */
 static bool lockMove			=  0;			/* Saved in the config file */
+static bool removeTaskbar		=  0;			/* Saved in the config file */
 static int lastKeyPressTime		=  0;
 static int keyPressFaceNum		= -1;
 static time_t lastTime			= -1;
@@ -1969,6 +1970,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				if (dialConfig.dialSize > 1024) dialConfig.dialSize = 1024;
 				configSetIntValue ("face_size", dialConfig.dialSize);
 				break;
+			case 't':
+				removeTaskbar = !removeTaskbar;
+				configSetBoolValue ("remove_taskbar", removeTaskbar);
+				break;
 			case 'T':
 				{
 					int type = atoi (&argv[i][2]);
@@ -2096,6 +2101,7 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("always_on_top", &alwaysOnTop);
 	configGetBoolValue ("on_all_desktops", &stuckOnAll);
 	configGetBoolValue ("locked_position", &lockMove);
+	configGetBoolValue ("remove_taskbar", &removeTaskbar);
 	configGetIntValue ("face_size", &dialConfig.dialSize);
 	configGetIntValue ("gauge_num_col", &dialConfig.dialWidth);
 	configGetIntValue ("gauge_num_row", &dialConfig.dialHeight);
@@ -2511,6 +2517,8 @@ main (int argc, char *argv[])
 	accelGroup = gtk_accel_group_new ();
 	gtk_window_add_accel_group (dialConfig.mainWindow, accelGroup);
 	createMenu (mainMenuDesc, accelGroup, FALSE);
+	if (removeTaskbar)
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialConfig.mainWindow), TRUE);
 
 	stickCallback (0);
 	onTopCallback (0);
