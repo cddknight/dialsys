@@ -483,7 +483,8 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -n<c|r><num>    :  Set the number of columns and rows\n"));
 	fprintf (outFile, _("                   :  Max clocks %d, no more than 10 in a line\n"), MAX_FACES);
 	fprintf (outFile, _("   -O<opacity>     :  Change the opacity, 0 clear to 100 solid\n"));
-	fprintf (outFile, _("   -s<size>        :  Set the size of each clock\n"));
+	fprintf (outFile, _("   -s<size>        :  Set the size of each gauge\n"));
+	fprintf (outFile, _("   -t              :  Toggle removing the gauge from the taskbar\n"));
 	fprintf (outFile, _("   -w              :  Toggle showing on all the desktops\n"));
 	fprintf (outFile, _("   -x<posn>        :  Set the X screen position\n"));
 	fprintf (outFile, _("   -y<posn>        :  Set the Y screen position\n"));

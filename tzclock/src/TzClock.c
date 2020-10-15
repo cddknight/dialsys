@@ -363,6 +363,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -q              :  Toggle quick time setting, no smooth scroll\n"));
 	fprintf (outFile, _("   -s<size>        :  Set the size of each clock\n"));
 	fprintf (outFile, _("   -S              :* Toggle enabling the stopwatch\n"));
+	fprintf (outFile, _("   -t              :  Toggle removing the clock from the taskbar\n"));
 	fprintf (outFile, _("   -u              :* Toggle upper-casing the city name\n"));
 	fprintf (outFile, _("   -w              :  Toggle showing on all the desktops\n"));
 	fprintf (outFile, _("   -x<posn>        :  Set the X screen position\n"));
