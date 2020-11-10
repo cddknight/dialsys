@@ -1329,6 +1329,7 @@ clockTickCallback (gpointer data)
 
 	if (clockInst.forceTime != -1)
 		t = clockInst.forceTime;
+/**
 	if (clockInst.reConfigTime != 0)
 	{
 		if (t >= clockInst.reConfigTime)
@@ -1338,6 +1339,7 @@ clockTickCallback (gpointer data)
 			clockInst.reConfigTime = t + 300;
 		}
 	}
+**/
 	if (lastTime == -1)
 		update = 1;
 	lastTime = t;
@@ -2355,9 +2357,11 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				clockInst.fastSetting = !clockInst.fastSetting;
 				configSetBoolValue ("fast_setting", clockInst.fastSetting);
 				break;
+/**
 			case 'r':
 				clockInst.reConfigTime = ((time (NULL) / 300) * 300) + 300;
 				break;
+**/
 			case 'S':							/* Enable the stopwatch */
 				clockInst.faceSettings[face] -> stopwatch = !clockInst.faceSettings[face] -> stopwatch;
 				sprintf (value, "stopwatch_%d", face + 1);
@@ -2621,7 +2625,7 @@ void loadConfig (int *posX, int *posY)
 /**
  *  \brief Reload the config and use the new colours.
  *  \result None.
- */
+ *
 void reReadConfig ()
 {
 	int i;
@@ -2641,7 +2645,7 @@ void reReadConfig ()
 		loadColour (tempName);
 	}
 	dialCreateColours();
-}
+} **/
 
 /**********************************************************************************************************************
  *                                                                                                                    *
