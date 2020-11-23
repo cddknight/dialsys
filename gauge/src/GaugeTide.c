@@ -40,6 +40,7 @@ extern char tideURL[];
 #define MAX_SAVE_TIDES	21
 #define TIDE_STATE_UPDATED	0
 #define TIDE_STATE_PENDING	1
+#define TIDE_STATE_SHOWN	2
 
 static int tideState;
 static pthread_t threadHandle;
@@ -71,7 +72,7 @@ static struct TideInfo tideInfo;
 static char tideReadLine[1025];
 static int lastReadTide;
 
-static int myUpdateID = 100;
+static int myUpdateID = -1;
 static time_t tideDuration = 22358;
 static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 static char *days[7] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
@@ -600,7 +601,7 @@ void readTideValues (int face)
 		{
 			;
 		}
-		else if (sysUpdateID % 60 != 0 && myUpdateID != -1)
+		else if (sysUpdateID % 10 != 0 && myUpdateID != -1)
 		{
 			return;
 		}
