@@ -172,6 +172,14 @@ MENU_DESC tideMenuDesc[] =
 	{	NULL,					NULL,					NULL,				0	}
 };
 
+MENU_DESC thermoMenuDesc[] =
+{
+	{	__("Show Thermometer"),	thermometerCallback,	NULL,				0,	},
+	{	"-",					NULL,					NULL,				0	},
+	{	__("Settings"),			thermometerSettings,	NULL,				0	},
+	{	NULL,					NULL,					NULL,				0	}
+};
+
 MENU_DESC weatherMenuDesc[] =
 {
 	{	__("Temperature"),		weatherCallback,		NULL,				0	},
@@ -322,7 +330,7 @@ MENU_DESC gaugeMenuDesc[] =
 	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*  06  */
 	{	__("Power"),			powerMeterCallback,		NULL,				0,	NULL,	0,	1	},	/*  07  */
 	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*  08  */
-	{	__("Thermometer"),		thermometerCallback,	NULL,				1,	NULL,	0,	1	},	/*  09  */
+	{	__("Thermometer"),		NULL,					thermoMenuDesc,		1,	NULL,	0,	1	},	/*  09  */
 	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*  10  */
 	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*  11  */
 	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/*  12  */

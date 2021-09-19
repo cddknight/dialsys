@@ -27,6 +27,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/HTMLparser.h>
+#include <glib-object.h>
+#include <json-glib/json-glib.h>
 
 #include "GaugeDisp.h"
 
@@ -63,7 +65,7 @@ struct TideInfo
 {
 	char location[41];
 	char country[41];
-	double locationOffset;
+	int locRead;
 	struct TideTime tideTimes[MAX_SAVE_TIDES];
 	time_t readTime;
 };
@@ -74,50 +76,14 @@ static int lastReadTide;
 
 static int myUpdateID = -1;
 static time_t tideDuration = 22358;
-static char removePrefix[] = "Port predictions (Standard Local Time) are ";
 static char *days[7] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 static char *months[12] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-static char *urlPrefix = "http://www.ukho.gov.uk/easytide/easytide/ShowPrediction.aspx?PredictionLength=4&PortID=";
+static char *urlPrefix = "https://admiraltyapi.azure-api.net/uktidalapi/api/V1/Stations/%04d";
+static char *urlSuffix = "/TidalEvents?duration=3";
+static char *apiKey = "70031367078e4bf1b3ce162e5d5fad2a";
 
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  G E T  M O N T H                                                                                                  *
- *  ================                                                                                                  *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Convert a month string into a number.
- *  \param mon Month to find.
- *  \result Number of the month.
- */
-static int getMonth (char *mon)
-{
-	int i;
-	for (i = 0; i < 12; ++i)
-		if (strncmp (mon, months[i], 3) == 0)
-			return i + 1;
-	return 0;
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  G E T  D A Y                                                                                                      *
- *  ============                                                                                                      *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Convert a simple Sun, Mon format to a number 1, 2.
- *  \param day Day string to convert.
- *  \result 1 for Sun 7 for Sat, 0 if not found.
- */
-static int getDay (char *day)
-{
-	int i;
-	for (i = 0; i < 7; ++i)
-		if (strncmp (day, days[i], 3) == 0)
-			return i + 1;
-	return 0;
-}
+void jsonArrayForEachFunc (JsonArray *array, guint index_, JsonNode *element_node, gpointer user_data);
+void jsonObjectForEachFunc(JsonObject *object, const gchar *member_name, JsonNode *member_node, gpointer user_data);
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -203,8 +169,11 @@ static int getNextTide ()
 	}
 	if (retn == -1)
 	{
-		memset (&tideInfo, 0, sizeof (tideInfo));
-		strcpy (tideInfo.location, "Pending");
+		for (i = 0; i < MAX_SAVE_TIDES; ++i)
+		{
+			memset (&tideInfo.tideTimes[i], 0, sizeof (struct TideTime));
+		}
+		if (!tideInfo.locRead) strcpy (tideInfo.location, "Pending");
 		tideInfo.tideTimes[0].tideTime = tideInfo.readTime = time (NULL);
 		tideInfo.tideTimes[0].tideType = 'L';
 		retn = 0;
@@ -214,107 +183,60 @@ static int getNextTide ()
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  P R O C E S S  P R O C E S S  A T I D E                                                                           *
- *  =======================================                                                                           *
+ *  S C A N  D A T E  T I M E                                                                                         *
+ *  =========================                                                                                         *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Process a tide read from HTML.
- *  \param mDay Month day.
- *  \param mon Month.
- *  \param type H or L.
- *  \param hour Hour (local time).
- *  \param min Min (local time).
- *  \param height Height of the tide.
+ *  \brief Read a date out of a string.
+ *  \param index Which tide is this for.
+ *  \param strValue String to read date from.
  *  \result None.
  */
-static void processProcessATide(int mDay, int mon, char type, int hour, int min, double height)
+void scanDateTime (int index, const char *strValue)
 {
-	struct tm tideTime, *timeNow;
+	int i = 0, c = 0, v = 0;
+	struct tm tideTime;
 	time_t now = time(NULL);
 
-/*  printf ("Tide[%d]: %d/%d %c %d:%02d %f\n", lastReadTide, mDay, mon, type, hour, min, height); */
-	timeNow = gmtime (&now);
-	memcpy (&tideTime, timeNow, sizeof (tideTime));
-	tideTime.tm_mday = mDay;
-	tideTime.tm_mon = mon - 1;
-	tideTime.tm_hour = hour;
-	tideTime.tm_min = min;
-	tideTime.tm_sec = 0;
-	tideTime.tm_isdst = 0;
-
-	if (lastReadTide < MAX_SAVE_TIDES)
+	gmtime_r (&now, &tideTime);
+	while (1)
 	{
-		tideInfo.tideTimes[lastReadTide].tideTime = mktime(&tideTime);
-		tideInfo.tideTimes[lastReadTide].tideTime -= (tideInfo.locationOffset * 3600);
-		tideInfo.tideTimes[lastReadTide].tideHeight = height;
-		tideInfo.tideTimes[lastReadTide].tideType = type;
-		tideInfo.tideTimes[lastReadTide].tideSet = 1;
-		++lastReadTide;
-	}
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  P R O C E S S  C U R R E N T  D A Y                                                                               *
- *  ===================================                                                                               *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Process all the values read for a day.
- *  \result None.
- */
-static void processCurrentDay()
-{
-	char words[41][11];
-	int i = 0, j = 0, w = 0, tideCount = 0;
-
-	memset (&words, 0, sizeof (words));
-	do
-	{
-		switch (tideReadLine[i])
+		if (strValue[i] >= '0' && strValue[i] <= '9')
 		{
-		case ' ':
-		case ';':
-		case ':':
-			if (j > 0 && w < 40)
+			c = (c * 10) + (strValue[i] - '0');
+		}
+		else if (strValue[i] == '-' || strValue[i] == ':' || strValue[i] == 'T' || strValue[i] == 0)
+		{
+			switch (v)
 			{
-				if (!strcmp (words[w], "HW") || !strcmp (words[w], "LW"))
-				{
-					++tideCount;
-				}
-				++w;
-				j = 0;
+			case 0:
+				tideTime.tm_year = c - 1900;
+				break;
+			case 1:
+				tideTime.tm_mon = c - 1;
+				break;
+			case 2:
+				tideTime.tm_mday = c;
+				break;
+			case 3:
+				tideTime.tm_hour = c;
+				break;
+			case 4:
+				tideTime.tm_min = c;
+				tideTime.tm_sec = 0;
+				tideTime.tm_isdst = 0;
+				break;
 			}
-			break;
-
-		default:
-			if (j < 10)
-			{
-				char ch = tideReadLine[i];
-				if ((ch >= 'A' && ch <='Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9') ||
-						ch == '.' || ch == '-')
-				{
-					words[w][j] = tideReadLine[i];
-					words[w][++j] = 0;
-				}
-			}
+			c = 0;
+			++v;
+		}
+		if (strValue[i] == 0)
+		{
+			tideInfo.tideTimes[index].tideTime = mktime(&tideTime);
 			break;
 		}
 		++i;
-	}
-	while (tideReadLine[i]);
-
-	if (w == 3 + (tideCount * 4))
-	{
-		int i;
-		for (i = 0; i < tideCount; ++i)
-		{
-			processProcessATide (atoi (words[1]), getMonth(words[2]), words[3 + i][0],
-					atoi ((const char *)&words[3 + tideCount + (i * 2)]),
-					atoi ((const char *)&words[4 + tideCount + (i * 2)]),
-					atof ((const char *)&words[3 + (tideCount * 3) + i]));
-		}
 	}
 }
 
@@ -333,7 +255,7 @@ static void processCurrentDay()
  *  \result Total size.
  */
 static size_t
-writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
+writeMemoryCallback (void *ptr, size_t size, size_t nmemb, void *data)
 {
 	size_t realsize = size * nmemb;
 	struct MemoryStruct *mem = (struct MemoryStruct *)data;
@@ -350,98 +272,164 @@ writeMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  P R O C E S S  E L E M E N T  N A M E S                                                                           *
- *  =======================================                                                                           *
+ *  D I S P L A Y  V A L U E                                                                                          *
+ *  ========================                                                                                          *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Call by libxml for each of the elements.
- *  \param doc xmldoc handle.
- *  \param aNode Xml node pointer.
- *  \param curPath The path to the current element.
- *  \param readLevel How many levels of html are we at.
+ *  \brief Display the contents of a value.
+ *  \param name Process a json name value.
+ *  \param index Which tide we are reading.
+ *  \param value Value to display.
  *  \result None.
  */
-static void
-processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
+void displayValue (char *name, int index, GValue *value)
 {
-	xmlChar *key;
-	xmlNode *curNode = NULL;
-	char fullPath[1024];
-	char *matchPath[3] =
+	if (index < MAX_SAVE_TIDES)
 	{
-		"/html/body/div/form/div/div/ul/li/span",
-		"/html/body/div/form/div/div/div/div/table/tr",
-		"/html/body/div/form/div/div/p/span"
-	};
-
-	for (curNode = aNode; curNode; curNode = curNode->next)
-	{
-		int saveLevel = readLevel;
-
-		if (curNode -> name != NULL)
+		if (G_VALUE_HOLDS (value, G_TYPE_STRING))
 		{
-			if ((strlen (curPath) + strlen ((char *)curNode -> name)) > 1022)
+			const char *strValue = g_value_get_string (value);
+			if (strcmp (name, "EventType") == 0)
 			{
-				fprintf (stderr, "XML path too long to display\n");
-				break;
+				tideInfo.tideTimes[index].tideType = strValue[0];
 			}
-			strcpy (fullPath, curPath);
-			strcat (fullPath, "/");
-			strcat (fullPath, (char *)curNode -> name);
-		}
-
-		if (curNode->type == XML_ELEMENT_NODE)
-		{
-			++readLevel;
-			if (!strncmp (fullPath, matchPath[0], strlen (matchPath[0])))
+			else if (strcmp (name, "DateTime") == 0)
 			{
-				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
-				if (key && !strncmp ((char *)(curNode -> name), "span", 4))
-				{
-					if (tideInfo.location[0] == 0)
-					{
-						strncpy (tideInfo.location, (char *)key, 40);
-						properCaseWord (tideInfo.location);
-					}
-					else if (tideInfo.country[0] == 0)
-					{
-						strncpy (tideInfo.country, (char *)key, 40);
-						properCaseWord (tideInfo.country);
-					}
-				}
+				scanDateTime (index, strValue);
 			}
-			if (!strncmp (fullPath, matchPath[1], strlen (matchPath[1])))
+			else if (strcmp (name, "Date") == 0)
 			{
-				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
-				if (key && readLevel == 11)
-				{
-					if (getDay ((char *)key))
-					{
-						if (tideReadLine[0])
-						{
-							processCurrentDay();
-							tideReadLine[0] = 0;
-						}
-					}
-					strncat (tideReadLine, (char *)key, 1024);
-					strncat (tideReadLine, ";", 1024);
-				}
+				tideInfo.tideTimes[index].tideSet = 1;
+				tideInfo.readTime = getLocalNextMidday();
+				lastReadTide = index;
 			}
-			if (!strncmp (fullPath, matchPath[2], strlen (matchPath[2])))
+			else if (strcmp (name, "Name") == 0)
 			{
-				key = xmlNodeListGetString (doc, curNode -> xmlChildrenNode, 1);
-				if (key)
-				{
-					if (!strncmp (removePrefix, (char *)key, strlen (removePrefix)))
-					{
-						tideInfo.locationOffset = atof ((char *)&key[strlen (removePrefix)]);
-					}
-				}
+				strcpy (tideInfo.location, strValue);
+				properCaseWord (tideInfo.location);
+				tideInfo.locRead = 1;
+			}
+			else if (strcmp (name, "Country") == 0)
+			{
+				strcpy (tideInfo.country, strValue);
+				properCaseWord (tideInfo.country);
 			}
 		}
-		processElementNames (doc, curNode->children, fullPath, readLevel);
-		readLevel = saveLevel;
+		else if (G_VALUE_HOLDS (value, G_TYPE_BOOLEAN))
+		{
+		}
+		else
+		{
+			GValue number = G_VALUE_INIT;
+			g_value_init (&number, G_TYPE_DOUBLE);
+			if (g_value_transform (value, &number))
+			{
+				double num = g_value_get_double (&number);
+				if (strcmp (name, "Height") == 0)
+				{
+					tideInfo.tideTimes[index].tideHeight = num;
+				}
+			}
+			g_value_unset (&number);
+		}
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  J S O N  A R R A Y  F O R  E A C H  F U N C                                                                       *
+ *  ===========================================                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Process the elements in an array.
+ *  \param array Array we are processing.
+ *  \param index_ Index of this element.
+ *  \param element_node The elements node.
+ *  \param user_data User data (at the moment this is level).
+ *  \result None.
+ */
+void jsonArrayForEachFunc (JsonArray *array, guint index_, JsonNode *element_node, gpointer user_data)
+{
+	int index = index_;
+
+	if (element_node)
+	{
+		if (json_node_get_node_type (element_node) == JSON_NODE_OBJECT)
+		{
+			JsonObject *objectInner = json_node_get_object(element_node);
+			if (objectInner != NULL)
+			{
+				json_object_foreach_member (objectInner, jsonObjectForEachFunc, &index);
+			}
+		}
+		else if (json_node_get_node_type (element_node) == JSON_NODE_VALUE)
+		{
+			GValue value = G_VALUE_INIT;
+			json_node_get_value (element_node, &value);
+			displayValue ("Index", index, &value);
+			g_value_unset (&value);
+		}
+		else if (json_node_get_node_type (element_node) == JSON_NODE_ARRAY)
+		{
+			JsonArray *array = json_node_get_array(element_node);
+			if (array != NULL)
+			{
+				json_array_foreach_element (array, jsonArrayForEachFunc, &index);
+			}
+		}
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  J S O N  O B J E C T  F O R  E A C H  F U N C                                                                     *
+ *  =============================================                                                                     *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Process the objects in a node.
+ *  \param object Current object.
+ *  \param member_name Name of the object.
+ *  \param member_node The node of the object.
+ *  \param user_data User data (at the moment this is level).
+ *  \result None.
+ */
+void jsonObjectForEachFunc(JsonObject *object, const gchar *member_name, JsonNode *member_node, gpointer user_data)
+{
+	int index = -1;
+
+	if (user_data != NULL)
+	{
+		index = *(int *)user_data;
+	}
+
+	if (member_node)
+	{
+		if (json_node_get_node_type (member_node) == JSON_NODE_OBJECT)
+		{
+			JsonObject *objectInner = json_node_get_object(member_node);
+			if (objectInner != NULL)
+			{
+				json_object_foreach_member (objectInner, jsonObjectForEachFunc, NULL);
+			}
+		}
+		else if (json_node_get_node_type (member_node) == JSON_NODE_VALUE)
+		{
+			GValue value = G_VALUE_INIT;
+			json_node_get_value (member_node, &value);
+			displayValue ((char *)member_name, index, &value);
+			g_value_unset (&value);
+		}
+		else if (json_node_get_node_type (member_node) == JSON_NODE_ARRAY)
+		{
+			JsonArray *array = json_node_get_array(member_node);
+			if (array != NULL)
+			{
+				json_array_foreach_element (array, jsonArrayForEachFunc, NULL);
+			}
+		}
 	}
 }
 
@@ -459,37 +447,43 @@ processElementNames (xmlDoc *doc, xmlNode * aNode, char *curPath, int readLevel)
  */
 static void processBuffer (char *buffer, size_t size)
 {
-	htmlDocPtr hDoc = NULL;
-	htmlNodePtr rootElement = NULL;
-	xmlChar *xmlBuffer = NULL;
+	JsonParser *parser;
+	JsonNode *root;
+	GError *error;
 
-	xmlBuffer = xmlCharStrndup (buffer, size);
-	if (xmlBuffer != NULL)
+	parser = json_parser_new ();
+	error = NULL;
+
+	json_parser_load_from_data (parser, buffer, size, &error);
+	if (error)
 	{
-		if ((hDoc = htmlParseDoc(xmlBuffer, NULL)) != NULL)
+		printf ("ERROR: %s\n", error -> message);
+	}
+	else
+	{
+		lastReadTide = 0;
+		root = json_parser_get_root (parser);
+		if (root != NULL)
 		{
-			if ((rootElement = xmlDocGetRootElement (hDoc)) != NULL)
+			if (json_node_get_node_type (root) == JSON_NODE_OBJECT)
 			{
-				lastReadTide = 0;
-				tideReadLine[0] = 0;
-				tideInfo.location[0] = 0;
-				processElementNames (hDoc, rootElement, "", 0);
-				processCurrentDay();
-				if (lastReadTide)
+				JsonObject *object = json_node_get_object(root);
+				if (object != NULL)
 				{
-					tideInfo.readTime = getLocalNextMidday();
+					json_object_foreach_member (object, jsonObjectForEachFunc, NULL);
 				}
 			}
-			xmlFreeDoc(hDoc);
+			else if (json_node_get_node_type (root) == JSON_NODE_ARRAY)
+			{
+				JsonArray *array = json_node_get_array(root);
+				if (array != NULL)
+				{
+					json_array_foreach_element (array, jsonArrayForEachFunc, NULL);
+				}
+			}
 		}
-		else
-		{
-			printf ("error: could not parse memory\n");
-			printf ("BUFF[%lu] [[[%s]]]\n", size, buffer);
-		}
-		xmlFree (xmlBuffer);
+		g_object_unref (parser);
 	}
-	xmlCleanupParser();
 }
 
 /**********************************************************************************************************************
@@ -506,31 +500,65 @@ static void processBuffer (char *buffer, size_t size)
 void *getTideTimes (void *arg)
 {
 	CURL *curlHandle;
+	char longUrl[1024];
 	struct MemoryStruct chunk;
+	struct curl_slist *list = NULL;
 
 	chunk.memory = malloc(1);
 	chunk.size = 0;
 
 	curl_global_init(CURL_GLOBAL_ALL);
 	curlHandle = curl_easy_init();
-	curl_easy_setopt(curlHandle, CURLOPT_URL, &tideURL[0]);
-	curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
-	curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
-	curl_easy_setopt(curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-	curl_easy_perform(curlHandle);
-	curl_easy_cleanup(curlHandle);
-
-	if (chunk.memory)
+	if (curlHandle)
 	{
-		if (chunk.size)
+		if (tideInfo.locRead == 0)
 		{
-			memset (&tideInfo, 0, sizeof (tideInfo));
-			processBuffer (chunk.memory, chunk.size);
+			curl_easy_setopt (curlHandle, CURLOPT_URL, &tideURL[0]);
+			curl_easy_setopt (curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
+			curl_easy_setopt (curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
+			curl_easy_setopt (curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+			list = curl_slist_append (list, "Accept: application/json");
+			list = curl_slist_append (list, "Ocp-Apim-Subscription-Key: 70031367078e4bf1b3ce162e5d5fad2a");
+			curl_easy_setopt (curlHandle, CURLOPT_HTTPHEADER, list);
+			curl_easy_perform (curlHandle);
+			curl_easy_cleanup (curlHandle);
+
+			if (chunk.memory)
+			{
+				if (chunk.size)
+				{
+					memset (&tideInfo, 0, sizeof (tideInfo));
+					processBuffer (chunk.memory, chunk.size);
+				}
+			}
+			tideState = TIDE_STATE_UPDATED;
 		}
-		free(chunk.memory);
+		else
+		{
+			strcpy (longUrl, tideURL);
+			strcat (longUrl, urlSuffix);
+			curl_easy_setopt (curlHandle, CURLOPT_URL, longUrl);
+			curl_easy_setopt (curlHandle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
+			curl_easy_setopt (curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
+			curl_easy_setopt (curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+			list = curl_slist_append (list, "Accept: application/json");
+			list = curl_slist_append (list, "Ocp-Apim-Subscription-Key: 70031367078e4bf1b3ce162e5d5fad2a");
+			curl_easy_setopt (curlHandle, CURLOPT_HTTPHEADER, list);
+			curl_easy_perform (curlHandle);
+			curl_easy_cleanup (curlHandle);
+
+			if (chunk.memory)
+			{
+				if (chunk.size)
+				{
+					processBuffer (chunk.memory, chunk.size);
+				}
+			}
+			tideState = TIDE_STATE_UPDATED;
+		}
+		curl_global_cleanup();
 	}
-	curl_global_cleanup();
-	tideState = TIDE_STATE_UPDATED;
+	free(chunk.memory);
 	return NULL;
 }
 
@@ -541,7 +569,7 @@ void *getTideTimes (void *arg)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Create a thread to read the tide times..
+ *  \brief Create a thread to read the tide times.
  *  \result None.
  */
 void startUpdateTideInfo()
@@ -605,9 +633,11 @@ void readTideValues (int face)
 		{
 			return;
 		}
+
 		if (myUpdateID != sysUpdateID)
 		{
 			time_t now = time (NULL);
+
 			if (tideInfo.readTime < now || myUpdateID == -1)
 			{
 				startUpdateTideInfo();
@@ -689,6 +719,7 @@ void tideSettings (guint data)
 	GtkWidget *entry;
 	const char *saveText;
 	char portCode[21];
+	int portNum = 0, len;
 #if GTK_MAJOR_VERSION == 2
 	GtkWidget *hbox;
 #else
@@ -696,14 +727,13 @@ void tideSettings (guint data)
 	GtkWidget *grid;
 #endif
 
-	if (strlen(tideURL) > strlen(urlPrefix))
-	{
-		sprintf (portCode, "%d", atoi (&tideURL[strlen(urlPrefix)]));
-	}
+	len = strlen (tideURL);
+	if (len > 4)
+		portNum = atoi (&tideURL[len - 4]);
+	if (portNum == 0)
+		strcpy (portCode, "0113");
 	else
-	{
-		strcpy (portCode, "113");
-	}
+		sprintf (portCode, "%04d", portNum);
 
 #if GTK_MAJOR_VERSION == 2
 
@@ -714,7 +744,7 @@ void tideSettings (guint data)
 	vbox = GTK_DIALOG (dialog)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
 
-	label = gtk_label_new (_("Prediction from: http://www.ukho.gov.uk/easytide/"));
+	label = gtk_label_new (_("Prediction from: https://easytide.admiralty.co.uk/"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
 
@@ -744,7 +774,7 @@ void tideSettings (guint data)
 	label = gtk_label_new (_("Prediction from: "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 1, 1, 1);
-	label = gtk_label_new (_("http://www.ukho.gov.uk/easytide/"));
+	label = gtk_label_new (_("Prediction from: https://easytide.admiralty.co.uk/"));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 2, 1, 1, 1);
 
@@ -766,9 +796,9 @@ void tideSettings (guint data)
 		saveText = gtk_entry_get_text(GTK_ENTRY (entry));
 		if (strcmp (saveText, portCode) != 0)
 		{
-			strcpy (tideURL, urlPrefix);
-			sprintf (&tideURL[strlen(urlPrefix)], "%04d", atoi (saveText));
+			sprintf (tideURL, urlPrefix, atoi (saveText));
 			configSetValue ("tide_info_url", tideURL);
+			tideInfo.locRead = 0;
 			startUpdateTideInfo ();
 			myUpdateID = -1;
 		}
