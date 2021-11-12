@@ -236,11 +236,7 @@ void gaugeReset				(int face, int type, int subType);
 char *wrapText (char *inText, char top);
 void makeWindowMask ();
 void getTheFaceTime (int face, time_t t, struct tm *tm);
-#if GTK_MAJOR_VERSION == 2
-void clockExpose (GtkWidget *widget);
-#else
 void clockExpose (cairo_t *cr);
-#endif
 void dialSave (char *fileName); 
 char *getStringValue (char *outString1, char *outString2, int maxSize, int stringNumber, int face, time_t timeNow);
 int xSinCos (int number, int angle, int useCos);

@@ -29,9 +29,6 @@ extern int toolTipFace;
 extern HAND_STYLE handStyle[];
 extern FACE_SETTINGS *faceSettings[];
 extern DIAL_CONFIG dialConfig;
-#if GTK_MAJOR_VERSION == 2
-extern GtkWidget *drawingArea;
-#endif
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -166,54 +163,6 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	return TRUE;
 }
 
-#if GTK_MAJOR_VERSION == 2
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  C L O C K  E X P O S E                                                                                            *
- *  ======================                                                                                            *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Call when the gauge needs to be drawn.
- *  \param widget Calling Widget.
- *  \result None.
- */
-void clockExpose (GtkWidget *widget)
-{
-	int i, j, face = 0;
-	cairo_t *cr = gdk_cairo_create (dialConfig.drawingArea -> window);
-
-	for (j = 0; j < dialConfig.dialHeight; j++)
-	{
-		for (i = 0; i < dialConfig.dialWidth; i++)
-		{
-			drawFace (cr, face, (i * dialConfig.dialSize), (j * dialConfig.dialSize), 0);
-			if (face == currentFace)
-			{
-				if (faceSettings[face] -> text[FACESTR_WIN])
-					gtk_window_set_title (GTK_WINDOW (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_WIN]);
-			}
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
-			if (face == toolTipFace)
-			{
-				if (faceSettings[face] -> text[FACESTR_TIP])
-				{
-					gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), faceSettings[face] -> text[FACESTR_TIP]);
-				}
-			}
-#endif
-			++face;
-		}
-	}
-
-	/*------------------------------------------------------------------------------------------------*
-     * Reset the color and stuff back to the default.                                                 *
-     *------------------------------------------------------------------------------------------------*/
-	cairo_destroy (cr);
-	cr = NULL;
-}
-
-#else
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C L O C K  E X P O S E                                                                                            *
@@ -250,7 +199,6 @@ void clockExpose (cairo_t *cr)
 		}
 	}
 }
-#endif
 
 /**********************************************************************************************************************
  *                                                                                                                    *

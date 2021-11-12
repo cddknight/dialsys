@@ -38,6 +38,7 @@ extern MENU_DESC gaugeMenuDesc[];
 extern DIAL_CONFIG dialConfig;
 extern int sysUpdateID;
 extern char tideURL[];
+extern char tideAPIKey[];
 
 #define MAX_SAVE_TIDES	21
 #define TIDE_STATE_UPDATED	0
@@ -80,7 +81,6 @@ static char *days[7] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 static char *months[12] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 static char *urlPrefix = "https://admiraltyapi.azure-api.net/uktidalapi/api/V1/Stations/%04d";
 static char *urlSuffix = "/TidalEvents?duration=3";
-static char *apiKey = "70031367078e4bf1b3ce162e5d5fad2a";
 
 void jsonArrayForEachFunc (JsonArray *array, guint index_, JsonNode *element_node, gpointer user_data);
 void jsonObjectForEachFunc(JsonObject *object, const gchar *member_name, JsonNode *member_node, gpointer user_data);
@@ -500,7 +500,7 @@ static void processBuffer (char *buffer, size_t size)
 void *getTideTimes (void *arg)
 {
 	CURL *curlHandle;
-	char longUrl[1024];
+	char longUrl[256], apiKey[256];
 	struct MemoryStruct chunk;
 	struct curl_slist *list = NULL;
 
@@ -511,6 +511,8 @@ void *getTideTimes (void *arg)
 	curlHandle = curl_easy_init();
 	if (curlHandle)
 	{
+		strcpy (apiKey, "Ocp-Apim-Subscription-Key: ");
+		strcat (apiKey, tideAPIKey);
 		if (tideInfo.locRead == 0)
 		{
 			curl_easy_setopt (curlHandle, CURLOPT_URL, &tideURL[0]);
@@ -518,7 +520,7 @@ void *getTideTimes (void *arg)
 			curl_easy_setopt (curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
 			curl_easy_setopt (curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 			list = curl_slist_append (list, "Accept: application/json");
-			list = curl_slist_append (list, "Ocp-Apim-Subscription-Key: 70031367078e4bf1b3ce162e5d5fad2a");
+			list = curl_slist_append (list, apiKey);
 			curl_easy_setopt (curlHandle, CURLOPT_HTTPHEADER, list);
 			curl_easy_perform (curlHandle);
 			curl_easy_cleanup (curlHandle);
@@ -542,7 +544,7 @@ void *getTideTimes (void *arg)
 			curl_easy_setopt (curlHandle, CURLOPT_WRITEDATA, (void *)&chunk);
 			curl_easy_setopt (curlHandle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 			list = curl_slist_append (list, "Accept: application/json");
-			list = curl_slist_append (list, "Ocp-Apim-Subscription-Key: 70031367078e4bf1b3ce162e5d5fad2a");
+			list = curl_slist_append (list, apiKey);
 			curl_easy_setopt (curlHandle, CURLOPT_HTTPHEADER, list);
 			curl_easy_perform (curlHandle);
 			curl_easy_cleanup (curlHandle);
@@ -716,16 +718,12 @@ void tideSettings (guint data)
 	GtkWidget *dialog;
 	GtkWidget *vbox;
 	GtkWidget *label;
-	GtkWidget *entry;
-	const char *saveText;
+	GtkWidget *entryPort, *entryKey;
+	const char *savePort, *saveKey;
 	char portCode[21];
 	int portNum = 0, len;
-#if GTK_MAJOR_VERSION == 2
-	GtkWidget *hbox;
-#else
 	GtkWidget *contentArea;
 	GtkWidget *grid;
-#endif
 
 	len = strlen (tideURL);
 	if (len > 4)
@@ -734,31 +732,6 @@ void tideSettings (guint data)
 		strcpy (portCode, "0113");
 	else
 		sprintf (portCode, "%04d", portNum);
-
-#if GTK_MAJOR_VERSION == 2
-
-	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
-
-	vbox = GTK_DIALOG (dialog)->vbox;
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
-
-	label = gtk_label_new (_("Prediction from: https://easytide.admiralty.co.uk/"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 3);
-	label = gtk_label_new ("Location port number: ");
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	entry = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 4);
-	gtk_entry_set_text (GTK_ENTRY (entry), portCode);
-	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
-
-#else
 
 	dialog = gtk_dialog_new_with_buttons ("Tide Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -781,23 +754,44 @@ void tideSettings (guint data)
 	label = gtk_label_new (_("Location port number: "));
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (grid), label, 1, 2, 1, 1);
-	entry = gtk_entry_new ();
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 4);
-	gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_DIGITS);
-	gtk_entry_set_text (GTK_ENTRY (entry), portCode);
-	gtk_grid_attach (GTK_GRID (grid), entry, 2, 2, 1, 1);
+	entryPort = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entryPort), 4);
+	gtk_entry_set_input_purpose (GTK_ENTRY (entryPort), GTK_INPUT_PURPOSE_DIGITS);
+	gtk_entry_set_text (GTK_ENTRY (entryPort), portCode);
+	gtk_grid_attach (GTK_GRID (grid), entryPort, 2, 2, 1, 1);
+	
+	label = gtk_label_new (_("Admiralty API Key: "));
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (grid), label, 1, 3, 1, 1);
+	entryKey = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entryKey), 32);
+	gtk_entry_set_input_purpose (GTK_ENTRY (entryKey), GTK_INPUT_PURPOSE_FREE_FORM);
+	gtk_entry_set_text (GTK_ENTRY (entryKey), tideAPIKey);
+	gtk_grid_attach (GTK_GRID (grid), entryKey, 2, 3, 1, 1);	
+	
 	gtk_box_pack_start (GTK_BOX (vbox), grid, FALSE, FALSE, 0);
-
-#endif
-
 	gtk_widget_show_all (dialog);
+	
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		saveText = gtk_entry_get_text(GTK_ENTRY (entry));
-		if (strcmp (saveText, portCode) != 0)
+		int saved = 0;
+		savePort = gtk_entry_get_text(GTK_ENTRY (entryPort));
+		saveKey = gtk_entry_get_text(GTK_ENTRY (entryKey));
+		
+		if (strcmp (savePort, portCode) != 0)
 		{
-			sprintf (tideURL, urlPrefix, atoi (saveText));
+			sprintf (tideURL, urlPrefix, atoi (savePort));
 			configSetValue ("tide_info_url", tideURL);
+			saved = 1;
+		}
+		if (strcmp (saveKey, tideAPIKey) != 0)
+		{
+			strcpy (tideAPIKey, saveKey);
+			configSetValue ("tide_api_key", tideAPIKey);
+			saved = 1;
+		}
+		if (saved)
+		{
 			tideInfo.locRead = 0;
 			startUpdateTideInfo ();
 			myUpdateID = -1;

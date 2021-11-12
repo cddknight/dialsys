@@ -98,15 +98,9 @@ MENU_DESC viewMenuDesc[] =
 	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*  02  */
 	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*  03  */
 	{	"-",					NULL,					NULL,				0	},	/*  04  */
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*  05  */
 	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*  06  */
 	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*  07  */
-#else
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/*  05  */
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/*  06  */
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/*  07  */
-#endif
 	{	NULL,					NULL,					NULL,				0	}	/*  08  */
 };
 
@@ -348,11 +342,7 @@ MENU_DESC prefMenuDesc[] =
 	{	__("Change Font"),		dialFontCallback,		NULL,				0	},					/*  06  */
 	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},					/*  07  */
 	{	"-",					NULL,					NULL,				0	},					/*  08  */
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
-#else
-	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*  12  */
-#endif
 	{	__("Save Display"),		dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  10  */
 	{	NULL,					NULL,					NULL,				0	}
 };
@@ -361,13 +351,8 @@ MENU_DESC mainMenuDesc[] =
 {
 	{	__("Gauge"),			NULL,					gaugeMenuDesc,		0	},
 	{	__("Preferences"),		NULL,					prefMenuDesc,		0	},
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
 	{	__("About"),			aboutCallback,			NULL,				0	},
 	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},
-#else
-	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT },
-	{	__("Quit"),				quitCallback,			NULL,				0,	GTK_STOCK_QUIT	},
-#endif
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -407,7 +392,8 @@ HAND_STYLE handStyle[HAND_COUNT]	=			/* Saved in the config file */
 	{ 9, 28, 0, MAXH__COLOUR, MAXF__COLOUR, 1, 1 },		/* Max hand */
 	{ 9, 28, 0, MINH__COLOUR, MINF__COLOUR, 1, 1 }		/* Min hand */
 };
-char tideURL[129] = "http://www.ukho.gov.uk/easytide/EasyTide/ShowPrediction.aspx?PredictionLength=4&PortID=0113";
+char tideURL[129] = "https://admiraltyapi.azure-api.net/uktidalapi/api/V1/Stations/0113";
+char tideAPIKey[129] = "unknown";
 DIAL_CONFIG dialConfig =
 {								/* -- Used by dial library -- */
 	NULL,						/* mainWindow */
@@ -624,9 +610,7 @@ aboutCallback (guint data)
      *------------------------------------------------------------------------------------------------*/
 	gtk_show_about_dialog (dialConfig.mainWindow,
 			"title", _("About Gauge"),
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 			"program-name", _("Gauge"),
-#endif
 			"artists", artists,
 			"authors", authors,
 			"comments", _("Gauge is a highly configurable analogue gauge,\n"
@@ -776,15 +760,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 #endif
 			prepareForPopup ();
 			popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
 			gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
-#else
-			gtk_menu_popup (GTK_MENU (popupMenu), NULL, /* parent_menu_shell */
-					NULL,								/* parent_menu_item */
-					NULL,								/* func */
-					NULL,								/* data */
-					event->button, event->time);
-#endif
 			return TRUE;
 		}
 	}
@@ -843,15 +819,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 			{
 				prepareForPopup ();
 				popupMenu = createMenu (mainMenuDesc, accelGroup, FALSE);
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
 				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
-#else
-				gtk_menu_popup (GTK_MENU (popupMenu), NULL, /* parent_menu_shell */
-						NULL,								/* parent_menu_item */
-						NULL,								/* func */
-						NULL,								/* data */
-						0, event->time);
-#endif
 			}
 			/*----------------------------------------------------------------------------------------*
              * Press ALT + n where n is a number between 1 and 9 to select the face                   *
@@ -1610,27 +1578,6 @@ void configSaveCallback (guint data)
 	}
 }
 
-#if GTK_MAJOR_VERSION == 2
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  E X P O S E  C A L L B A C K                                                                                      *
- *  ============================                                                                                      *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief The window is exposed.
- *  \param widget Not used.
- *  \param event Not used.
- *  \param data Not used.
- *  \result None.
- */
-gboolean
-exposeCallback (GtkWidget *widget, GdkEventExpose* event, gpointer data)
-{
-	clockExpose (widget);
-	return TRUE;
-}
-#else
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  D R A W  C A L L B A C K                                                                                          *
@@ -1650,7 +1597,6 @@ drawCallback (GtkWidget *widget, cairo_t *cr, gpointer data)
 	clockExpose (cr);
 	return TRUE;
 }
-#endif
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -2123,6 +2069,7 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("gauge_y_pos", posY);
 	configGetValue ("font_name", fontName, 100);
 	configGetValue ("tide_info_url", tideURL, 100);
+	configGetValue ("tide_api_key", tideAPIKey, 100);
 	configGetIntValue ("weather_scales", (int *)&weatherScales);
 	configGetValue ("location_key", locationKey, 40);
 	configGetValue ("thermo_server", thermoServer, 40);
@@ -2452,11 +2399,7 @@ main (int argc, char *argv[])
 	/*------------------------------------------------------------------------------------------------*
      * Final windows configuration.                                                                   *
      *------------------------------------------------------------------------------------------------*/
-#if GTK_MAJOR_VERSION == 2
-	g_signal_connect (G_OBJECT (dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
-#else
 	g_signal_connect (G_OBJECT (dialConfig.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
-#endif
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
 	g_signal_connect (G_OBJECT (dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
@@ -2498,10 +2441,7 @@ main (int argc, char *argv[])
 
 		gtk_window_move (dialConfig.mainWindow, posX, posY);
 	}
-
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 	gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), "Gauge");
-#endif
 
 	/*------------------------------------------------------------------------------------------------*
      * Intitalise all fo the gauges                                                                   *

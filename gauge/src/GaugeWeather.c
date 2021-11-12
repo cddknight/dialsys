@@ -1486,76 +1486,8 @@ void weatherSettings(guint data)
 	GtkWidget *entryKey;
 	const char *saveText;
 	char textUpdate = 0;
-#if GTK_MAJOR_VERSION == 2
-	GtkWidget *hbox;
-#else
 	GtkWidget *contentArea;
 	GtkWidget *grid;
-#endif
-
-#if GTK_MAJOR_VERSION == 2
-
-	dialog = gtk_dialog_new_with_buttons ("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT, NULL);
-
-	vbox = GTK_DIALOG(dialog)->vbox;
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
-
-	label = gtk_label_new(_("Weather from: http://www.bbc.co.uk/weather/"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 3);
-	label = gtk_label_new("Location code:");
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	entryKey = gtk_entry_new();
-	gtk_entry_set_max_length(GTK_ENTRY(entryKey), 30);
-	gtk_entry_set_text(GTK_ENTRY(entryKey), locationKey);
-	gtk_box_pack_start(GTK_BOX(hbox), entryKey, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 3);
-	label = gtk_label_new("Temperature units:");
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	comboBox = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Centigrade");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Fahrenheit");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(comboBox), myWeather.tUnits);
-	g_signal_connect(comboBox, "changed", G_CALLBACK(weatherComboCallback), (gpointer) 0);
-	gtk_box_pack_start(GTK_BOX(hbox), comboBox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 3);
-	label = gtk_label_new("Pressure units:");
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	comboBox = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Milli Bars");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Millimeters Mercury (Hg)");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Inches Mercury (Hg)");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(comboBox), myWeather.pUnits);
-	g_signal_connect(comboBox, "changed", G_CALLBACK(weatherComboCallback), (gpointer) 2);
-	gtk_box_pack_start(GTK_BOX(hbox), comboBox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 3);
-	label = gtk_label_new("Speed units:");
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	comboBox = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Kilometres Per Hour");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Metres Per Second");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Miles Per Hour");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(comboBox), "Knots (Nautical Miles Per Hour)");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(comboBox), myWeather.sUnits);
-	g_signal_connect(comboBox, "changed", G_CALLBACK(weatherComboCallback), (gpointer) 1);
-	gtk_box_pack_start(GTK_BOX(hbox), comboBox, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-#else
 
 	dialog = gtk_dialog_new_with_buttons("Weather Settings", GTK_WINDOW(dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1618,8 +1550,6 @@ void weatherSettings(guint data)
 	gtk_grid_attach(GTK_GRID(grid), comboBox, 2, 5, 1, 1);
 
 	gtk_box_pack_start(GTK_BOX(vbox), grid, FALSE, FALSE, 0);
-
-#endif
 
 	gtk_widget_show_all(dialog);
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
