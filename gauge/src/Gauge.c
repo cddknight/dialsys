@@ -2416,31 +2416,6 @@ main (int argc, char *argv[])
 #ifndef GAUGE_IS_DECORATED
 	gtk_window_set_decorated (GTK_WINDOW (dialConfig.mainWindow), FALSE);
 #endif
-
-	/*------------------------------------------------------------------------------------------------*
-     * Complete stuff left over from the command line                                                 *
-     *------------------------------------------------------------------------------------------------*/
-	if (posX != -1 && posY != -1)
-	{
-		int width = 1024, height = 768;
-
-		dialGetScreenSize (&width, &height);
-
-		if (posX == -2)
-			posX = (width - (dialConfig.dialWidth * dialConfig.dialSize)) / 2;
-		if (posY == -2)
-			posY = (height - (dialConfig.dialHeight * dialConfig.dialSize)) / 2;
-		if (posX == -3)
-			posX = width - (dialConfig.dialWidth * dialConfig.dialSize);
-		if (posY == -3)
-			posY = height - (dialConfig.dialHeight * dialConfig.dialSize);
-		if (posX > width - 64)
-			posX = width - 64;
-		if (posY > height - 64)
-			posY = height - 64;
-
-		gtk_window_move (dialConfig.mainWindow, posX, posY);
-	}
 	gtk_widget_set_tooltip_markup (GTK_WIDGET (dialConfig.mainWindow), "Gauge");
 
 	/*------------------------------------------------------------------------------------------------*
@@ -2479,12 +2454,35 @@ main (int argc, char *argv[])
      * OK all ready lets run it!                                                                      *
      *------------------------------------------------------------------------------------------------*/
 	gtk_widget_show_all (GTK_WIDGET (dialConfig.mainWindow));
+	
+	/*------------------------------------------------------------------------------------------------*
+     * Complete stuff left over from the command line                                                 *
+     *------------------------------------------------------------------------------------------------*/
+	if (posX != -1 && posY != -1)
+	{
+		int width = 1024, height = 768;
+
+		dialGetScreenSize (&width, &height);
+
+		if (posX == -2)
+			posX = (width - (dialConfig.dialWidth * dialConfig.dialSize)) / 2;
+		if (posY == -2)
+			posY = (height - (dialConfig.dialHeight * dialConfig.dialSize)) / 2;
+		if (posX == -3)
+			posX = width - (dialConfig.dialWidth * dialConfig.dialSize);
+		if (posY == -3)
+			posY = height - (dialConfig.dialHeight * dialConfig.dialSize);
+		if (posX > width - 64)
+			posX = width - 64;
+		if (posY > height - 64)
+			posY = height - 64;
+
+		gtk_window_move (dialConfig.mainWindow, posX, posY);
+	}
 	g_timeout_add (200, clockTickCallback, NULL);
 	dialSetOpacity();
-	{
-		prepareForPopup ();
-		createMenu (mainMenuDesc, accelGroup, FALSE);
-	}
+	prepareForPopup ();
+	createMenu (mainMenuDesc, accelGroup, FALSE);
 	i = nice (5);
 	gtk_main ();
 	exit (0);
