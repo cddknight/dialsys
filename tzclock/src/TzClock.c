@@ -928,7 +928,7 @@ aboutCallback (guint data)
 			"artists", artists,
 			"authors", authors,
 			"comments", comment,
-			"copyright", "Copyright © 2005 - 2020 Chris Knight <chris@theknight.co.uk>",
+			"copyright", "Copyright © 2005 - 2022 Chris Knight <chris@theknight.co.uk>",
 			"logo", defaultIcon,
 			"version", verString,
 			"website", "https://www.TheKnight.co.uk/",
