@@ -41,6 +41,14 @@ extern DIAL_CONFIG dialConfig;
 extern char thermoServer[];
 extern int thermoPort;
 
+#define THERMO_STATE_UPDATED	0
+#define THERMO_STATE_PENDING	1
+#define THERMO_STATE_ERROR		2
+
+static int thermoState;
+static int thermoStart = 1;
+static pthread_t threadHandle;
+
 double myThermoReading[5] = { 0, 0, 0, 0, 0 };
 
 /**********************************************************************************************************************
@@ -179,11 +187,12 @@ static void processBuffer (char *buffer, size_t size)
  *  \brief Read the current tempature from the thermometer.
  *  \result None.
  */
-void readThermometerInfo ()
+void *readThermometerInfo ()
 {
 	char buffer[512] = "";
 	int bytesRead = 0;
 
+	thermoState = THERMO_STATE_PENDING;
 	int clientSock = ConnectClientSocket (thermoServer, thermoPort, 3, USE_ANY, NULL);
 	if (SocketValid (clientSock))
 	{
@@ -196,6 +205,31 @@ void readThermometerInfo ()
 	if (bytesRead)
 	{
 		processBuffer (buffer, bytesRead);
+		thermoStart = 0;
+		thermoState = THERMO_STATE_UPDATED;
+	}
+	else
+	{
+		thermoState = THERMO_STATE_ERROR;
+	}			
+	return NULL;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  S T A R T  U P D A T E  T I D E  I N F O                                                                          *
+ *  ========================================                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Create a thread to read the tide times.
+ *  \result None.
+ */
+void startUpdateThermoInfo()
+{
+	if (thermoState != THERMO_STATE_PENDING)
+	{
+		pthread_create (&threadHandle, NULL, readThermometerInfo, NULL);
 	}
 }
 
@@ -227,8 +261,8 @@ void readThermometerValues (int face)
 		}
 		else if (!faceSetting -> nextUpdate)
 		{
-			readThermometerInfo ();
-			faceSetting -> nextUpdate = 60;
+			startUpdateThermoInfo ();
+			faceSetting -> nextUpdate = (thermoStart ? 5 : 60);
 		}
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Thermometer");

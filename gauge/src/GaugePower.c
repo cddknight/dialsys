@@ -40,6 +40,13 @@ extern MENU_DESC gaugeMenuDesc[];
 extern char powerServer[];
 extern int powerPort;
 
+#define POWER_STATE_UPDATED	0
+#define POWER_STATE_PENDING	1
+#define POWER_STATE_ERROR	2
+
+static int powerState;
+static int powerStart = 1;
+static pthread_t threadHandle;
 double myPowerReading[18];
 
 /**********************************************************************************************************************
@@ -210,11 +217,12 @@ static void processBuffer (char *buffer, size_t size)
  *  \brief Read the current tempature from the powermeter.
  *  \result None.
  */
-void readPowerMeterInfo ()
+void *readPowerMeterInfo ()
 {
 	char buffer[512] = "";
 	int bytesRead = 0;
-
+	
+	powerState = POWER_STATE_PENDING;
 	int clientSock = ConnectClientSocket (powerServer, powerPort, 3, USE_ANY, NULL);
 	if (SocketValid (clientSock))
 	{
@@ -227,6 +235,31 @@ void readPowerMeterInfo ()
 	if (bytesRead)
 	{
 		processBuffer (buffer, bytesRead);
+		powerStart = 0;
+		powerState = POWER_STATE_UPDATED;
+	}
+	else
+	{
+		powerState = POWER_STATE_ERROR;
+	}
+	return NULL;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  S T A R T  U P D A T E  T I D E  I N F O                                                                          *
+ *  ========================================                                                                          *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Create a thread to read the tide times.
+ *  \result None.
+ */
+void startUpdatePowerInfo()
+{
+	if (powerState != POWER_STATE_PENDING)
+	{
+		pthread_create (&threadHandle, NULL, readPowerMeterInfo, NULL);
 	}
 }
 
@@ -282,8 +315,8 @@ void readPowerMeterValues (int face)
 		}
 		else if (!faceSetting -> nextUpdate)
 		{
-			readPowerMeterInfo ();
-			faceSetting -> nextUpdate = 30;
+			startUpdatePowerInfo ();
+			faceSetting -> nextUpdate = (powerStart ? 5 : 30);
 		}
 
 		for (i = 0; i < 18; ++i)
