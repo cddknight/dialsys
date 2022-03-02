@@ -28,9 +28,6 @@ extern CLOCK_INST clockInst;
 extern time_t forceTime;
 extern HAND_STYLE handStyle[];
 extern TZ_INFO *timeZones;
-#if GTK_MAJOR_VERSION == 2
-extern GtkWidget *drawingArea;
-#endif
 
 /*------------------------------------------------------------------------------------------------*
  * Change the font size as the window gets bigger.                                                *
@@ -264,41 +261,6 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	return TRUE;
 }
 
-#if GTK_MAJOR_VERSION == 2
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  C L O C K  E X P O S E                                                                                            *
- *  ======================                                                                                            *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Call when the gauge needs to be drawn.
- *  \param widget oooops.
- *  \result None.
- */
-void clockExpose (GtkWidget *widget)
-{
-	int i, j, face = 0;
-	cairo_t *cr = gdk_cairo_create (clockInst.dialConfig.drawingArea -> window);
-
-	for (j = 0; j < clockInst.dialConfig.dialHeight; j++)
-	{
-		for (i = 0; i < clockInst.dialConfig.dialWidth; i++)
-		{
-			drawFace (cr, face++, (i * clockInst.dialConfig.dialSize), (j * clockInst.dialConfig.dialSize), 0);
-		}
-	}
-
-	/*------------------------------------------------------------------------------------------------*
-     * Reset the color and stuff back to the default.                                                 *
-     *------------------------------------------------------------------------------------------------*/
-	cairo_destroy (cr);
-	cr = NULL;
-}
-
-#else
-
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C L O C K  E X P O S E                                                                                            *
@@ -322,8 +284,6 @@ void clockExpose (cairo_t *cr)
 		}
 	}
 }
-
-#endif
 
 /**********************************************************************************************************************
  *                                                                                                                    *

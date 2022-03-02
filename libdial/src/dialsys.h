@@ -95,11 +95,7 @@ typedef struct _colourDetails
 	char *shortName;
 	char *longName;
 	char defColour[62];
-#if GTK_MAJOR_VERSION == 2
-	GdkColor dialColour;
-#else
 	GdkRGBA dialColour;
-#endif
 }
 COLOUR_DETAILS;
 

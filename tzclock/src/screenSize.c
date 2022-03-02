@@ -50,7 +50,7 @@ void dialSave() {}
  */
 void getScreenSize (int *width, int *height)
 {
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+#if GTK_MINOR_VERSION >= 22
 		GdkDisplay *display;
 		GdkMonitor *monitor;
 		GdkRectangle monitor_geometry;

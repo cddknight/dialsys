@@ -68,7 +68,7 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 				}
 				else if (createMenuDesc[i].stockItem)
 				{
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 					menuItem = gtk_menu_item_new_with_label (gettext(createMenuDesc[i].menuName));
 #else
 					menuItem = gtk_image_menu_item_new_from_stock  (createMenuDesc[i].stockItem,

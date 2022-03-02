@@ -140,7 +140,7 @@ MENU_DESC stopWMenuDesc[] =
 
 MENU_DESC editMenuDesc[] =
 {
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	NULL,	GDK_KEY_C	},
 #else
 	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	GTK_STOCK_COPY	},
@@ -157,7 +157,7 @@ MENU_DESC viewMenuDesc[] =
 	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*  02  */
 	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*  03  */
 	{	"-",					NULL,					NULL,				0	},	/*  04  */
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*  05  */
 	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*  06  */
 	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*  07  */
@@ -200,7 +200,7 @@ MENU_DESC prefMenuDesc[] =
 	{	__("Change Font"),		dialFontCallback,		NULL,				0	},			/*  09  */
 	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},			/*  10  */
 	{	"-",					NULL,					NULL,				0	},			/*  11  */
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
 #else
 	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*  12  */
@@ -217,7 +217,7 @@ MENU_DESC mainMenuDesc[] =
 	{	__("Calendar"),			calendarCallback,		NULL,				0	},
 	{	"-",					NULL,					NULL,				0	},
 	{	__("Preferences"),		NULL,					prefMenuDesc,		0	},
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 	{	__("About"),			aboutCallback,			NULL,				0	},
 	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},
 #else
@@ -311,12 +311,7 @@ static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 static gboolean windowKeyCallback	(GtkWidget * widget, GdkEventKey * event);
 static gboolean focusInEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
 static gboolean focusOutEvent		(GtkWidget *widget, GdkEventFocus *event, gpointer data);
-#if GTK_MAJOR_VERSION == 2
-static gboolean exposeCallback		(GtkWidget * widget, GdkEventExpose * event, gpointer data);
-static int alarmCounter				=  0;
-#else
 static gboolean drawCallback		(GtkWidget *widget, cairo_t *cr, gpointer data);
-#endif
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -671,10 +666,8 @@ calendarCallback (guint data)
 {
 	time_t t;
 	GtkWidget *dialog;
-#if GTK_MAJOR_VERSION != 2
 	GtkWidget *contentArea;
 	GtkWidget *vbox;
-#endif
 
 	int timeZone = clockInst.faceSettings[clockInst.currentFace] -> currentTZ;
 
@@ -691,22 +684,17 @@ calendarCallback (guint data)
 
 	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 						_("Close"),
 #else
 						GTK_STOCK_CLOSE,
 #endif
 						GTK_RESPONSE_NONE, NULL);
 
-#if GTK_MAJOR_VERSION == 2
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), gtk_calendar_new ());
-#else
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
 	gtk_box_pack_start (GTK_BOX (contentArea), vbox, TRUE, TRUE, 0);
 	gtk_container_add (GTK_CONTAINER (vbox), gtk_calendar_new ());
-#endif
-
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
@@ -755,44 +743,32 @@ alarmCallback (guint data)
 	GtkWidget *spinner1, *spinner2;
 	GtkWidget *hbox, *vbox1, *vbox2;
 	GtkAdjustment *adj;
-#if GTK_MAJOR_VERSION != 2
 	GtkWidget *contentArea;
-#endif
-
+	
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/
 	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 			_("Close"),
 #else
 			GTK_STOCK_CLOSE,
 #endif
 			GTK_RESPONSE_ACCEPT, NULL);
 
-#if GTK_MAJOR_VERSION == 2
-	vbox1 = GTK_DIALOG (dialog)->vbox;;
-	hbox = gtk_hbox_new (FALSE, 0);
-#else
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	vbox1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start (GTK_BOX (contentArea), vbox1, FALSE, TRUE, 0);
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-#endif
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, TRUE, 0);
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Add the hour spinner                                                                           *
 	 *------------------------------------------------------------------------------------------------*/
 	label = gtk_label_new (_("Hour :"));
-#if GTK_MAJOR_VERSION == 2
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-#else
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
-#endif
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
@@ -809,13 +785,8 @@ alarmCallback (guint data)
 	 * Add the minute spinner                                                                         *
 	 *------------------------------------------------------------------------------------------------*/
 	label = gtk_label_new (_("Min :"));
-#if GTK_MAJOR_VERSION == 2
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-#else
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
-#endif
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 5);
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
@@ -832,13 +803,8 @@ alarmCallback (guint data)
 	 * Add the message entry                                                                          *
 	 *------------------------------------------------------------------------------------------------*/
 	label = gtk_label_new (_("Show message :"));
-#if GTK_MAJOR_VERSION == 2
-	vbox2 = gtk_vbox_new (FALSE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-#else
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
-#endif
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX(vbox2), label, FALSE, TRUE, 0);
 
@@ -849,11 +815,7 @@ alarmCallback (guint data)
 	gtk_box_pack_start (GTK_BOX(vbox2), entry1, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Run command :"));
-#if GTK_MAJOR_VERSION == 2
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-#else
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
-#endif
 	gtk_box_pack_start (GTK_BOX(vbox2), label, FALSE, TRUE, 0);
 
 	entry2 = gtk_entry_new ();
@@ -922,9 +884,7 @@ aboutCallback (guint data)
 	 *------------------------------------------------------------------------------------------------*/
 	gtk_show_about_dialog (clockInst.dialConfig.mainWindow,
 			"title", _("About Timezone Clock"),
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 			"program-name", _("Timezone Clock"),
-#endif
 			"artists", artists,
 			"authors", authors,
 			"comments", comment,
@@ -1018,7 +978,7 @@ windowClickCallback (GtkWidget * widget, GdkEventButton * event)
 
 				prepareForPopup ();
 				popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+#if GTK_MINOR_VERSION >= 22
 				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
 #else
 				gtk_menu_popup (GTK_MENU(popupMenu), NULL,	/* parent_menu_shell */
@@ -1086,7 +1046,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 
 				prepareForPopup ();
 				popupMenu = createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
+#if GTK_MINOR_VERSION >= 22
 				gtk_menu_popup_at_pointer (GTK_MENU(popupMenu), NULL);
 #else
 				gtk_menu_popup (GTK_MENU(popupMenu), NULL,	/* parent_menu_shell */
@@ -1242,9 +1202,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 			if (strcmp (clockInst.windowToolTip, tempString))
 			{
 				strcpy (clockInst.windowToolTip, tempString);
-#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 				gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.dialConfig.mainWindow), clockInst.windowToolTip);
-#endif
 			}
 		}
 	}
@@ -1766,27 +1724,6 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 	return addBuffer;
 }
 
-#if GTK_MAJOR_VERSION == 2
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  E X P O S E  C A L L B A C K                                                                                      *
- *  ============================                                                                                      *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief The window is exposed.
- *  \param widget Not used.
- *  \param event Not used.
- *  \param data Not used.
- *  \result None.
- */
-gboolean
-exposeCallback (GtkWidget *widget, GdkEventExpose* event, gpointer data)
-{
-	clockExpose (widget);
-	return TRUE;
-}
-#else
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  D R A W  C A L L B A C K                                                                                          *
@@ -1806,7 +1743,6 @@ drawCallback (GtkWidget *widget, cairo_t *cr, gpointer data)
 	clockExpose (cr);
 	return TRUE;
 }
-#endif
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -1893,35 +1829,6 @@ void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm)
 	localtime_r (t, tm);
 }
 
-#if GTK_MAJOR_VERSION == 2
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  A L A R M  D I A L O G  D E S T R O Y                                                                             *
- *  =====================================                                                                             *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Called to destroy the alarm dialog.
- *  \param widget Which dialog.
- *  \result None.
- */
-void alarmDialogDestroy (GtkWidget *widget)
-{
-	if (alarmCounter)
-	{
-		gtk_widget_destroy (widget);
-		--alarmCounter;
-#ifdef STATUS_ICON
-		if (!alarmCounter)
-		{
-			gtk_status_icon_set_blinking (statusIcon, 0);
-			gtk_status_icon_set_visible (statusIcon, 0);
-		}
-#endif
-	}
-}
-#endif
-
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  C H E C K  F O R  A L A R M                                                                                       *
@@ -1942,13 +1849,10 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 		{
 			if (!faceSetting -> alarmInfo.alarmShown)
 			{
-#if GTK_MAJOR_VERSION == 2
-				GtkWidget* dialog;
-#else
 				NotifyNotification *note;
 				char name[40] = "Timezone Clock Message", message[40];
 				GError *error = NULL;
-#endif
+
 				faceSetting -> alarmInfo.alarmShown = 1;
 				if (faceSetting -> alarmInfo.onlyWeekdays && (tm -> tm_wday == 0 || tm -> tm_wday == 6))
 					return;
@@ -1963,27 +1867,6 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 						exit (1);
 					}
 				}
-#if GTK_MAJOR_VERSION == 2
-				dialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (clockInst.dialConfig.mainWindow),
-						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-						"%d:%02d - <b>\"%s\"</b>", tm -> tm_hour, tm -> tm_min,
-						faceSetting -> alarmInfo.message);
-				gtk_window_set_title (GTK_WINDOW (dialog), "TzClock Alarm");
-#ifdef STATUS_ICON
-				if (alarmCounter == 0)
-				{
-					gtk_status_icon_set_visible (statusIcon, 1);
-					gtk_status_icon_set_blinking (statusIcon, 1);
-					gtk_status_icon_set_tooltip (statusIcon, faceSetting -> alarmInfo.message);
-				}
-#endif
-				gdk_beep();
-				alarmCounter ++;
-				gtk_window_set_keep_above (GTK_WINDOW (dialog), true);
-				g_signal_connect_swapped (dialog, "response", G_CALLBACK (alarmDialogDestroy), dialog);
-				gtk_widget_show_all (dialog);
-#else
 				notify_init(name);
 				sprintf (message, _("Timezone Clock Alarm (%d:%02d) -"), tm -> tm_hour, tm -> tm_min);
 				note = notify_notification_new (message, faceSetting -> alarmInfo.message, NULL);
@@ -1993,7 +1876,6 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 				notify_notification_set_image_from_pixbuf (note, defaultIcon);
 				notify_notification_show (note, &error);
 				g_object_unref(G_OBJECT(note));
-#endif
 			}
 		}
 		else if (faceSetting -> alarmInfo.alarmShown)
@@ -2731,11 +2613,7 @@ main (int argc, char *argv[])
 	*------------------------------------------------------------------------------------------------*/
 	dialFixFaceSize ();
 
-	#if GTK_MAJOR_VERSION == 2
-	g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "expose_event", G_CALLBACK (exposeCallback), NULL);
-	#else
 	g_signal_connect (G_OBJECT (clockInst.dialConfig.drawingArea), "draw", G_CALLBACK (drawCallback), NULL);
-	#endif
 	g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "button_press_event", G_CALLBACK (windowClickCallback), NULL);
 	g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_press_event", G_CALLBACK (windowKeyCallback), NULL);
 	g_signal_connect (G_OBJECT (clockInst.dialConfig.mainWindow), "key_release_event", G_CALLBACK (windowKeyCallback), NULL);
@@ -2753,10 +2631,7 @@ main (int argc, char *argv[])
 	{
 		gtk_window_set_decorated (GTK_WINDOW (clockInst.dialConfig.mainWindow), FALSE);
 	}
-
-	#if GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
 	gtk_widget_set_tooltip_markup (GTK_WIDGET (clockInst.dialConfig.mainWindow), "TzClock");
-	#endif
 
 	/*------------------------------------------------------------------------------------------------*
 	* Called to set any values                                                                       *

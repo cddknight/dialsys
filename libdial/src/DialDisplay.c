@@ -33,10 +33,6 @@ static int saveCentreX, saveCentreY;
 static char saveFilePath[PATH_MAX];
 static cairo_t *saveCairo;
 static DIAL_CONFIG *dialConfig;
-#if GTK_MAJOR_VERSION == 2
-static GdkDrawable *windowShapeBitmap = NULL;
-static GdkColormap *colourMap;
-#endif
 
 /**********************************************************************************************************************
  * Use tables for the sin and cos calculation, it is faster.                                                          *
@@ -93,32 +89,32 @@ GtkWidget *dialInit (DIAL_CONFIG *dialConfigIn)
  */
 void dialGetScreenSize (int *width, int *height)
 {
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 22
-		GdkDisplay *display;
-		GdkMonitor *monitor;
-		GdkRectangle monitor_geometry;
+#if GTK_MINOR_VERSION >= 22
+	GdkDisplay *display;
+	GdkMonitor *monitor;
+	GdkRectangle monitor_geometry;
 
-		display = gdk_display_get_default ();
-		monitor = gdk_display_get_monitor (display, 0);
-		gdk_monitor_get_geometry (monitor, &monitor_geometry);
+	display = gdk_display_get_default ();
+	monitor = gdk_display_get_monitor (display, 0);
+	gdk_monitor_get_geometry (monitor, &monitor_geometry);
 
-		if (width != NULL)
-		{
-				*width = monitor_geometry.width;
-		}
-		if (height != NULL)
-		{
-				*height = monitor_geometry.height;
-		}
+	if (width != NULL)
+	{
+			*width = monitor_geometry.width;
+	}
+	if (height != NULL)
+	{
+			*height = monitor_geometry.height;
+	}
 #else
-		if (width != NULL)
-		{
-				*width = gdk_screen_width();
-		}
-		if (height != NULL)
-		{
-				*height = gdk_screen_height();
-		}
+	if (width != NULL)
+	{
+			*width = gdk_screen_width();
+	}
+	if (height != NULL)
+	{
+			*height = gdk_screen_height();
+	}
 #endif
 }
 
@@ -163,11 +159,6 @@ void dialDrawFinish ()
 	cairo_restore (saveCairo);
 }
 
-#if GTK_MAJOR_VERSION == 2
-GdkColor
-#else
-GdkRGBA
-#endif
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  D I A L  C O L O U R                                                                                              *
@@ -179,7 +170,7 @@ GdkRGBA
  *  \param i The number of the colour to find.
  *  \result Pointer to the GtkColour.
  */
-*dialColour (int i)
+GdkRGBA *dialColour (int i)
 {
 	if (i < 0 || i >= dialMaxColours)
 		return &dialConfig -> colourDetails[0].dialColour;
@@ -200,11 +191,7 @@ GdkRGBA
  */
 void dialSetColour (int i)
 {
-#if GTK_MAJOR_VERSION == 2
-	gdk_cairo_set_source_color (saveCairo, dialColour (i));
-#else
 	gdk_cairo_set_source_rgba (saveCairo, dialColour (i));
-#endif
 }
 
 /**********************************************************************************************************************
@@ -219,42 +206,6 @@ void dialSetColour (int i)
  */
 void dialWindowMask (void)
 {
-#if GTK_MAJOR_VERSION == 2
-
-	int fullHeight, fullWidth, i, j;
-	GdkGC *gc;
-
-	fullHeight = dialConfig -> dialHeight * dialConfig -> dialSize;
-	fullWidth = dialConfig -> dialWidth * dialConfig -> dialSize;
-
-	if (windowShapeBitmap)
-	{
-		g_object_unref (windowShapeBitmap);
-		windowShapeBitmap = NULL;
-	}
-
-	windowShapeBitmap = (GdkBitmap *) gdk_pixmap_new (NULL, fullWidth, fullHeight, 1);
-
-	gc = gdk_gc_new (windowShapeBitmap);
-	gdk_gc_set_foreground (gc, dialColour (0));
-	gdk_gc_set_background (gc, dialColour (1));
-
-	gdk_draw_rectangle (windowShapeBitmap, gc, TRUE, 0, 0, fullWidth, fullHeight);
-
-	gdk_gc_set_foreground (gc, dialColour (1));
-	gdk_gc_set_background (gc, dialColour (0));
-
-	for (i = 0; i < dialConfig -> dialWidth; i++)
-	{
-		for (j = 0; j < dialConfig -> dialHeight; j++)
-			gdk_draw_arc (windowShapeBitmap, gc, TRUE, (i * dialConfig -> dialSize) - 1, (j * dialConfig -> dialSize) - 1,
-					dialConfig -> dialSize + 1, dialConfig -> dialSize + 1, 0, 360 * 64);
-	}
-	gtk_widget_shape_combine_mask (GTK_WIDGET (dialConfig -> mainWindow), windowShapeBitmap, 0, 0);
-	g_object_unref (gc);
-
-#else
-
 	cairo_t *cr;
 	cairo_surface_t *surface;
 	cairo_region_t *region;
@@ -285,8 +236,6 @@ void dialWindowMask (void)
 		cairo_region_destroy (region);
 	}
 	cairo_destroy (cr);
-
-#endif
 }
 
 /**********************************************************************************************************************
@@ -446,15 +395,9 @@ void dialCircleGradientX (int posX, int posY, int size, int colFill, int style)
 	float gradH = (float)(100 + dialConfig -> dialGradient) / 100.0;
 	float x1, x2, col[3][3];
 
-#if GTK_MAJOR_VERSION == 2
-	col[0][0] = (float)dialColour(colFill) -> red / 65535.0;
-	col[1][0] = (float)dialColour(colFill) -> green / 65535.0;
-	col[2][0] = (float)dialColour(colFill) -> blue / 65535.0;
-#else
 	col[0][0] = dialColour(colFill) -> red;
 	col[1][0] = dialColour(colFill) -> green;
 	col[2][0] = dialColour(colFill) -> blue;
-#endif
 
 	for (i = 0; i < 3; ++i)
 	{
@@ -522,15 +465,9 @@ void dialSquareGradientX (int posX, int posY, int size, int colFill, int style)
 	float gradH = (float)(100 + dialConfig -> dialGradient) / 100.0;
 	float x1, x2, col[3][3];
 
-#if GTK_MAJOR_VERSION == 2
-	col[0][0] = (float)dialColour(colFill) -> red / 65535.0;
-	col[1][0] = (float)dialColour(colFill) -> green / 65535.0;
-	col[2][0] = (float)dialColour(colFill) -> blue / 65535.0;
-#else
 	col[0][0] = dialColour(colFill) -> red;
 	col[1][0] = dialColour(colFill) -> green;
 	col[2][0] = dialColour(colFill) -> blue;
-#endif
 
 	for (i = 0; i < 3; ++i)
 	{
@@ -1046,13 +983,8 @@ dialFontCallback (guint data)
 	gchar *selectedFont;
 	bool reRun = false;
 
-#if GTK_MAJOR_VERSION == 2
-	dialog = gtk_font_selection_dialog_new ("Pick the gauge font");
-	gtk_font_selection_dialog_set_font_name ((GtkFontSelectionDialog *)dialog, dialConfig -> fontName);
-#else
 	dialog = gtk_font_chooser_dialog_new (_("Pick the gauge font"), dialConfig -> mainWindow);
 	gtk_font_chooser_set_font ((GtkFontChooser *)dialog, dialConfig -> fontName);
-#endif
 
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 	gtk_widget_show_all (dialog);
@@ -1067,11 +999,7 @@ dialFontCallback (guint data)
 		case GTK_RESPONSE_APPLY:
 			reRun = true;
 		default:
-#if GTK_MAJOR_VERSION == 2
-			selectedFont = gtk_font_selection_dialog_get_font_name ((GtkFontSelectionDialog *)dialog);
-#else
 			selectedFont = gtk_font_chooser_get_font ((GtkFontChooser *)dialog);
-#endif
 			strcpy (dialConfig -> fontName, selectedFont);
 			g_free (selectedFont);
 			if (dialConfig -> UpdateFunc) dialConfig -> UpdateFunc();
@@ -1098,9 +1026,9 @@ void dialSetOpacity ()
 	double opacity = (((double)dialConfig -> dialOpacity / 2) + 50) / 100;
 
 	if (opacity >= 1) opacity = 0.995;
-#if GTK_MAJOR_VERSION > 2 && GTK_MINOR_VERSION > 7
+#if GTK_MINOR_VERSION > 7
 	gtk_widget_set_opacity (GTK_WIDGET (dialConfig -> mainWindow), opacity);
-#elif GTK_MAJOR_VERSION > 2 || (GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION > 11)
+#else
 	gtk_window_set_opacity (dialConfig -> mainWindow, opacity);
 #endif
 }
@@ -1124,11 +1052,7 @@ void dialColourComboCallback (GtkWidget *comboBox, gpointer data)
 
 	if (i >= 2 && i <= 23)
 	{
-#if GTK_MAJOR_VERSION == 2
-		gtk_color_selection_set_current_color (GTK_COLOR_SELECTION (colourSel), dialColour(i));
-#else
 		gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), dialColour(i));
-#endif
 	}
 }
 
@@ -1179,18 +1103,14 @@ dialColourCallback (guint data)
 	GtkWidget *dialog;
 	GtkWidget *comboBox;
 	GtkWidget *colourSel;
-#if GTK_MAJOR_VERSION == 2
-	GdkColor setColour;
-#else
 	GtkWidget *gradLabel, *gradScale;
 	GtkWidget *opacLabel, *opacScale;
 	GtkWidget *contentArea;
 	GdkRGBA setColour;
-#endif
 
 	dialog = gtk_dialog_new_with_buttons (_("Pick the clock colour"), dialConfig -> mainWindow,
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 			_("Apply"), GTK_RESPONSE_APPLY,
 			_("Close"), GTK_RESPONSE_ACCEPT,
 #else
@@ -1199,27 +1119,14 @@ dialColourCallback (guint data)
 #endif
 			NULL);
 
-#if GTK_MAJOR_VERSION == 2
-	vbox = GTK_DIALOG (dialog)->vbox;
-	comboBox = gtk_combo_box_new_text ();
-	for (i = 2; i < dialMaxColours; i++)
-		gtk_combo_box_append_text (GTK_COMBO_BOX (comboBox), dialConfig -> colourDetails[i].longName);
-#else
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
 	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	gtk_box_pack_start (GTK_BOX (contentArea), vbox, FALSE, TRUE, 0);
 	comboBox = gtk_combo_box_text_new ();
 	for (i = 2; i < dialMaxColours; i++)
 		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (comboBox), dialConfig -> colourDetails[i].longName);
-#endif
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (comboBox), 0);
-
-#if GTK_MAJOR_VERSION == 2
-	colourSel = gtk_color_selection_new ();
-	gtk_color_selection_set_has_opacity_control (GTK_COLOR_SELECTION (colourSel), false);
-	gtk_color_selection_set_current_color (GTK_COLOR_SELECTION (colourSel), &dialConfig -> colourDetails[2].dialColour);
-#else
 	colourSel = gtk_color_chooser_widget_new ();
 	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true);
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), &dialConfig -> colourDetails[2].dialColour);
@@ -1231,17 +1138,10 @@ dialColourCallback (guint data)
 	gtk_range_set_value ((GtkRange *)opacScale, (gdouble)dialConfig -> dialOpacity);
 	g_signal_connect (G_OBJECT(gradScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)0);
 	g_signal_connect (G_OBJECT(opacScale), "value-changed", G_CALLBACK(dialScaleChanged), (gpointer)1);
-#endif
 	g_signal_connect (comboBox, "changed", G_CALLBACK (dialColourComboCallback), colourSel);
 
 	gtk_container_add (GTK_CONTAINER (vbox), comboBox);
 	gtk_container_add (GTK_CONTAINER (vbox), colourSel);
-#if GTK_MAJOR_VERSION > 2
-	gtk_container_add (GTK_CONTAINER (vbox), gradLabel);
-	gtk_container_add (GTK_CONTAINER (vbox), gradScale);
-	gtk_container_add (GTK_CONTAINER (vbox), opacLabel);
-	gtk_container_add (GTK_CONTAINER (vbox), opacScale);
-#endif
 	gtk_widget_show_all (dialog);
 
 	do
@@ -1257,19 +1157,8 @@ dialColourCallback (guint data)
 			if (i >= 2 && i <= 23)
 			{
 				gchar *colString = NULL;
-#if GTK_MAJOR_VERSION == 2
-				gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (colourSel), &setColour);
-#if GTK_MINOR_VERSION > 11
-				colString = gdk_color_to_string (&setColour);
-#else
-				colString = g_malloc (10);
-				sprintf (colString, "#%02X%02X%02X", setColour.red / 256, setColour.green / 256,
-						setColour.blue / 256);
-#endif
-#else
 				gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (colourSel), &setColour);
 				colString = gdk_rgba_to_string (&setColour);
-#endif
 				if (colString)
 				{
 					strncpy (dialConfig -> colourDetails[i].defColour, colString, 60);
@@ -1283,12 +1172,10 @@ dialColourCallback (guint data)
 	}
 	while (reRun);
 
-#if GTK_MAJOR_VERSION > 2
 	gtk_widget_destroy (gradLabel);
 	gtk_widget_destroy (gradScale);
 	gtk_widget_destroy (opacLabel);
 	gtk_widget_destroy (opacScale);
-#endif
 	gtk_widget_destroy (comboBox);
 	gtk_widget_destroy (colourSel);
 	gtk_widget_destroy (dialog);
@@ -1308,18 +1195,10 @@ int
 dialCreateColours ()
 {
 	int i = 0;
-#if GTK_MAJOR_VERSION == 2
-	colourMap = gdk_colormap_get_system ();
-#endif
 
 	while (dialConfig -> colourDetails[i].shortName)
 	{
-#if GTK_MAJOR_VERSION == 2
-		gdk_color_parse (dialConfig -> colourDetails[i].defColour, &dialConfig -> colourDetails[i].dialColour);
-		gdk_colormap_alloc_color (colourMap, &dialConfig -> colourDetails[i].dialColour, FALSE, FALSE);
-#else
 		gdk_rgba_parse (&dialConfig -> colourDetails[i].dialColour, dialConfig -> colourDetails[i].defColour);
-#endif
 		++i;
 	}
 	return i;
@@ -1556,7 +1435,7 @@ void dialSaveCallback (guint data)
 		dialog = gtk_file_chooser_dialog_new ("Save file",
 				dialConfig -> mainWindow,
 				GTK_FILE_CHOOSER_ACTION_SAVE,
-#if GTK_MAJOR_VERSION == 3 && GTK_MINOR_VERSION >= 10
+#if GTK_MINOR_VERSION >= 10
 				_("Save"), GTK_RESPONSE_ACCEPT,
 				_("Cancel"), GTK_RESPONSE_CANCEL,
 #else
