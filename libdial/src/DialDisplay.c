@@ -54,11 +54,7 @@ void dialFillSinCosTables ();
  **********************************************************************************************************************/
 /**
  *  \brief Intalize the dail display system.
- *  \param mainWindowIn Main window to use.
- *  \param updatevoid Function to call on update.
- *  \param colourDetails Colours to use on the display.
- *  \param start Offse of zero on the dial (0 = 12:00).
- *  \param dialSave Pointer to the dial save function.
+ *  \param dialConfigIn Current dial config.
  *  \result A drawingArea used by the face.
  */
 GtkWidget *dialInit (DIAL_CONFIG *dialConfigIn)
@@ -1212,7 +1208,6 @@ dialCreateColours ()
  **********************************************************************************************************************/
 /**
  *  \brief Fill the sin and cos tables.
- *  \param start Starting position .
  *  \result None.
  */
 void dialFillSinCosTables ()

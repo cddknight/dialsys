@@ -44,6 +44,7 @@ extern int powerPort;
 #define POWER_STATE_PENDING	1
 #define POWER_STATE_ERROR	2
 
+static time_t lastRead;
 static int powerState;
 static int powerStart = 1;
 static pthread_t threadHandle;
@@ -156,6 +157,7 @@ static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"power")))
 			{
 				++readLevel;
+				lastRead = time (NULL);
 			}
 			else
 			{
@@ -247,8 +249,8 @@ void *readPowerMeterInfo ()
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  S T A R T  U P D A T E  T I D E  I N F O                                                                          *
- *  ========================================                                                                          *
+ *  S T A R T  U P D A T E  P O W E R  I N F O                                                                        *
+ *  ==========================================                                                                        *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
@@ -301,6 +303,7 @@ void readPowerMeterValues (int face)
 	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
+		char readTimeStr[81] = "Never";
 		char powerStr[18][41];
 		int i;
 
@@ -320,7 +323,15 @@ void readPowerMeterValues (int face)
 		}
 
 		for (i = 0; i < 18; ++i)
+		{
 			getPowerStr (myPowerReading[i], &powerStr[i][0]);
+		}
+		if (lastRead != 0)
+		{
+			struct tm readTime;
+			localtime_r (&lastRead, &readTime);
+			strftime (readTimeStr, 80, "%e/%b %k:%M:%S", &readTime);
+		}
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
 		setFaceString (faceSetting, FACESTR_TIP, 0,
@@ -329,11 +340,13 @@ void readPowerMeterValues (int face)
 				"<b>Minimum</b>: %s\n"
 				"<b>Hour</b>: %s (%s to %s)\n"
 				"<b>Day</b>: %s (%s to %s)\n"
-				"<b>Month</b>: %s (%s to %s)"),
+				"<b>Month</b>: %s (%s to %s)\n"
+				"<b>Read</b>: %s"),
 				powerStr[0], powerStr[1], powerStr[2], 
 				powerStr[4], powerStr[9], powerStr[14],
 				powerStr[5], powerStr[10], powerStr[15],
-				powerStr[6], powerStr[11], powerStr[16]);
+				powerStr[6], powerStr[11], powerStr[16],
+				readTimeStr);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Day Average: %s"),
 				powerStr[0], powerStr[5]);
 		setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);

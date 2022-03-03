@@ -48,6 +48,7 @@ extern int thermoPort;
 static int thermoState;
 static int thermoStart = 1;
 static pthread_t threadHandle;
+static time_t lastRead;
 
 double myThermoReading[5] = { 0, 0, 0, 0, 0 };
 
@@ -126,6 +127,7 @@ static void processElementNames (xmlDoc *doc, xmlNode * aNode, int readLevel)
 			if ((!xmlStrcmp (curNode -> name, (const xmlChar *)"sensors")))
 			{
 				++readLevel;
+				lastRead = time (NULL);
 			}
 			else
 			{
@@ -217,8 +219,8 @@ void *readThermometerInfo ()
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  S T A R T  U P D A T E  T I D E  I N F O                                                                          *
- *  ========================================                                                                          *
+ *  S T A R T  U P D A T E  T H E R M O  I N F O                                                                      *
+ *  ============================================                                                                      *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
@@ -248,6 +250,7 @@ void readThermometerValues (int face)
 {
 	if (gaugeEnabled[FACE_TYPE_THERMO].enabled)
 	{
+		char readTimeStr[81] = "Never";
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
@@ -264,11 +267,19 @@ void readThermometerValues (int face)
 			startUpdateThermoInfo ();
 			faceSetting -> nextUpdate = (thermoStart ? 5 : 60);
 		}
+		if (lastRead != 0)
+		{
+			struct tm readTime;
+			localtime_r (&lastRead, &readTime);
+			strftime (readTimeStr, 80, "%e/%b %k:%M:%S", &readTime);
+		}
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Thermometer");
 		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Outside</b>: %0.1f\302\260C\n<b>Inside</b>: %0.1f\302\260C\n"
-				"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%"),
-				myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4]);
+				"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%\n"
+				"<b>Read</b>: %s"),
+				myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4],
+				readTimeStr);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Outside: %0.1f%s, Inside: %0.1f%s"),
 				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
 		setFaceString (faceSetting, FACESTR_BOT, 0, "%0.1f%s\n(%0.1f%s)",

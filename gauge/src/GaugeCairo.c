@@ -170,9 +170,9 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param cr .
- *  \result .
+ *  \brief Draw all the clock faces.
+ *  \param cr Cairo handle.
+ *  \result None.
  */
 void clockExpose (cairo_t *cr)
 {

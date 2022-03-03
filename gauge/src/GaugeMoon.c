@@ -235,7 +235,7 @@ double moon_position(double j, double ls)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
+ *  \brief Calculate the moon phase.
  *  \param year The year to calculate for.
  *  \param month The month to calculate for.
  *  \param day The day to calculate for.

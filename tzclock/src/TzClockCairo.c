@@ -46,13 +46,13 @@ char *roman[25] =
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief ooops.
- *  \param cr .
- *  \param face .
- *  \param posX .
- *  \param posY .
- *  \param circ .
- *  \result .
+ *  \brief Draw the clock face.
+ *  \param cr Cairo handle.
+ *  \param face Which face.
+ *  \param posX Face location X.
+ *  \param posY Face location Y.
+ *  \param circ Diameter.
+ *  \result none.
  */
 gboolean
 drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
@@ -269,7 +269,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
  **********************************************************************************************************************/
 /**
  *  \brief Call when the gauge needs to be drawn.
- *  \param widget oooops.
+ *  \param cr Cairo handle.
  *  \result None.
  */
 void clockExpose (cairo_t *cr)

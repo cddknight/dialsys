@@ -997,7 +997,7 @@ void doUpdateWeatherInfo(char *weatherURL)
  **********************************************************************************************************************/
 /**
  *  \brief Update the weather information.
- *  \param arg .
+ *  \param arg Pointer to where to save.
  *  \result None.
  */
 void *updateWeatherInfo (void *arg)
@@ -1035,8 +1035,8 @@ void *updateWeatherInfo (void *arg)
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \result .
+ *  \brief Start a thead to get the weather info.
+ *  \result None.
  */
 void startUpdateWeatherInfo()
 {

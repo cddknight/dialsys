@@ -2500,43 +2500,12 @@ void loadConfig (int *posX, int *posY)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  R E  R E A D  C O N F I G                                                                                         *
- *  =========================                                                                                         *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Reload the config and use the new colours.
- *  \result None.
- *
-void reReadConfig ()
-{
-	int i;
-	char *home = getenv ("HOME");
-	char configPath[1024], value[81], tempName[81];
-
-	configLoad ("/etc/tzclockrc");
-	strcpy (configPath, home);
-	strcat (configPath, "/");
-	strcat (configPath, clockInst.configFile);
-	configLoad (configPath);
-	for (i = 2; i < MAX__COLOURS; i++)
-	{
-		sprintf (value, "colour_%s", colourNames[i].shortName);
-		strcpy (tempName, colourNames[i].shortName);
-		configGetValue (value, &tempName[strlen (tempName)], 60);
-		loadColour (tempName);
-	}
-	dialCreateColours();
-} **/
-
-/**********************************************************************************************************************
- *                                                                                                                    *
  *  M A I N                                                                                                           *
  *  =======                                                                                                           *
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief Start of the program.
+ *  \brief Reload the config and use the new colours.
  *  \param argc Arg count.
  *  \param argv Arg values.
  *  \result None.

@@ -71,6 +71,18 @@ static char *typeNames[] = { "Reads", "Writes" };
 void *diskActivity;
 void *partitionInfo;
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P A R T  Q U E U E  C O M P                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Compare two components.
+ *  \param item1 First item.
+ *  \param item2 Second Item.
+ *  \result Result of compare.
+ */
 int partQueueComp (void *item1, void *item2)
 {
 	PARTITION_INFO *partOne = (PARTITION_INFO *)item1;
@@ -78,6 +90,18 @@ int partQueueComp (void *item1, void *item2)
 	return strcmp (partOne -> tidyName, partTwo -> tidyName);
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I S K  Q U E U E  C O M P                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Compare two disk names.
+ *  \param item1 First item.
+ *  \param item2 Second Item.
+ *  \result Result of compare.
+ */
 int diskQueueComp (void *item1, void *item2)
 {
 	DISK_INFO *diskOne = (DISK_INFO *)item1;
@@ -93,8 +117,7 @@ int diskQueueComp (void *item1, void *item2)
  **********************************************************************************************************************/
 /**
  *  \brief Convert a mount point into a short name.
- *  \param disk The number of the disk drive.
- *  \param fullName Full partition name.
+ *  \param partInfo Partition name.
  *  \result None.
  */
 void tidyPartitionName (PARTITION_INFO *partInfo)
@@ -213,7 +236,7 @@ void readPartitionNames()
  **********************************************************************************************************************/
 /**
  *  \brief Calculate the free space for a disk.
- *  \param disk Disk to calculate for.
+ *  \param partInfo Caclulate the free space.
  *  \param partTotal Return the total partition size.
  *  \param partSize Return the used size.
  *  \result Percent of disk used.

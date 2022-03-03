@@ -100,8 +100,8 @@ RsvgDimensionData	g_DimensionData;
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \result .
+ *  \brief Make a mask to make the face round.
+ *  \result None.
  */
 void makeWindowMask ()
 {
@@ -148,12 +148,12 @@ void makeWindowMask ()
  *                                                                                                                    *
  **********************************************************************************************************************/
 /**
- *  \brief .
- *  \param cr .
- *  \param string1 .
- *  \param string2 .
- *  \param top .
- *  \result .
+ *  \brief Display text on the face.
+ *  \param cr Cairo handle.
+ *  \param string1 Tect to display.
+ *  \param string2 Extra test to displat.
+ *  \param top Display at the top of the face.
+ *  \result None.
  */
 void drawText (cairo_t *cr, char *string1, char *string2, int top)
 {
