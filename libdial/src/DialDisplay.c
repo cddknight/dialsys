@@ -1090,8 +1090,7 @@ void dialScaleChanged (GtkRange *range, gpointer data)
  *  \param data Not used.
  *  \result None.
  */
-void
-dialColourCallback (guint data)
+void dialColourCallback (guint data)
 {
 	int i;
 	bool reRun = false;
@@ -1123,6 +1122,7 @@ dialColourCallback (guint data)
 		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (comboBox), dialConfig -> colourDetails[i].longName);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (comboBox), 0);
+
 	colourSel = gtk_color_chooser_widget_new ();
 	gtk_color_chooser_set_use_alpha (GTK_COLOR_CHOOSER (colourSel), true);
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (colourSel), &dialConfig -> colourDetails[2].dialColour);
@@ -1138,6 +1138,10 @@ dialColourCallback (guint data)
 
 	gtk_container_add (GTK_CONTAINER (vbox), comboBox);
 	gtk_container_add (GTK_CONTAINER (vbox), colourSel);
+	gtk_container_add (GTK_CONTAINER (vbox), gradLabel);
+	gtk_container_add (GTK_CONTAINER (vbox), gradScale);
+	gtk_container_add (GTK_CONTAINER (vbox), opacLabel);
+	gtk_container_add (GTK_CONTAINER (vbox), opacScale);
 	gtk_widget_show_all (dialog);
 
 	do
