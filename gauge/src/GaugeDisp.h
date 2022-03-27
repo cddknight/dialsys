@@ -229,6 +229,7 @@ void tideSettings			(guint data);
 void thermometerSettings	(guint data);
 void thermometerCallback	(guint data);
 void powerMeterCallback		(guint data);
+void powerSettings			(guint data);
 void configSaveCallback		(guint data);
 void dialSaveCallback		(guint data);
 void gaugeReset				(int face, int type, int subType);

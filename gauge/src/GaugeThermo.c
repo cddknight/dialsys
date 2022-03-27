@@ -269,7 +269,7 @@ void readThermometerValues (int face)
 		else if (!faceSetting -> nextUpdate)
 		{
 			startUpdateThermoInfo ();
-			faceSetting -> nextUpdate = (thermoStart ? 5 : 60);
+			faceSetting -> nextUpdate = (thermoStart ? 5 : 120);
 		}
 		if (lastRead != 0)
 		{

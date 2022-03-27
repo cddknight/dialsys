@@ -37,6 +37,7 @@
 extern FACE_SETTINGS *faceSettings[];
 extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
+extern DIAL_CONFIG dialConfig;
 extern char powerServer[];
 extern int powerPort;
 
@@ -323,7 +324,7 @@ void readPowerMeterValues (int face)
 		else if (!faceSetting -> nextUpdate)
 		{
 			startUpdatePowerInfo ();
-			faceSetting -> nextUpdate = (powerStart ? 5 : 30);
+			faceSetting -> nextUpdate = (powerStart ? 5 : 60);
 		}
 
 		for (i = 0; i < 18; ++i)
@@ -363,5 +364,74 @@ void readPowerMeterValues (int face)
 			maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
 		}
 	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  P O W E R  S E T T I N G S                                                                                        *
+ *  ==========================                                                                                        *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Configure the server and port to be used.
+ *  \param data 1 if from the menu, 0 on startup.
+ *  \result None.
+ */
+void powerSettings(guint data)
+{
+	GtkWidget *dialog;
+	GtkWidget *vbox;
+	GtkWidget *label;
+	GtkWidget *entryServer;
+	GtkWidget *spinPort;
+	GtkWidget *contentArea;
+	GtkWidget *grid;
+
+	dialog = gtk_dialog_new_with_buttons("Power Settings", GTK_WINDOW(dialConfig.mainWindow),
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			_("_OK"), GTK_RESPONSE_ACCEPT, _("_Cancel"), GTK_RESPONSE_REJECT, NULL);
+
+	contentArea = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
+	gtk_box_pack_start(GTK_BOX(contentArea), vbox, TRUE, TRUE, 0);
+	grid = gtk_grid_new();
+
+	label = gtk_label_new(_("Server: "));
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_grid_attach(GTK_GRID(grid), label, 1, 1, 1, 1);
+	entryServer = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(entryServer), 30);
+	gtk_entry_set_text(GTK_ENTRY(entryServer), powerServer);
+	gtk_grid_attach(GTK_GRID(grid), entryServer, 2, 1, 1, 1);
+
+	label = gtk_label_new(_("Port: "));
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_grid_attach(GTK_GRID(grid), label, 1, 2, 1, 1);
+	spinPort = gtk_spin_button_new_with_range(1, 64000, 1);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(spinPort), powerPort);
+	gtk_grid_attach(GTK_GRID(grid), spinPort, 2, 2, 1, 1);
+
+	gtk_box_pack_start(GTK_BOX(vbox), grid, FALSE, FALSE, 0);
+	gtk_widget_show_all(dialog);
+
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		const char *saveText = gtk_entry_get_text(GTK_ENTRY(entryServer));
+		int saveValue = (int)gtk_spin_button_get_value (GTK_SPIN_BUTTON(spinPort));
+		
+		if (strcmp(saveText, powerServer) != 0)
+		{
+			strncpy(powerServer, saveText, 40);
+			configSetValue ("power_server", powerServer);
+		}
+		if (powerPort != saveValue)
+		{
+			powerPort = saveValue;
+			configSetIntValue ("power_port", powerPort);
+		}
+	}
+	gtk_widget_destroy(dialog);
 }
 
