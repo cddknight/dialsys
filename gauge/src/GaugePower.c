@@ -47,7 +47,7 @@ extern int powerPort;
 static time_t lastRead;
 static int powerState;
 static int powerStart = 1;
-static pthread_t threadHandle;
+static pthread_t threadHandle = 0;
 double myPowerReading[18];
 
 /**********************************************************************************************************************
@@ -261,6 +261,10 @@ void startUpdatePowerInfo()
 {
 	if (powerState != POWER_STATE_PENDING)
 	{
+		if (threadHandle != 0)
+		{
+			pthread_join(threadHandle, NULL);
+		}
 		pthread_create (&threadHandle, NULL, readPowerMeterInfo, NULL);
 	}
 }

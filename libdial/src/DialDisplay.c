@@ -231,6 +231,7 @@ void dialWindowMask (void)
 		gtk_widget_shape_combine_region (GTK_WIDGET (dialConfig -> mainWindow), region);
 		cairo_region_destroy (region);
 	}
+	cairo_surface_destroy (surface);
 	cairo_destroy (cr);
 }
 

@@ -47,7 +47,7 @@ extern int thermoPort;
 
 static int thermoState;
 static int thermoStart = 1;
-static pthread_t threadHandle;
+static pthread_t threadHandle = 0;
 static time_t lastRead;
 
 double myThermoReading[5] = { 0, 0, 0, 0, 0 };
@@ -231,6 +231,10 @@ void startUpdateThermoInfo()
 {
 	if (thermoState != THERMO_STATE_PENDING)
 	{
+		if (threadHandle != 0)
+		{
+			pthread_join(threadHandle, NULL);
+		}
 		pthread_create (&threadHandle, NULL, readThermometerInfo, NULL);
 	}
 }
