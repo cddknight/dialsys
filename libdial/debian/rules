@@ -11,4 +11,4 @@
 DEB_CONFIGURE_EXTRA_FLAGS += --exec-prefix=/usr/lib
 
 %:
-	dh $@  --with autotools-dev
+	dh $@ --with autoreconf
