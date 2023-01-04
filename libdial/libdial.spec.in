@@ -8,8 +8,7 @@ Packager: Chris Knight <chris@theknight.co.uk>
 Group: Applications/Productivity
 Source: http://www.tzclock.org/releases/%{name}-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildRequires: pkgconfig desktop-file-utils gcc
-BuildRequires: @REQUIRES@
+BuildRequires: pkgconfig desktop-file-utils gcc gtk3-devel
 
 %define debug_package %{nil}
 

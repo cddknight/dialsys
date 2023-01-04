@@ -12,16 +12,10 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
 
-REQUIRES=""
-
 # Checks for libraries.
-PKG_CHECK_MODULES([DEPS], [gtk+-3.0 gthread-2.0],
-	[REQUIRES="gtk3-devel"], 
-	[PKG_CHECK_MODULES([DEPS], [gtk+-2.0 >= 2.10.0 gthread-2.0],
-		[REQUIRES="gtk2-devel"])])
+PKG_CHECK_MODULES([DEPS], [gtk+-3.0 gthread-2.0])
 AC_CHECK_LIB(m, lrint, [DEPS_LIBS="$DEPS_LIBS -lm"]) 
 
-AC_SUBST(REQUIRES)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
