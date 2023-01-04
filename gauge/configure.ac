@@ -11,8 +11,6 @@ AC_CONFIG_HEADER([config.h])
 AC_PROG_CC
 AM_PROG_CC_C_O
 
-REQUIRES=""
-
 # Checks for libraries.
 PKG_CHECK_MODULES([DEPS], [gtk+-3.0 libcurl libxml-2.0 glib-2.0 json-glib-1.0 zlib dial])
 AC_CHECK_LIB(sensors, sensors_init, [DEPS_LIBS="$DEPS_LIBS -lsensors"]) 

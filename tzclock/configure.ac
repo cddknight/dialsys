@@ -11,15 +11,9 @@ AC_CONFIG_HEADER([config.h])
 AC_PROG_CC
 AM_PROG_CC_C_O
 
-REQUIRES=""
-
 # Checks for libraries.
-PKG_CHECK_MODULES([DEPS], [gtk+-3.0 libnotify dial],
-	[REQUIRES="gtk3-devel libnotify-devel"], 
-	[PKG_CHECK_MODULES([DEPS], [gtk+-2.0 >= 2.10.0 libgnomeui-2.0 dial],
-		[REQUIRES="gtk2-devel cairo-devel libgnomeui-devel"])])
+PKG_CHECK_MODULES([DEPS], [gtk+-3.0 libnotify dial])
 
-AC_SUBST(REQUIRES)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 

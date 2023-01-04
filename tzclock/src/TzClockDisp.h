@@ -224,11 +224,7 @@ TZ_INFO;
  *----------------------------------------------------------------------------------------------------*/
 void makeWindowMask ();
 void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm);
-#if GTK_MAJOR_VERSION == 2
-void clockExpose (GtkWidget *widget);
-#else
 void clockExpose (cairo_t *cr);
-#endif
 void dialSave(char *fileName);
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow);
 int  xSinCos (int number, int angle, int useCos);
