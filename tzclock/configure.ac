@@ -1,11 +1,11 @@
 #
 # Process this file with autoconf to produce a configure script.
 #
-AC_PREREQ(2.59)
-AC_INIT(TzClock, 4.4, chris@theknight.co.uk)
+AC_PREREQ([2.71])
+AC_INIT([TzClock],[4.4],[chris@theknight.co.uk])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/TzClock.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
@@ -18,7 +18,6 @@ AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
 # Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([langinfo.h ctype.h math.h stdarg.h stdbool.h stdint.h stdio.h stdlib.h string.h time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
