@@ -942,12 +942,12 @@ void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
 		}
 		if (scale && fontSize > 6)
 		{
-			fontSize = (fontSize * 7) / 8;
+			fontSize *= 0.8;
 		}
 		PangoLayout *layout = pango_cairo_create_layout (saveCairo);
 		PangoFontDescription *fontDesc = pango_font_description_from_string (dialConfig -> fontName);
 
-		pango_font_description_set_size (fontDesc, (gint)(PANGO_SCALE * fontSize));
+		pango_font_description_set_size (fontDesc, (gint)(fontSize * (float)PANGO_SCALE));
 		pango_layout_set_font_description (layout, fontDesc);
 		pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 
