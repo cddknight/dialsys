@@ -940,9 +940,10 @@ void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
 			fontSize = (dialConfig -> dialSize >> 6) << 2;
 			if (fontSize < 6) fontSize = 6;
 		}
-		if (scale)
-			fontSize = (fontSize * 10) / 12;
-
+		if (scale && fontSize > 6)
+		{
+			fontSize = (fontSize * 7) / 8;
+		}
 		PangoLayout *layout = pango_cairo_create_layout (saveCairo);
 		PangoFontDescription *fontDesc = pango_font_description_from_string (dialConfig -> fontName);
 
