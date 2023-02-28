@@ -522,7 +522,7 @@ void
 copyCallback (guint data)
 {
 	time_t t;
-	char stringDate[101];
+	char stringDate[201];
 	GtkClipboard* clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
 	int timeZone = clockInst.faceSettings[clockInst.currentFace] -> currentTZ;
 
@@ -540,15 +540,15 @@ copyCallback (guint data)
 	switch (data)
 	{
 	case 0:
-		getStringValue (stringDate, 100, timeZone ? TXT_COPY_DT_Z : TXT_COPY_DT_L, clockInst.currentFace, t);
+		getStringValue (stringDate, 200, timeZone ? TXT_COPY_DT_Z : TXT_COPY_DT_L, clockInst.currentFace, t);
 		break;
 
 	case 1:
-		getStringValue (stringDate, 100, timeZone ? TXT_COPY_D_Z : TXT_COPY_D_L, clockInst.currentFace, t);
+		getStringValue (stringDate, 200, timeZone ? TXT_COPY_D_Z : TXT_COPY_D_L, clockInst.currentFace, t);
 		break;
 
 	case 2:
-		getStringValue (stringDate, 100, timeZone ? TXT_COPY_T_Z : TXT_COPY_T_L, clockInst.currentFace, t);
+		getStringValue (stringDate, 200, timeZone ? TXT_COPY_T_Z : TXT_COPY_T_L, clockInst.currentFace, t);
 		break;
 	}
 	gtk_clipboard_set_text (clipboard, stringDate, -1);
@@ -1111,7 +1111,7 @@ windowKeyCallback (GtkWidget * widget, GdkEventKey * event)
 int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_t t)
 {
 	int i, j, tempTime, update = 0;
-	char tempString[111];
+	char tempString[211];
 	short angle;
 
 	/*------------------------------------------------------------------------------------------------*
@@ -1189,7 +1189,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 
 		if (face == clockInst.currentFace)
 		{
-			getStringValue (tempString, 100, faceSetting -> currentTZ ? TXT_TITLE_Z : TXT_TITLE_L, face, t);
+			getStringValue (tempString, 200, faceSetting -> currentTZ ? TXT_TITLE_Z : TXT_TITLE_L, face, t);
 			if (strcmp (clockInst.windowTitle, tempString))
 			{
 				strcpy (clockInst.windowTitle, tempString);
@@ -1198,7 +1198,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		}
 		if (face == clockInst.toolTipFace)
 		{
-			getStringValue (tempString, 100, faceSetting -> currentTZ ? TXT_TOOLTIP_Z : TXT_TOOLTIP_L, face, t);
+			getStringValue (tempString, 200, faceSetting -> currentTZ ? TXT_TOOLTIP_Z : TXT_TOOLTIP_L, face, t);
 			if (strcmp (clockInst.windowToolTip, tempString))
 			{
 				strcpy (clockInst.windowToolTip, tempString);
