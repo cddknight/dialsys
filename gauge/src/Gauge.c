@@ -413,7 +413,8 @@ DIAL_CONFIG dialConfig =
 	20,							/* markerStep */
 	99,							/* faceOpacity */
 	0,							/* faceGradient */
-	750,							/* startPoint */
+	750,						/* startPoint */
+	8,							/* markerScale */
 	&fontName[0],				/* Font name pointer */
 	updateGauge,				/* Update func. */
 	dialSave,					/* Save func. */
@@ -612,7 +613,7 @@ aboutCallback (guint data)
 {
 	char verString[241];
 
-	sprintf (verString, _("Version: %s\nBuilt: %s"), VERSION, buildDate);
+	sprintf (verString, _("Version: %s, Dial: %s\nBuilt: %s"), VERSION, DIALSYS_VER, buildDate);
 	/*------------------------------------------------------------------------------------------------*
      * Nice dialog that can be used with newer versions of the GTK API.                               *
      *------------------------------------------------------------------------------------------------*/
@@ -2033,6 +2034,7 @@ void updateGauge (void)
 	configSetIntValue ("face_size", dialConfig.dialSize);
 	configSetIntValue ("opacity", dialConfig.dialOpacity);
 	configSetIntValue ("gradient", dialConfig.dialGradient);
+	configSetIntValue ("marker_scale", dialConfig.markerScale);
 	configSetValue ("font_name", fontName);
 	lastTime = -1;
 }
@@ -2075,6 +2077,7 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("gradient", &dialConfig.dialGradient);
 	configGetIntValue ("gauge_x_pos", posX);
 	configGetIntValue ("gauge_y_pos", posY);
+	configGetIntValue ("marker_scale", &dialConfig.markerScale);
 	configGetValue ("font_name", fontName, 100);
 	configGetValue ("tide_info_url", tideURL, 100);
 	configGetValue ("tide_api_key", tideAPIKey, 100);
@@ -2290,6 +2293,11 @@ main (int argc, char *argv[])
 	int posX = -1, posY = -1, saveFace, i;
 	GtkWidget *eventBox;
 
+	if (!dialCheckVersion (DIALSYS_VER))
+	{
+		fprintf (stderr, "Library versions do not match\n");
+		return 1;
+	}
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, NULL);
 	textdomain (PACKAGE);

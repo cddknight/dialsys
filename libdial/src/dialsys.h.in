@@ -26,6 +26,8 @@
 #include <gtk/gtk.h>
 #include <stdbool.h>
 
+#define DIALSYS_VER "@VERSION@"
+
 /*----------------------------------------------------------------------------------------------------*
  * Prototypes for dial list store                                                                     *
  *----------------------------------------------------------------------------------------------------*/
@@ -126,6 +128,7 @@ typedef struct _dialConfig
 	int dialOpacity;
 	int dialGradient;
 	int startPoint;
+	int markerScale;
 	char *fontName;
 	void(*UpdateFunc)(void); 
 	void(*DialSave)(char *path);
@@ -137,6 +140,7 @@ DIAL_CONFIG;
  * Prototypes for dial display                                                                        *
  *----------------------------------------------------------------------------------------------------*/
 GtkWidget *dialInit 	(DIAL_CONFIG *dialConfig);
+int dialCheckVersion	(char *version);
 void dialDrawStart 		(cairo_t *cr, int posX, int posY);
 void dialDrawFinish 	(void);
 

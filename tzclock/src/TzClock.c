@@ -277,6 +277,7 @@ CLOCK_INST clockInst =
 		99,							/* faceOpacity */
 		0,							/* faceGradient */
 		0,							/* startPoint */
+		8,							/* markerScale */
 		&clockInst.fontName[0],		/* Font name pointer */
 		updateClock,				/* Update func. */
 		dialSave,					/* Save func. */
@@ -874,7 +875,7 @@ aboutCallback (guint data)
 	char comment[256];
 	char verString[241];
 
-	sprintf (verString, _("Version: %s\nBuilt: %s"), VERSION, buildDate);
+	sprintf (verString, _("Version: %s, Dial: %s\nBuilt: %s"), VERSION, DIALSYS_VER, buildDate);
 	sprintf (comment, _("Timezone Clock is a highly configurable analogue clock, capable\n"
 					  "of showing the time in many different countries and cities.\n"
 					  "Loaded time zones: %d"), nTimeZones - FIRST_CITY);
@@ -2381,6 +2382,7 @@ void updateClock (void)
 	configSetIntValue ("face_size", clockInst.dialConfig.dialSize);
 	configSetIntValue ("opacity", clockInst.dialConfig.dialOpacity);
 	configSetIntValue ("gradient", clockInst.dialConfig.dialGradient);
+	configSetIntValue ("marker_scale", clockInst.dialConfig.markerScale);
 	configSetValue ("font_name", clockInst.fontName);
 	lastTime = -1;
 }
@@ -2426,6 +2428,7 @@ void loadConfig (int *posX, int *posY)
 	configGetIntValue ("gradient", &clockInst.dialConfig.dialGradient);
 	configGetIntValue ("clock_x_pos", posX);
 	configGetIntValue ("clock_y_pos", posY);
+	configGetIntValue ("marker_scale", &clockInst.dialConfig.markerScale);
 	configGetValue ("font_name", clockInst.fontName, 100);
 
 	for (i = 2; i < MAX__COLOURS; i++)
@@ -2516,6 +2519,11 @@ main (int argc, char *argv[])
 	int posX = -1, posY = -1, saveFace, i;
 	GtkWidget *eventBox;
 
+	if (!dialCheckVersion (DIALSYS_VER))
+	{
+		fprintf (stderr, "Library versions do not match\n");
+		return 1;
+	}
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, NULL);
 	textdomain (PACKAGE);

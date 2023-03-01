@@ -73,6 +73,22 @@ GtkWidget *dialInit (DIAL_CONFIG *dialConfigIn)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  D I A L  C H E C K  V E R S I O N                                                                                 *
+ *  =================================                                                                                 *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Check the library version matches the version the app was built with.
+ *  \param version Version of the app..
+ *  \result True if they are the same.
+ */
+int dialCheckVersion (char *version)
+{
+	return (strcmp (version, DIALSYS_VER) == 0);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  D I A L  G E T  S C R E E N  S I Z E                                                                              *
  *  ====================================                                                                              *
  *                                                                                                                    *
@@ -942,7 +958,7 @@ void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
 		}
 		if (scale && fontSize > 6)
 		{
-			fontSize *= 0.8;
+			fontSize = (fontSize * dialConfig -> markerScale) / 10;
 		}
 		PangoLayout *layout = pango_cairo_create_layout (saveCairo);
 		PangoFontDescription *fontDesc = pango_font_description_from_string (dialConfig -> fontName);
