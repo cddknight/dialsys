@@ -72,7 +72,6 @@ struct TideInfo
 };
 
 static struct TideInfo tideInfo;
-static char tideReadLine[1025];
 static int lastReadTide;
 
 static int myUpdateID = -1;

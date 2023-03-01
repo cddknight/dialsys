@@ -301,11 +301,9 @@ HAND_STYLE handStyle[HAND_COUNT] =					/* Saved in the config file */
  * Prototypes for functions in the tables that are defined later.                                     *
  *----------------------------------------------------------------------------------------------------*/
 static void splitTimeZone			(char *timeZone, char *area, char *city, char *display, int doUpper);
-
 static void processCommandLine		(int argc, char *argv[], int *posX, int *posY);
 static void howTo					(FILE * outFile, char *format, ...);
 static void checkForAlarm			(FACE_SETTINGS *faceSetting, struct tm *tm);
-static void reReadConfig			();
 
 static gboolean clockTickCallback	(gpointer data);
 static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event);
@@ -1288,17 +1286,6 @@ clockTickCallback (gpointer data)
 
 	if (clockInst.forceTime != -1)
 		t = clockInst.forceTime;
-/**
-	if (clockInst.reConfigTime != 0)
-	{
-		if (t >= clockInst.reConfigTime)
-		{
-			reReadConfig();
-			update = 1;
-			clockInst.reConfigTime = t + 300;
-		}
-	}
-**/
 	if (lastTime == -1)
 		update = 1;
 	lastTime = t;
