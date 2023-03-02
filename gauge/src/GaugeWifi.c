@@ -123,7 +123,7 @@ int readLinkQuality(struct sReadInfo *readInfo)
 				sscanf (&readBuff[found + strlen (findBitRateStr)], "%lf %8s", &readInfo -> rate, readInfo -> rateType);
 			}
 		}
-		fclose (inFile);
+		pclose (inFile);
 	}
 	return retn;
 }
