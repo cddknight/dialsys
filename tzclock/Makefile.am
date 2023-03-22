@@ -18,4 +18,7 @@ Icon128_DATA = icons/128x128/tzclock.png
 Icon48dir = $(datadir)/icons/hicolor/48x48/apps
 Icon48_DATA = icons/48x48/tzclock.png
 man1_MANS = tzclock.man
-
+BUILT_SOURCES = buildDate.h
+CLEANFILES = buildDate.h
+buildDate.h:
+	setBuildDate -c

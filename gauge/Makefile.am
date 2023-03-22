@@ -17,4 +17,7 @@ Icon128dir = $(datadir)/icons/hicolor/128x128/apps
 Icon128_DATA = icons/128x128/gauge.png
 Icon48dir = $(datadir)/icons/hicolor/48x48/apps
 Icon48_DATA = icons/48x48/gauge.png
-
+BUILT_SOURCES = buildDate.h
+CLEANFILES = buildDate.h
+buildDate.h:
+	setBuildDate -c
