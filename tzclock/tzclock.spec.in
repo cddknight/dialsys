@@ -2,7 +2,7 @@ Summary: Cairo Clock to display the time around the world
 Name: @PACKAGE@
 Version: @VERSION@
 Release: @REVISION@%{?dist}
-License: GPLv2
+License: GPLv3+
 URL: https://www.theknight.co.uk/
 Packager: Chris Knight <chris@theknight.co.uk>
 Group: Applications/Productivity
