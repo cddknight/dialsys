@@ -1,4 +1,4 @@
-Summary: Cairo Gauge to display values read from your PC
+Summary: Display values read from your PC on an analog gauge
 Name: @PACKAGE@
 Version: @VERSION@
 Release: @REVISION@%{?dist}
@@ -17,7 +17,7 @@ BuildRequires: lm_sensors-devel
 %endif
 
 %description
-GTK/Cairo Gauge.
+Analog Gauge can display gauges showing CPU, Memory and more information.
 
 %prep
 %setup -q
@@ -58,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING AUTHORS
 
 %changelog
+* Wed Mar 22 2023 Chris Knight <chris@theknight.co.uk> @VERSION@-1
+- Fixes and support for new compilers.
+
 * Mon Jan 01 2018 Chris Knight <chris@theknight.co.uk> 2.1.7-1
 - New release with support for Fedora 27 and ubuntu 17.10.
 

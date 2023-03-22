@@ -39,7 +39,6 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
 install -p -m 755 @PACKAGE@ $RPM_BUILD_ROOT%{_bindir}/@PACKAGE@
-install -p -m 755 screenSize $RPM_BUILD_ROOT%{_bindir}/screenSize
 install -p -m 644 icons/scalable/@PACKAGE@.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
 install -p -m 644 icons/128x128/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
 install -p -m 644 icons/48x48/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
@@ -53,7 +52,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/@PACKAGE@
-%{_bindir}/screenSize
 %{_datadir}/applications/@PACKAGE@.desktop
 %{_datadir}/appdata/@PACKAGE@.appdata.xml
 %{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
@@ -64,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING AUTHORS
 
 %changelog
+* Wed Mar 22 2023 Chris Knight <chris@theknight.co.uk> @VERSION@-1
+- Fixes and changes for newer Linux versions.
+
 * Mon Jan 01 2018 Chris Knight <chris@theknight.co.uk> 3.1.7-1
 - New release with support for Fedora 27 and ubuntu 17.10.
 

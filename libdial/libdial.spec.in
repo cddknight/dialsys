@@ -43,6 +43,7 @@ install -s -m 755 .libs/libdial.so.2.0.1 $RPM_BUILD_ROOT%{_libdir}/libdial.so.2.
 ln -s libdial.so.2.0.1 $RPM_BUILD_ROOT%{_libdir}/libdial.so.2
 install -m 644 pkgconfig/dial.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/dial.pc
 install -m 644 src/dialsys.h $RPM_BUILD_ROOT%{_includedir}/dialsys.h
+install -s -m 644 .libs/libdial.a $RPM_BUILD_ROOT%{_libdir}/libdial.a
 ln -s libdial.so.2 $RPM_BUILD_ROOT%{_libdir}/libdial.so
 
 %clean
@@ -57,6 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/dial.pc
 %{_includedir}/dialsys.h
 %{_libdir}/libdial.so
+%{_libdir}/libdial.a
 
 %doc COPYING AUTHORS
 
