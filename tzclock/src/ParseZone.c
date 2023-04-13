@@ -34,6 +34,7 @@ typedef struct _areaInfo
 	char *areaName;
 	void *cityList;
 	void *subAreaList;
+	int	dummyArea;
 }
 AREAINFO;
 
@@ -416,7 +417,14 @@ int buildAreaInfo (void *areaInfoList)
 
 			while ((cityName = (char *)queueGet (subAreaInfo -> cityList)) != NULL)
 			{
-				sprintf (tempBuff, "%s/%s/%s", areaInfo -> areaName, subAreaInfo -> areaName, cityName);
+				if (subAreaInfo -> dummyArea)
+				{
+					sprintf (tempBuff, "%s/%s", areaInfo -> areaName, cityName);
+				}
+				else
+				{
+					sprintf (tempBuff, "%s/%s/%s", areaInfo -> areaName, subAreaInfo -> areaName, cityName);
+				}
 				if ((timeZone -> envName = malloc (strlen (tempBuff) + 1)) != NULL)
 				{
 					menuCityDesc -> menuName = tidyName (cityName);
@@ -457,6 +465,73 @@ int buildAreaInfo (void *areaInfoList)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  S P L I T  C I T Y  L I S T                                                                                       *
+ *  ===========================                                                                                       *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Split the city list when it gets too long.
+ *  \param areaInfoList Current area info.
+ *  \result None.
+ */
+void splitCityList (void *areaInfoList)
+{
+	int readItem = 0;
+	AREAINFO *areaInfo, *subAreaInfo = NULL;
+	char *cityName;
+	
+	while ((areaInfo = (AREAINFO *)queueRead (areaInfoList, readItem)) != NULL)
+	{
+		if (queueGetItemCount (areaInfo -> cityList) > 20)
+		{
+			char subArea[120];
+			int count = queueGetItemCount (areaInfo -> cityList);
+			
+			while (count)
+			{
+				int i = 0;
+				
+				if (count > 20)
+				{
+					count = 20;
+				}
+
+				char *tempSubArea;
+				char *cityOne = (char *)queueRead (areaInfo -> cityList, 0);
+				char *cityTwo = (char *)queueRead (areaInfo -> cityList, count - 1);
+				sprintf (subArea, "%s - %s\n", cityOne, cityTwo);
+
+				if ((subAreaInfo = (AREAINFO *)malloc (sizeof (AREAINFO))) == NULL)
+				{
+					return;
+				}
+				if ((tempSubArea = (char *)malloc (strlen (subArea) + 1)) == NULL)
+				{
+					free (subAreaInfo);
+					return;
+				}
+				strcpy (tempSubArea, subArea);
+				subAreaInfo -> areaName = tempSubArea;
+				subAreaInfo -> cityList = queueCreate();
+				subAreaInfo -> subAreaList = NULL;
+				subAreaInfo -> dummyArea = 1;
+				queuePut (areaInfo -> subAreaList, subAreaInfo);
+
+				while (i < count)
+				{
+					cityName = (char *)queueGet (areaInfo -> cityList);
+					queuePut (subAreaInfo -> cityList, cityName);
+					++i;
+				}
+				count = queueGetItemCount (areaInfo -> cityList);
+			}
+		}
+		++readItem;
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  P A R S E  Z O N E                                                                                                *
  *  ==================                                                                                                *
  *                                                                                                                    *
@@ -491,6 +566,7 @@ int parseZone (void)
 		}
 		fclose (inFile);
 	}
+	splitCityList (areaInfoList);
 	retn = buildAreaInfo (areaInfoList);
 	queueDelete (areaInfoList);
 	return retn;
