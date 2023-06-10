@@ -27,7 +27,7 @@ AC_STRUCT_TM
 # Checks for library functions.
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([nl_langinfo])
-REVISION=1
+REVISION=2
 AC_SUBST([REVISION])
 
 AC_CONFIG_FILES([Makefile tzclock.spec])
