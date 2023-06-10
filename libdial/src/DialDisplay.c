@@ -403,12 +403,21 @@ void dialCircleGradient (int size, int colFill, int style)
 void dialCircleGradientX (int posX, int posY, int size, int colFill, int style)
 {
 	cairo_pattern_t *pat;
-	int patSize = (dialConfig -> dialSize >> 1) + (posX > posY ? posX : posY), i;
-	int x = posX / dialConfig -> dialSize, y = posY / dialConfig -> dialSize, j = x + y, k = patSize / dialConfig -> dialSize;
+	int i;
+	int patSize = (dialConfig -> dialSize >> 1) + (saveCentreX > saveCentreY ? saveCentreX : saveCentreY);		// (posX > posY ? posX : posY);
+	int x = posX / dialConfig -> dialSize;
+	int y = posY / dialConfig -> dialSize;
+	int j = x + y, k = patSize / dialConfig -> dialSize;
 	float gradL = (float)(100 - dialConfig -> dialGradient) / 100.0;
 	float gradH = (float)(100 + dialConfig -> dialGradient) / 100.0;
 	float x1, x2, col[3][3];
 
+	for (i = 0; i < 3; ++i)
+	{
+		int j = 0;
+		for (j = 0; j < 3; ++j)
+			col[i][j] = 0;
+	}
 	col[0][0] = dialColour(colFill) -> red;
 	col[1][0] = dialColour(colFill) -> green;
 	col[2][0] = dialColour(colFill) -> blue;
