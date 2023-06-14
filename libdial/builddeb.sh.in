@@ -2,7 +2,7 @@
 
 source /etc/os-release
 
-if [ "$ID" == "ferdora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "suse" ]
+if [ "$ID" == "fedora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "suse" ]
 then
 	echo "Use buildrpm.sh to build on rpm based distributions"
 	exit 1
