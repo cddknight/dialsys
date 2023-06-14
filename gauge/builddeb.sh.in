@@ -1,5 +1,12 @@
 #!/bin/bash
-set -x
+
+source /etc/os-release
+
+if [ "$ID" == "ferdora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "suse" ]
+then
+	echo "Use buildrpm.sh to build on rpm based distributions"
+	exit 1
+fi
 
 ORIGPWD=$PWD
 rm -f @PACKAGE@-@VERSION@.tar.bz2

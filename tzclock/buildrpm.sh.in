@@ -1,9 +1,10 @@
 #!/bin/bash
 
-DISTRO=$(grep -E -o '(Debian|Ubuntu)' /etc/issue)
-if [ "$DISTRO" != "" ]
+source /etc/os-release
+
+if [ "$ID" == "debian" ] || [ "$ID" == "ubuntu" ] || [ "$ID" == "raspbian" ]
 then
-	echo "Use dpkg-buildpackage to build on Debian and Ubuntu"
+	echo "Use builddeb.sh to build on Debian based distributions"
 	exit 1
 fi
 
