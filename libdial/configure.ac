@@ -32,7 +32,6 @@ REVISION=2
 AC_SUBST([REVISION])
 
 AC_CONFIG_FILES([Makefile libdial.spec src/dialsys.h pkgconfig/dial.pc])
-AC_CONFIG_FILES([buildrpm.sh],[chmod +x buildrpm.sh])
-AC_CONFIG_FILES([builddeb.sh],[chmod +x builddeb.sh])
+AC_CONFIG_FILES([buildpkg.sh],[chmod +x buildpkg.sh])
 AC_CONFIG_FILES([debian/control debian/changelog])
 AC_OUTPUT

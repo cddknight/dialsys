@@ -1,0 +1,60 @@
+#!/bin/bash
+
+source /etc/os-release
+
+if [ "$ID" == "debian" ] || [ "$ID" == "ubuntu" ] || [ "$ID" == "raspbian" ]
+then
+
+	ORIGPWD=$PWD
+	rm -f @PACKAGE@-@VERSION@.tar.bz2
+	make dist-bzip2
+
+	cd ..
+	rm -rf @PACKAGE@*@VERSION@*
+	tar xjf $ORIGPWD/@PACKAGE@-@VERSION@.tar.bz2
+	cd @PACKAGE@-@VERSION@
+
+	cp -r $ORIGPWD/debian .
+	dpkg-buildpackage
+
+elif [ "$ID" == "fedora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "suse" ]
+then
+
+	if [ -d $HOME/gitroot/rpmbuild ]
+	then
+		DIR=$HOME/gitroot/rpmbuild
+	elif [ -d $HOME/trunk/source/rpmbuild ]
+	then
+		DIR=$HOME/trunk/source/rpmbuild
+	elif [ -d $HOME/source/rpmbuild ]
+	then
+		DIR=$HOME/source/rpmbuild
+	else
+		DIR=$(find $HOME -name rpmbuild 2> /dev/null)
+	fi
+
+	if [ ! -e $HOME/.rpmmacros ]
+	then
+		echo "%_topdir $DIR" > $HOME/.rpmmacros
+		echo "%dist .$ID" >> $HOME/.rpmmacros
+	fi
+
+	rm -f @PACKAGE@-@VERSION@.tar.bz2
+	make dist-bzip2
+
+	cp @PACKAGE_NAME@.spec $DIR/SPECS/
+	cp @PACKAGE@-@VERSION@.tar.bz2 $DIR/SOURCES/
+
+	cd $DIR/SPECS
+	rpmbuild -ba -v @PACKAGE_NAME@.spec
+	rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-@VERSION@-@REVISION@.*.$(uname -m).rpm
+
+else
+
+	echo "Unknown distribution."
+	exit 1
+
+fi
+
+exit 0
+

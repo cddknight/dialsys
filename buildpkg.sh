@@ -7,10 +7,9 @@ do
 	if [ -d ${DIR} ]
 	then
 		cd ${DIR}
-		if [ -e buildrpm.sh ]
+		if [ -e buildpkg.sh ]
 		then
-#			../../project/buildrpm.expect
-			./buildrpm.sh
+			./buildpkg.sh
 		fi
 		cd ${START_PWD}
 	fi
