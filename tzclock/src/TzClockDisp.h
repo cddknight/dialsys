@@ -132,13 +132,18 @@
 #define MENU_PREF_ONTOP		0
 #define MENU_PREF_STUCK		1
 #define MENU_PREF_LOCK		2
-#define MENU_PREF_SHOWS		3
-#define MENU_PREF_SUBS		4
-#define MENU_PREF_SVG		13
+#define MENU_PREF_TIME		3
+#define MENU_PREF_SHOWS		4
+#define MENU_PREF_SUBS		5
+#define MENU_PREF_SVG		14
 
 #define MENU_STPW_ENBL		0
 #define MENU_STPW_START		1
 #define MENU_STPW_RESET		2
+
+#define MENU_CNTD_ENBL		0
+#define MENU_CNTD_START		1
+#define MENU_CNTD_RESET		2
 
 #define MENU_MARK_STRT		0
 #define MENU_MARK_STOP		4
@@ -161,11 +166,27 @@ typedef struct _alarm
 ALARM_TIME;
 
 /*----------------------------------------------------------------------------------------------------*
+ * Structure to store alarm information                                                               *
+ *----------------------------------------------------------------------------------------------------*/
+typedef struct _countdown
+{
+	int countdownHour;			/* Setting */
+	int countdownMin;			/* Setting */
+	int countdownSec;			/* Setting */
+	int totalTime;
+	char message[41];			/* Setting */
+	char command[41];			/* Setting */
+}
+COUNTDOWN_INFO;
+
+/*----------------------------------------------------------------------------------------------------*
  * Structure to store face information and settings                                                   *
  *----------------------------------------------------------------------------------------------------*/
 typedef struct _faceSettings 
 {
+	bool showTime;				/* Setting */
 	bool stopwatch;				/* Setting */
+	bool countdown;				/* Setting */
 	bool subSecond;				/* Setting */
 	bool showSeconds;			/* Setting */
 	bool show24Hour;			/* Setting */
@@ -184,6 +205,7 @@ typedef struct _faceSettings
 	short handPosition[HAND_COUNT];
 	GtkWidget *drawingArea, *eventBox;
 	ALARM_TIME alarmInfo;
+	COUNTDOWN_INFO countdownInfo;
 }
 FACE_SETTINGS;
 
@@ -230,4 +252,5 @@ void dialSave(char *fileName);
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow);
 int  xSinCos (int number, int angle, int useCos);
 int  getStopwatchTime (FACE_SETTINGS *faceSetting);
+int  getCountdownTime (FACE_SETTINGS *faceSetting);
 

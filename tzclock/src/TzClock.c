@@ -139,6 +139,15 @@ MENU_DESC stopWMenuDesc[] =
 	{	NULL,					NULL,					NULL,				0	}
 };
 
+MENU_DESC downMenuDesc[] =
+{
+	{	__("Enable"),			countdownCallback,		NULL,				0,	NULL,	0,	0,	1	},
+	{	__("Start+Stop"),		cdStartCallback,		NULL,				0,	NULL,	GDK_KEY_A	},
+	{	__("Reset"),			cdResetCallback,		NULL,				0,	NULL,	GDK_KEY_Z	},
+	{	__("Start Time"),		countSetCallback,		NULL,				0	},
+	{	NULL,					NULL,					NULL,				0	}
+};
+
 MENU_DESC editMenuDesc[] =
 {
 #if GTK_MINOR_VERSION >= 10
@@ -192,8 +201,9 @@ MENU_DESC prefMenuDesc[] =
 	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  00  */
 	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  01  */
 	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*  02  */
-	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/*  03  */
-	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/*  04  */
+	{	__("Show Time"),		showTimeCallback,		NULL,				1,	NULL,	0,	0,	1	},	/*  03  */
+	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/*  04  */
+	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/*  05  */
 	{	"-",					NULL,					NULL,				0	},			/*  05  */
 	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  06  */
 	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  07  */
@@ -214,6 +224,7 @@ MENU_DESC mainMenuDesc[] =
 {
 	{	__("Time-zone"),		NULL,					NULL,				0	},
 	{	__("Stopwatch"),		NULL,					stopWMenuDesc,		0	},
+	{	__("Countdown"),		NULL,					downMenuDesc,		0	},
 	{	__("Edit"),				NULL,					editMenuDesc,		0	},
 	{	__("Calendar"),			calendarCallback,		NULL,				0	},
 	{	"-",					NULL,					NULL,				0	},
@@ -358,6 +369,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -q              :  Toggle quick time setting, no smooth scroll\n"));
 	fprintf (outFile, _("   -s<size>        :  Set the size of each clock\n"));
 	fprintf (outFile, _("   -S              :* Toggle enabling the stopwatch\n"));
+	fprintf (outFile, _("   -T<secs>        :* Toggle enabling the countdown\n"));
 	fprintf (outFile, _("   -t              :  Toggle removing the clock from the taskbar\n"));
 	fprintf (outFile, _("   -u              :* Toggle upper-casing the city name\n"));
 	fprintf (outFile, _("   -w              :  Toggle showing on all the desktops\n"));
@@ -917,6 +929,8 @@ void prepareForPopup (void)
 	prefMenuDesc[MENU_PREF_ONTOP].checked = alwaysOnTop;
 	prefMenuDesc[MENU_PREF_STUCK].checked = stuckOnAll;
 	prefMenuDesc[MENU_PREF_LOCK].checked = lockMove;
+	
+	prefMenuDesc[MENU_PREF_TIME].checked = clockInst.faceSettings[clockInst.currentFace] -> showTime;
 	prefMenuDesc[MENU_PREF_SHOWS].checked = clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
 	prefMenuDesc[MENU_PREF_SUBS].checked = clockInst.faceSettings[clockInst.currentFace] -> subSecond;
 	prefMenuDesc[MENU_PREF_SUBS].disable = !clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
@@ -925,6 +939,10 @@ void prepareForPopup (void)
 	stopWMenuDesc[MENU_STPW_ENBL].checked = clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	stopWMenuDesc[MENU_STPW_START].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	stopWMenuDesc[MENU_STPW_RESET].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
+
+	downMenuDesc[MENU_CNTD_ENBL].checked = clockInst.faceSettings[clockInst.currentFace] -> countdown;
+	downMenuDesc[MENU_CNTD_START].disable = !clockInst.faceSettings[clockInst.currentFace] -> countdown;
+	downMenuDesc[MENU_CNTD_RESET].disable = !clockInst.faceSettings[clockInst.currentFace] -> countdown;
 
 	for (i = MENU_MARK_STRT; i <= MENU_MARK_STOP; ++i)
 		markerMenuDesc[i].checked = (markerMenuDesc[i].param == clockInst.dialConfig.markerType ? 1 : 0);
@@ -1112,7 +1130,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 {
 	int i, j, tempTime, update = 0;
 	char tempString[211];
-	short angle;
+	unsigned short angle;
 
 	/*------------------------------------------------------------------------------------------------*
 	 * Handle the smooth scroll time change                                                           *
@@ -1233,29 +1251,60 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		/*--------------------------------------------------------------------------------------------*
          * Calculate stopwatch tenths hand position                                                   *
          *--------------------------------------------------------------------------------------------*/
-		angle = (swTime % 100) * 12;
+		angle = ((swTime % 100) * 12) % 1200;
 		if (angle != faceSetting -> handPosition[HAND_STOPWT])
 		{
 			faceSetting -> handPosition[HAND_STOPWT] = angle;
 			update = 1;
-			/*----------------------------------------------------------------------------------------*
-             * Calculate stopwatch secons hand position                                               *
-             *----------------------------------------------------------------------------------------*/
-			angle = (swTime / 100) * 20;
-			if (angle != faceSetting -> handPosition[HAND_STOPWS])
-			{
-				faceSetting -> handPosition[HAND_STOPWS] = angle;
-				update = 1;
-				/*------------------------------------------------------------------------------------*
-                 * Calculate stopwatch minute hand position                                           *
-                 *------------------------------------------------------------------------------------*/
-				angle = (swTime / 6000) * 40;
-				if (angle != faceSetting -> handPosition[HAND_STOPWM])
-				{
-					faceSetting -> handPosition[HAND_STOPWM] = angle;
-					update = 1;
-				}
-			}
+		}
+		/*--------------------------------------------------------------------------------------------*
+         * Calculate stopwatch seconds hand position                                                   *
+         *--------------------------------------------------------------------------------------------*/
+		angle = ((swTime / 100) * 20) % 1200;
+		if (angle != faceSetting -> handPosition[HAND_STOPWS])
+		{
+			faceSetting -> handPosition[HAND_STOPWS] = angle;
+			update = 1;
+		}
+		/*--------------------------------------------------------------------------------------------*
+         * Calculate stopwatch minute hand position                                                   *
+         *--------------------------------------------------------------------------------------------*/
+		angle = ((swTime / 6000) * 40) % 1200;
+		if (angle != faceSetting -> handPosition[HAND_STOPWM])
+		{
+			faceSetting -> handPosition[HAND_STOPWM] = angle;
+			update = 1;
+		}
+	}
+	else if (faceSetting -> countdown)
+	{
+		int cdTime = getCountdownTime(faceSetting);
+		/*--------------------------------------------------------------------------------------------*
+         * Calculate countdown second hand position                                                   *
+         *--------------------------------------------------------------------------------------------*/
+		angle = (cdTime % 60) * 20;
+		if (angle != faceSetting -> handPosition[HAND_STOPWS])
+		{
+			faceSetting -> handPosition[HAND_STOPWS] = angle;
+			update = 1;
+		}
+		/*--------------------------------------------------------------------------------------------*
+         * Calculate countdown minute hand position                                                   *
+         *--------------------------------------------------------------------------------------------*/
+		angle = ((cdTime / 60) % 30) * 40;
+		if (angle != faceSetting -> handPosition[HAND_STOPWM])
+		{
+			faceSetting -> handPosition[HAND_STOPWM] = angle;
+			update = 1;
+		}
+		/*--------------------------------------------------------------------------------------------*
+         * Calculate countdown hours hand position                                                   *
+         *--------------------------------------------------------------------------------------------*/
+		angle = (cdTime / 1800) * 100;
+		if (angle != faceSetting -> handPosition[HAND_STOPWT])
+		{
+			faceSetting -> handPosition[HAND_STOPWT] = angle;
+			update = 1;
 		}
 	}
 	if (faceSetting -> updateFace)
@@ -1297,6 +1346,7 @@ clockTickCallback (gpointer data)
 		FACE_SETTINGS *faceSetting = clockInst.faceSettings[i];
 
 		if (faceSetting -> stepping || (faceSetting -> stopwatch && faceSetting -> swStartTime != -1) ||
+				(faceSetting -> countdown && faceSetting -> swStartTime != -1) ||
 				faceSetting -> timeShown != t || faceSetting -> updateFace || bounceSec)
 		{
 			getTheFaceTime (faceSetting, &t, &tm);
@@ -1394,6 +1444,28 @@ userActive (GtkWidget *widget, GdkEvent* event, gpointer data)
 
 /**********************************************************************************************************************
  *                                                                                                                    *
+ *  S H O W  T I M E  C A L L B A C K                                                                                 *
+ *  =================================                                                                                 *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Switch on and off the time display.
+ *  \param data Not used.
+ *  \result None.
+ */
+void
+showTimeCallback (guint data)
+{
+	char value[81];
+
+	clockInst.faceSettings[clockInst.currentFace] -> showTime = !clockInst.faceSettings[clockInst.currentFace] -> showTime;
+	sprintf (value, "show_time_%d", clockInst.currentFace + 1);
+	configSetBoolValue (value, clockInst.faceSettings[clockInst.currentFace] -> showTime);
+	clockInst.faceSettings[clockInst.currentFace] -> updateFace = true;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
  *  S H O W  S E C O N D S  C A L L B A C K                                                                           *
  *  =======================================                                                                           *
  *                                                                                                                    *
@@ -1454,6 +1526,12 @@ stopwatchCallback (guint data)
 	int newVal = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 
 	clockInst.faceSettings[clockInst.currentFace] -> stopwatch = newVal;
+	if (newVal)
+	{
+		clockInst.faceSettings[clockInst.currentFace] -> countdown = false;
+		sprintf (value, "countdown_%d", clockInst.currentFace + 1);
+		configSetBoolValue (value, false);
+	}
 	sprintf (value, "stopwatch_%d", clockInst.currentFace + 1);
 	configSetBoolValue (value, newVal);
 	clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
@@ -1482,10 +1560,9 @@ swStartCallback (guint data)
 	if (clockInst.faceSettings[clockInst.currentFace] -> stopwatch)
 	{
 		struct timeval tv;
-
-		if (clockInst.faceSettings[clockInst.currentFace] -> swStartTime == -1)
+		if (gettimeofday(&tv, NULL) == 0)
 		{
-			if (gettimeofday(&tv, NULL) == 0)
+			if (clockInst.faceSettings[clockInst.currentFace] -> swStartTime == -1)
 			{
 				clockInst.faceSettings[clockInst.currentFace] -> swStartTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
 				clockInst.faceSettings[clockInst.currentFace] -> swStartTime -= clockInst.faceSettings[clockInst.currentFace] -> swRunTime;
@@ -1494,13 +1571,10 @@ swStartCallback (guint data)
 				stopwatchActive ++;
 				lastTime = -1;
 			}
-		}
-		else
-		{
-			if (gettimeofday(&tv, NULL) == 0)
+			else
 			{
 				long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
-
+				
 				tempTime -= clockInst.faceSettings[clockInst.currentFace] -> swStartTime;
 				clockInst.faceSettings[clockInst.currentFace] -> swRunTime = tempTime;
 				clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
@@ -1540,6 +1614,275 @@ swResetCallback (guint data)
 		}
 		lastTime = -1;
 	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C O U N T D O W N  C A L L B A C K                                                                                *
+ *  ==================================                                                                                *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Turn on and off the countdown timer.
+ *  \param data Not used.
+ *  \result None.
+ */
+void
+countdownCallback (guint data)
+{
+	char value[81];
+	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
+	bool newVal = !faceSetting -> countdown;
+
+	faceSetting -> countdown = newVal;
+	printf ("Countdown: %s\n", newVal ? "Yes" : "no");
+	if (newVal)
+	{
+		faceSetting -> stopwatch = false;
+		sprintf (value, "stopwatch_%d", clockInst.currentFace + 1);
+		configSetBoolValue (value, false);
+	}
+	sprintf (value, "countdown_%d", clockInst.currentFace + 1);
+	configSetBoolValue (value, newVal);
+	faceSetting -> countdownInfo.totalTime = 
+			(faceSetting -> countdownInfo.countdownHour * 3600) +
+			(faceSetting -> countdownInfo.countdownMin * 60) + 
+			faceSetting -> countdownInfo.countdownSec;
+	faceSetting -> swStartTime = -1;
+	faceSetting -> swRunTime = 0;
+	faceSetting -> updateFace = true;
+	lastTime = -1;
+
+	prepareForPopup ();
+	createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C D  S T A R T  C A L L B A C K                                                                                   *
+ *  ===============================                                                                                   *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Start or Stop the countdown timer.
+ *  \param data Not used.
+ *  \result None.
+ */
+void
+cdStartCallback (guint data) 
+{
+	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
+	if (faceSetting -> countdown)
+	{
+		struct timeval tv;
+		if (gettimeofday(&tv, NULL) == 0)
+		{
+			if (faceSetting -> swStartTime == -1)
+			{
+				faceSetting -> swStartTime = tv.tv_sec;
+				faceSetting -> countdownInfo.totalTime = 
+						(faceSetting -> countdownInfo.countdownHour * 3600) + 
+						(faceSetting -> countdownInfo.countdownMin * 60) + 
+						faceSetting -> countdownInfo.countdownSec;
+				faceSetting -> countdownInfo.totalTime -= faceSetting -> swRunTime;
+				faceSetting -> swRunTime = 0;
+				faceSetting -> updateFace = true;
+				stopwatchActive ++;
+				lastTime = -1;
+			}
+			else
+			{
+				long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
+				
+				tempTime -= faceSetting -> swStartTime;
+				faceSetting -> swRunTime = tempTime;
+				faceSetting -> swStartTime = -1;
+				faceSetting -> updateFace = true;
+				stopwatchActive --;
+				lastTime = -1;
+			}
+		}
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C D  R E S E T  C A L L B A C K                                                                                   *
+ *  ===============================                                                                                   *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Reset the timer to the start time and stop.
+ *  \param data Not used.
+ *  \result None.
+ */
+void
+cdResetCallback (guint data) 
+{
+	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
+	if (faceSetting -> countdown)
+	{
+		struct timeval tv;
+		if (gettimeofday(&tv, NULL) == 0)
+		{
+			faceSetting -> swStartTime = -1;
+			faceSetting -> countdownInfo.totalTime =
+					(faceSetting -> countdownInfo.countdownHour * 3600) + 
+					(faceSetting -> countdownInfo.countdownMin * 60) + 
+					faceSetting -> countdownInfo.countdownSec;
+			faceSetting -> swRunTime = 0;
+			faceSetting -> updateFace = true;
+			lastTime = -1;
+		}
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C O U N T  S E T  C A L L B A C K                                                                                 *
+ *  =================================                                                                                 *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Setup the timer start time and what to do when complete.
+ *  \param data Not used.
+ *  \result None.
+ */
+void
+countSetCallback (guint data) 
+{
+	char value[81];
+	GtkWidget *dialog;
+	GtkWidget *entry1, *entry2;
+	GtkWidget *label, *check;
+	GtkWidget *spinner0, *spinner1, *spinner2;
+	GtkWidget *hbox, *vbox1, *vbox2;
+	GtkAdjustment *adj;
+	GtkWidget *contentArea;
+	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
+	
+	/*------------------------------------------------------------------------------------------------*
+	 * Create the basic dialog box                                                                    *
+	 *------------------------------------------------------------------------------------------------*/
+	dialog = gtk_dialog_new_with_buttons (_("Set-up countdown"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+#if GTK_MINOR_VERSION >= 10
+			_("Close"),
+#else
+			GTK_STOCK_CLOSE,
+#endif
+			GTK_RESPONSE_ACCEPT, NULL);
+
+	contentArea = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	vbox1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start (GTK_BOX (contentArea), vbox1, FALSE, TRUE, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, TRUE, 0);
+
+	/*------------------------------------------------------------------------------------------------*
+	 * Add the hour spinner                                                                           *
+	 *------------------------------------------------------------------------------------------------*/
+	label = gtk_label_new (_("Hour :"));
+	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
+
+	adj = (GtkAdjustment *) gtk_adjustment_new (faceSetting -> countdownInfo.countdownHour, 0, 24, 1, 4, 0);
+	spinner0 = gtk_spin_button_new (adj, 0, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner0), TRUE);
+	gtk_spin_button_set_snap_to_ticks (GTK_SPIN_BUTTON (spinner0), TRUE);
+	gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinner0), TRUE);
+	gtk_entry_set_max_length (GTK_ENTRY (spinner0), 2);
+	gtk_box_pack_start (GTK_BOX (vbox2), spinner0, FALSE, TRUE, 0);
+
+	/*------------------------------------------------------------------------------------------------*
+	 * Add the hour spinner                                                                           *
+	 *------------------------------------------------------------------------------------------------*/
+	label = gtk_label_new (_("Min :"));
+	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
+
+	adj = (GtkAdjustment *) gtk_adjustment_new (faceSetting -> countdownInfo.countdownMin, 0, 59, 1, 4, 0);
+	spinner1 = gtk_spin_button_new (adj, 0, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner1), TRUE);
+	gtk_spin_button_set_snap_to_ticks (GTK_SPIN_BUTTON (spinner1), TRUE);
+	gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinner1), TRUE);
+	gtk_entry_set_max_length (GTK_ENTRY (spinner1), 2);
+	gtk_box_pack_start (GTK_BOX (vbox2), spinner1, FALSE, TRUE, 0);
+
+	/*------------------------------------------------------------------------------------------------*
+	 * Add the minute spinner                                                                         *
+	 *------------------------------------------------------------------------------------------------*/
+	label = gtk_label_new (_("Sec :"));
+	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 5);
+	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
+
+	adj = (GtkAdjustment *) gtk_adjustment_new (faceSetting -> countdownInfo.countdownSec, 0, 59, 1, 5, 0);
+	spinner2 = gtk_spin_button_new (adj, 0, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner2), TRUE);
+	gtk_spin_button_set_snap_to_ticks (GTK_SPIN_BUTTON (spinner2), TRUE);
+	gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinner2), TRUE);
+	gtk_entry_set_max_length (GTK_ENTRY (spinner2), 2);
+	gtk_box_pack_start (GTK_BOX (vbox2), spinner2, FALSE, TRUE, 0);
+
+	/*------------------------------------------------------------------------------------------------*
+	 * Add the message entry                                                                          *
+	 *------------------------------------------------------------------------------------------------*/
+	label = gtk_label_new (_("Show message :"));
+	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox2), label, FALSE, TRUE, 0);
+
+	entry1 = gtk_entry_new ();
+	gtk_entry_set_width_chars (GTK_ENTRY (entry1), 30);
+	gtk_entry_set_max_length (GTK_ENTRY (entry1), 40);
+	gtk_entry_set_text (GTK_ENTRY (entry1), faceSetting -> countdownInfo.message);
+	gtk_box_pack_start (GTK_BOX(vbox2), entry1, TRUE, TRUE, 0);
+
+	label = gtk_label_new (_("Run command :"));
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_box_pack_start (GTK_BOX(vbox2), label, FALSE, TRUE, 0);
+
+	entry2 = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (entry2), 40);
+	gtk_entry_set_text (GTK_ENTRY (entry2), faceSetting -> countdownInfo.command);
+	gtk_box_pack_start (GTK_BOX(vbox2), entry2, TRUE, TRUE, 0);
+
+	/*------------------------------------------------------------------------------------------------*
+	 * Display it, if OK pressed the save the new values                                              *
+	 *------------------------------------------------------------------------------------------------*/
+	gtk_widget_show_all (dialog);
+
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		strcpy (faceSetting -> countdownInfo.message, gtk_entry_get_text (GTK_ENTRY(entry1)));
+		strcpy (faceSetting -> countdownInfo.command, gtk_entry_get_text (GTK_ENTRY(entry2)));
+		faceSetting -> countdownInfo.countdownHour = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner0));
+		faceSetting -> countdownInfo.countdownMin = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner1));
+		faceSetting -> countdownInfo.countdownSec	 = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
+		faceSetting -> countdownInfo.totalTime = 
+				(faceSetting -> countdownInfo.countdownHour * 3600) + 
+				(faceSetting -> countdownInfo.countdownMin * 60) + 
+				faceSetting -> countdownInfo.countdownSec;
+
+		sprintf (value, "count_hour_%d", clockInst.currentFace + 1);
+		configSetIntValue (value, faceSetting -> countdownInfo.countdownHour);
+		sprintf (value, "count_min_%d", clockInst.currentFace + 1);
+		configSetIntValue (value, faceSetting -> countdownInfo.countdownMin);
+		sprintf (value, "count_sec_%d", clockInst.currentFace + 1);
+		configSetIntValue (value, faceSetting -> countdownInfo.countdownSec);
+		sprintf (value, "count_message_%d", clockInst.currentFace + 1);
+		configSetValue (value, faceSetting -> countdownInfo.message);
+		sprintf (value, "count_command_%d", clockInst.currentFace + 1);
+		configSetValue (value, faceSetting -> countdownInfo.command);
+	}
+	gtk_widget_destroy (dialog);
 }
 
 /**********************************************************************************************************************
@@ -1600,6 +1943,50 @@ getStopwatchTime (FACE_SETTINGS *faceSetting)
 			long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
 			tempTime -= faceSetting -> swStartTime;
 			return (int)(tempTime % (30 * 60 * 100));
+		}
+	}
+	return 0;
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  G E T  C O U N T D O W N  T I M E                                                                                 *
+ *  =================================                                                                                 *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Get the current time to completion of the timer.
+ *  \param faceSetting Which face is this for.
+ *  \result Time remaining.
+ */
+int
+getCountdownTime (FACE_SETTINGS *faceSetting)
+{
+	struct timeval tv;
+
+	if (faceSetting -> swStartTime == -1)
+	{
+		int retn = faceSetting -> countdownInfo.totalTime - faceSetting -> swRunTime;
+//		printf ("getCountdownTime1: %d (%d,%d,%ld)\n", retn, faceSetting -> countdownInfo.totalTime, faceSetting -> swRunTime, faceSetting -> swStartTime);
+		return retn > 0 ? retn % (24 * 3600) : 0;
+	}
+	else
+	{
+		if (gettimeofday(&tv, NULL) == 0)
+		{
+			long long tempTime = tv.tv_sec;
+			
+			tempTime -= faceSetting -> swStartTime;
+			int retn = faceSetting -> countdownInfo.totalTime - tempTime;
+//			printf ("getCountdownTime2: %d (%d,%d,%ld)\n", retn, faceSetting -> countdownInfo.totalTime, faceSetting -> swRunTime, faceSetting -> swStartTime);
+			
+			if (retn < 0)
+			{
+				 faceSetting -> swRunTime = faceSetting -> countdownInfo.totalTime;
+				 faceSetting -> swStartTime = -1;
+				 return 0;
+			}
+			return retn % (24 * 3600);
 		}
 	}
 	return 0;
@@ -2463,8 +2850,12 @@ void loadConfig (int *posX, int *posY)
 
 		sprintf (value, "stopwatch_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> stopwatch);
+		sprintf (value, "countdown_%d", i + 1);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> countdown);
 		sprintf (value, "sub_second_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> subSecond);
+		sprintf (value, "show_time_%d", i + 1);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> showTime);
 		sprintf (value, "show_seconds_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> showSeconds);
 		sprintf (value, "show_24_hour_%d", i + 1);
@@ -2553,6 +2944,7 @@ main (int argc, char *argv[])
 			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 		setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
+		clockInst.faceSettings[i] -> showTime = 1;
 		clockInst.faceSettings[i] -> swStartTime = -1;
 		alarmSetAngle (i);
 	}
