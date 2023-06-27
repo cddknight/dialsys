@@ -176,6 +176,7 @@ typedef struct _countdown
 	int totalTime;
 	char message[41];			/* Setting */
 	char command[41];			/* Setting */
+	int countdownShown;
 }
 COUNTDOWN_INFO;
 

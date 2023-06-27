@@ -316,6 +316,7 @@ static void splitTimeZone			(char *timeZone, char *area, char *city, char *displ
 static void processCommandLine		(int argc, char *argv[], int *posX, int *posY);
 static void howTo					(FILE * outFile, char *format, ...);
 static void checkForAlarm			(FACE_SETTINGS *faceSetting, struct tm *tm);
+static void checkForCountdown		(FACE_SETTINGS *faceSetting);
 
 static gboolean clockTickCallback	(gpointer data);
 static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event);
@@ -1647,6 +1648,7 @@ countdownCallback (guint data)
 			(faceSetting -> countdownInfo.countdownHour * 3600) +
 			(faceSetting -> countdownInfo.countdownMin * 60) + 
 			faceSetting -> countdownInfo.countdownSec;
+	faceSetting -> countdownInfo.countdownShown = 1;
 	faceSetting -> swStartTime = -1;
 	faceSetting -> swRunTime = 0;
 	faceSetting -> updateFace = true;
@@ -1683,6 +1685,7 @@ cdStartCallback (guint data)
 						(faceSetting -> countdownInfo.countdownHour * 3600) + 
 						(faceSetting -> countdownInfo.countdownMin * 60) + 
 						faceSetting -> countdownInfo.countdownSec;
+				faceSetting -> countdownInfo.countdownShown = 0;
 				faceSetting -> updateFace = true;
 				stopwatchActive ++;
 				lastTime = -1;
@@ -1724,6 +1727,7 @@ cdResetCallback (guint data)
 					(faceSetting -> countdownInfo.countdownHour * 3600) + 
 					(faceSetting -> countdownInfo.countdownMin * 60) + 
 					faceSetting -> countdownInfo.countdownSec;
+			faceSetting -> countdownInfo.countdownShown = 1;
 			faceSetting -> swRunTime = 0;
 			faceSetting -> updateFace = true;
 			lastTime = -1;
@@ -1974,9 +1978,10 @@ getCountdownTime (FACE_SETTINGS *faceSetting)
 			
 			if (retn < 0)
 			{
-				 faceSetting -> swRunTime = faceSetting -> countdownInfo.totalTime;
-				 faceSetting -> swStartTime = -1;
-				 return 0;
+				faceSetting -> swRunTime = faceSetting -> countdownInfo.totalTime;
+				faceSetting -> swStartTime = -1;
+				checkForCountdown (faceSetting);
+				return 0;
 			}
 			return retn % (24 * 3600);
 		}
@@ -2245,7 +2250,7 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 					}
 				}
 				notify_init(name);
-				sprintf (message, _("Timezone Clock Alarm (%d:%02d) -"), tm -> tm_hour, tm -> tm_min);
+				sprintf (message, _("Clock Alarm (%d:%02d) -"), tm -> tm_hour, tm -> tm_min);
 				note = notify_notification_new (message, faceSetting -> alarmInfo.message, NULL);
 				notify_notification_set_timeout (note, 10000);
 				notify_notification_set_category (note, _("Clock alarm"));
@@ -2259,6 +2264,48 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 		{
 			faceSetting -> alarmInfo.alarmShown = 0;
 		}
+	}
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  C H E C K  F O R  C O U N T D O W N                                                                               *
+ *  ===================================                                                                               *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Check to see what to do when the timer is complete.
+ *  \param faceSetting Which face completed.
+ *  \result None.
+ */
+void checkForCountdown (FACE_SETTINGS *faceSetting)
+{
+	if (!faceSetting -> countdownInfo.countdownShown)
+	{
+		NotifyNotification *note;
+		char name[40] = "Timezone Clock Message";
+		GError *error = NULL;
+
+		faceSetting -> countdownInfo.countdownShown = 1;
+
+		if (faceSetting -> countdownInfo.command[0])
+		{
+			int i = fork();
+			if (i == 0)
+			{
+				/* I am the child */
+				execCommand (faceSetting -> countdownInfo.command, faceSetting -> countdownInfo.message);
+				exit (1);
+			}
+		}
+		notify_init(name);
+		note = notify_notification_new (_("Clock Countdown Complete"), faceSetting -> alarmInfo.message, NULL);
+		notify_notification_set_timeout (note, 10000);
+		notify_notification_set_category (note, _("Clock Countdown"));
+		notify_notification_set_urgency (note, NOTIFY_URGENCY_NORMAL);
+		notify_notification_set_image_from_pixbuf (note, defaultIcon);
+		notify_notification_show (note, &error);
+		g_object_unref(G_OBJECT(note));
 	}
 }
 
