@@ -2222,7 +2222,7 @@ void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 			if (!faceSetting -> alarmInfo.alarmShown)
 			{
 				NotifyNotification *note;
-				char name[40] = "Timezone Clock Message", message[40];
+				char name[40] = "TzClock Message", message[40];
 				GError *error = NULL;
 
 				faceSetting -> alarmInfo.alarmShown = 1;
@@ -2273,7 +2273,7 @@ void checkForCountdown (FACE_SETTINGS *faceSetting)
 	if (!faceSetting -> countdownInfo.countdownShown)
 	{
 		NotifyNotification *note;
-		char name[40] = "Timezone Clock Message";
+		char name[40] = "TzClock Message";
 		GError *error = NULL;
 
 		faceSetting -> countdownInfo.countdownShown = 1;
@@ -2289,7 +2289,7 @@ void checkForCountdown (FACE_SETTINGS *faceSetting)
 			}
 		}
 		notify_init(name);
-		note = notify_notification_new (_("Clock Countdown Complete"), faceSetting -> alarmInfo.message, NULL);
+		note = notify_notification_new (_("Clock Countdown Complete"), faceSetting -> countdownInfo.message, NULL);
 		notify_notification_set_timeout (note, 10000);
 		notify_notification_set_category (note, _("Clock Countdown"));
 		notify_notification_set_urgency (note, NOTIFY_URGENCY_NORMAL);
