@@ -202,18 +202,18 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 				if (!(i % 6))
 					dialDrawMinuteX (posX + (clockInst.dialConfig.dialSize >> 2), centerY,
 							(i % 12) ? 9 : 8, (i % 12) ? 1 : 2, m, WMARK_COLOUR);
-				if (!(i % 4))
+				if (!(i % 2))
 					dialDrawMinuteX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY,
-							(i % 20) ? 9 : 8, (i % 20) ? 1 : 2, m, WMARK_COLOUR);
+							(i % 10) ? 9 : 8, (i % 10) ? 1 : 2, m, WMARK_COLOUR);
 			}
 			else if (faceSetting -> countdown)
 			{
 				if (!(i % 5))
 					dialDrawMinuteX (posX + (clockInst.dialConfig.dialSize >> 2), centerY,
 							(i % 10) ? 9 : 8, (i % 10) ? 1 : 2, m, WMARK_COLOUR);
-				if (!(i % 4))
+				if (!(i % 2))
 					dialDrawMinuteX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY,
-							(i % 20) ? 9 : 8, (i % 20) ? 1 : 2, m, WMARK_COLOUR);
+							(i % 10) ? 9 : 8, (i % 10) ? 1 : 2, m, WMARK_COLOUR);
 			}
 		}
 	}

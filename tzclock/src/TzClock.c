@@ -1243,7 +1243,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		/*--------------------------------------------------------------------------------------------*
          * Calculate stopwatch tenths hand position                                                   *
          *--------------------------------------------------------------------------------------------*/
-		angle = ((swTime % 100) * 12) % 1200;
+		angle = (swTime % 100) * 12;
 		if (angle != faceSetting -> handPosition[HAND_STOPWT])
 		{
 			faceSetting -> handPosition[HAND_STOPWT] = angle;
@@ -1261,7 +1261,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		/*--------------------------------------------------------------------------------------------*
          * Calculate stopwatch minute hand position                                                   *
          *--------------------------------------------------------------------------------------------*/
-		angle = ((swTime / 6000) * 40) % 1200;
+		angle = ((swTime / 600) * 4) % 1200;
 		if (angle != faceSetting -> handPosition[HAND_STOPWM])
 		{
 			faceSetting -> handPosition[HAND_STOPWM] = angle;
@@ -1283,7 +1283,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		/*--------------------------------------------------------------------------------------------*
          * Calculate countdown minute hand position                                                   *
          *--------------------------------------------------------------------------------------------*/
-		angle = ((cdTime / 60) % 30) * 40;
+		angle = ((cdTime / 6) % 300) * 4;
 		if (angle != faceSetting -> handPosition[HAND_STOPWM])
 		{
 			faceSetting -> handPosition[HAND_STOPWM] = angle;
@@ -1292,7 +1292,7 @@ int getHandPositions (int face, FACE_SETTINGS *faceSetting, struct tm *tm, time_
 		/*--------------------------------------------------------------------------------------------*
          * Calculate countdown hours hand position                                                   *
          *--------------------------------------------------------------------------------------------*/
-		angle = (cdTime / 1800) * 100;
+		angle = (cdTime / 90) * 5;
 		if (angle != faceSetting -> handPosition[HAND_STOPWT])
 		{
 			faceSetting -> handPosition[HAND_STOPWT] = angle;
@@ -1777,7 +1777,7 @@ countSetCallback (guint data)
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, TRUE, 0);
 
-	adj = (GtkAdjustment *) gtk_adjustment_new (faceSetting -> countdownInfo.countdownHour, 0, 24, 1, 4, 0);
+	adj = (GtkAdjustment *) gtk_adjustment_new (faceSetting -> countdownInfo.countdownHour, 0, 6, 1, 4, 0);
 	spinner0 = gtk_spin_button_new (adj, 0, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner0), TRUE);
 	gtk_spin_button_set_snap_to_ticks (GTK_SPIN_BUTTON (spinner0), TRUE);
