@@ -26,15 +26,6 @@
 #include "TzClockDisp.h"
 #include "ParseZone.h"
 
-#ifndef GDK_KEY_M
-#define GDK_KEY_A	GDK_A
-#define GDK_KEY_M	GDK_M
-#define GDK_KEY_m	GDK_m
-#define GDK_KEY_Z	GDK_Z
-#define GDK_KEY_0	GDK_0
-#define GDK_KEY_9	GDK_9
-#endif
-
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
 	{	"blk", __("Black"),					"#000000"	},	//  00
