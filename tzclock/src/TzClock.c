@@ -1739,7 +1739,7 @@ countSetCallback (guint data)
 	char value[81];
 	GtkWidget *dialog;
 	GtkWidget *entry1, *entry2;
-	GtkWidget *label, *check;
+	GtkWidget *label;
 	GtkWidget *spinner0, *spinner1, *spinner2;
 	GtkWidget *hbox, *vbox1, *vbox2;
 	GtkAdjustment *adj;
