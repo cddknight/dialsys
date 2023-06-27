@@ -143,7 +143,7 @@ MENU_DESC downMenuDesc[] =
 {
 	{	__("Enable"),			countdownCallback,		NULL,				0,	NULL,	0,	0,	1	},
 	{	__("Start+Stop"),		cdStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},
-	{	__("Reset"),			cdResetCallback,		NULL,				0,	NULL,	GDK_KEY_C},
+	{	__("Reset"),			cdResetCallback,		NULL,				0,	NULL,	GDK_KEY_X},
 	{	__("Start Time"),		countSetCallback,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
@@ -1584,10 +1584,6 @@ swStartCallback (guint data)
 			}
 		}
 	}
-	else if (clockInst.faceSettings[clockInst.currentFace] -> countdown)
-	{
-		cdStartCallback (data);
-	}
 }
 
 /**********************************************************************************************************************
@@ -1682,33 +1678,24 @@ cdStartCallback (guint data)
 		{
 			if (faceSetting -> swStartTime == -1)
 			{
-				faceSetting -> swStartTime = tv.tv_sec;
+				faceSetting -> swStartTime = tv.tv_sec - faceSetting -> swRunTime;
 				faceSetting -> countdownInfo.totalTime = 
 						(faceSetting -> countdownInfo.countdownHour * 3600) + 
 						(faceSetting -> countdownInfo.countdownMin * 60) + 
 						faceSetting -> countdownInfo.countdownSec;
-				faceSetting -> countdownInfo.totalTime -= faceSetting -> swRunTime;
-				faceSetting -> swRunTime = 0;
 				faceSetting -> updateFace = true;
 				stopwatchActive ++;
 				lastTime = -1;
 			}
 			else
 			{
-				long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
-				
-				tempTime -= faceSetting -> swStartTime;
-				faceSetting -> swRunTime = tempTime;
+				faceSetting -> swRunTime = (tv.tv_sec - faceSetting -> swStartTime);
 				faceSetting -> swStartTime = -1;
 				faceSetting -> updateFace = true;
 				stopwatchActive --;
 				lastTime = -1;
 			}
 		}
-	}
-	else if (faceSetting -> stopwatch)
-	{
-		swStartCallback (data);
 	}
 }
 
@@ -1974,7 +1961,6 @@ getCountdownTime (FACE_SETTINGS *faceSetting)
 	if (faceSetting -> swStartTime == -1)
 	{
 		int retn = faceSetting -> countdownInfo.totalTime - faceSetting -> swRunTime;
-//		printf ("getCountdownTime1: %d (%d,%d,%ld)\n", retn, faceSetting -> countdownInfo.totalTime, faceSetting -> swRunTime, faceSetting -> swStartTime);
 		return retn > 0 ? retn % (24 * 3600) : 0;
 	}
 	else
@@ -1985,7 +1971,6 @@ getCountdownTime (FACE_SETTINGS *faceSetting)
 			
 			tempTime -= faceSetting -> swStartTime;
 			int retn = faceSetting -> countdownInfo.totalTime - tempTime;
-//			printf ("getCountdownTime2: %d (%d,%d,%ld)\n", retn, faceSetting -> countdownInfo.totalTime, faceSetting -> swRunTime, faceSetting -> swStartTime);
 			
 			if (retn < 0)
 			{
