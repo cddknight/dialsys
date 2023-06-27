@@ -24,32 +24,32 @@
 #define FIRST_CITY 28
 #define GMT_ZERO 13
 
-int parseZone 				();
-void aboutCallback 			(guint data);
-void onTopCallback 			(guint data);
-void stickCallback 			(guint data);
-void lockCallback 			(guint data);
-void calendarCallback 		(guint data);
-void fontCallback	 		(guint data);
-void colourCallback	 		(guint data);
-void alarmCallback	 		(guint data);
-void setTimeZoneCallback 	(guint data);
-void copyCallback 			(guint data);
+int parseZone				();
+void aboutCallback			(guint data);
+void onTopCallback			(guint data);
+void stickCallback			(guint data);
+void lockCallback			(guint data);
+void calendarCallback		(guint data);
+void fontCallback			(guint data);
+void colourCallback			(guint data);
+void alarmCallback			(guint data);
+void setTimeZoneCallback	(guint data);
+void copyCallback			(guint data);
 void stopwatchCallback		(guint data);
 void countdownCallback		(guint data);
 void subSecondCallback		(guint data);
 void showTimeCallback		(guint data);
 void showSecondsCallback	(guint data);
-void swStartCallback 		(guint data);
-void swResetCallback 		(guint data);
-void cdStartCallback 		(guint data);
-void cdResetCallback 		(guint data);
+void swStartCallback		(guint data);
+void swResetCallback		(guint data);
+void cdStartCallback		(guint data);
+void cdResetCallback		(guint data);
 void countSetCallback		(guint data);
-void zoomCallback 			(guint data);
+void zoomCallback			(guint data);
 void faceCallback			(guint data);
-void quitCallback 			(guint data);
+void quitCallback			(guint data);
 void markerCallback			(guint data);
 void stepCallback			(guint data);
 void configSaveCallback		(guint data);
-void dialSaveCallback 		(guint data);
+void dialSaveCallback		(guint data);
 

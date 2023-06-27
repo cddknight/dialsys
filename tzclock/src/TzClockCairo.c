@@ -91,7 +91,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	/*------------------------------------------------------------------------------------------------*
      * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
      *------------------------------------------------------------------------------------------------*/
-	showSubSec = (faceSetting -> showTime && faceSetting -> showSeconds && (faceSetting -> stopwatch || faceSetting -> countdown || 
+	showSubSec = (faceSetting -> showTime && faceSetting -> showSeconds && (faceSetting -> stopwatch || faceSetting -> countdown ||
 			faceSetting -> subSecond)) ? 1 : 0;
 
 	getStringValue (tempString, 100, faceSetting -> stopwatch || faceSetting -> countdown ?

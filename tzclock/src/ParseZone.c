@@ -34,7 +34,7 @@ typedef struct _areaInfo
 	char *areaName;
 	void *cityList;
 	void *subAreaList;
-	int	dummyArea;
+	int dummyArea;
 }
 AREAINFO;
 
@@ -479,18 +479,18 @@ void splitCityList (void *areaInfoList)
 	int readItem = 0;
 	AREAINFO *areaInfo, *subAreaInfo = NULL;
 	char *cityName;
-	
+
 	while ((areaInfo = (AREAINFO *)queueRead (areaInfoList, readItem)) != NULL)
 	{
 		if (queueGetItemCount (areaInfo -> cityList) > 20)
 		{
 			char subArea[120];
 			int count = queueGetItemCount (areaInfo -> cityList);
-			
+
 			while (count)
 			{
 				int i = 0;
-				
+
 				if (count > 20)
 				{
 					count = 20;

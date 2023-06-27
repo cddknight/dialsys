@@ -38,7 +38,7 @@
 #include <libnotify/notify.h>
 #include <libintl.h>
 #include <locale.h>
-#include <cairo-svg.h> 
+#include <cairo-svg.h>
 #include <dialsys.h>
 
 #define _(String) gettext (String)
@@ -183,7 +183,7 @@ COUNTDOWN_INFO;
 /*----------------------------------------------------------------------------------------------------*
  * Structure to store face information and settings                                                   *
  *----------------------------------------------------------------------------------------------------*/
-typedef struct _faceSettings 
+typedef struct _faceSettings
 {
 	bool showTime;				/* Setting */
 	bool stopwatch;				/* Setting */
@@ -240,7 +240,7 @@ typedef struct _tzInfo
 {
 	char *envName;
 	int value;
-} 
+}
 TZ_INFO;
 
 /*----------------------------------------------------------------------------------------------------*
@@ -251,7 +251,7 @@ void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm);
 void clockExpose (cairo_t *cr);
 void dialSave(char *fileName);
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow);
-int  xSinCos (int number, int angle, int useCos);
-int  getStopwatchTime (FACE_SETTINGS *faceSetting);
-int  getCountdownTime (FACE_SETTINGS *faceSetting);
+int	 xSinCos (int number, int angle, int useCos);
+int	 getStopwatchTime (FACE_SETTINGS *faceSetting);
+int	 getCountdownTime (FACE_SETTINGS *faceSetting);
 

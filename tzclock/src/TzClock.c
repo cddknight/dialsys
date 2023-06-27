@@ -748,7 +748,7 @@ alarmCallback (guint data)
 	GtkWidget *hbox, *vbox1, *vbox2;
 	GtkAdjustment *adj;
 	GtkWidget *contentArea;
-	
+
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/
@@ -921,7 +921,7 @@ void prepareForPopup (void)
 	prefMenuDesc[MENU_PREF_ONTOP].checked = alwaysOnTop;
 	prefMenuDesc[MENU_PREF_STUCK].checked = stuckOnAll;
 	prefMenuDesc[MENU_PREF_LOCK].checked = lockMove;
-	
+
 	prefMenuDesc[MENU_PREF_TIME].checked = clockInst.faceSettings[clockInst.currentFace] -> showTime;
 	prefMenuDesc[MENU_PREF_SHOWS].checked = clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
 	prefMenuDesc[MENU_PREF_SUBS].checked = clockInst.faceSettings[clockInst.currentFace] -> subSecond;
@@ -1566,7 +1566,7 @@ swStartCallback (guint data)
 			else
 			{
 				long long tempTime = (tv.tv_sec * 100) + (tv.tv_usec / 10000);
-				
+
 				tempTime -= clockInst.faceSettings[clockInst.currentFace] -> swStartTime;
 				clockInst.faceSettings[clockInst.currentFace] -> swRunTime = tempTime;
 				clockInst.faceSettings[clockInst.currentFace] -> swStartTime = -1;
@@ -1635,9 +1635,9 @@ countdownCallback (guint data)
 	}
 	sprintf (value, "countdown_%d", clockInst.currentFace + 1);
 	configSetBoolValue (value, newVal);
-	faceSetting -> countdownInfo.totalTime = 
+	faceSetting -> countdownInfo.totalTime =
 			(faceSetting -> countdownInfo.countdownHour * 3600) +
-			(faceSetting -> countdownInfo.countdownMin * 60) + 
+			(faceSetting -> countdownInfo.countdownMin * 60) +
 			faceSetting -> countdownInfo.countdownSec;
 	faceSetting -> countdownInfo.countdownShown = 1;
 	faceSetting -> swStartTime = -1;
@@ -1661,7 +1661,7 @@ countdownCallback (guint data)
  *  \result None.
  */
 void
-cdStartCallback (guint data) 
+cdStartCallback (guint data)
 {
 	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
 	if (faceSetting -> countdown)
@@ -1672,9 +1672,9 @@ cdStartCallback (guint data)
 			if (faceSetting -> swStartTime == -1)
 			{
 				faceSetting -> swStartTime = tv.tv_sec - faceSetting -> swRunTime;
-				faceSetting -> countdownInfo.totalTime = 
-						(faceSetting -> countdownInfo.countdownHour * 3600) + 
-						(faceSetting -> countdownInfo.countdownMin * 60) + 
+				faceSetting -> countdownInfo.totalTime =
+						(faceSetting -> countdownInfo.countdownHour * 3600) +
+						(faceSetting -> countdownInfo.countdownMin * 60) +
 						faceSetting -> countdownInfo.countdownSec;
 				faceSetting -> countdownInfo.countdownShown = 0;
 				faceSetting -> updateFace = true;
@@ -1705,24 +1705,20 @@ cdStartCallback (guint data)
  *  \result None.
  */
 void
-cdResetCallback (guint data) 
+cdResetCallback (guint data)
 {
 	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
 	if (faceSetting -> countdown)
 	{
-		struct timeval tv;
-		if (gettimeofday(&tv, NULL) == 0)
-		{
-			faceSetting -> swStartTime = -1;
-			faceSetting -> countdownInfo.totalTime =
-					(faceSetting -> countdownInfo.countdownHour * 3600) + 
-					(faceSetting -> countdownInfo.countdownMin * 60) + 
-					faceSetting -> countdownInfo.countdownSec;
-			faceSetting -> countdownInfo.countdownShown = 1;
-			faceSetting -> swRunTime = 0;
-			faceSetting -> updateFace = true;
-			lastTime = -1;
-		}
+		faceSetting -> swStartTime = -1;
+		faceSetting -> countdownInfo.totalTime =
+				(faceSetting -> countdownInfo.countdownHour * 3600) +
+				(faceSetting -> countdownInfo.countdownMin * 60) +
+				faceSetting -> countdownInfo.countdownSec;
+		faceSetting -> countdownInfo.countdownShown = 1;
+		faceSetting -> swRunTime = 0;
+		faceSetting -> updateFace = true;
+		lastTime = -1;
 	}
 }
 
@@ -1738,7 +1734,7 @@ cdResetCallback (guint data)
  *  \result None.
  */
 void
-countSetCallback (guint data) 
+countSetCallback (guint data)
 {
 	char value[81];
 	GtkWidget *dialog;
@@ -1749,7 +1745,7 @@ countSetCallback (guint data)
 	GtkAdjustment *adj;
 	GtkWidget *contentArea;
 	FACE_SETTINGS *faceSetting = clockInst.faceSettings[clockInst.currentFace];
-	
+
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/
@@ -1855,9 +1851,9 @@ countSetCallback (guint data)
 		faceSetting -> countdownInfo.countdownHour = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner0));
 		faceSetting -> countdownInfo.countdownMin = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner1));
 		faceSetting -> countdownInfo.countdownSec	 = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
-		faceSetting -> countdownInfo.totalTime = 
-				(faceSetting -> countdownInfo.countdownHour * 3600) + 
-				(faceSetting -> countdownInfo.countdownMin * 60) + 
+		faceSetting -> countdownInfo.totalTime =
+				(faceSetting -> countdownInfo.countdownHour * 3600) +
+				(faceSetting -> countdownInfo.countdownMin * 60) +
 				faceSetting -> countdownInfo.countdownSec;
 
 		sprintf (value, "count_hour_%d", clockInst.currentFace + 1);
@@ -1963,15 +1959,18 @@ getCountdownTime (FACE_SETTINGS *faceSetting)
 		if (gettimeofday(&tv, NULL) == 0)
 		{
 			long long tempTime = tv.tv_sec;
-			
+
 			tempTime -= faceSetting -> swStartTime;
 			int retn = faceSetting -> countdownInfo.totalTime - tempTime;
-			
+
 			if (retn < 0)
 			{
 				faceSetting -> swRunTime = faceSetting -> countdownInfo.totalTime;
 				faceSetting -> swStartTime = -1;
-				checkForCountdown (faceSetting);
+				if (faceSetting -> countdownInfo.totalTime > 0)
+				{
+					checkForCountdown (faceSetting);
+				}
 				return 0;
 			}
 			return retn % (24 * 3600);
@@ -2005,7 +2004,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 	localtime_r (&timeNow, &tm);
 	tempCommand[0] = tempAddStr[0] = addBuffer[0] = 0;
 	strcpy (stringFormat, displayString[stringNumber]);
-	
+
 	while (stringFormat[i])
 	{
 		if (tempCommand[0] == '%')
@@ -2886,7 +2885,7 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "alarm_only_weekdays_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> alarmInfo.onlyWeekdays);
 		clockInst.faceSettings[i] -> alarmInfo.showAlarm = (clockInst.faceSettings[i] -> alarmInfo.message[0] ? 1 : 0);
-		
+
 		sprintf (value, "count_hour_%d", i + 1);
 		configGetIntValue (value, &clockInst.faceSettings[i] -> countdownInfo.countdownHour);
 		sprintf (value, "count_min_%d", i + 1);
@@ -2896,7 +2895,7 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "count_message_%d", i + 1);
 		configGetValue (value, clockInst.faceSettings[i] -> countdownInfo.message, 40);
 		sprintf (value, "count_command_%d", i + 1);
-		configGetValue (value, clockInst.faceSettings[i] -> countdownInfo.command, 40);		
+		configGetValue (value, clockInst.faceSettings[i] -> countdownInfo.command, 40);
 
 		sprintf (value, "stopwatch_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> stopwatch);
@@ -2994,6 +2993,7 @@ main (int argc, char *argv[])
 			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
 		setTimeZoneCallback (clockInst.faceSettings[i] -> currentTZ);
+		cdResetCallback (0);
 		clockInst.faceSettings[i] -> showTime = 1;
 		clockInst.faceSettings[i] -> swStartTime = -1;
 		alarmSetAngle (i);
