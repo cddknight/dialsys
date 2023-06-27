@@ -42,11 +42,11 @@ then
 	rm -f @PACKAGE@-@VERSION@.tar.bz2
 	make dist-bzip2
 
-	cp @PACKAGE_NAME@.spec $DIR/SPECS/
+	cp @PACKAGE@.spec $DIR/SPECS/
 	cp @PACKAGE@-@VERSION@.tar.bz2 $DIR/SOURCES/
 
 	cd $DIR/SPECS
-	rpmbuild -ba -v @PACKAGE_NAME@.spec
+	rpmbuild -ba -v @PACKAGE@.spec
 	rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-@VERSION@-@REVISION@.*.$(uname -m).rpm
 
 else
