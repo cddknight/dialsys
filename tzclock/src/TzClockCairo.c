@@ -100,7 +100,8 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 
 	if (!showSubSec)
 	{
-		getStringValue (tempString, 100, timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);
+		getStringValue (tempString, 100, faceSetting -> stopwatch || faceSetting -> countdown ?
+			(timeZone ? TXT_BOTTOMSW_Z : TXT_BOTTOMSW_L) : timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);
 		dialDrawText (1, tempString, TEXT__COLOUR);
 	}
 

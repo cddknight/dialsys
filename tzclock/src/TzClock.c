@@ -142,8 +142,8 @@ MENU_DESC stopWMenuDesc[] =
 MENU_DESC downMenuDesc[] =
 {
 	{	__("Enable"),			countdownCallback,		NULL,				0,	NULL,	0,	0,	1	},
-	{	__("Start+Stop"),		cdStartCallback,		NULL,				0,	NULL,	GDK_KEY_A	},
-	{	__("Reset"),			cdResetCallback,		NULL,				0,	NULL,	GDK_KEY_Z	},
+	{	__("Start+Stop"),		cdStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},
+	{	__("Reset"),			cdResetCallback,		NULL,				0,	NULL,	GDK_KEY_C},
 	{	__("Start Time"),		countSetCallback,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
@@ -1584,6 +1584,10 @@ swStartCallback (guint data)
 			}
 		}
 	}
+	else if (clockInst.faceSettings[clockInst.currentFace] -> countdown)
+	{
+		cdStartCallback (data);
+	}
 }
 
 /**********************************************************************************************************************
@@ -1635,7 +1639,6 @@ countdownCallback (guint data)
 	bool newVal = !faceSetting -> countdown;
 
 	faceSetting -> countdown = newVal;
-	printf ("Countdown: %s\n", newVal ? "Yes" : "no");
 	if (newVal)
 	{
 		faceSetting -> stopwatch = false;
@@ -1702,6 +1705,10 @@ cdStartCallback (guint data)
 				lastTime = -1;
 			}
 		}
+	}
+	else if (faceSetting -> stopwatch)
+	{
+		swStartCallback (data);
 	}
 }
 
@@ -2017,7 +2024,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 	localtime_r (&timeNow, &tm);
 	tempCommand[0] = tempAddStr[0] = addBuffer[0] = 0;
 	strcpy (stringFormat, displayString[stringNumber]);
-
+	
 	while (stringFormat[i])
 	{
 		if (tempCommand[0] == '%')
@@ -2056,9 +2063,18 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 				break;
 			case '&':
 			{
-				int swTime = getStopwatchTime (faceSetting);
-				sprintf (tempAddStr, "%d:%02d:%02d.%02d",
-						swTime / 360000, (swTime / 6000) % 60, (swTime / 100) % 60, swTime % 100);
+				if (faceSetting -> stopwatch)
+				{
+					int swTime = getStopwatchTime (faceSetting);
+					sprintf (tempAddStr, "%d:%02d:%02d.%02d",
+							swTime / 360000, (swTime / 6000) % 60, (swTime / 100) % 60, swTime % 100);
+				}
+				else if (faceSetting -> countdown)
+				{
+					int cdTime = getCountdownTime (faceSetting);
+					sprintf (tempAddStr, "%d:%02d:%02d",
+							cdTime / 3600, (cdTime / 60) % 60, cdTime % 60);
+				}
 				tempCommand[j = 0] = 0;
 				break;
 			}
@@ -2847,6 +2863,17 @@ void loadConfig (int *posX, int *posY)
 		sprintf (value, "alarm_only_weekdays_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> alarmInfo.onlyWeekdays);
 		clockInst.faceSettings[i] -> alarmInfo.showAlarm = (clockInst.faceSettings[i] -> alarmInfo.message[0] ? 1 : 0);
+		
+		sprintf (value, "count_hour_%d", i + 1);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> countdownInfo.countdownHour);
+		sprintf (value, "count_min_%d", i + 1);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> countdownInfo.countdownMin);
+		sprintf (value, "count_sec_%d", i + 1);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> countdownInfo.countdownSec);
+		sprintf (value, "count_message_%d", i + 1);
+		configGetValue (value, clockInst.faceSettings[i] -> countdownInfo.message, 40);
+		sprintf (value, "count_command_%d", i + 1);
+		configGetValue (value, clockInst.faceSettings[i] -> countdownInfo.command, 40);		
 
 		sprintf (value, "stopwatch_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> stopwatch);
