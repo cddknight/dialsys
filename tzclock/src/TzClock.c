@@ -89,6 +89,7 @@ char displayString[TXT_COUNT][81] =
 	"%X, %Z",						/* Copy time        (timezone)      15 */
 	"<b>Time</b>: %X%n"
 	"<b>Date</b>: %A, %e %B%n"
+	"<b>Timer</b>: %&%n"
 	"<b>Alarm</b>: %$",				/* Tool tip         (localtime)     16 */
 	"<b>City</b>: %*%n"
 	"<b>Time</b>: %X%n"
