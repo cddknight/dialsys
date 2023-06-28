@@ -136,7 +136,7 @@ MENU_DESC downMenuDesc[] =
 	{	__("Enable"),			countdownCallback,		NULL,				0,	NULL,	0,	0,	1	},
 	{	__("Start+Stop"),		cdStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},
 	{	__("Reset"),			cdResetCallback,		NULL,				0,	NULL,	GDK_KEY_X},
-	{	__("Start Time"),		countSetCallback,		NULL,				0	},
+	{	__("Set Up Timer"),		countSetCallback,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -199,7 +199,7 @@ MENU_DESC prefMenuDesc[] =
 	{	"-",					NULL,					NULL,				0	},			/*  05  */
 	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  06  */
 	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  07  */
-	{	__("Set-up Alarm"),		alarmCallback,			NULL,				0	},			/*  08  */
+	{	__("Set Up Alarm"),		alarmCallback,			NULL,				0	},			/*  08  */
 	{	__("Change Font"),		dialFontCallback,		NULL,				0	},			/*  09  */
 	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},			/*  10  */
 	{	"-",					NULL,					NULL,				0	},			/*  11  */
@@ -687,7 +687,7 @@ calendarCallback (guint data)
 	}
 	localtime (&t);
 
-	dialog = gtk_dialog_new_with_buttons (_("Clock calendar"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Clock Calendar"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 						GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MINOR_VERSION >= 10
 						_("Close"),
@@ -753,7 +753,7 @@ alarmCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/
-	dialog = gtk_dialog_new_with_buttons (_("Set-up alarm"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Set Up Alarm"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MINOR_VERSION >= 10
 			_("Close"),
@@ -1750,7 +1750,7 @@ countSetCallback (guint data)
 	/*------------------------------------------------------------------------------------------------*
 	 * Create the basic dialog box                                                                    *
 	 *------------------------------------------------------------------------------------------------*/
-	dialog = gtk_dialog_new_with_buttons (_("Set-up countdown"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
+	dialog = gtk_dialog_new_with_buttons (_("Set Up Timer"), GTK_WINDOW(clockInst.dialConfig.mainWindow),
 			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 #if GTK_MINOR_VERSION >= 10
 			_("Close"),
