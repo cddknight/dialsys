@@ -2056,6 +2056,10 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 					sprintf (tempAddStr, "%d:%02d:%02d",
 							cdTime / 3600, (cdTime / 60) % 60, cdTime % 60);
 				}
+				else
+				{
+					strcpy (tempAddStr, _("not set"));
+				}
 				tempCommand[j = 0] = 0;
 				break;
 			}
@@ -2064,6 +2068,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 					sprintf (tempAddStr, "%d:%02d", faceSetting -> alarmInfo.alarmHour, faceSetting -> alarmInfo.alarmMin);
 				else
 					strcpy (tempAddStr, _("not set"));
+				tempCommand[j = 0] = 0;
 				break;
 			default:
 				strftime (tempAddStr, 80, tempCommand, &tm);
