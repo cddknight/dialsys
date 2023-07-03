@@ -362,7 +362,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -q              :  Toggle quick time setting, no smooth scroll\n"));
 	fprintf (outFile, _("   -s<size>        :  Set the size of each clock\n"));
 	fprintf (outFile, _("   -S              :* Toggle enabling the stopwatch\n"));
-	fprintf (outFile, _("   -T<secs>        :* Toggle enabling the timer\n"));
+	fprintf (outFile, _("   -Thh:mm:ss:msg  :* Toggle enabling the timer\n"));
 	fprintf (outFile, _("   -t              :  Toggle removing the clock from the taskbar\n"));
 	fprintf (outFile, _("   -u              :* Toggle upper-casing the city name\n"));
 	fprintf (outFile, _("   -w              :  Toggle showing on all the desktops\n"));
@@ -2456,31 +2456,64 @@ void loadAlarmInfo (int face, char *buff)
 void loadTimerInfo (int face, char *buff)
 {
 	char value[81];
-	int val = atoi (buff);
 	FACE_SETTINGS *faceSetting = clockInst.faceSettings[face];
 
 	faceSetting -> timer = !faceSetting -> timer;
 	if (faceSetting -> timer)
 	{
-		faceSetting -> stopwatch = false;
-		sprintf (value, "stopwatch_%d", face + 1);
-		configSetBoolValue (value, false);
+		int tmHour = 0, tmMin = 0, tmSec = 0, i = 0, j = 0, m = 0;
+		char msg[41] = "";
 
-		faceSetting -> timerInfo.timerHour = val / 3600;
-		if (faceSetting -> timerInfo.timerHour > 6)
-			faceSetting -> timerInfo.timerHour = 6;
-		faceSetting -> timerInfo.timerMin = (val % 3600) / 60;
-		faceSetting -> timerInfo.timerSec = val % 60;
 
-		faceSetting -> swStartTime = -1;
-		faceSetting -> timerInfo.totalTime =
-				(faceSetting -> timerInfo.timerHour * 3600) +
-				(faceSetting -> timerInfo.timerMin * 60) +
-				faceSetting -> timerInfo.timerSec;
-		faceSetting -> timerInfo.timerShown = 1;
-		faceSetting -> swRunTime = 0;
-		faceSetting -> updateFace = true;
-		lastTime = -1;
+		while (buff[i] && m < 4)
+		{
+			if (buff[i] == ':')
+			{
+				m++;
+			}
+			else if (m == 0 && buff[i] >= '0' && buff[i] <= '9')
+			{
+				tmHour *= 10;
+				tmHour += (buff[i] - '0');
+			}
+			else if (m == 1 && buff[i] >= '0' && buff[i] <= '9')
+			{
+				tmMin *= 10;
+				tmMin += (buff[i] - '0');
+			}
+			else if (m == 2 && buff[i] >= '0' && buff[i] <= '9')
+			{
+				tmSec *= 10;
+				tmSec += (buff[i] - '0');
+			}
+			else if (m == 3 && j < 40)
+			{
+				msg[j++] = buff[i];
+				msg[j] = 0;
+			}
+			i ++;
+		}
+		if (tmHour < 7 && tmMin < 60 && tmSec < 60)
+		{
+			faceSetting -> stopwatch = false;
+			sprintf (value, "stopwatch_%d", face + 1);
+			configSetBoolValue (value, false);
+
+			faceSetting -> timerInfo.timerHour = tmHour;
+			faceSetting -> timerInfo.timerMin = tmMin;
+			faceSetting -> timerInfo.timerSec = tmSec;
+			strcpy (faceSetting -> timerInfo.message, msg);
+
+			faceSetting -> swStartTime = -1;
+			faceSetting -> timerInfo.totalTime =
+					(faceSetting -> timerInfo.timerHour * 3600) +
+					(faceSetting -> timerInfo.timerMin * 60) +
+					faceSetting -> timerInfo.timerSec;
+			faceSetting -> timerInfo.timerShown = 1;
+			faceSetting -> swRunTime = 0;
+			faceSetting -> updateFace = true;
+			lastTime = -1;
+		}
 	}
 	sprintf (value, "timer_%d", face + 1);
 	configSetBoolValue (value, faceSetting -> timer);
