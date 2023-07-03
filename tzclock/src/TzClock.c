@@ -336,9 +336,9 @@ howTo (FILE * outFile, char *format, ...)
 	int i;
 	va_list ap;
 
-	fprintf (outFile, "------------------------------------------------------------\n");
+	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("The Clock %s\n"), VERSION);
-	fprintf (outFile, "------------------------------------------------------------\n");
+	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("How to use: TzClock [options...]\n\n"));
 	fprintf (outFile, _("   -a              :  Toggle always on top\n"));
 	fprintf (outFile, _("   -Ahh:mm:msg     :* Alarm message shown at a specified time\n"));
@@ -374,12 +374,12 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -?              :  This how to information\n\n"));
 	fprintf (outFile, _("Options marked with '*' only effect the current face. Use\n"));
 	fprintf (outFile, _("the -f<num> option to select the current face.\n"));
-	fprintf (outFile, "------------------------------------------------------------\n");
+	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("Colour codes: -cnnn#RRGGBB  (nnn Colour name)\n\n"));
 
 	for (i = 2; i < MAX__COLOURS; i++)
 		fprintf (outFile, "   %s : %s\n", colourNames[i].shortName, gettext (colourNames[i].longName));
-	fprintf (outFile, "------------------------------------------------------------\n");
+	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format strings: -dnnn:format (nnn Format name)\n\n"));
 
 	fprintf (outFile, _("   %s : Clock top in local time\n"),		nameFormats[0]);
@@ -400,7 +400,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   %s : Copy time for time zone\n"),		nameFormats[15]);
 	fprintf (outFile, _("   %s : Tool tip text for local time\n"),	nameFormats[16]);
 	fprintf (outFile, _("   %s : Tool tip text for time zone\n"),	nameFormats[17]);
-	fprintf (outFile, "------------------------------------------------------------\n");
+	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format options:\n\n"));
 
 	fprintf (outFile, _("   %%#   : Time zone city, upper-cased and wrapped\n"));
@@ -409,13 +409,13 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   %%&   : Stopwatch time: h:mm:ss.hh\n"));
 	fprintf (outFile, _("   %%... : See man page for the date command\n"));
 
-	fprintf (outFile, "------------------------------------------------------------\n");
+	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	if (format)
 	{
 		va_start(ap, format);
 		vfprintf(outFile, format, ap);
 		va_end(ap);
-		fprintf (outFile, "------------------------------------------------------------\n");
+		fprintf (outFile, "----------------------------------------------------------------------------\n");
 	}
 }
 
@@ -1857,15 +1857,15 @@ timerSetCallback (guint data)
 				(faceSetting -> timerInfo.timerMin * 60) +
 				faceSetting -> timerInfo.timerSec;
 
-		sprintf (value, "count_hour_%d", clockInst.currentFace + 1);
+		sprintf (value, "timer_hour_%d", clockInst.currentFace + 1);
 		configSetIntValue (value, faceSetting -> timerInfo.timerHour);
-		sprintf (value, "count_min_%d", clockInst.currentFace + 1);
+		sprintf (value, "timer_min_%d", clockInst.currentFace + 1);
 		configSetIntValue (value, faceSetting -> timerInfo.timerMin);
-		sprintf (value, "count_sec_%d", clockInst.currentFace + 1);
+		sprintf (value, "timer_sec_%d", clockInst.currentFace + 1);
 		configSetIntValue (value, faceSetting -> timerInfo.timerSec);
-		sprintf (value, "count_message_%d", clockInst.currentFace + 1);
+		sprintf (value, "timer_message_%d", clockInst.currentFace + 1);
 		configSetValue (value, faceSetting -> timerInfo.message);
-		sprintf (value, "count_command_%d", clockInst.currentFace + 1);
+		sprintf (value, "timer_command_%d", clockInst.currentFace + 1);
 		configSetValue (value, faceSetting -> timerInfo.command);
 	}
 	gtk_widget_destroy (dialog);
@@ -2948,21 +2948,21 @@ void loadConfig (int *posX, int *posY)
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> alarmInfo.onlyWeekdays);
 		clockInst.faceSettings[i] -> alarmInfo.showAlarm = (clockInst.faceSettings[i] -> alarmInfo.message[0] ? 1 : 0);
 
-		sprintf (value, "count_hour_%d", i + 1);
-		configGetIntValue (value, &clockInst.faceSettings[i] -> timerInfo.timerHour);
-		sprintf (value, "count_min_%d", i + 1);
-		configGetIntValue (value, &clockInst.faceSettings[i] -> timerInfo.timerMin);
-		sprintf (value, "count_sec_%d", i + 1);
-		configGetIntValue (value, &clockInst.faceSettings[i] -> timerInfo.timerSec);
-		sprintf (value, "count_message_%d", i + 1);
-		configGetValue (value, clockInst.faceSettings[i] -> timerInfo.message, 40);
-		sprintf (value, "count_command_%d", i + 1);
-		configGetValue (value, clockInst.faceSettings[i] -> timerInfo.command, 40);
-
-		sprintf (value, "stopwatch_%d", i + 1);
-		configGetBoolValue (value, &clockInst.faceSettings[i] -> stopwatch);
 		sprintf (value, "timer_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> timer);
+		sprintf (value, "timer_hour_%d", i + 1);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> timerInfo.timerHour);
+		sprintf (value, "timer_min_%d", i + 1);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> timerInfo.timerMin);
+		sprintf (value, "timer_sec_%d", i + 1);
+		configGetIntValue (value, &clockInst.faceSettings[i] -> timerInfo.timerSec);
+		sprintf (value, "timer_message_%d", i + 1);
+		configGetValue (value, clockInst.faceSettings[i] -> timerInfo.message, 40);
+		sprintf (value, "timer_command_%d", i + 1);
+		configGetValue (value, clockInst.faceSettings[i] -> timerInfo.command, 40);
+		sprintf (value, "stopwatch_%d", i + 1);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> stopwatch);
+
 		sprintf (value, "sub_second_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> subSecond);
 		sprintf (value, "show_time_%d", i + 1);
