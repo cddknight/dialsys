@@ -91,16 +91,16 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	/*------------------------------------------------------------------------------------------------*
      * Add the text, ether the date or the timezone, plus an AM/PM indicator                          *
      *------------------------------------------------------------------------------------------------*/
-	showSubSec = (faceSetting -> showTime && faceSetting -> showSeconds && (faceSetting -> stopwatch || faceSetting -> countdown ||
+	showSubSec = (faceSetting -> showTime && faceSetting -> showSeconds && (faceSetting -> stopwatch || faceSetting -> timer ||
 			faceSetting -> subSecond)) ? 1 : 0;
 
-	getStringValue (tempString, 100, faceSetting -> stopwatch || faceSetting -> countdown ?
+	getStringValue (tempString, 100, faceSetting -> stopwatch || faceSetting -> timer ?
 			(timeZone ? TXT_TOPSW_Z : TXT_TOPSW_L) : (timeZone ? TXT_TOP_Z : TXT_TOP_L), face, t);
 	dialDrawText (0, tempString, TEXT__COLOUR);
 
 	if (!showSubSec)
 	{
-		getStringValue (tempString, 100, faceSetting -> stopwatch || faceSetting -> countdown ?
+		getStringValue (tempString, 100, faceSetting -> stopwatch || faceSetting -> timer ?
 			(timeZone ? TXT_BOTTOMSW_Z : TXT_BOTTOMSW_L) : timeZone ? TXT_BOTTOM_Z : TXT_BOTTOM_L, face, t);
 		dialDrawText (1, tempString, TEXT__COLOUR);
 	}
@@ -121,7 +121,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			else
 				markerFlags &= ~(1 << 6);
 		}
-		if (faceSetting -> stopwatch || faceSetting -> countdown)
+		if (faceSetting -> stopwatch || faceSetting -> timer)
 		{
 			if (faceSetting -> show24Hour)
 			{
@@ -177,7 +177,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 		dialCircleGradientX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 21, FACE2_COLOUR, 1);
 		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 19, FACE5_COLOUR, -1);
 	}
-	if (faceSetting -> stopwatch || faceSetting -> countdown)
+	if (faceSetting -> stopwatch || faceSetting -> timer)
 	{
 		dialCircleGradientX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 21, FACE2_COLOUR, 1);
 		dialDrawCircleX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, 19, FACE5_COLOUR, -1);
@@ -185,7 +185,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 		dialDrawCircleX (posX + (3 * clockInst.dialConfig.dialSize >> 2), centerY, 19, FACE5_COLOUR, -1);
 	}
 
-	if (showSubSec || faceSetting -> stopwatch || faceSetting -> countdown)
+	if (showSubSec || faceSetting -> stopwatch || faceSetting -> timer)
 	{
 		for (i = 0; i < 60 ; i++)
 		{
@@ -206,7 +206,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 					dialDrawMinuteX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY,
 							(i % 10) ? 9 : 8, (i % 10) ? 1 : 2, m, WMARK_COLOUR);
 			}
-			else if (faceSetting -> countdown)
+			else if (faceSetting -> timer)
 			{
 				if (!(i % 5))
 					dialDrawMinuteX (posX + (clockInst.dialConfig.dialSize >> 2), centerY,
@@ -230,7 +230,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 		dialDrawHandX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), faceSetting -> handPosition[HAND_SECS], &handStyle[HAND_SUBS]);
 		dialDrawCircleX (centerX, posY + ((3 * clockInst.dialConfig.dialSize) >> 2), 2, SFILL_COLOUR, SEC___COLOUR);
 	}
-	if (faceSetting -> stopwatch || faceSetting -> countdown)
+	if (faceSetting -> stopwatch || faceSetting -> timer)
 	{
 		dialDrawHandX (posX + (clockInst.dialConfig.dialSize >> 2), centerY, faceSetting -> handPosition[HAND_STOPWT], &handStyle[HAND_STOPWT]);
 		dialDrawHandX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY, faceSetting -> handPosition[HAND_STOPWM], &handStyle[HAND_STOPWM]);
@@ -242,9 +242,9 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 		dialDrawHand (faceSetting -> handPosition[HAND_HOUR], &handStyle[HAND_HOUR]);
 		dialDrawHand (faceSetting -> handPosition[HAND_MINUTE], &handStyle[HAND_MINUTE]);
 	}
-	if ((faceSetting -> showSeconds && faceSetting -> showTime) || faceSetting -> stopwatch || faceSetting -> countdown)
+	if ((faceSetting -> showSeconds && faceSetting -> showTime) || faceSetting -> stopwatch || faceSetting -> timer)
 	{
-		if (faceSetting -> stopwatch || faceSetting -> countdown)
+		if (faceSetting -> stopwatch || faceSetting -> timer)
 		{
 			dialDrawHandX (centerX, centerY, faceSetting -> handPosition[HAND_STOPWS], &handStyle[HAND_SECS]);
 			dialDrawCircleX (centerX, centerY, 4, WFILL_COLOUR, WATCH_COLOUR);

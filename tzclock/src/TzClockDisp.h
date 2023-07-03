@@ -168,17 +168,17 @@ ALARM_TIME;
 /*----------------------------------------------------------------------------------------------------*
  * Structure to store alarm information                                                               *
  *----------------------------------------------------------------------------------------------------*/
-typedef struct _countdown
+typedef struct _TIMER
 {
-	int countdownHour;			/* Setting */
-	int countdownMin;			/* Setting */
-	int countdownSec;			/* Setting */
+	int timerHour;			/* Setting */
+	int timerMin;			/* Setting */
+	int timerSec;			/* Setting */
 	int totalTime;
 	char message[41];			/* Setting */
 	char command[41];			/* Setting */
-	int countdownShown;
+	int timerShown;
 }
-COUNTDOWN_INFO;
+TIMER_INFO;
 
 /*----------------------------------------------------------------------------------------------------*
  * Structure to store face information and settings                                                   *
@@ -187,7 +187,7 @@ typedef struct _faceSettings
 {
 	bool showTime;				/* Setting */
 	bool stopwatch;				/* Setting */
-	bool countdown;				/* Setting */
+	bool timer;					/* Setting */
 	bool subSecond;				/* Setting */
 	bool showSeconds;			/* Setting */
 	bool show24Hour;			/* Setting */
@@ -206,7 +206,7 @@ typedef struct _faceSettings
 	short handPosition[HAND_COUNT];
 	GtkWidget *drawingArea, *eventBox;
 	ALARM_TIME alarmInfo;
-	COUNTDOWN_INFO countdownInfo;
+	TIMER_INFO timerInfo;
 }
 FACE_SETTINGS;
 
@@ -253,5 +253,5 @@ void dialSave(char *fileName);
 char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, time_t timeNow);
 int	 xSinCos (int number, int angle, int useCos);
 int	 getStopwatchTime (FACE_SETTINGS *faceSetting);
-int	 getCountdownTime (FACE_SETTINGS *faceSetting);
+int	 getTimerTime (FACE_SETTINGS *faceSetting);
 
