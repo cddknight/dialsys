@@ -66,7 +66,7 @@ char *nameFormats[TXT_COUNT] =
 {
 	"ftl", "ftz", "stl", "stz", "fbl", "fbz", "sbl", "sbz",
 	"wtl", "wtz", "cbl", "cbz", "cdl", "cdz", "ctl", "ctz",
-	"ttl", "ttz", "ssl", "ssr", "stl", "str", "sdb"
+	"ttl", "ttz", "ssl", "ssr", "tsl", "tsr", "ssb"
 };
 
 char displayString[TXT_COUNT][101] =
@@ -94,11 +94,11 @@ char displayString[TXT_COUNT][101] =
 	"<b>City</b>: %*%n"
 	"<b>Time</b>: %X%n"
 	"<b>Date</b>: %A, %e %B",		/* Tool tip         (timezone)      17 */
-	"1s",							/* Sub left stopwatch */
-	"30m",							/* Sub right stopwatch */
-	"6h",							/* Sub left timer */
-	"30m",							/* Sub right timer */
-	"1m"							/* Sub bottom */
+	"Sec",							/* Sub left stopwatch */
+	"Min",							/* Sub right stopwatch */
+	"Hour",							/* Sub left timer */
+	"Min",							/* Sub right timer */
+	"Sec"							/* Sub bottom */
 };
 
 /*----------------------------------------------------------------------------------------------------*
