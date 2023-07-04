@@ -94,11 +94,11 @@ char displayString[TXT_COUNT][101] =
 	"<b>City</b>: %*%n"
 	"<b>Time</b>: %X%n"
 	"<b>Date</b>: %A, %e %B",		/* Tool tip         (timezone)      17 */
-	"Sec",							/* Sub left stopwatch */
-	"Min",							/* Sub right stopwatch */
-	"Hour",							/* Sub left timer */
-	"Min",							/* Sub right timer */
-	"Sec"							/* Sub bottom */
+	"Sec",							/* Left stopwatch                   18 */
+	"Min",							/* Right stopwatch                  19 */
+	"Hour",							/* Left timer                       20 */
+	"Min",							/* Right timer                      21 */
+	"Sec"							/* Sub second                       22 */
 };
 
 /*----------------------------------------------------------------------------------------------------*
