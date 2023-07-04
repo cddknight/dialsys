@@ -382,31 +382,32 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format strings: -dnnn:format (nnn Format name)\n\n"));
 
-	fprintf (outFile, _("   %s : Clock top in local time\n"),		nameFormats[0]);
-	fprintf (outFile, _("   %s : Clock top for time zone\n"),		nameFormats[1]);
-	fprintf (outFile, _("   %s : Stopwatch top in local time\n"),	nameFormats[2]);
-	fprintf (outFile, _("   %s : Stopwatch top for time zone\n"),	nameFormats[3]);
-	fprintf (outFile, _("   %s : Clock bottom in local time\n"),	nameFormats[4]);
-	fprintf (outFile, _("   %s : Clock bottom for time zone\n"),	nameFormats[5]);
-	fprintf (outFile, _("   %s : Stopwatch bottom in local time\n"), nameFormats[6]);
-	fprintf (outFile, _("   %s : Stopwatch bottom for time zone\n"), nameFormats[7]);
-	fprintf (outFile, _("   %s : Window title in local time\n"),	nameFormats[8]);
-	fprintf (outFile, _("   %s : Window title for time zone\n"),	nameFormats[9]);
-	fprintf (outFile, _("   %s : Copy date time in local time\n"),	nameFormats[10]);
-	fprintf (outFile, _("   %s : Copy date time for time zone\n"),	nameFormats[11]);
-	fprintf (outFile, _("   %s : Copy date in local time\n"),		nameFormats[12]);
-	fprintf (outFile, _("   %s : Copy date for time zone\n"),		nameFormats[13]);
-	fprintf (outFile, _("   %s : Copy time in local time\n"),		nameFormats[14]);
-	fprintf (outFile, _("   %s : Copy time for time zone\n"),		nameFormats[15]);
-	fprintf (outFile, _("   %s : Tool tip text for local time\n"),	nameFormats[16]);
-	fprintf (outFile, _("   %s : Tool tip text for time zone\n"),	nameFormats[17]);
+	fprintf (outFile, _("   %s : Clock top in local time\n"),			nameFormats[0]);
+	fprintf (outFile, _("   %s : Clock top for time zone\n"),			nameFormats[1]);
+	fprintf (outFile, _("   %s : Stopwatch top in local time\n"),		nameFormats[2]);
+	fprintf (outFile, _("   %s : Stopwatch top for time zone\n"),		nameFormats[3]);
+	fprintf (outFile, _("   %s : Clock bottom in local time\n"),		nameFormats[4]);
+	fprintf (outFile, _("   %s : Clock bottom for time zone\n"),		nameFormats[5]);
+	fprintf (outFile, _("   %s : Stopwatch bottom in local time\n"),	nameFormats[6]);
+	fprintf (outFile, _("   %s : Stopwatch bottom for time zone\n"),	nameFormats[7]);
+	fprintf (outFile, _("   %s : Window title in local time\n"),		nameFormats[8]);
+	fprintf (outFile, _("   %s : Window title for time zone\n"),		nameFormats[9]);
+	fprintf (outFile, _("   %s : Copy date time in local time\n"),		nameFormats[10]);
+	fprintf (outFile, _("   %s : Copy date time for time zone\n"),		nameFormats[11]);
+	fprintf (outFile, _("   %s : Copy date in local time\n"),			nameFormats[12]);
+	fprintf (outFile, _("   %s : Copy date for time zone\n"),			nameFormats[13]);
+	fprintf (outFile, _("   %s : Copy time in local time\n"),			nameFormats[14]);
+	fprintf (outFile, _("   %s : Copy time for time zone\n"),			nameFormats[15]);
+	fprintf (outFile, _("   %s : Tool tip text for local time\n"),		nameFormats[16]);
+	fprintf (outFile, _("   %s : Tool tip text for time zone\n"),		nameFormats[17]);
 	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format options:\n\n"));
 
 	fprintf (outFile, _("   %%#   : Time zone city, upper-cased and wrapped\n"));
 	fprintf (outFile, _("   %%*   : Time zone city\n"));
 	fprintf (outFile, _("   %%@   : Time zone area\n"));
-	fprintf (outFile, _("   %%&   : Stopwatch time: h:mm:ss.hh\n"));
+	fprintf (outFile, _("   %%&   : Stopwatch: h:mm:ss.hh\n"));
+	fprintf (outFile, _("   %%&   : Timer left: h:mm:ss\n"));
 	fprintf (outFile, _("   %%... : See man page for the date command\n"));
 
 	fprintf (outFile, "----------------------------------------------------------------------------\n");
@@ -2463,7 +2464,6 @@ void loadTimerInfo (int face, char *buff)
 	{
 		int tmHour = 0, tmMin = 0, tmSec = 0, i = 0, j = 0, m = 0;
 		char msg[41] = "";
-
 
 		while (buff[i] && m < 4)
 		{
