@@ -718,7 +718,6 @@ calendarCallback (guint data)
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
-
 }
 
 /**********************************************************************************************************************
@@ -737,8 +736,7 @@ void alarmSetAngle (int face)
 	short angle = clockInst.faceSettings[face] -> show24Hour ?
 			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 50)	+ ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 72):
 			(clockInst.faceSettings[face] -> alarmInfo.alarmHour * 100) + ((clockInst.faceSettings[face] -> alarmInfo.alarmMin * 60) / 36);
-	if (angle != clockInst.faceSettings[face] -> handPosition[HAND_ALARM])
-		clockInst.faceSettings[face] -> handPosition[HAND_ALARM] = angle;
+	clockInst.faceSettings[face] -> handPosition[HAND_ALARM] = angle;
 }
 
 /**********************************************************************************************************************

@@ -221,21 +221,21 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			if (faceSetting -> stopwatch)
 			{
 				getStringValue (tempString, 100, TXT_SUBSW_LT, face, t);
-				dialDrawTextS (2, tempString, TEXT__COLOUR, 3);
+				dialDrawTextS (2, tempString, TEXT__COLOUR, 6);
 				getStringValue (tempString, 100, TXT_SUBSW_RT, face, t);
-				dialDrawTextS (3, tempString, TEXT__COLOUR, 3);
+				dialDrawTextS (3, tempString, TEXT__COLOUR, 6);
 			}
 			else if (faceSetting -> timer)
 			{
 				getStringValue (tempString, 100, TXT_SUBTM_LT, face, t);
-				dialDrawTextS (2, tempString, TEXT__COLOUR, 3);
+				dialDrawTextS (2, tempString, TEXT__COLOUR, 6);
 				getStringValue (tempString, 100, TXT_SUBTM_RT, face, t);
-				dialDrawTextS (3, tempString, TEXT__COLOUR, 3);
+				dialDrawTextS (3, tempString, TEXT__COLOUR, 6);
 			}
 			if (showSubSec)
 			{
 				getStringValue (tempString, 100, TXT_SUBSC_BT, face, t);
-				dialDrawTextS (4, tempString, TEXT__COLOUR, 3);
+				dialDrawTextS (4, tempString, TEXT__COLOUR, 6);
 			}
 		}
 	}

@@ -875,7 +875,7 @@ void dialDrawMarkX (int posX, int posY, int angle, int size, int colFill, int co
 			/* Text number markers */
 			posX += dialSin ((dialConfig -> dialSize * (size - 5)) >> 6, angle);
 			posY -= dialCos ((dialConfig -> dialSize * (size - 5)) >> 6, angle);
-			dialDrawTextX (posX, posY, text, colOut, 1);
+			dialDrawTextX (posX, posY, text, colOut, dialConfig -> markerScale);
 			break;
 		}
 	}
@@ -947,7 +947,7 @@ void dialDrawTextS (int posn, char *string1, int colour, int scale)
 {
 	if (string1[0])
 	{
-		int posY, posX = saveCentreX;
+		int posY = saveCentreY, posX = saveCentreX;
 
 		if (posn == 0)
 		{
@@ -1002,9 +1002,9 @@ void dialDrawTextX (int posX, int posY, char *string1, int colour, int scale)
 			fontSize = (dialConfig -> dialSize >> 6) << 2;
 			if (fontSize < 6) fontSize = 6;
 		}
-		if (scale && fontSize > 6)
+		if (scale)
 		{
-			fontSize = (fontSize * dialConfig -> markerScale) / 10;
+			fontSize = (fontSize * scale) / 10;
 		}
 		PangoLayout *layout = pango_cairo_create_layout (saveCairo);
 		PangoFontDescription *fontDesc = pango_font_description_from_string (dialConfig -> fontName);
