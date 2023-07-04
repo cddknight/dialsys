@@ -151,6 +151,7 @@ void dialHotCold		(int size, int colFill, int cold);
 void dialDrawHand		(int angle, HAND_STYLE *handStyle);
 void dialDrawMark		(int angle, int size, int colFill, int colOut, char *text);
 void dialDrawText		(int posn, char *string1, int colour);
+void dialDrawTextS		(int posn, char *string1, int colour, int scale);
 void dialCircleGradient (int size, int colFill, int style);
 void dialSquareGradient (int size, int colFill, int style);
 

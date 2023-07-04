@@ -199,9 +199,9 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 			}
 			if (faceSetting -> stopwatch)
 			{
-				if (!(i % 6))
+				if (!(i % 3))
 					dialDrawMinuteX (posX + (clockInst.dialConfig.dialSize >> 2), centerY,
-							(i % 12) ? 9 : 8, (i % 12) ? 1 : 2, m, WMARK_COLOUR);
+							(i % 6) ? 9 : 8, (i % 6) ? 1 : 2, m, WMARK_COLOUR);
 				if (!(i % 2))
 					dialDrawMinuteX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY,
 							(i % 10) ? 9 : 8, (i % 10) ? 1 : 2, m, WMARK_COLOUR);
@@ -214,6 +214,28 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 				if (!(i % 2))
 					dialDrawMinuteX (posX + ((3 * clockInst.dialConfig.dialSize) >> 2), centerY,
 							(i % 10) ? 9 : 8, (i % 10) ? 1 : 2, m, WMARK_COLOUR);
+			}
+		}
+		if (clockInst.showSubText)
+		{
+			if (faceSetting -> stopwatch)
+			{
+				getStringValue (tempString, 100, TXT_SUBSW_LT, face, t);
+				dialDrawTextS (2, tempString, TEXT__COLOUR, 3);
+				getStringValue (tempString, 100, TXT_SUBSW_RT, face, t);
+				dialDrawTextS (3, tempString, TEXT__COLOUR, 3);
+			}
+			else if (faceSetting -> timer)
+			{
+				getStringValue (tempString, 100, TXT_SUBTM_LT, face, t);
+				dialDrawTextS (2, tempString, TEXT__COLOUR, 3);
+				getStringValue (tempString, 100, TXT_SUBTM_RT, face, t);
+				dialDrawTextS (3, tempString, TEXT__COLOUR, 3);
+			}
+			if (showSubSec)
+			{
+				getStringValue (tempString, 100, TXT_SUBSC_BT, face, t);
+				dialDrawTextS (4, tempString, TEXT__COLOUR, 3);
 			}
 		}
 	}

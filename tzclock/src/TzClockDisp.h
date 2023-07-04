@@ -97,7 +97,12 @@
 #define TXT_COPY_T_Z		15
 #define TXT_TOOLTIP_L		16
 #define TXT_TOOLTIP_Z		17
-#define TXT_COUNT			18
+#define TXT_SUBSW_LT		18
+#define TXT_SUBSW_RT		19
+#define TXT_SUBTM_LT		20
+#define TXT_SUBTM_RT		21
+#define TXT_SUBSC_BT		22
+#define TXT_COUNT			23
 
 /*----------------------------------------------------------------------------------------------------*
  *                                                                                                    *
@@ -216,6 +221,7 @@ typedef struct _clockInst
 	bool fastSetting;			/* Saved in the config file */
 	bool showBounceSec;			/* Saved in the config file */
 	bool clockDecorated;		/* Saved in the config file */
+	bool showSubText;			/* Saved in the config file */
 	int weHaveFocus;
 	int currentFace;			/* Saved in the config file */
 	int toolTipFace;

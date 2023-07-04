@@ -80,7 +80,7 @@ GtkWidget *dialInit (DIAL_CONFIG *dialConfigIn)
  **********************************************************************************************************************/
 /**
  *  \brief Check the library version matches the version the app was built with.
- *  \param version Version of the app..
+ *  \param version Version of the app.
  *  \result True if they are the same.
  */
 int dialCheckVersion (char *version)
@@ -926,16 +926,52 @@ float dialGetFontSize (char *fontName)
  */
 void dialDrawText (int posn, char *string1, int colour)
 {
+	dialDrawTextS (posn, string1, colour, 0);
+}
+
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  D I A L  D R A W  T E X T  S                                                                                      *
+ *  ============================                                                                                      *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Draw text with a scale factor.
+ *  \param posn Where to display the text.
+ *  \param string1 Text to display.
+ *  \param colour Colour for the text.
+ *  \param scale Scale factor.
+ *  \result None.
+ */
+void dialDrawTextS (int posn, char *string1, int colour, int scale)
+{
 	if (string1[0])
 	{
-		int posY;
+		int posY, posX = saveCentreX;
 
 		if (posn == 0)
+		{
 			posY = savePosY + ((dialConfig -> dialSize * 5) >> 4);
-		else
+		}
+		else if (posn == 1)
+		{
 			posY = savePosY + ((dialConfig -> dialSize * 11) >> 4);
-
-		dialDrawTextX (saveCentreX, posY, string1, colour, 0);
+		}
+		else if (posn == 2)
+		{
+			posX = savePosX + ((dialConfig -> dialSize * 4) >> 4);
+			posY = savePosY + ((dialConfig -> dialSize * 9) >> 4);
+		}
+		else if (posn == 3)
+		{
+			posX = savePosX + ((dialConfig -> dialSize * 12) >> 4);
+			posY = savePosY + ((dialConfig -> dialSize * 9) >> 4);
+		}
+		else if (posn == 4)
+		{
+			posY = savePosY + ((dialConfig -> dialSize * 13) >> 4);
+		}
+		dialDrawTextX (posX, posY, string1, colour, scale);
 	}
 }
 

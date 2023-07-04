@@ -66,10 +66,10 @@ char *nameFormats[TXT_COUNT] =
 {
 	"ftl", "ftz", "stl", "stz", "fbl", "fbz", "sbl", "sbz",
 	"wtl", "wtz", "cbl", "cbz", "cdl", "cdz", "ctl", "ctz",
-	"ttl", "ttz"
+	"ttl", "ttz", "ssl", "ssr", "stl", "str", "sdb"
 };
 
-char displayString[TXT_COUNT][81] =
+char displayString[TXT_COUNT][101] =
 {
 	"%a. %e %b.",					/* Clock top        (localtime)     00 */
 	"%#",							/* Clock top        (timezone)      01 */
@@ -93,7 +93,12 @@ char displayString[TXT_COUNT][81] =
 	"<b>Alarm</b>: %$",				/* Tool tip         (localtime)     16 */
 	"<b>City</b>: %*%n"
 	"<b>Time</b>: %X%n"
-	"<b>Date</b>: %A, %e %B"		/* Tool tip         (timezone)      17 */
+	"<b>Date</b>: %A, %e %B",		/* Tool tip         (timezone)      17 */
+	"1s",							/* Sub left stopwatch */
+	"30m",							/* Sub right stopwatch */
+	"6h",							/* Sub left timer */
+	"30m",							/* Sub right timer */
+	"1m"							/* Sub bottom */
 };
 
 /*----------------------------------------------------------------------------------------------------*
@@ -258,6 +263,7 @@ CLOCK_INST clockInst =
 	FALSE,							/* fastSetting */
 	FALSE,							/* showBounceSec */
 	FALSE,							/* clockDecorated */
+	FALSE,							/* showSubText */
 	0,								/* weHaveFocus */
 	0,								/* currentFace */
 	0,								/* toolTipFace */
@@ -365,6 +371,7 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   -Thh:mm:ss:msg  :* Toggle enabling the timer\n"));
 	fprintf (outFile, _("   -t              :  Toggle removing the clock from the taskbar\n"));
 	fprintf (outFile, _("   -u              :* Toggle upper-casing the city name\n"));
+	fprintf (outFile, _("   -U              :  Toggle text on the sub dials\n"));
 	fprintf (outFile, _("   -w              :  Toggle showing on all the desktops\n"));
 	fprintf (outFile, _("   -x<posn>        :  Set the X screen position\n"));
 	fprintf (outFile, _("   -y<posn>        :  Set the Y screen position\n"));
@@ -400,6 +407,12 @@ howTo (FILE * outFile, char *format, ...)
 	fprintf (outFile, _("   %s : Copy time for time zone\n"),			nameFormats[15]);
 	fprintf (outFile, _("   %s : Tool tip text for local time\n"),		nameFormats[16]);
 	fprintf (outFile, _("   %s : Tool tip text for time zone\n"),		nameFormats[17]);
+	fprintf (outFile, _("   %s : Stopwatch left face scale\n"),			nameFormats[18]);
+	fprintf (outFile, _("   %s : Stopwatch right face scale\n"),		nameFormats[19]);
+	fprintf (outFile, _("   %s : Timer left face scale\n"),				nameFormats[20]);
+	fprintf (outFile, _("   %s : Timer right face scale\n"),			nameFormats[21]);
+	fprintf (outFile, _("   %s : Subsecond face scale\n"),				nameFormats[22]);
+
 	fprintf (outFile, "----------------------------------------------------------------------------\n");
 	fprintf (outFile, _("Date format options:\n\n"));
 
@@ -2357,7 +2370,7 @@ int loadColour (char *fromColour)
 void loadDateFormat (char *newFormat)
 {
 	int i = 0, j = 0, format = -1;
-	char foundStr[81], value[81];
+	char foundStr[101], value[101];
 
 	if (strlen (newFormat) >= 4)
 	{
@@ -2376,7 +2389,7 @@ void loadDateFormat (char *newFormat)
 				i = 4;
 				foundStr[j] = 0;
 
-				while (newFormat[i] >= ' ' && j < 80)
+				while (newFormat[i] >= ' ' && j < 100)
 				{
 					foundStr[j++] = newFormat[i++];
 					foundStr[j] = 0;
@@ -2776,6 +2789,10 @@ void processCommandLine (int argc, char *argv[], int *posX, int *posY)
 				sprintf (value, "uppercase_city_%d", face + 1);
 				configSetBoolValue (value, faceSetting -> upperCity);
 				break;
+			case 'U':							/* Show sub text */
+				clockInst.showSubText = !clockInst.showSubText;
+				configSetBoolValue ("show_sub_text", clockInst.showSubText);
+				break;
 			case 'V':
 				clockInst.allowSaveDisp = !clockInst.allowSaveDisp;
 				break;
@@ -2924,6 +2941,7 @@ void loadConfig (int *posX, int *posY)
 	configGetBoolValue ("locked_position", &lockMove);
 	configGetBoolValue ("fast_setting", &clockInst.fastSetting);
 	configGetBoolValue ("bounce_seconds", &clockInst.showBounceSec);
+	configGetBoolValue ("show_sub_text", &clockInst.showSubText);
 	configGetBoolValue ("decorated", &clockInst.clockDecorated);
 	configGetBoolValue ("remove_taskbar", &clockInst.removeTaskbar);
 	configGetIntValue ("face_size", &clockInst.dialConfig.dialSize);
@@ -2949,7 +2967,7 @@ void loadConfig (int *posX, int *posY)
 	for (i = 0; i < TXT_COUNT; i++)
 	{
 		sprintf (value, "text_format_%s", nameFormats[i]);
-		configGetValue (value, displayString[i], 80);
+		configGetValue (value, displayString[i], 100);
 	}
 	for (i = 0; i < HAND_COUNT; i++)
 	{
