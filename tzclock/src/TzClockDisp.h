@@ -140,7 +140,7 @@
 #define MENU_PREF_TIME		3
 #define MENU_PREF_SHOWS		4
 #define MENU_PREF_SUBS		5
-#define MENU_PREF_SVG		14
+#define MENU_PREF_SVG		13
 
 #define MENU_STPW_ENBL		0
 #define MENU_STPW_START		1

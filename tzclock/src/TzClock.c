@@ -141,7 +141,7 @@ MENU_DESC timerMenuDesc[] =
 	{	__("Enable"),			timerCallback,			NULL,				0,	NULL,	0,	0,	1	},
 	{	__("Start+Stop"),		tmStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},
 	{	__("Reset"),			tmResetCallback,		NULL,				0,	NULL,	GDK_KEY_X},
-	{	__("Set Up Timer"),		timerSetCallback,		NULL,				0	},
+	{	__("Set Up Timer..."),		timerSetCallback,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -184,12 +184,12 @@ MENU_DESC markerMenuDesc[] =
 	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  03  */
 	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/*  04  */
 	{	"-",					NULL,					NULL,				0		},
-	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  07  */
-	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  07  */
-	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  08  */
-	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  09  */
-	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*  10  */
-	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*  11  */
+	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  05  */
+	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  06  */
+	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  07  */
+	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  08  */
+	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*  09  */
+	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*  10  */
 	{	NULL,					NULL,					NULL,				0		}
 };
 
@@ -204,9 +204,8 @@ MENU_DESC prefMenuDesc[] =
 	{	"-",					NULL,					NULL,				0	},			/*  05  */
 	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  06  */
 	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  07  */
-	{	__("Set Up Alarm"),		alarmCallback,			NULL,				0	},			/*  08  */
-	{	__("Change Font"),		dialFontCallback,		NULL,				0	},			/*  09  */
-	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},			/*  10  */
+	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},			/*  09  */
+	{	__("Change Colour..."),	dialColourCallback,		NULL,				0	},			/*  10  */
 	{	"-",					NULL,					NULL,				0	},			/*  11  */
 #if GTK_MINOR_VERSION >= 10
 	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
@@ -220,6 +219,7 @@ MENU_DESC prefMenuDesc[] =
 MENU_DESC mainMenuDesc[] =
 {
 	{	__("Time-zone"),		NULL,					NULL,				0	},
+	{	__("Alarm..."),			alarmCallback,			NULL,				0	},
 	{	__("Stopwatch"),		NULL,					stopWMenuDesc,		0	},
 	{	__("Timer"),			NULL,					timerMenuDesc,		0	},
 	{	__("Edit"),				NULL,					editMenuDesc,		0	},
