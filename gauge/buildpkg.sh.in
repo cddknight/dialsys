@@ -48,6 +48,7 @@ then
 	cd $DIR/SPECS
 	rpmbuild -ba -v @PACKAGE@.spec
 	rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-@VERSION@-@REVISION@.*.$(uname -m).rpm
+	rpmsign --addsign $DIR/SRPMS/@PACKAGE@-@VERSION@-@REVISION@.*.src.rpm
 
 else
 
