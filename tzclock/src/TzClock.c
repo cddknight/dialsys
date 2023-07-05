@@ -184,12 +184,12 @@ MENU_DESC markerMenuDesc[] =
 	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  03  */
 	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/*  04  */
 	{	"-",					NULL,					NULL,				0		},
-	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  05  */
-	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  06  */
-	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  07  */
-	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  08  */
-	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*  09  */
-	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*  10  */
+	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  06  */
+	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  07  */
+	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  08  */
+	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  09  */
+	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*  10  */
+	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*  11  */
 	{	NULL,					NULL,					NULL,				0		}
 };
 
@@ -201,9 +201,9 @@ MENU_DESC prefMenuDesc[] =
 	{	__("Show Time"),		showTimeCallback,		NULL,				1,	NULL,	0,	0,	1	},	/*  03  */
 	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/*  04  */
 	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/*  05  */
-	{	"-",					NULL,					NULL,				0	},			/*  05  */
-	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  06  */
-	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  07  */
+	{	"-",					NULL,					NULL,				0	},			/*  06  */
+	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  07  */
+	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  08  */
 	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},			/*  09  */
 	{	__("Change Colour..."),	dialColourCallback,		NULL,				0	},			/*  10  */
 	{	"-",					NULL,					NULL,				0	},			/*  11  */
@@ -212,7 +212,7 @@ MENU_DESC prefMenuDesc[] =
 #else
 	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*  12  */
 #endif
-	{	__("Save Display"),		dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  13  */
+	{	__("Save Display..."),	dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  13  */
 	{	NULL,					NULL,					NULL,				0	}			/*  14  */
 };
 
