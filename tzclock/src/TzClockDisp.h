@@ -142,6 +142,8 @@
 #define MENU_PREF_SUBS		5
 #define MENU_PREF_SVG		13
 
+#define MENU_ALRM_ENBL		0
+
 #define MENU_STPW_ENBL		0
 #define MENU_STPW_START		1
 #define MENU_STPW_RESET		2
@@ -163,7 +165,6 @@ typedef struct _alarm
 	int alarmHour;				/* Setting */
 	int alarmMin;				/* Setting */
 	int alarmShown;
-	int showAlarm;				/* Setting (based on message) */
 	bool onlyWeekdays;			/* Setting */
 	char message[41];			/* Setting */
 	char command[41];			/* Setting */
@@ -191,6 +192,7 @@ TIMER_INFO;
 typedef struct _faceSettings
 {
 	bool showTime;				/* Setting */
+	bool alarm;
 	bool stopwatch;				/* Setting */
 	bool timer;					/* Setting */
 	bool subSecond;				/* Setting */

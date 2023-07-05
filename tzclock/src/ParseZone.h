@@ -33,6 +33,7 @@ void calendarCallback		(guint data);
 void fontCallback			(guint data);
 void colourCallback			(guint data);
 void alarmCallback			(guint data);
+void alarmSetCallback		(guint data);
 void setTimeZoneCallback	(guint data);
 void copyCallback			(guint data);
 void stopwatchCallback		(guint data);

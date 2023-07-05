@@ -243,7 +243,7 @@ drawFace (cairo_t *cr, int face, int posX, int posY, char circ)
 	/*------------------------------------------------------------------------------------------------*
      * Draw the hands                                                                                 *
      *------------------------------------------------------------------------------------------------*/
-	if (faceSetting -> alarmInfo.showAlarm)
+	if (faceSetting -> alarm)
 	{
 		dialDrawHand (faceSetting -> handPosition[HAND_ALARM], &handStyle[HAND_ALARM]);
 	}

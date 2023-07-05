@@ -141,7 +141,14 @@ MENU_DESC timerMenuDesc[] =
 	{	__("Enable"),			timerCallback,			NULL,				0,	NULL,	0,	0,	1	},
 	{	__("Start+Stop"),		tmStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},
 	{	__("Reset"),			tmResetCallback,		NULL,				0,	NULL,	GDK_KEY_X},
-	{	__("Set Up Timer..."),		timerSetCallback,		NULL,				0	},
+	{	__("Set Up Timer..."),	timerSetCallback,		NULL,				0	},
+	{	NULL,					NULL,					NULL,				0	}
+};
+
+MENU_DESC alarmMenuDesc[] =
+{
+	{	__("Enable"),			alarmCallback,			NULL,				0,	NULL,	0,	0,	1	},
+	{	__("Set Up Alarm..."),	alarmSetCallback,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -219,7 +226,7 @@ MENU_DESC prefMenuDesc[] =
 MENU_DESC mainMenuDesc[] =
 {
 	{	__("Time-zone"),		NULL,					NULL,				0	},
-	{	__("Alarm..."),			alarmCallback,			NULL,				0	},
+	{	__("Alarm"),			NULL,					alarmMenuDesc,		0	},
 	{	__("Stopwatch"),		NULL,					stopWMenuDesc,		0	},
 	{	__("Timer"),			NULL,					timerMenuDesc,		0	},
 	{	__("Edit"),				NULL,					editMenuDesc,		0	},
@@ -315,6 +322,7 @@ static void processCommandLine		(int argc, char *argv[], int *posX, int *posY);
 static void howTo					(FILE * outFile, char *format, ...);
 static void checkForAlarm			(FACE_SETTINGS *faceSetting, struct tm *tm);
 static void checkForTimer			(FACE_SETTINGS *faceSetting);
+static void prepareForPopup 		(void);
 
 static gboolean clockTickCallback	(gpointer data);
 static gboolean windowClickCallback (GtkWidget * widget, GdkEventButton * event);
@@ -739,6 +747,20 @@ void alarmSetAngle (int face)
 	clockInst.faceSettings[face] -> handPosition[HAND_ALARM] = angle;
 }
 
+void
+alarmCallback (guint data)
+{
+	char value[81];
+	int newVal = !clockInst.faceSettings[clockInst.currentFace] -> alarm;
+
+	clockInst.faceSettings[clockInst.currentFace] -> alarm = newVal;
+	sprintf (value, "alarm_%d", clockInst.currentFace + 1);
+	configSetBoolValue (value, newVal);
+	lastTime = -1;
+	prepareForPopup ();
+	createMenu (mainMenuDesc, clockInst.accelGroup, FALSE);
+}
+
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  A L A R M  C A L L B A C K                                                                                        *
@@ -751,7 +773,7 @@ void alarmSetAngle (int face)
  *  \result None.
  */
 void
-alarmCallback (guint data)
+alarmSetCallback (guint data)
 {
 	char value[81];
 	GtkWidget *dialog;
@@ -855,7 +877,6 @@ alarmCallback (guint data)
 		strcpy (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.command, gtk_entry_get_text (GTK_ENTRY(entry2)));
 		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmHour = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner1));
 		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.alarmMin	 = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(spinner2));
-		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.showAlarm = (clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.message[0] != 0);
 		clockInst.faceSettings[clockInst.currentFace] -> alarmInfo.onlyWeekdays = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
 
 		sprintf (value, "alarm_hour_%d", clockInst.currentFace + 1);
@@ -941,6 +962,7 @@ void prepareForPopup (void)
 	prefMenuDesc[MENU_PREF_SUBS].disable = !clockInst.faceSettings[clockInst.currentFace] -> showSeconds;
 	prefMenuDesc[MENU_PREF_SVG].disable = !clockInst.allowSaveDisp;
 
+	alarmMenuDesc[MENU_ALRM_ENBL].checked = clockInst.faceSettings[clockInst.currentFace] -> alarm;
 	stopWMenuDesc[MENU_STPW_ENBL].checked = clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	stopWMenuDesc[MENU_STPW_START].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
 	stopWMenuDesc[MENU_STPW_RESET].disable = !clockInst.faceSettings[clockInst.currentFace] -> stopwatch;
@@ -2076,7 +2098,7 @@ char *getStringValue (char *addBuffer, int maxSize, int stringNumber, int face, 
 				break;
 			}
 			case '$':
-				if (faceSetting -> alarmInfo.showAlarm)
+				if (faceSetting -> alarm)
 					sprintf (tempAddStr, "%d:%02d", faceSetting -> alarmInfo.alarmHour, faceSetting -> alarmInfo.alarmMin);
 				else
 					strcpy (tempAddStr, _("not set"));
@@ -2233,7 +2255,7 @@ void getTheFaceTime (FACE_SETTINGS *faceSetting, time_t *t, struct tm *tm)
  */
 void checkForAlarm (FACE_SETTINGS *faceSetting, struct tm *tm)
 {
-	if (faceSetting -> alarmInfo.showAlarm)
+	if (faceSetting -> alarm)
 	{
 		if (faceSetting -> alarmInfo.alarmHour == tm -> tm_hour && faceSetting -> alarmInfo.alarmMin == tm -> tm_min)
 		{
@@ -2446,7 +2468,7 @@ void loadAlarmInfo (int face, char *buff)
 	}
 	if (msg[0] && alHour < 24 && alMin < 60)
 	{
-		clockInst.faceSettings[face] -> alarmInfo.showAlarm = 1;
+		clockInst.faceSettings[face] -> alarm = TRUE;
 		clockInst.faceSettings[face] -> alarmInfo.alarmHour = alHour;
 		clockInst.faceSettings[face] -> alarmInfo.alarmMin = alMin;
 		strcpy (clockInst.faceSettings[face] -> alarmInfo.message, msg);
@@ -2985,6 +3007,8 @@ void loadConfig (int *posX, int *posY)
 			clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
 			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
 		}
+		sprintf (value, "alarm_%d", i + 1);
+		configGetBoolValue (value, &clockInst.faceSettings[i] -> alarm);
 		sprintf (value, "alarm_hour_%d", i + 1);
 		configGetIntValue (value, &clockInst.faceSettings[i] -> alarmInfo.alarmHour);
 		sprintf (value, "alarm_min_%d", i + 1);
@@ -2995,7 +3019,6 @@ void loadConfig (int *posX, int *posY)
 		configGetValue (value, clockInst.faceSettings[i] -> alarmInfo.command, 40);
 		sprintf (value, "alarm_only_weekdays_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> alarmInfo.onlyWeekdays);
-		clockInst.faceSettings[i] -> alarmInfo.showAlarm = (clockInst.faceSettings[i] -> alarmInfo.message[0] ? 1 : 0);
 
 		sprintf (value, "timer_%d", i + 1);
 		configGetBoolValue (value, &clockInst.faceSettings[i] -> timer);
