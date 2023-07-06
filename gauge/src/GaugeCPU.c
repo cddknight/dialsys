@@ -148,10 +148,10 @@ void readCPUValues (int face)
 				return;
 
 			int max = 0;
-			strcpy (cpuName, _("CPU"));
+			strcpy (cpuName, _("Average"));
 			if (procNumber)
 			{
-				sprintf (&cpuName[3], "%d", procNumber);
+				sprintf (cpuName, "CPU%d", procNumber);
 			}
 			readClockRates (&max);
 			faceSetting -> firstValue = (float)clockRates[procNumber] / 1000;
@@ -160,8 +160,13 @@ void readCPUValues (int face)
 			faceSetting -> secondValue = (float)max / 1000;
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f Mhz\n(%0.2f)"), 
 					faceSetting -> firstValue, faceSetting -> secondValue);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s CPU Speed</b>: %0.2f Mhz\n<b>Max Speed</b>: %0.2f Mhz"),
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s speed</b>: %0.2f Mhz\n<b>Highest speed</b>: %0.2f Mhz"),
 					cpuName, faceSetting -> firstValue, faceSetting -> secondValue);
+			while (faceSetting -> firstValue > faceSetting -> faceScaleMax || faceSetting -> secondValue > faceSetting -> faceScaleMax)
+			{
+				faceSetting -> faceScaleMax *= 2;
+				maxMinReset (&faceSetting -> savedMaxMin, 10, 1);
+			}
 		}
 		else
 		{
