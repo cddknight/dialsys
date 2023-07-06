@@ -1218,8 +1218,7 @@ void readWeatherValues(int face)
 					setFaceString(faceSetting, FACESTR_WIN, 0, _("Temperature: %0.1%s - Gauge"),
 								myWeather.showTemp, tempUnits[myWeather.tUnits].tempText);
 				}
-				while (myWeather.showTemp < faceSetting->faceScaleMin
-					   || myWeather.showApparent < faceSetting->faceScaleMin)
+				while (myWeather.showTemp < faceSetting->faceScaleMin || myWeather.showApparent < faceSetting->faceScaleMin)
 				{
 					faceSetting->faceScaleMin -= 5;
 					faceSetting->faceScaleMax -= 5;
@@ -1384,6 +1383,19 @@ void readWeatherValues(int face)
 							myWeather.forecast[i].pollution, myWeather.forecast[i].uvRisk,
 							myWeather.forecast[i].sunrise, myWeather.forecast[i].sunset,
 							myWeather.forecast[i].updateTime);
+
+				while (myWeather.forecast[i].showTempMin <= faceSetting->faceScaleMin)
+				{
+					faceSetting->faceScaleMin -= 5;
+					faceSetting->faceScaleMax -= 5;
+					maxMinReset(&faceSetting->savedMaxMin, 24, 3600);
+				}
+				while (myWeather.forecast[i].showTempMax >= faceSetting->faceScaleMax)
+				{
+					faceSetting->faceScaleMin += 5;
+					faceSetting->faceScaleMax += 5;
+					maxMinReset(&faceSetting->savedMaxMin, 24, 3600);
+				}
 				faceSetting->firstValue = myWeather.forecast[i].showTempMax;
 				faceSetting->secondValue = myWeather.forecast[i].showTempMin;
 			}
