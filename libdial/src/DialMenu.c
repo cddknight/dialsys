@@ -48,7 +48,11 @@ GtkWidget *createMenu (MENU_DESC *createMenuDesc, GtkAccelGroup *accelGroup, int
 		thisMenu = gtk_menu_bar_new ();
 	else
 		thisMenu = gtk_menu_new ();
-
+	
+	if (createMenuDesc == NULL)
+	{
+		return NULL;
+	}
 	while (createMenuDesc[i].menuName)
 	{
 		if (!(createMenuDesc[i].disable))
