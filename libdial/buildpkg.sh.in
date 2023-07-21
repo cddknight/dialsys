@@ -17,7 +17,7 @@ then
 	cp -r $ORIGPWD/debian .
 	dpkg-buildpackage
 
-elif [ "$ID" == "fedora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "suse" ]
+elif [ "$ID" == "fedora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "opensuse-leap" ]
 then
 
 	if [ -d $HOME/gitroot/rpmbuild ]
