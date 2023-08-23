@@ -16,7 +16,8 @@
   
   <description>
     <p>
-      Gauge is an analogue desktop gauge that can display many different values.
+      Gauge is an analogue desktop gauge that can display many different values. It makes use of some of the code
+      that was developed for TzClock, hence is has a similar look and feel.
     </p>
     <p>
       Some of the gauges:
@@ -25,6 +26,7 @@
       <li> Weather information </li>
       <li> CPU/Memory/Disk/Network usage </li>
       <li> Fan and Temperature sensors </li>
+      <li> Tide times in the UK </li>
       <li> Moon phase </li>
     </ul>
   </description>
@@ -38,5 +40,6 @@
       <image>https://theknight.co.uk/image/screenGauge.svg</image>
     </screenshot>
   </screenshots>
+  <content_rating/>
 </component>
 
