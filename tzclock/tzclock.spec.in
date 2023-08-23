@@ -33,7 +33,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/appdata
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/metainfo
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
@@ -43,7 +43,7 @@ install -p -m 644 icons/scalable/@PACKAGE@.svg $RPM_BUILD_ROOT%{_datadir}/icons/
 install -p -m 644 icons/128x128/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
 install -p -m 644 icons/48x48/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
 install -p -m 644 @PACKAGE@.man $RPM_BUILD_ROOT%{_mandir}/man1/@PACKAGE@.1
-install -p -m 644 @PACKAGE@.appdata.xml ${RPM_BUILD_ROOT}%{_datadir}/appdata/@PACKAGE@.appdata.xml
+install -p -m 644 uk.co.theknight.timezone_clock.metainfo.xml ${RPM_BUILD_ROOT}%{_datadir}/metainfo/uk.co.theknight.timezone_clock.metainfo.xml
 desktop-file-install --vendor="" --dir=${RPM_BUILD_ROOT}%{_datadir}/applications @PACKAGE@.desktop
 
 %clean
@@ -53,7 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/@PACKAGE@
 %{_datadir}/applications/@PACKAGE@.desktop
-%{_datadir}/appdata/@PACKAGE@.appdata.xml
+%{_datadir}/metainfo/uk.co.theknight.timezone_clock.metainfo.xml
 %{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
 %{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
 %{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png

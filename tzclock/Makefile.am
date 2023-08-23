@@ -5,12 +5,12 @@ tzclock_SOURCES = src/TzClock.c src/TzClockCairo.c src/ParseZone.c src/TzClockDi
 screenSize_SOURCES = src/screenSize.c
 AM_CPPFLAGS = $(DEPS_CFLAGS)
 LIBS = $(DEPS_LIBS)
-EXTRA_DIST = tzclock.desktop tzclock.appdata.xml icons/48x48/tzclock.png icons/128x128/tzclock.png \
-		icons/scalable/tzclock.svg tzclock.man COPYING AUTHORS
+EXTRA_DIST = tzclock.desktop uk.co.theknight.timezone_clock.metainfo.xml icons/48x48/tzclock.png \
+		icons/128x128/tzclock.png icons/scalable/tzclock.svg tzclock.man COPYING AUTHORS
 Applicationsdir = $(datadir)/applications
 Applications_DATA = tzclock.desktop 
-AppDatadir = $(datadir)/appdata
-AppData_DATA = tzclock.appdata.xml 
+AppDatadir = $(datadir)/metainfo
+AppData_DATA = uk.co.theknight.timezone_clock.metainfo.xml
 Icondir = $(datadir)/icons/hicolor/scalable/apps
 Icon_DATA = icons/scalable/tzclock.svg
 Icon128dir = $(datadir)/icons/hicolor/128x128/apps
