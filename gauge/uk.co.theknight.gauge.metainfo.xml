@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>uk.co.theknight.gauge</id>
+  
+  <name>Gauge</name>
+  <summary>Show many different values on analog gauges</summary>
+  
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  
+  <description>
+    <p>
+      Gauge is an analogue desktop gauge that can display many different values.
+    </p>
+    <p>
+      Some of the gauges:
+    </p>
+    <ul>
+      <li> Weather information </li>
+      <li> CPU/Memory/Disk/Network usage </li>
+      <li> Fan and Temperature sensors </li>
+      <li> Moon phase </li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">gauge.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://theknight.co.uk/image/gauge.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://theknight.co.uk/image/screenGauge.svg</image>
+    </screenshot>
+  </screenshots>
+</component>
+

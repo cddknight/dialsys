@@ -8,9 +8,11 @@ gauge_SOURCES = src/Gauge.c src/GaugeCPU.c src/GaugeSensors.c src/GaugeWeather.c
 gauge_CPPFLAGS = -D_FILE_OFFSET_BITS=64 $(DEPS_CFLAGS)
 LIBS = $(DEPS_LIBS)
 EXTRA_DIST = gauge.desktop icons/48x48/gauge.png icons/128x128/gauge.png icons/scalable/gauge.svg \
-		COPYING AUTHORS
+		uk.co.theknight.gauge.metainfo.xml COPYING AUTHORS
 Applicationsdir = $(datadir)/applications
 Applications_DATA = gauge.desktop
+AppDatadir = $(datadir)/metainfo
+AppData_DATA = uk.co.theknight.gauge.metainfo.xml 
 Icondir = $(datadir)/icons/hicolor/scalable/apps
 Icon_DATA = icons/scalable/gauge.svg
 Icon128dir = $(datadir)/icons/hicolor/128x128/apps

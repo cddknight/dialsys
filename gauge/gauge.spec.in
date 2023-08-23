@@ -35,6 +35,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/metainfo
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps
@@ -42,6 +43,7 @@ install -p -m 755 @PACKAGE_NAME@ $RPM_BUILD_ROOT%{_bindir}/@PACKAGE_NAME@
 install -p -m 644 icons/scalable/@PACKAGE@.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
 install -p -m 644 icons/128x128/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
 install -p -m 644 icons/48x48/@PACKAGE@.png $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
+install -p -m 644 uk.co.theknight.gauge.metainfo.xml ${RPM_BUILD_ROOT}%{_datadir}/metainfo/uk.co.theknight.gauge.metainfo.xml
 desktop-file-install --vendor="" --dir=${RPM_BUILD_ROOT}%{_datadir}/applications @PACKAGE_NAME@.desktop
 
 %clean
@@ -54,6 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/scalable/apps/@PACKAGE@.svg
 %{_datadir}/icons/hicolor/128x128/apps/@PACKAGE@.png
 %{_datadir}/icons/hicolor/48x48/apps/@PACKAGE@.png
+%{_datadir}/metainfo/uk.co.theknight.gauge.metainfo.xml
 
 %doc COPYING AUTHORS
 
