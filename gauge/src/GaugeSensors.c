@@ -130,7 +130,7 @@ int findSensors ()
 			subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
 			while (subfeature)
 			{
-				if (subfeature -> type == SENSORS_SUBFEATURE_TEMP_INPUT && tempCount < 8)
+				if (subfeature -> type == SENSORS_SUBFEATURE_TEMP_INPUT && tempCount < 15)
 				{
 					if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled)
 					{
@@ -199,7 +199,7 @@ void readSensorInit (void)
 #endif
 		if ((inputFile = fopen (sysThermalFile, "r")) != NULL)
 		{
-			sTempMenuDesc[8].disable = 0;
+			sTempMenuDesc[15].disable = 0;
 			sensorMenuDesc[MENU_SENSOR_TEMP].disable = 0;
 			gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
 			initSensorsOK |= 2;
@@ -331,7 +331,7 @@ void readSensorValues (int face)
 #endif
 		if (initSensorsOK & 2)
 		{
-			if (faceSetting -> faceSubType == 8)
+			if (faceSetting -> faceSubType == 15)
 			{
 				FILE *thermFile = fopen (sysThermalFile, "r");
 				if (thermFile != NULL)

@@ -163,7 +163,7 @@ MENU_DESC tideMenuDesc[] =
 {
 	{	__("Show Tide"),		tideCallback,			NULL,				0,	},
 	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings"),			tideSettings,			NULL,				0	},
+	{	__("Settings..."),		tideSettings,			NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -171,7 +171,7 @@ MENU_DESC thermoMenuDesc[] =
 {
 	{	__("Show Thermometer"),	thermometerCallback,	NULL,				0,	},
 	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings"),			thermometerSettings,	NULL,				0	},
+	{	__("Settings..."),		thermometerSettings,	NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -179,7 +179,7 @@ MENU_DESC powerMenuDesc[] =
 {
 	{	__("Show Power"),		powerMeterCallback,		NULL,				0,	},
 	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings"),			powerSettings,			NULL,				0	},
+	{	__("Settings..."),		powerSettings,			NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -192,9 +192,9 @@ MENU_DESC weatherMenuDesc[] =
 	{	"-",					NULL,					NULL,				0	},
 	{	__("Today"),			weatherCallback,		NULL,				4	},
 	{	__("Tomorrow"),			weatherCallback,		NULL,				5	},
-	{	__("Two days time"),	weatherCallback,		NULL,				6	},
+	{	__("Next day"),			weatherCallback,		NULL,				6	},
 	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings"),			weatherSettings,		NULL,				0	},
+	{	__("Settings..."),		weatherSettings,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -208,7 +208,14 @@ MENU_DESC sTempMenuDesc[] =
 	{	__("Temp 6"),			sensorTempCallback,		NULL,				5,	NULL,	0,	1	},
 	{	__("Temp 7"),			sensorTempCallback,		NULL,				6,	NULL,	0,	1	},
 	{	__("Temp 8"),			sensorTempCallback,		NULL,				7,	NULL,	0,	1	},
-	{	__("System"),			sensorTempCallback,		NULL,				8,	NULL,	0,	1	},
+	{	__("Temp 9"),			sensorTempCallback,		NULL,				8,	NULL,	0,	1	},
+	{	__("Temp 10"),			sensorTempCallback,		NULL,				9,	NULL,	0,	1	},
+	{	__("Temp 11"),			sensorTempCallback,		NULL,				10,	NULL,	0,	1	},
+	{	__("Temp 12"),			sensorTempCallback,		NULL,				11,	NULL,	0,	1	},
+	{	__("Temp 13"),			sensorTempCallback,		NULL,				12,	NULL,	0,	1	},
+	{	__("Temp 14"),			sensorTempCallback,		NULL,				13,	NULL,	0,	1	},
+	{	__("Temp 15"),			sensorTempCallback,		NULL,				14,	NULL,	0,	1	},
+	{	__("System"),			sensorTempCallback,		NULL,				15,	NULL,	0,	1	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -348,11 +355,11 @@ MENU_DESC prefMenuDesc[] =
 	{	"-",					NULL,					NULL,				0	},					/*  03  */
 	{	__("Markers"),			NULL,					markerMenuDesc,		0	},					/*  04  */
 	{	__("View"),				NULL,					viewMenuDesc,		0	},					/*  05  */
-	{	__("Change Font"),		dialFontCallback,		NULL,				0	},					/*  06  */
-	{	__("Change Colour"),	dialColourCallback,		NULL,				0	},					/*  07  */
+	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},					/*  06  */
+	{	__("Change Colour..."),	dialColourCallback,		NULL,				0	},					/*  07  */
 	{	"-",					NULL,					NULL,				0	},					/*  08  */
 	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
-	{	__("Save Display"),		dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  10  */
+	{	__("Save Display..."),	dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  10  */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
