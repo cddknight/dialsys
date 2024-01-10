@@ -499,7 +499,7 @@ void splitCityList (void *areaInfoList)
 				char *tempSubArea;
 				char *cityOne = (char *)queueRead (areaInfo -> cityList, 0);
 				char *cityTwo = (char *)queueRead (areaInfo -> cityList, count - 1);
-				sprintf (subArea, "%s - %s\n", cityOne, cityTwo);
+				sprintf (subArea, "%s \342\236\231 %s\n", cityOne, cityTwo);
 
 				if ((subAreaInfo = (AREAINFO *)malloc (sizeof (AREAINFO))) == NULL)
 				{
