@@ -39,9 +39,8 @@ extern int sysUpdateID;
 struct devValues
 {
 	float rate;
-	unsigned long long value;
 	int useScale;
-	int oldScales[MAX_SCALE_MEM];
+	unsigned long long value;
 };
 
 typedef struct _devInfo
@@ -61,47 +60,28 @@ DEVICE_INFO deviceActivity[MAX_DEVICES + 1] =
 	{ "All" }
 };
 
-static char *speedName[] =
+typedef struct _speedInfo
 {
-	"B/s",			//  0
-	"10B/s",		//  1
-	"100B/s",		//  2
-	"KB/s",			//  3
-	"10KB/s",		//  4
-	"100KB/s",		//  5
-	"MB/s",			//  6
-	"10MB/s",		//  7
-	"100MB/s",		//  8
-	"GB/s",			//  9
-	"10GB/s",		//  10
-	"100GB/s",		//  11
-	"TB/s",			//  12
-	"10TB/s",		//  13
-	"100TB/s",		//  14
-};
-
-/**********************************************************************************************************************
- *                                                                                                                    *
- *  G E T  S C A L E  S H I F T  C O U N T                                                                            *
- *  ======================================                                                                            *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Work out how many shifts have been done.
- *  \param scale scale to work on.
- *  \result Number of shifts in the scale.
- */
-int getScaleShiftCount (int scale)
-{
-	int retn = 0;
-	while (scale >= 10)
-	{
-		scale /= 10;
-		++retn;
-	}
-	return retn;
+	unsigned long kiloBitsPerSec;
+	char *speedName;
 }
+SPEED_INFO;
 
+SPEED_INFO speedInfo[] =
+{
+	{	100,		"100 kbps"	},	// 0
+	{	1000,		"1 Mbps",	},	// 1
+	{	10000,		"10 Mbps"	},	// 2
+	{	100000,		"100 Mbps"	},	// 3
+	{	1000000,	"1 Gbps"	},	// 4
+	{	2500000,	"2.5 Gbps"	},	// 5
+	{	5000000,	"5 Gbps"	},	// 6
+	{	10000000,	"10 Gbps"	},	// 7
+	{	100000000,	"100 Gbps"	},	// 8
+	{	1000000000,	"1 Tbps"	},	// 9
+	{	0, 			NULL		},	// 10
+};
+	
 /**********************************************************************************************************************
  *                                                                                                                    *
  *  S E T  D E V I C E  S C A L E                                                                                     *
@@ -114,22 +94,21 @@ int getScaleShiftCount (int scale)
  *  \param lockScale Alter the scale after it is changed.
  *  \result None (saved in structure).
  */
-void setDeviceScale (struct devValues *values, int lockScale)
+void setDeviceScale (struct devValues *values)
 {
-	int scale = 1, i;
-	while ((values -> rate / scale) > 100)
-		scale *= 10;
-
-	if (!lockScale || scale > values -> useScale)
+	unsigned long kr = (values -> rate * 8) / 1024;
+	int scale = 0, i;
+	while (kr > speedInfo[scale].kiloBitsPerSec)
 	{
+		if (speedInfo[scale + 1].kiloBitsPerSec == 0)
+			break;
+		++scale;
+	}
+
+	if (scale > values -> useScale)
+	{
+/*		printf ("Switch to scale: %d, Up to: %d \n", scale, speedInfo[scale].kiloBitsPerSec, values -> rate); */
 		values -> useScale = scale;
-		for (i = 0; i < (MAX_SCALE_MEM - 1); ++i)
-		{
-			values -> oldScales[i] = values -> oldScales[i + 1];
-			if (values -> oldScales[i] > values -> useScale)
-				values -> useScale = values -> oldScales[i];
-		}
-		values -> oldScales[i] = scale;
 	}
 }
 
@@ -144,7 +123,7 @@ void setDeviceScale (struct devValues *values, int lockScale)
  *  \param lockScale Alter the scale after it is changed.
  *  \result None.
  */
-void readDeviceValues(int lockScale)
+void readDeviceValues()
 {
 	FILE *devstats;
 	struct timeval tvTaken;
@@ -219,8 +198,8 @@ void readDeviceValues(int lockScale)
 						deviceActivity[device].dataWrite.value = value;
 						deviceActivity[0].dataWrite.value += diff;
 
-						setDeviceScale (&deviceActivity[device].dataRead, lockScale);
-						setDeviceScale (&deviceActivity[device].dataWrite, lockScale);
+						setDeviceScale (&deviceActivity[device].dataRead);
+						setDeviceScale (&deviceActivity[device].dataWrite);
 
 						networkDevDesc[device].disable = 0;
 						networkDevDesc[device].menuName = deviceActivity[device].name;
@@ -236,8 +215,8 @@ void readDeviceValues(int lockScale)
 	}
 	deviceActivity[0].dataRead.rate = (deviceActivity[0].dataRead.value * 1000) / readTime;
 	deviceActivity[0].dataWrite.rate = (deviceActivity[0].dataWrite.value * 1000) / readTime;
-	setDeviceScale (&deviceActivity[0].dataRead, lockScale);
-	setDeviceScale (&deviceActivity[0].dataWrite, lockScale);
+	setDeviceScale (&deviceActivity[0].dataRead);
+	setDeviceScale (&deviceActivity[0].dataWrite);
 }
 
 /**********************************************************************************************************************
@@ -275,7 +254,6 @@ void readNetworkValues (int face)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 		int device = faceSetting -> faceSubType & 0x000F, scale;
-		int lockScale = (faceSetting -> faceSubType >> 4) & 1;
 		int faceType = (faceSetting -> faceSubType >> 8) & 1;
 		unsigned long value = 0;
 		unsigned short shift;
@@ -291,7 +269,7 @@ void readNetworkValues (int face)
 		}
 		if (myUpdateID != sysUpdateID)
 		{
-			readDeviceValues(lockScale);
+			readDeviceValues();
 			myUpdateID = sysUpdateID;
 		}
 
@@ -301,6 +279,7 @@ void readNetworkValues (int face)
 			nameT = typeNames[0];
 			scale = deviceActivity[device].dataRead.useScale;
 			value = faceSetting -> firstValue = deviceActivity[device].dataRead.rate;
+			
 		}
 		else
 		{
@@ -308,18 +287,28 @@ void readNetworkValues (int face)
 			scale = deviceActivity[device].dataWrite.useScale;
 			value = faceSetting -> firstValue = deviceActivity[device].dataWrite.rate;
 		}
-		faceSetting -> firstValue /= scale;
-		shift = getScaleShiftCount(scale);
+		
+		faceSetting -> firstValue *= 8;
+		faceSetting -> firstValue /= 1024;
+		faceSetting -> firstValue /= speedInfo[scale].kiloBitsPerSec;
+		faceSetting -> firstValue *= 100;
+		
+/*		printf ("%d: Face value: %f, Scale: %d, %d, Bytes: %d\n", faceType, faceSetting -> firstValue, scale, speedInfo[scale].kiloBitsPerSec, value); */
+		if (faceSetting -> firstValue > 100)
+		{
+			faceSetting -> firstValue = 100;
+		}
+		
 		setFaceString (faceSetting, FACESTR_TOP, 0, _("Network\n%s (%s)"), nameT, nameD);
 		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Network %s</b>: %lu B/s (%s)"), nameT, value, nameD);
-		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.1f)"), speedName[shift], faceSetting -> firstValue);
+		setFaceString (faceSetting, FACESTR_BOT, 0, _("%s\n(%0.1f)"), speedInfo[scale].speedName, faceSetting -> firstValue);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("Network %s - Gauge"), nameT);
 
-		if (faceSetting -> updateNum != shift)
+		if (faceSetting -> updateNum != scale)
 		{
 			maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
 			faceSetting -> faceFlags |= FACE_REDRAW;
-			faceSetting -> updateNum = shift;
+			faceSetting -> updateNum = scale;
 		}
 	}
 }
