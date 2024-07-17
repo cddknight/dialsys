@@ -36,7 +36,7 @@ extern int sysUpdateID;
 void readCPULoad (int procNumber);
 int readStats (unsigned long long *stats, int procNumber);
 int readAverage (float stats[]);
-int readClockRates (int *maxPtr);
+int readClockRates (int *maxPtr, int *minPtr);
 
 static int readCount[3];
 static float loadAverages[3];
@@ -147,21 +147,22 @@ void readCPUValues (int face)
 			if (!update && sysUpdateID % 5 != 0)
 				return;
 
-			int max = 0;
+			int max = -1, min = -1;
 			strcpy (cpuName, _("Average"));
 			if (procNumber)
 			{
 				sprintf (cpuName, "CPU%d", procNumber);
 			}
-			readClockRates (&max);
+			readClockRates (&max, &min);
 			faceSetting -> firstValue = (float)clockRates[procNumber] / 1000;
 			setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\nSpeed"), cpuName);
 			setFaceString (faceSetting, FACESTR_WIN, 0, _("%s CPU Speed - Gauge"), cpuName);
 			faceSetting -> secondValue = (float)max / 1000;
 			setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f Mhz\n(%0.2f)"), 
 					faceSetting -> firstValue, faceSetting -> secondValue);
-			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s speed</b>: %0.2f Mhz\n<b>Highest speed</b>: %0.2f Mhz"),
-					cpuName, faceSetting -> firstValue, faceSetting -> secondValue);
+			setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s speed</b>: %0.2f Mhz\n"
+					"<b>Highest speed</b>: %0.2f Mhz\n<b>Lowest speed</b>: %0.2f Mhz"),
+					cpuName, faceSetting -> firstValue, faceSetting -> secondValue, (float)min / 1000);
 			while (faceSetting -> firstValue > faceSetting -> faceScaleMax || faceSetting -> secondValue > faceSetting -> faceScaleMax)
 			{
 				faceSetting -> faceScaleMax *= 2;
@@ -197,7 +198,7 @@ void readCPUValues (int face)
 			if (update)
 			{
 				int percent = faceSetting -> firstValue;
-				readClockRates (NULL);
+				readClockRates (NULL, NULL);
 				setFaceString (faceSetting, FACESTR_TOP, 0, _("%s\n(%s)"), cpuName, name[faceType]);
 				setFaceString (faceSetting, FACESTR_WIN, 0, _("%s %s - Gauge"), cpuName, name[faceType]);
 				if (clockRates[procNumber] < 100)
@@ -353,7 +354,7 @@ int readAverage (float readAvs[])
  *  \brief Read the cpuinfo clock speed.
  *  \result None.
  */
-int readClockRates (int *maxPtr)
+int readClockRates (int *maxPtr, int *minPtr)
 {
 	int i = 0, retn = 0;
 	char readBuff[512];
@@ -373,8 +374,13 @@ int readClockRates (int *maxPtr)
 
 				if (maxPtr != NULL)
 				{
-					if (val > *maxPtr)
+					if (val > *maxPtr || *maxPtr == -1)
 						*maxPtr = val;
+				}
+				if (minPtr != NULL)
+				{
+					if (val < *minPtr || *minPtr == -1)
+						*minPtr = val;
 				}
 				clockRates[++retn] = val;;
 				clockRates[0] += clockRates[retn];
