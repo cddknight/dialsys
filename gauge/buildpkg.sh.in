@@ -2,8 +2,34 @@
 
 source /etc/os-release
 
+function doLine
+{
+	LINECMD=$(which lineDraw 2> /dev/null)
+	if [ "${LINECMD}" != "" ]
+	then
+		${LINECMD} $1
+	else
+		echo --------------------------------------------------------------------------------
+	fi
+}
+
+function doBigText
+{
+	doLine
+	TEXTCMD=$(which bigWord 2> /dev/null)
+	if [ "${TEXTCMD}" != "" ] && [ "${1}" != "" ]
+	then
+		${TEXTCMD} -c 2 $1
+	else
+		echo $1
+	fi
+	doLine
+}
+
 if [ "$ID" == "debian" ] || [ "$ID" == "ubuntu" ] || [ "$ID" == "raspbian" ]
 then
+
+	doBigText "@PACKAGE@.deb"
 
 	ORIGPWD=$PWD
 	rm -f @PACKAGE@-@VERSION@.tar.bz2
@@ -19,6 +45,8 @@ then
 
 elif [ "$ID" == "fedora" ] || [ "$ID" == "centos" ] || [ "$ID" == "rhel" ] || [ "$ID" == "opensuse-leap" ]
 then
+
+	doBigText "@PACKAGE@.rpm"
 
 	if [ -d $HOME/gitroot/rpmbuild ]
 	then
