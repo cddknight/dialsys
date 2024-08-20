@@ -19,7 +19,7 @@ function doBigText
 	TEXTCMD=$(which bigWord 2> /dev/null)
 	if [ "${TEXTCMD}" != "" ] && [ "${1}" != "" ]
 	then
-		${TEXTCMD} -c 2 $1
+		${TEXTCMD} -c 10 $1
 	else
 		echo $1
 	fi
@@ -75,9 +75,12 @@ then
 
 	cd $DIR/SPECS
 	rpmbuild -ba -v @PACKAGE@.spec
-	rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-@VERSION@-@REVISION@.*.$(uname -m).rpm
-	rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-devel-@VERSION@-@REVISION@.*.$(uname -m).rpm
 	rpmsign --addsign $DIR/SRPMS/@PACKAGE@-@VERSION@-@REVISION@.*.src.rpm
+	rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-@VERSION@-@REVISION@.*.$(uname -m).rpm
+	if [ -e $DIR/RPMS/$(uname -m)/@PACKAGE@-devel-@VERSION@-@REVISION@.*.$(uname -m).rpm ]
+	then
+		rpmsign --addsign $DIR/RPMS/$(uname -m)/@PACKAGE@-devel-@VERSION@-@REVISION@.*.$(uname -m).rpm
+	fi
 
 else
 
