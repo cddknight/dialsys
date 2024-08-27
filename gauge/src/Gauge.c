@@ -232,23 +232,23 @@ MENU_DESC sFanMenuDesc[] =
 	{	NULL,					NULL,					NULL,				0	}
 };
 
-MENU_DESC sPowerMenuDesc[] =
+MENU_DESC sInputMenuDesc[] =
 {
-	{	__("Power 1"),			sensorPowerCallback,		NULL,				0,	NULL,	0,	1	},
-	{	__("Power 2"),			sensorPowerCallback,		NULL,				1,	NULL,	0,	1	},
-	{	__("Power 3"),			sensorPowerCallback,		NULL,				2,	NULL,	0,	1	},
-	{	__("Power 4"),			sensorPowerCallback,		NULL,				3,	NULL,	0,	1	},
-	{	__("Power 5"),			sensorPowerCallback,		NULL,				4,	NULL,	0,	1	},
-	{	__("Power 6"),			sensorPowerCallback,		NULL,				5,	NULL,	0,	1	},
-	{	__("Power 7"),			sensorPowerCallback,		NULL,				6,	NULL,	0,	1	},
-	{	__("Power 8"),			sensorPowerCallback,		NULL,				7,	NULL,	0,	1	},
-	{	__("Power 9"),			sensorPowerCallback,		NULL,				8,	NULL,	0,	1	},
-	{	__("Power 10"),			sensorPowerCallback,		NULL,				9,	NULL,	0,	1	},
-	{	__("Power 11"),			sensorPowerCallback,		NULL,				10,	NULL,	0,	1	},
-	{	__("Power 12"),			sensorPowerCallback,		NULL,				11,	NULL,	0,	1	},
-	{	__("Power 13"),			sensorPowerCallback,		NULL,				12,	NULL,	0,	1	},
-	{	__("Power 14"),			sensorPowerCallback,		NULL,				13,	NULL,	0,	1	},
-	{	__("Power 15"),			sensorPowerCallback,		NULL,				14,	NULL,	0,	1	},
+	{	__("Input 1"),			sensorInputCallback,		NULL,				0,	NULL,	0,	1	},
+	{	__("Input 2"),			sensorInputCallback,		NULL,				1,	NULL,	0,	1	},
+	{	__("Input 3"),			sensorInputCallback,		NULL,				2,	NULL,	0,	1	},
+	{	__("Input 4"),			sensorInputCallback,		NULL,				3,	NULL,	0,	1	},
+	{	__("Input 5"),			sensorInputCallback,		NULL,				4,	NULL,	0,	1	},
+	{	__("Input 6"),			sensorInputCallback,		NULL,				5,	NULL,	0,	1	},
+	{	__("Input 7"),			sensorInputCallback,		NULL,				6,	NULL,	0,	1	},
+	{	__("Input 8"),			sensorInputCallback,		NULL,				7,	NULL,	0,	1	},
+	{	__("Input 9"),			sensorInputCallback,		NULL,				8,	NULL,	0,	1	},
+	{	__("Input 10"),			sensorInputCallback,		NULL,				9,	NULL,	0,	1	},
+	{	__("Input 11"),			sensorInputCallback,		NULL,				10,	NULL,	0,	1	},
+	{	__("Input 12"),			sensorInputCallback,		NULL,				11,	NULL,	0,	1	},
+	{	__("Input 13"),			sensorInputCallback,		NULL,				12,	NULL,	0,	1	},
+	{	__("Input 14"),			sensorInputCallback,		NULL,				13,	NULL,	0,	1	},
+	{	__("Input 15"),			sensorInputCallback,		NULL,				14,	NULL,	0,	1	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -256,7 +256,7 @@ MENU_DESC sensorMenuDesc[] =
 {
 	{	__("Temperature"),		NULL,					sTempMenuDesc,		0,	NULL,	0,	1	},
 	{	__("Fan Speed"),		NULL,					sFanMenuDesc,		0,	NULL,	0,	1	},
-	{	__("Power Input"),		NULL,					sPowerMenuDesc,		0,	NULL,	0,	1	},
+	{	__("Input Voltage"),	NULL,					sInputMenuDesc,		0,	NULL,	0,	1	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -456,7 +456,7 @@ GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =
 	{	"weather",		1	},	{	"memory",		1	},	{	"battery",		1	},
 	{	"network",		1	},	{	"entropy",		0	},	{	"tide",			1	},
 	{	"harddisk",		1	},	{	"thermo",		0	},	{	"power",		0	},
-	{	"moonphase",	1	},	{	"wifi",			1,	},	{       "sensor_power",   1       },
+	{	"moonphase",	1	},	{	"wifi",			1,	},	{	"sensor_input",	1	},
 	{	NULL,			0	}
 };
 
@@ -1031,7 +1031,7 @@ clockTickCallback (gpointer data)
 				break;
 			case FACE_TYPE_SENSOR_TEMP:
 			case FACE_TYPE_SENSOR_FAN:
-			case FACE_TYPE_SENSOR_POWER:
+			case FACE_TYPE_SENSOR_INPUT:
 				readSensorValues (face);
 				break;
 			case FACE_TYPE_TIDE:
@@ -1519,10 +1519,21 @@ sensorFanCallback (guint data)
 	faceSettings[currentFace] -> faceScaleMax = 25;
 }
 
+/**********************************************************************************************************************
+ *                                                                                                                    *
+ *  S E N S O R  I N P U T  C A L L B A C K                                                                           *
+ *  =======================================                                                                           *
+ *                                                                                                                    *
+ **********************************************************************************************************************/
+/**
+ *  \brief Called when selection the sensor input.
+ *  \param data Which sensor.
+ *  \result None.
+ */
 void
-sensorPowerCallback (guint data)
+sensorInputCallback (guint data)
 {
-	gaugeReset (currentFace, FACE_TYPE_SENSOR_POWER, data);
+	gaugeReset (currentFace, FACE_TYPE_SENSOR_INPUT, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_SHOWHOT);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
@@ -2414,8 +2425,8 @@ main (int argc, char *argv[])
 		case FACE_TYPE_SENSOR_FAN:
 			sensorFanCallback (faceSettings[i] -> faceSubType);
 			break;
-		case FACE_TYPE_SENSOR_POWER:
-			sensorPowerCallback (faceSettings[i] -> faceSubType);
+		case FACE_TYPE_SENSOR_INPUT:
+			sensorInputCallback (faceSettings[i] -> faceSubType);
 			break;
 		case FACE_TYPE_THERMO:
 			thermometerCallback (faceSettings[i] -> faceSubType);

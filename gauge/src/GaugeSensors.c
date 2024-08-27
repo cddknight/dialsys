@@ -38,7 +38,7 @@ extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern MENU_DESC sTempMenuDesc[];
 extern MENU_DESC sFanMenuDesc[];
-extern MENU_DESC sPowerMenuDesc[];
+extern MENU_DESC sInputMenuDesc[];
 extern MENU_DESC sensorMenuDesc[];
 extern int sysUpdateID;
 
@@ -114,7 +114,7 @@ char *appendExtra (char *inStr, char *outStr, int maxLen)
  */
 int findSensors ()
 {
-	int nr = 0, tempCount = 0, fanCount = 0, powerCount = 0;
+	int nr = 0, tempCount = 0, fanCount = 0, inputCount = 0;
 	const sensors_chip_name *chipset;
 	const sensors_feature *feature;
 	const sensors_subfeature *subfeature;
@@ -148,18 +148,18 @@ int findSensors ()
 						++fanCount;
 					}
 				}
-				else if (subfeature -> type == SENSORS_SUBFEATURE_IN_INPUT && powerCount < 15)
+				else if (subfeature -> type == SENSORS_SUBFEATURE_IN_INPUT && inputCount < 15)
 				{
-					printf ("Power enabled: %s\n", gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled ? "Yes" : "No");
-					if (gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
+					if (gaugeEnabled[FACE_TYPE_SENSOR_INPUT].enabled)
 					{
-						sPowerMenuDesc[powerCount].disable = 0;
-						++powerCount;
+						sInputMenuDesc[inputCount].disable = 0;
+						++inputCount;
 					}
 				}
 				else
 				{
-					printf ("subfeature -> type == %d\n", subfeature -> type);
+					printf ("Unknown feature -> type = %d, subfeature -> type = (%d:%d)\n", feature -> type, 
+							subfeature -> type >> 8, subfeature -> type & 0xFF);
 				}
 				subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
 			}
@@ -175,15 +175,15 @@ int findSensors ()
 	{
 		sensorMenuDesc[MENU_SENSOR_FAN].disable = 0;
 	}
-	if (powerCount)
+	if (inputCount)
 	{
-		sensorMenuDesc[MENU_SENSOR_POWER].disable = 0;
+		sensorMenuDesc[MENU_SENSOR_INPUT].disable = 0;
 	}
-	if (tempCount || fanCount || powerCount)
+	if (tempCount || fanCount || inputCount)
 	{
 		gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
 	}
-	return (tempCount + fanCount + powerCount);
+	return (tempCount + fanCount + inputCount);
 }
 #endif
 
@@ -201,7 +201,7 @@ void readSensorInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || 
 			gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled ||
-			gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
+			gaugeEnabled[FACE_TYPE_SENSOR_INPUT].enabled)
 	{
 		FILE *inputFile = NULL;
 
@@ -244,7 +244,7 @@ void readSensorValues (int face)
 {
 	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || 
 			gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled ||
-			gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
+			gaugeEnabled[FACE_TYPE_SENSOR_INPUT].enabled)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 
@@ -340,19 +340,19 @@ void readSensorValues (int face)
 										}
 										break;
 
-									case FACE_TYPE_SENSOR_POWER:
-										if (gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
+									case FACE_TYPE_SENSOR_INPUT:
+										if (gaugeEnabled[FACE_TYPE_SENSOR_INPUT].enabled)
 										{
 											printf ("Value: %0.2f\n", value);
-											sprintf (sensorName, _("power %d"), number + 1);
+											sprintf (sensorName, _("Input %d"), number + 1);
 											if ((label = sensors_get_label (chipset, feature)) != NULL)
 											{
 												appendExtra (label, &sensorName[strlen (sensorName)], 12);
 												free (label);
 											}
-											setFaceString (faceSetting, FACESTR_TOP, 0, _("Power %d"), number + 1);
-											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Power %d - Gauge"), number + 1);
-											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Power %d</b>: %0.2f V\n"
+											setFaceString (faceSetting, FACESTR_TOP, 0, _("Input %d"), number + 1);
+											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Input %d - Gauge"), number + 1);
+											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Input %d</b>: %0.2f V\n"
 														"<b>Chipset Name</b>: %s"), number + 1, value, chipset -> prefix);
 											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(V)"), value);
 											faceSetting -> firstValue = value;

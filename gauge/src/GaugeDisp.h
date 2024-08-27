@@ -117,7 +117,7 @@
 
 #define MENU_SENSOR_TEMP		0
 #define MENU_SENSOR_FAN			1
-#define MENU_SENSOR_POWER		2
+#define MENU_SENSOR_INPUT		2
 
 #define MENU_MARK_STRT			0
 #define MENU_MARK_STOP			1
@@ -176,18 +176,18 @@ FACE_SETTINGS;
 #define FACE_TYPE_CPU_LOAD		0
 #define FACE_TYPE_SENSOR_TEMP	1
 #define FACE_TYPE_SENSOR_FAN	2
-#define FACE_TYPE_SENSOR_POWER	3
-#define FACE_TYPE_WEATHER		4
-#define FACE_TYPE_MEMORY		5
-#define FACE_TYPE_BATTERY		6
-#define FACE_TYPE_NETWORK		7
-#define FACE_TYPE_ENTROPY		8
-#define FACE_TYPE_TIDE			9
-#define FACE_TYPE_HARDDISK		10
-#define FACE_TYPE_THERMO		11
-#define FACE_TYPE_POWER			12
-#define FACE_TYPE_MOONPHASE		13
-#define FACE_TYPE_WIFI			14
+#define FACE_TYPE_WEATHER		3
+#define FACE_TYPE_MEMORY		4
+#define FACE_TYPE_BATTERY		5
+#define FACE_TYPE_NETWORK		6
+#define FACE_TYPE_ENTROPY		7
+#define FACE_TYPE_TIDE			8
+#define FACE_TYPE_HARDDISK		9
+#define FACE_TYPE_THERMO		10
+#define FACE_TYPE_POWER			11
+#define FACE_TYPE_MOONPHASE		12
+#define FACE_TYPE_WIFI			13
+#define FACE_TYPE_SENSOR_INPUT	14
 #define FACE_TYPE_MAX			15
 
 typedef struct _gaugeEnabled 
@@ -226,7 +226,7 @@ void entropyCallback		(guint data);
 void tideCallback			(guint data);
 void sensorTempCallback		(guint data);
 void sensorFanCallback		(guint data);
-void sensorPowerCallback	(guint data);
+void sensorInputCallback	(guint data);
 void weatherCallback		(guint data);
 void weatherSettings		(guint data);
 void tideSettings			(guint data);
