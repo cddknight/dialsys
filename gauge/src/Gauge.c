@@ -256,6 +256,7 @@ MENU_DESC sensorMenuDesc[] =
 {
 	{	__("Temperature"),		NULL,					sTempMenuDesc,		0,	NULL,	0,	1	},
 	{	__("Fan Speed"),		NULL,					sFanMenuDesc,		0,	NULL,	0,	1	},
+	{	__("Power Input"),		NULL,					sPowerMenuDesc,		0,	NULL,	0,	1	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -455,7 +456,8 @@ GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =
 	{	"weather",		1	},	{	"memory",		1	},	{	"battery",		1	},
 	{	"network",		1	},	{	"entropy",		0	},	{	"tide",			1	},
 	{	"harddisk",		1	},	{	"thermo",		0	},	{	"power",		0	},
-	{	"moonphase",	1	},	{	"wifi",			1,	},	{	NULL,			0	}
+	{	"moonphase",	1	},	{	"wifi",			1,	},	{       "sensor_power",   1       },
+	{	NULL,			0	}
 };
 
 /******************************************************************************************************
@@ -1029,6 +1031,7 @@ clockTickCallback (gpointer data)
 				break;
 			case FACE_TYPE_SENSOR_TEMP:
 			case FACE_TYPE_SENSOR_FAN:
+			case FACE_TYPE_SENSOR_POWER:
 				readSensorValues (face);
 				break;
 			case FACE_TYPE_TIDE:
@@ -1524,7 +1527,7 @@ sensorPowerCallback (guint data)
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 0;
-	faceSettings[currentFace] -> faceScaleMax = 12;
+	faceSettings[currentFace] -> faceScaleMax = 6;
 }
 
 /**********************************************************************************************************************
@@ -2410,6 +2413,9 @@ main (int argc, char *argv[])
 			break;
 		case FACE_TYPE_SENSOR_FAN:
 			sensorFanCallback (faceSettings[i] -> faceSubType);
+			break;
+		case FACE_TYPE_SENSOR_POWER:
+			sensorPowerCallback (faceSettings[i] -> faceSubType);
 			break;
 		case FACE_TYPE_THERMO:
 			thermometerCallback (faceSettings[i] -> faceSubType);

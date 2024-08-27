@@ -51,7 +51,7 @@ int faceTypes[3] =
 {
 	SENSORS_SUBFEATURE_TEMP_INPUT,
 	SENSORS_SUBFEATURE_FAN_INPUT,
-	SENSORS_SUBFEATURE_POWER_INPUT
+	SENSORS_SUBFEATURE_IN_INPUT
 };
 
 /**********************************************************************************************************************
@@ -148,13 +148,18 @@ int findSensors ()
 						++fanCount;
 					}
 				}
-				else if (subfeature -> type == SENSORS_SUBFEATURE_POWER_INPUT && powerCount < 15)
+				else if (subfeature -> type == SENSORS_SUBFEATURE_IN_INPUT && powerCount < 15)
 				{
+					printf ("Power enabled: %s\n", gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled ? "Yes" : "No");
 					if (gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
 					{
 						sPowerMenuDesc[powerCount].disable = 0;
 						++powerCount;
 					}
+				}
+				else
+				{
+					printf ("subfeature -> type == %d\n", subfeature -> type);
 				}
 				subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
 			}
@@ -170,11 +175,15 @@ int findSensors ()
 	{
 		sensorMenuDesc[MENU_SENSOR_FAN].disable = 0;
 	}
-	if (tempCount || fanCount)
+	if (powerCount)
+	{
+		sensorMenuDesc[MENU_SENSOR_POWER].disable = 0;
+	}
+	if (tempCount || fanCount || powerCount)
 	{
 		gaugeMenuDesc[MENU_GAUGE_SENSOR].disable = 0;
 	}
-	return (tempCount + fanCount);
+	return (tempCount + fanCount + powerCount);
 }
 #endif
 
@@ -335,6 +344,23 @@ void readSensorValues (int face)
 										if (gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
 										{
 											printf ("Value: %0.2f\n", value);
+											sprintf (sensorName, _("power %d"), number + 1);
+											if ((label = sensors_get_label (chipset, feature)) != NULL)
+											{
+												appendExtra (label, &sensorName[strlen (sensorName)], 12);
+												free (label);
+											}
+											setFaceString (faceSetting, FACESTR_TOP, 0, _("Power %d"), number + 1);
+											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Power %d - Gauge"), number + 1);
+											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Power %d</b>: %0.2f V\n"
+														"<b>Chipset Name</b>: %s"), number + 1, value, chipset -> prefix);
+											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(V)"), value);
+											faceSetting -> firstValue = value;
+											while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
+											{
+												faceSetting -> faceScaleMax += 6;
+												maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
+											}
 										}
 										break;
 									}
