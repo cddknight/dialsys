@@ -232,6 +232,26 @@ MENU_DESC sFanMenuDesc[] =
 	{	NULL,					NULL,					NULL,				0	}
 };
 
+MENU_DESC sPowerMenuDesc[] =
+{
+	{	__("Power 1"),			sensorPowerCallback,		NULL,				0,	NULL,	0,	1	},
+	{	__("Power 2"),			sensorPowerCallback,		NULL,				1,	NULL,	0,	1	},
+	{	__("Power 3"),			sensorPowerCallback,		NULL,				2,	NULL,	0,	1	},
+	{	__("Power 4"),			sensorPowerCallback,		NULL,				3,	NULL,	0,	1	},
+	{	__("Power 5"),			sensorPowerCallback,		NULL,				4,	NULL,	0,	1	},
+	{	__("Power 6"),			sensorPowerCallback,		NULL,				5,	NULL,	0,	1	},
+	{	__("Power 7"),			sensorPowerCallback,		NULL,				6,	NULL,	0,	1	},
+	{	__("Power 8"),			sensorPowerCallback,		NULL,				7,	NULL,	0,	1	},
+	{	__("Power 9"),			sensorPowerCallback,		NULL,				8,	NULL,	0,	1	},
+	{	__("Power 10"),			sensorPowerCallback,		NULL,				9,	NULL,	0,	1	},
+	{	__("Power 11"),			sensorPowerCallback,		NULL,				10,	NULL,	0,	1	},
+	{	__("Power 12"),			sensorPowerCallback,		NULL,				11,	NULL,	0,	1	},
+	{	__("Power 13"),			sensorPowerCallback,		NULL,				12,	NULL,	0,	1	},
+	{	__("Power 14"),			sensorPowerCallback,		NULL,				13,	NULL,	0,	1	},
+	{	__("Power 15"),			sensorPowerCallback,		NULL,				14,	NULL,	0,	1	},
+	{	NULL,					NULL,					NULL,				0	}
+};
+
 MENU_DESC sensorMenuDesc[] =
 {
 	{	__("Temperature"),		NULL,					sTempMenuDesc,		0,	NULL,	0,	1	},
@@ -1494,6 +1514,17 @@ sensorFanCallback (guint data)
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 0;
 	faceSettings[currentFace] -> faceScaleMax = 25;
+}
+
+void
+sensorPowerCallback (guint data)
+{
+	gaugeReset (currentFace, FACE_TYPE_SENSOR_POWER, data);
+	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_SHOWHOT);
+	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
+	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
+	faceSettings[currentFace] -> faceScaleMin = 0;
+	faceSettings[currentFace] -> faceScaleMax = 12;
 }
 
 /**********************************************************************************************************************

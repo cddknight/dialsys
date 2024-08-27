@@ -38,6 +38,7 @@ extern GAUGE_ENABLED gaugeEnabled[];
 extern MENU_DESC gaugeMenuDesc[];
 extern MENU_DESC sTempMenuDesc[];
 extern MENU_DESC sFanMenuDesc[];
+extern MENU_DESC sPowerMenuDesc[];
 extern MENU_DESC sensorMenuDesc[];
 extern int sysUpdateID;
 
@@ -46,10 +47,11 @@ static int initSensorsOK = 0;
 
 #if SENSORS_API_VERSION >= 1024
 
-int faceTypes[2] =
+int faceTypes[3] =
 {
 	SENSORS_SUBFEATURE_TEMP_INPUT,
-	SENSORS_SUBFEATURE_FAN_INPUT
+	SENSORS_SUBFEATURE_FAN_INPUT,
+	SENSORS_SUBFEATURE_POWER_INPUT
 };
 
 /**********************************************************************************************************************
@@ -112,7 +114,7 @@ char *appendExtra (char *inStr, char *outStr, int maxLen)
  */
 int findSensors ()
 {
-	int nr = 0, tempCount = 0, fanCount = 0;
+	int nr = 0, tempCount = 0, fanCount = 0, powerCount = 0;
 	const sensors_chip_name *chipset;
 	const sensors_feature *feature;
 	const sensors_subfeature *subfeature;
@@ -144,6 +146,14 @@ int findSensors ()
 					{
 						sFanMenuDesc[fanCount].disable = 0;
 						++fanCount;
+					}
+				}
+				else if (subfeature -> type == SENSORS_SUBFEATURE_POWER_INPUT && powerCount < 15)
+				{
+					if (gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
+					{
+						sPowerMenuDesc[powerCount].disable = 0;
+						++powerCount;
 					}
 				}
 				subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
@@ -180,7 +190,9 @@ int findSensors ()
  */
 void readSensorInit (void)
 {
-	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
+	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || 
+			gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled ||
+			gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
 	{
 		FILE *inputFile = NULL;
 
@@ -221,7 +233,9 @@ void readSensorInit (void)
  */
 void readSensorValues (int face)
 {
-	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled)
+	if (gaugeEnabled[FACE_TYPE_SENSOR_TEMP].enabled || 
+			gaugeEnabled[FACE_TYPE_SENSOR_FAN].enabled ||
+			gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 
@@ -314,6 +328,13 @@ void readSensorValues (int face)
 												faceSetting -> faceScaleMax += 25;
 												maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
 											}
+										}
+										break;
+
+									case FACE_TYPE_SENSOR_POWER:
+										if (gaugeEnabled[FACE_TYPE_SENSOR_POWER].enabled)
+										{
+											printf ("Value: %0.2f\n", value);
 										}
 										break;
 									}
