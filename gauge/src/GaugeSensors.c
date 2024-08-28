@@ -156,11 +156,11 @@ int findSensors ()
 						++inputCount;
 					}
 				}
-				else
+				/* else
 				{
 					printf ("Unknown feature -> type = %d, subfeature -> type = (%d:%d)\n", feature -> type, 
 							subfeature -> type >> 8, subfeature -> type & 0xFF);
-				}
+				} */
 				subfeature = sensors_get_all_subfeatures (chipset, feature, &nr2);
 			}
 			feature = sensors_get_features (chipset, &nr1);
@@ -343,7 +343,6 @@ void readSensorValues (int face)
 									case FACE_TYPE_SENSOR_INPUT:
 										if (gaugeEnabled[FACE_TYPE_SENSOR_INPUT].enabled)
 										{
-											printf ("Value: %0.2f\n", value);
 											sprintf (sensorName, _("Input %d"), number + 1);
 											if ((label = sensors_get_label (chipset, feature)) != NULL)
 											{
