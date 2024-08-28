@@ -351,13 +351,29 @@ void readSensorValues (int face)
 											}
 											setFaceString (faceSetting, FACESTR_TOP, 0, _("Input %d"), number + 1);
 											setFaceString (faceSetting, FACESTR_WIN, 0, _("Sensor Input %d - Gauge"), number + 1);
-											setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Input %d</b>: %0.2f V\n"
+											if (value < 1)
+											{
+												setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Input %d</b>: %0.0f mV\n"
+														"<b>Chipset Name</b>: %s"), number + 1, value * 1000, chipset -> prefix);
+												setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.0f mV"), value * 1000);
+											}
+											else
+											{
+												setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Sensor Input %d</b>: %0.2f V\n"
 														"<b>Chipset Name</b>: %s"), number + 1, value, chipset -> prefix);
-											setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f\n(V)"), value);
+												setFaceString (faceSetting, FACESTR_BOT, 0, _("%0.2f V"), value);
+											}
 											faceSetting -> firstValue = value;
 											while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
 											{
-												faceSetting -> faceScaleMax += 6;
+												if (faceSetting -> faceScaleMax == 1)
+												{
+													faceSetting -> faceScaleMax = 6;
+												}
+												else
+												{
+													faceSetting -> faceScaleMax += 6;
+												}
 												maxMinReset (&faceSetting -> savedMaxMin, 10, 2);
 											}
 										}

@@ -1534,11 +1534,11 @@ void
 sensorInputCallback (guint data)
 {
 	gaugeReset (currentFace, FACE_TYPE_SENSOR_INPUT, data);
-	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_SHOWHOT);
+	faceSettings[currentFace] -> faceFlags |= FACE_MAX_MIN;
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
 	faceSettings[currentFace] -> savedMaxMin.updateInterval = 2;
 	faceSettings[currentFace] -> faceScaleMin = 0;
-	faceSettings[currentFace] -> faceScaleMax = 6;
+	faceSettings[currentFace] -> faceScaleMax = 1;
 }
 
 /**********************************************************************************************************************
