@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([libdial],[2.5],[chris@theknight.co.uk])
+AC_INIT([libdial],[2.6],[chris@theknight.co.uk])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/DialDisplay.c])
 AC_CONFIG_HEADERS([config.h])
@@ -28,7 +28,7 @@ AC_STRUCT_TM
 # Checks for library functions.
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([nl_langinfo])
-REVISION=2
+REVISION=1
 AC_SUBST([REVISION])
 
 AC_CONFIG_FILES([Makefile libdial.spec src/dialsys.h pkgconfig/dial.pc])
