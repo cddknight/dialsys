@@ -45,13 +45,32 @@ extern int thermoPort;
 #define THERMO_STATE_UPDATED	0
 #define THERMO_STATE_PENDING	1
 #define THERMO_STATE_ERROR		2
+#define THERMO_MAX_READING		6
 
 static int thermoState;
 static int thermoStart = 1;
 static pthread_t threadHandle = 0;
 static time_t lastRead;
 
-double myThermoReading[5] = { 0, 0, 0, 0, 0 };
+typedef struct _thermoReading
+{
+	char *name;
+	char *display;
+	char *format;
+	double value;
+	char showValue[21];
+}
+ThermoReading;
+
+ThermoReading myThermoReading[THERMO_MAX_READING] =
+{
+	{ "outside", "Outside", "%0.1f\302\260C", 0, "NA" },
+	{ "inside", "Inside", "%0.1f\302\260C", 0, "NA" },
+	{ "pressure", "Pressure", "%0.0fmb", 0, "NA" },
+	{ "humidity", "Humidity", "%0.0f%%", 0, "NA" },
+	{ "light", "Light", "%0.0flux", 0, "NA" },
+	{ "CO2", "CO2 level", "%0.0fppm", 0, "NA" }
+};
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -91,16 +110,18 @@ void readThermometerInit (void)
  */
 static void processThermoKey (int readLevel, const char *name, char *value)
 {
-	if (readLevel == 1 && strcmp (name, "outside") == 0)
-		myThermoReading[0] = atof (value);
-	if (readLevel == 1 && strcmp (name, "inside") == 0)
-		myThermoReading[1] = atof (value);
-	if (readLevel == 1 && strcmp (name, "pressure") == 0)
-		myThermoReading[2] = atof (value);
-	if (readLevel == 1 && strcmp (name, "light") == 0)
-		myThermoReading[3] = atof (value);
-	if (readLevel == 1 && strcmp (name, "humidity") == 0)
-		myThermoReading[4] = atof (value);
+	int i;
+	for (i = 0; i < THERMO_MAX_READING; ++i)
+	{
+		if (readLevel == 1)
+		{
+			if (strcmp (name, myThermoReading[i].name) == 0)
+			{
+				myThermoReading[i].value = atof (value);
+				sprintf (myThermoReading[i].showValue, myThermoReading[i].format, myThermoReading[i].value);
+			}
+		}
+	}
 }
 
 /**********************************************************************************************************************
@@ -199,6 +220,11 @@ void *readThermometerInfo ()
 	int clientSock = ConnectClientSocket (thermoServer, thermoPort, 3, USE_ANY, NULL);
 	if (SocketValid (clientSock))
 	{
+		int i;
+		for (i = 0; i < THERMO_MAX_READING; ++i)
+		{
+			strcpy (myThermoReading[i].showValue, "NA");
+		}
 		if (WaitSocket (clientSock, 2) > 0)
 		{
 			bytesRead = RecvSocket (clientSock, buffer, 511);
@@ -214,7 +240,7 @@ void *readThermometerInfo ()
 	else
 	{
 		thermoState = THERMO_STATE_ERROR;
-	}			
+	}
 	return NULL;
 }
 
@@ -280,17 +306,23 @@ void readThermometerValues (int face)
 		}
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Thermometer");
-		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>Outside</b>: %0.1f\302\260C\n<b>Inside</b>: %0.1f\302\260C\n"
-				"<b>Pressure</b>: %0.0fmb\n<b>Brightness</b>: %0.0flux\n<b>Humidity</b>: %0.0f%%\n"
+		setFaceString (faceSetting, FACESTR_TIP, 0, _("<b>%s</b>: %s\n<b>%s</b>: %s\n"
+				"<b>%s</b>: %s\n<b>%s</b>: %s\n<b>%s</b>: %s\n<b>%s</b>: %s\n"
 				"<b>Read</b>: %s"),
-				myThermoReading[0], myThermoReading[1], myThermoReading[2], myThermoReading[3], myThermoReading[4],
+				myThermoReading[0].display, myThermoReading[0].showValue,
+				myThermoReading[1].display, myThermoReading[1].showValue,
+				myThermoReading[2].display, myThermoReading[2].showValue,
+				myThermoReading[3].display, myThermoReading[3].showValue,
+				myThermoReading[4].display, myThermoReading[4].showValue,
+				myThermoReading[5].display, myThermoReading[5].showValue,
 				readTimeStr);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Outside: %0.1f%s, Inside: %0.1f%s"),
-				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
-		setFaceString (faceSetting, FACESTR_BOT, 0, "%0.0f%s\n(%0.0f%s)",
-				myThermoReading[0], "\302\260C", myThermoReading[1], "\302\260C");
-		faceSetting -> firstValue = myThermoReading[0];
-		faceSetting -> secondValue = myThermoReading[1];
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("%s: %s, %s: %s"),
+				myThermoReading[0].display, myThermoReading[0].showValue,
+				myThermoReading[1].display, myThermoReading[1].showValue);
+		setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)",
+				myThermoReading[0].showValue, myThermoReading[1].showValue);
+		faceSetting -> firstValue = myThermoReading[0].value;
+		faceSetting -> secondValue = myThermoReading[1].value;
 	}
 }
 
@@ -348,7 +380,7 @@ void thermometerSettings(guint data)
 	{
 		const char *saveText = gtk_entry_get_text(GTK_ENTRY(entryServer));
 		int saveValue = (int)gtk_spin_button_get_value (GTK_SPIN_BUTTON(spinPort));
-		
+
 		if (strcmp(saveText, thermoServer) != 0)
 		{
 			strncpy(thermoServer, saveText, 40);
