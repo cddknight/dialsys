@@ -137,7 +137,7 @@ static void processPowerKey (int readLevel, const char *name, char *value)
 				}
 				else if (myPowerReading[i].value >= 1000)
 				{
-					sprintf (myPowerReading[i].showValue, myPowerReading[i].formatHigh, myPowerReading[i].value);
+					sprintf (myPowerReading[i].showValue, myPowerReading[i].formatHigh, myPowerReading[i].value / 1000);
 				}
 				else
 				{
