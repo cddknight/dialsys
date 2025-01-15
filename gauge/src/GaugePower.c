@@ -45,12 +45,45 @@ extern int powerPort;
 #define POWER_STATE_UPDATED	0
 #define POWER_STATE_PENDING	1
 #define POWER_STATE_ERROR	2
+#define POWER_MAX_READING	18
 
 static time_t lastRead;
 static int powerState;
 static int powerStart = 1;
 static pthread_t threadHandle = 0;
-double myPowerReading[18];
+
+typedef struct _powerReading
+{
+	char *name;
+	char *display;
+	char *formatLow;
+	char *formatHigh;
+	double value;
+	char showValue[21];
+}
+PowerReading;
+
+PowerReading myPowerReading[POWER_MAX_READING] =
+{
+	{ "now", "Current", "%0.0fW", "%0.1fKW", 0, "NA" },				//  0
+	{ "max", "Maximum", "%0.0fW", "%0.1fKW", 0, "NA" },				//  1
+	{ "min", "Minimum", "%0.0fW", "%0.1fKW", 0, "NA" },				//  2
+	{ "minavg", "Minute", "%0.0fW", "%0.1fKW", 0, "NA" },			//  3	0
+	{ "houravg", "Hour", "%0.0fW", "%0.1fKW", 0, "NA" },			//  4	1
+	{ "dayavg", "Day", "%0.0fW", "%0.1fKW", 0, "NA" },				//  5	2
+	{ "monthavg", "Month", "%0.0fW", "%0.1fKW", 0, "NA" },			//  6	3
+	{ "yearavg", "Year", "%0.0fW", "%0.1fKW", 0, "NA" },			//  7	4
+	{ "minmin", "Minute Minimum", "%0.0fW", "%0.1fKW", 0, "NA" },	//  8
+	{ "hourmin", "Hour Minimum", "%0.0fW", "%0.1fKW", 0, "NA" },	//  9
+	{ "daymin", "Day Minimum", "%0.0fW", "%0.1fKW", 0, "NA" },		// 10
+	{ "monthmin", "Month Minimum", "%0.0fW", "%0.1fKW", 0, "NA" },	// 11
+	{ "yearmin", "Year Minimum", "%0.0fW", "%0.1fKW", 0, "NA" },	// 12
+	{ "minmax", "Minute Maximum", "%0.0fW", "%0.1fKW", 0, "NA" },	// 13
+	{ "hourmax", "Hour Maximum", "%0.0fW", "%0.1fKW", 0, "NA" },	// 14
+	{ "daymax", "Day Maximum", "%0.0fW", "%0.1fKW", 0, "NA" },		// 15
+	{ "monthmax", "Month Maximum", "%0.0fW", "%0.1fKW", 0, "NA" },	// 16
+	{ "yearmax", "Year Maximum", "%0.0fW", "%0.1fKW", 0, "NA" }		// 17
+};
 
 /**********************************************************************************************************************
  *                                                                                                                    *
@@ -71,9 +104,6 @@ void readPowerMeterInit (void)
 		{
 			gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
 			CloseSocket (&clientSock);
-
-			for (i = 0; i < 18; ++i)
-				myPowerReading[i] = -1;
 		}
 	}
 }
@@ -93,44 +123,28 @@ void readPowerMeterInit (void)
  */
 static void processPowerKey (int readLevel, const char *name, char *value)
 {
-	if (readLevel == 1)
+	int i;
+	for (i = 0; i < POWER_MAX_READING; ++i)
 	{
-		if (strcmp (name, "now") == 0)
-			myPowerReading[0] = atof (value);
-		else if (strcmp (name, "max") == 0)
-			myPowerReading[1] = atof (value);
-		else if (strcmp (name, "min") == 0)
-			myPowerReading[2] = atof (value);
-		else if (strcmp (name, "minavg") == 0)
-			myPowerReading[3] = atof (value);
-		else if (strcmp (name, "houravg") == 0)
-			myPowerReading[4] = atof (value);
-		else if (strcmp (name, "dayavg") == 0)
-			myPowerReading[5] = atof (value);
-		else if (strcmp (name, "monthavg") == 0)
-			myPowerReading[6] = atof (value);
-		else if (strcmp (name, "yearavg") == 0)
-			myPowerReading[7] = atof (value);
-		else if (strcmp (name, "minmin") == 0)
-			myPowerReading[8] = atof (value);
-		else if (strcmp (name, "hourmin") == 0)
-			myPowerReading[9] = atof (value);
-		else if (strcmp (name, "daymin") == 0)
-			myPowerReading[10] = atof (value);
-		else if (strcmp (name, "monthmin") == 0)
-			myPowerReading[11] = atof (value);
-		else if (strcmp (name, "yearmin") == 0)
-			myPowerReading[12] = atof (value);
-		else if (strcmp (name, "minmax") == 0)
-			myPowerReading[13] = atof (value);
-		else if (strcmp (name, "hourmax") == 0)
-			myPowerReading[14] = atof (value);
-		else if (strcmp (name, "daymax") == 0)
-			myPowerReading[15] = atof (value);
-		else if (strcmp (name, "monthmax") == 0)
-			myPowerReading[16] = atof (value);
-		else if (strcmp (name, "yearmax") == 0)
-			myPowerReading[17] = atof (value);
+		if (readLevel == 1)
+		{
+			if (strcmp (name, myPowerReading[i].name) == 0)
+			{
+				myPowerReading[i].value = atof (value);
+				if (myPowerReading[i].value == -1)
+				{
+					strcpy (myPowerReading[i].showValue, "NA");
+				}
+				else if (myPowerReading[i].value >= 1000)
+				{
+					sprintf (myPowerReading[i].showValue, myPowerReading[i].formatHigh, myPowerReading[i].value);
+				}
+				else
+				{
+					sprintf (myPowerReading[i].showValue, myPowerReading[i].formatLow, myPowerReading[i].value);
+				}
+			}
+		}
 	}
 }
 
@@ -273,28 +287,6 @@ void startUpdatePowerInfo()
 
 /**********************************************************************************************************************
  *                                                                                                                    *
- *  G E T  P O W E R  S T R                                                                                           *
- *  =======================                                                                                           *
- *                                                                                                                    *
- **********************************************************************************************************************/
-/**
- *  \brief Convert a reading into a string.
- *  \param reading Reading taken from meter.
- *  \param buffer Buffer for output string.
- *  \result None.
- */
-void getPowerStr (double reading, char *buffer)
-{
-	if (reading == -1)
-		strcpy (buffer, "NA");
-	else if (reading >= 1000)
-		sprintf (buffer, "%0.1fKW", reading / 1000);
-	else
-		sprintf (buffer, "%0.0fW", reading);
-}
-
-/**********************************************************************************************************************
- *                                                                                                                    *
  *  R E A D  P O W E R  M E T E R  V A L U E S                                                                        *
  *  ==========================================                                                                        *
  *                                                                                                                    *
@@ -310,7 +302,6 @@ void readPowerMeterValues (int face)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 		char readTimeStr[81] = "Never";
-		char powerStr[18][41];
 		int i;
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
@@ -328,10 +319,6 @@ void readPowerMeterValues (int face)
 			faceSetting -> nextUpdate = (powerStart ? 5 : 60);
 		}
 
-		for (i = 0; i < 18; ++i)
-		{
-			getPowerStr (myPowerReading[i], &powerStr[i][0]);
-		}
 		if (lastRead != 0)
 		{
 			struct tm readTime;
@@ -340,24 +327,28 @@ void readPowerMeterValues (int face)
 		}
 
 		setFaceString (faceSetting, FACESTR_TOP, 0, "Power\nMeter");
-		setFaceString (faceSetting, FACESTR_TIP, 0,
-				_("<b>Current</b>: %s\n"
-				"<b>Maximum</b>: %s\n"
-				"<b>Minimum</b>: %s\n"
-				"<b>Hour</b>: %s (%s to %s)\n"
-				"<b>Day</b>: %s (%s to %s)\n"
-				"<b>Month</b>: %s (%s to %s)\n"
-				"<b>Read</b>: %s"),
-				powerStr[0], powerStr[1], powerStr[2], 
-				powerStr[4], powerStr[9], powerStr[14],
-				powerStr[5], powerStr[10], powerStr[15],
-				powerStr[6], powerStr[11], powerStr[16],
-				readTimeStr);
-		setFaceString (faceSetting, FACESTR_WIN, 0, _("Current: %s, Day Average: %s"),
-				powerStr[0], powerStr[5]);
-		setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", powerStr[0], powerStr[5]);
-		faceSetting -> firstValue = myPowerReading[0] / 1000;
-		faceSetting -> secondValue = myPowerReading[5] / 1000;
+		setFaceString (faceSetting, FACESTR_TIP, 0, _(
+				"<b>%s</b>: %s\n"
+				"<b>%s</b>: %s\n"
+				"<b>%s</b>: %s\n"
+				"<b>%s</b>: %s (%s to %s)\n"
+				"<b>%s</b>: %s (%s to %s)\n"
+				"<b>%s</b>: %s (%s to %s)\n"
+				"<b>%s</b>: %s (%s to %s)\n"),
+				myPowerReading[0].display, myPowerReading[0].showValue,
+				myPowerReading[1].display, myPowerReading[1].showValue,
+				myPowerReading[2].display, myPowerReading[2].showValue,
+				myPowerReading[4].display, myPowerReading[4].showValue, myPowerReading[9].showValue, myPowerReading[14].showValue,
+				myPowerReading[5].display, myPowerReading[5].showValue, myPowerReading[10].showValue, myPowerReading[15].showValue,
+				myPowerReading[6].display, myPowerReading[6].showValue, myPowerReading[11].showValue, myPowerReading[16].showValue,
+				myPowerReading[7].display, myPowerReading[7].showValue, myPowerReading[12].showValue, myPowerReading[17].showValue);
+		setFaceString (faceSetting, FACESTR_WIN, 0, _("%s: %s, %s: %s"),
+				myPowerReading[0].display, myPowerReading[0].showValue,
+				myPowerReading[5].display, myPowerReading[5].showValue);
+		setFaceString (faceSetting, FACESTR_BOT, 0, "%s\n(%s)", 
+				myPowerReading[0].showValue, myPowerReading[5].showValue);
+		faceSetting -> firstValue = myPowerReading[0].value / 1000;
+		faceSetting -> secondValue = myPowerReading[5].value / 1000;
 
 		while (faceSetting -> firstValue > faceSetting -> faceScaleMax)
 		{
