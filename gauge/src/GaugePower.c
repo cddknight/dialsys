@@ -334,14 +334,16 @@ void readPowerMeterValues (int face)
 				"<b>%s</b>: %s (%s to %s)\n"
 				"<b>%s</b>: %s (%s to %s)\n"
 				"<b>%s</b>: %s (%s to %s)\n"
-				"<b>%s</b>: %s (%s to %s)\n"),
+				"<b>%s</b>: %s (%s to %s)\n"
+				"<b>Read</b>: %s"),
 				myPowerReading[0].display, myPowerReading[0].showValue,
 				myPowerReading[1].display, myPowerReading[1].showValue,
 				myPowerReading[2].display, myPowerReading[2].showValue,
 				myPowerReading[4].display, myPowerReading[4].showValue, myPowerReading[9].showValue, myPowerReading[14].showValue,
 				myPowerReading[5].display, myPowerReading[5].showValue, myPowerReading[10].showValue, myPowerReading[15].showValue,
 				myPowerReading[6].display, myPowerReading[6].showValue, myPowerReading[11].showValue, myPowerReading[16].showValue,
-				myPowerReading[7].display, myPowerReading[7].showValue, myPowerReading[12].showValue, myPowerReading[17].showValue);
+				myPowerReading[7].display, myPowerReading[7].showValue, myPowerReading[12].showValue, myPowerReading[17].showValue,
+				readTimeStr);
 		setFaceString (faceSetting, FACESTR_WIN, 0, _("%s: %s, %s: %s"),
 				myPowerReading[0].display, myPowerReading[0].showValue,
 				myPowerReading[5].display, myPowerReading[5].showValue);
