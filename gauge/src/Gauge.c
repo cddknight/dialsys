@@ -28,29 +28,29 @@
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
-	{	"blk", __("Black"),					"#000000"	},	//  00
-	{	"wht", __("White"),					"#FFFFFF"	},	//  01
+	{	"blk", __("Black"),					"#000000"	},	/* Z:00 */
+	{	"wht", __("White"),					"#FFFFFF"	},	/* Z:01 */
 
-	{	"fce", __("Main face colour"),		"#141414"	},	//  02  T
-	{	"bri", __("Border inner circle"),	"#000000"	},	//  03  T
-	{	"brf", __("Border when focused"),	"#505050"	},	//  04  T
-	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//  05  T
-	{	"txt", __("Information text"),		"#858585"	},	//  06  T
-	{	"qum", __("Scale text"),			"#AAAAAA"	},	//  07  T
-	{	"hom", __("Scale markers"),			"#646464"	},	//  08  T
+	{	"fce", __("Main face colour"),		"#141414"	},	/* Z:02 */
+	{	"bri", __("Border inner circle"),	"#000000"	},	/* Z:03 */
+	{	"brf", __("Border when focused"),	"#505050"	},	/* Z:04 */
+	{	"brn", __("Border not focused"),	"#6E6E6E"	},	/* Z:05 */
+	{	"txt", __("Information text"),		"#858585"	},	/* Z:06 */
+	{	"qum", __("Scale text"),			"#AAAAAA"	},	/* Z:07 */
+	{	"hom", __("Scale markers"),			"#646464"	},	/* Z:08 */
 
-	{	"gah", __("Main hand outer"),		"#E0E0E0"	},	//  09
-	{	"gaf", __("Main hand fill"),		"#202020"	},	//  10
-	{	"oth", __("Other hand outer"),		"#808080"	},	//  11
-	{	"otf", __("Other hand fill"),		"#202020"	},	//  12
-	{	"mah", __("Max value hand outer"),	"#E00000"	},	//  13
-	{	"maf", __("Max value hand fill"),	"#200000"	},	//  14
-	{	"mnh", __("Min value hand outer"),	"#0080E0"	},	//  15
-	{	"mnf", __("Min value hand fill"),	"#002020"	},	//  16
-	{	"cec", __("Centre circle outer"),	"#AA0000"	},	//  17
-	{	"cef", __("Centre circle fill"),	"#640000"	},	//  18
-	{	"col", __("Cold zone colour"),		"#0060A0"	},	//  19
-	{	"hot", __("Hot zone colour"),		"#600000"	},	//  20
+	{	"gah", __("Main hand outer"),		"#E0E0E0"	},	/* Z:09 */
+	{	"gaf", __("Main hand fill"),		"#202020"	},	/* Z:10 */
+	{	"oth", __("Other hand outer"),		"#808080"	},	/* Z:11 */
+	{	"otf", __("Other hand fill"),		"#202020"	},	/* Z:12 */
+	{	"mah", __("Max value hand outer"),	"#E00000"	},	/* Z:13 */
+	{	"maf", __("Max value hand fill"),	"#200000"	},	/* Z:14 */
+	{	"mnh", __("Min value hand outer"),	"#0080E0"	},	/* Z:15 */
+	{	"mnf", __("Min value hand fill"),	"#002020"	},	/* Z:16 */
+	{	"cec", __("Centre circle outer"),	"#AA0000"	},	/* Z:17 */
+	{	"cef", __("Centre circle fill"),	"#640000"	},	/* Z:18 */
+	{	"col", __("Cold zone colour"),		"#0060A0"	},	/* Z:19 */
+	{	"hot", __("Hot zone colour"),		"#600000"	},	/* Z:20 */
 	{	NULL, NULL, ""	}
 };
 
@@ -94,302 +94,301 @@ const gchar *artists[] =
  ******************************************************************************************************/
 MENU_DESC viewMenuDesc[] =
 {
-	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/*  00  */
-	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/*  01  */
-	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*  02  */
-	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*  03  */
-	{	"-",					NULL,					NULL,				0	},	/*  04  */
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*  05  */
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*  06  */
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*  07  */
-	{	NULL,					NULL,					NULL,				0	}	/*  08  */
+	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/* 1:00 */
+	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/* 1:01 */
+	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/* 1:02 */
+	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/* 1:03 */
+	{	"-",					NULL,					NULL,				0	},	/* 1:04 */
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/* 1:05 */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/* 1:06 */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/* 1:07 */
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC markerMenuDesc[] =
 {
-	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/*  00  */
-	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  01  */
-	{	"-",					NULL,					NULL,				0	},							/*  02  */
-	{	__("Show 2"),			dialStepCallback,		NULL,				900,	NULL,	0,	0,	1	},	/*  03  */
-	{	__("Show 3"),			dialStepCallback,		NULL,				450,	NULL,	0,	0,	1	},	/*  04  */
-	{	__("Show 6"),			dialStepCallback,		NULL,				180,	NULL,	0,	0,	1	},	/*  05  */
-	{	__("Show all"),			dialStepCallback,		NULL,				90,		NULL,	0,	0,	1	},	/*  06  */
+	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/* 2:00 */
+	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/* 2:01 */
+	{	"-",					NULL,					NULL,				0	},							/* 2:02 */
+	{	__("Show 2"),			dialStepCallback,		NULL,				900,	NULL,	0,	0,	1	},	/* 2:03 */
+	{	__("Show 3"),			dialStepCallback,		NULL,				450,	NULL,	0,	0,	1	},	/* 2:04 */
+	{	__("Show 6"),			dialStepCallback,		NULL,				180,	NULL,	0,	0,	1	},	/* 2:05 */
+	{	__("Show all"),			dialStepCallback,		NULL,				90,		NULL,	0,	0,	1	},	/* 2:06 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC spaceMenuDesc[] =
 {
-	{	NULL,					harddiskCallback,		NULL,				0,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				1,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				2,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				3,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				4,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				5,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				6,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				7,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				8,	NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,				9,	NULL,	0,	1	},
+	{	NULL,					harddiskCallback,		NULL,				0,	NULL,	0,	1	},	/* 3:00 */
+	{	NULL,					harddiskCallback,		NULL,				1,	NULL,	0,	1	},	/* 3:01 */
+	{	NULL,					harddiskCallback,		NULL,				2,	NULL,	0,	1	},	/* 3:02 */
+	{	NULL,					harddiskCallback,		NULL,				3,	NULL,	0,	1	},	/* 3:03 */
+	{	NULL,					harddiskCallback,		NULL,				4,	NULL,	0,	1	},	/* 3:04 */
+	{	NULL,					harddiskCallback,		NULL,				5,	NULL,	0,	1	},	/* 3:05 */
+	{	NULL,					harddiskCallback,		NULL,				6,	NULL,	0,	1	},	/* 3:06 */
+	{	NULL,					harddiskCallback,		NULL,				7,	NULL,	0,	1	},	/* 3:07 */
+	{	NULL,					harddiskCallback,		NULL,				8,	NULL,	0,	1	},	/* 3:08 */
+	{	NULL,					harddiskCallback,		NULL,				9,	NULL,	0,	1	},	/* 3:09 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC diskMenuDesc[] =
 {
-	{	__("All"),				harddiskCallback,		NULL,			0x1000, NULL,	0,	0	},
-	{	NULL,					harddiskCallback,		NULL,			0x1001, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1002, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1003, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1004, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1005, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1006, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1007, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1008, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1009, NULL,	0,	1	},
-	{	NULL,					harddiskCallback,		NULL,			0x1010, NULL,	0,	1	},
+	{	__("All"),				harddiskCallback,		NULL,			0x1000, NULL,	0,	0	},	/* 4:00 */
+	{	NULL,					harddiskCallback,		NULL,			0x1001, NULL,	0,	1	},	/* 4:01 */
+	{	NULL,					harddiskCallback,		NULL,			0x1002, NULL,	0,	1	},	/* 4:02 */
+	{	NULL,					harddiskCallback,		NULL,			0x1003, NULL,	0,	1	},	/* 4:03 */
+	{	NULL,					harddiskCallback,		NULL,			0x1004, NULL,	0,	1	},	/* 4:04 */
+	{	NULL,					harddiskCallback,		NULL,			0x1005, NULL,	0,	1	},	/* 4:05 */
+	{	NULL,					harddiskCallback,		NULL,			0x1006, NULL,	0,	1	},	/* 4:06 */
+	{	NULL,					harddiskCallback,		NULL,			0x1007, NULL,	0,	1	},	/* 4:07 */
+	{	NULL,					harddiskCallback,		NULL,			0x1008, NULL,	0,	1	},	/* 4:08 */
+	{	NULL,					harddiskCallback,		NULL,			0x1009, NULL,	0,	1	},	/* 4:09 */
+	{	NULL,					harddiskCallback,		NULL,			0x1010, NULL,	0,	1	},	/* 4:10 */
 	{	NULL,					NULL,					NULL,			0	}
 };
 
 MENU_DESC harddiskMenuDesc[] =
 {
-	{	__("Partition Space"),	NULL,					spaceMenuDesc,		0		},
-	{	"-",					NULL,					NULL,				0		},
-	{	__("Sector Reads"),		harddiskCallback,		NULL,				0x100	},
-	{	__("Sector Writes"),	harddiskCallback,		NULL,				0x200	},
-	{	"-",					NULL,					NULL,				0		},
-	{	__("Which Disk"),		NULL,					diskMenuDesc,		0		},
+	{	__("Partition Space"),	NULL,					spaceMenuDesc,		0		},	/* 5:00 */
+	{	"-",					NULL,					NULL,				0		},	/* 5:01 */
+	{	__("Sector Reads"),		harddiskCallback,		NULL,				0x100	},	/* 5:02 */
+	{	__("Sector Writes"),	harddiskCallback,		NULL,				0x200	},	/* 5:03 */
+	{	"-",					NULL,					NULL,				0		},	/* 5:04 */
+	{	__("Which Disk"),		NULL,					diskMenuDesc,		0		},	/* 5:05 */
 	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC tideMenuDesc[] =
 {
-	{	__("Show Tide"),		tideCallback,			NULL,				0,	},
-	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings..."),		tideSettings,			NULL,				0	},
+	{	__("Show Tide"),		tideCallback,			NULL,				0,	},	/* 6:00 */
+	{	"-",					NULL,					NULL,				0	},	/* 6:01 */
+	{	__("Settings..."),		tideSettings,			NULL,				0	},	/* 6:02 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC thermoMenuDesc[] =
 {
-	{	__("Show Thermometer"),	thermometerCallback,	NULL,				0,	},
-	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings..."),		thermometerSettings,	NULL,				0	},
+	{	__("Show Thermometer"), thermometerCallback,	NULL,				0,	},	/* 7:00 */
+	{	"-",					NULL,					NULL,				0	},	/* 7:01 */
+	{	__("Settings..."),		thermometerSettings,	NULL,				0	},	/* 7:02 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC powerMenuDesc[] =
 {
-	{	__("Show Power"),		powerMeterCallback,		NULL,				0,	},
-	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings..."),		powerSettings,			NULL,				0	},
+	{	__("Show Power"),		powerMeterCallback,		NULL,				0,	},	/* 8:00 */
+	{	"-",					NULL,					NULL,				0	},	/* 8:01 */
+	{	__("Settings..."),		powerSettings,			NULL,				0	},	/* 8:02 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC weatherMenuDesc[] =
 {
-	{	__("Temperature"),		weatherCallback,		NULL,				0	},
-	{	__("Humidity"),			weatherCallback,		NULL,				1	},
-	{	__("Pressure"),			weatherCallback,		NULL,				2	},
-	{	__("Wind Speed"),		weatherCallback,		NULL,				3	},
-	{	"-",					NULL,					NULL,				0	},
-	{	__("Today"),			weatherCallback,		NULL,				4	},
-	{	__("Tomorrow"),			weatherCallback,		NULL,				5	},
-	{	__("Next day"),			weatherCallback,		NULL,				6	},
-	{	"-",					NULL,					NULL,				0	},
-	{	__("Settings..."),		weatherSettings,		NULL,				0	},
+	{	__("Temperature"),		weatherCallback,		NULL,				0	},	/* 9:00 */
+	{	__("Humidity"),			weatherCallback,		NULL,				1	},	/* 9:01 */
+	{	__("Pressure"),			weatherCallback,		NULL,				2	},	/* 9:02 */
+	{	__("Wind Speed"),		weatherCallback,		NULL,				3	},	/* 9:03 */
+	{	"-",					NULL,					NULL,				0	},	/* 9:04 */
+	{	__("Today"),			weatherCallback,		NULL,				4	},	/* 9:05 */
+	{	__("Tomorrow"),			weatherCallback,		NULL,				5	},	/* 9:06 */
+	{	__("Next day"),			weatherCallback,		NULL,				6	},	/* 9:07 */
+	{	"-",					NULL,					NULL,				0	},	/* 9:08 */
+	{	__("Settings..."),		weatherSettings,		NULL,				0	},	/* 9:09 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sTempMenuDesc[] =
 {
-	{	__("Temp 1"),			sensorTempCallback,		NULL,				0,	NULL,	0,	1	},
-	{	__("Temp 2"),			sensorTempCallback,		NULL,				1,	NULL,	0,	1	},
-	{	__("Temp 3"),			sensorTempCallback,		NULL,				2,	NULL,	0,	1	},
-	{	__("Temp 4"),			sensorTempCallback,		NULL,				3,	NULL,	0,	1	},
-	{	__("Temp 5"),			sensorTempCallback,		NULL,				4,	NULL,	0,	1	},
-	{	__("Temp 6"),			sensorTempCallback,		NULL,				5,	NULL,	0,	1	},
-	{	__("Temp 7"),			sensorTempCallback,		NULL,				6,	NULL,	0,	1	},
-	{	__("Temp 8"),			sensorTempCallback,		NULL,				7,	NULL,	0,	1	},
-	{	__("Temp 9"),			sensorTempCallback,		NULL,				8,	NULL,	0,	1	},
-	{	__("Temp 10"),			sensorTempCallback,		NULL,				9,	NULL,	0,	1	},
-	{	__("Temp 11"),			sensorTempCallback,		NULL,				10,	NULL,	0,	1	},
-	{	__("Temp 12"),			sensorTempCallback,		NULL,				11,	NULL,	0,	1	},
-	{	__("Temp 13"),			sensorTempCallback,		NULL,				12,	NULL,	0,	1	},
-	{	__("Temp 14"),			sensorTempCallback,		NULL,				13,	NULL,	0,	1	},
-	{	__("Temp 15"),			sensorTempCallback,		NULL,				14,	NULL,	0,	1	},
-	{	__("System"),			sensorTempCallback,		NULL,				15,	NULL,	0,	1	},
+	{	__("Temp 1"),			sensorTempCallback,		NULL,				0,	NULL,	0,	1	},	/* A:00 */
+	{	__("Temp 2"),			sensorTempCallback,		NULL,				1,	NULL,	0,	1	},	/* A:01 */
+	{	__("Temp 3"),			sensorTempCallback,		NULL,				2,	NULL,	0,	1	},	/* A:02 */
+	{	__("Temp 4"),			sensorTempCallback,		NULL,				3,	NULL,	0,	1	},	/* A:03 */
+	{	__("Temp 5"),			sensorTempCallback,		NULL,				4,	NULL,	0,	1	},	/* A:04 */
+	{	__("Temp 6"),			sensorTempCallback,		NULL,				5,	NULL,	0,	1	},	/* A:05 */
+	{	__("Temp 7"),			sensorTempCallback,		NULL,				6,	NULL,	0,	1	},	/* A:06 */
+	{	__("Temp 8"),			sensorTempCallback,		NULL,				7,	NULL,	0,	1	},	/* A:07 */
+	{	__("Temp 9"),			sensorTempCallback,		NULL,				8,	NULL,	0,	1	},	/* A:08 */
+	{	__("Temp 10"),			sensorTempCallback,		NULL,				9,	NULL,	0,	1	},	/* A:09 */
+	{	__("Temp 11"),			sensorTempCallback,		NULL,				10, NULL,	0,	1	},	/* A:10 */
+	{	__("Temp 12"),			sensorTempCallback,		NULL,				11, NULL,	0,	1	},	/* A:11 */
+	{	__("Temp 13"),			sensorTempCallback,		NULL,				12, NULL,	0,	1	},	/* A:12 */
+	{	__("Temp 14"),			sensorTempCallback,		NULL,				13, NULL,	0,	1	},	/* A:13 */
+	{	__("Temp 15"),			sensorTempCallback,		NULL,				14, NULL,	0,	1	},	/* A:14 */
+	{	__("System"),			sensorTempCallback,		NULL,				15, NULL,	0,	1	},	/* A:15 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sFanMenuDesc[] =
 {
-	{	__("Fan 1"),			sensorFanCallback,		NULL,				0,	NULL,	0,	1	},
-	{	__("Fan 2"),			sensorFanCallback,		NULL,				1,	NULL,	0,	1	},
-	{	__("Fan 3"),			sensorFanCallback,		NULL,				2,	NULL,	0,	1	},
-	{	__("Fan 4"),			sensorFanCallback,		NULL,				3,	NULL,	0,	1	},
-	{	__("Fan 5"),			sensorFanCallback,		NULL,				4,	NULL,	0,	1	},
-	{	__("Fan 6"),			sensorFanCallback,		NULL,				5,	NULL,	0,	1	},
-	{	__("Fan 7"),			sensorFanCallback,		NULL,				6,	NULL,	0,	1	},
-	{	__("Fan 8"),			sensorFanCallback,		NULL,				7,	NULL,	0,	1	},
+	{	__("Fan 1"),			sensorFanCallback,		NULL,				0,	NULL,	0,	1	},	/* B:00 */
+	{	__("Fan 2"),			sensorFanCallback,		NULL,				1,	NULL,	0,	1	},	/* B:01 */
+	{	__("Fan 3"),			sensorFanCallback,		NULL,				2,	NULL,	0,	1	},	/* B:02 */
+	{	__("Fan 4"),			sensorFanCallback,		NULL,				3,	NULL,	0,	1	},	/* B:03 */
+	{	__("Fan 5"),			sensorFanCallback,		NULL,				4,	NULL,	0,	1	},	/* B:04 */
+	{	__("Fan 6"),			sensorFanCallback,		NULL,				5,	NULL,	0,	1	},	/* B:05 */
+	{	__("Fan 7"),			sensorFanCallback,		NULL,				6,	NULL,	0,	1	},	/* B:06 */
+	{	__("Fan 8"),			sensorFanCallback,		NULL,				7,	NULL,	0,	1	},	/* B:07 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sInputMenuDesc[] =
 {
-	{	__("Input 1"),			sensorInputCallback,		NULL,				0,	NULL,	0,	1	},
-	{	__("Input 2"),			sensorInputCallback,		NULL,				1,	NULL,	0,	1	},
-	{	__("Input 3"),			sensorInputCallback,		NULL,				2,	NULL,	0,	1	},
-	{	__("Input 4"),			sensorInputCallback,		NULL,				3,	NULL,	0,	1	},
-	{	__("Input 5"),			sensorInputCallback,		NULL,				4,	NULL,	0,	1	},
-	{	__("Input 6"),			sensorInputCallback,		NULL,				5,	NULL,	0,	1	},
-	{	__("Input 7"),			sensorInputCallback,		NULL,				6,	NULL,	0,	1	},
-	{	__("Input 8"),			sensorInputCallback,		NULL,				7,	NULL,	0,	1	},
-	{	__("Input 9"),			sensorInputCallback,		NULL,				8,	NULL,	0,	1	},
-	{	__("Input 10"),			sensorInputCallback,		NULL,				9,	NULL,	0,	1	},
-	{	__("Input 11"),			sensorInputCallback,		NULL,				10,	NULL,	0,	1	},
-	{	__("Input 12"),			sensorInputCallback,		NULL,				11,	NULL,	0,	1	},
-	{	__("Input 13"),			sensorInputCallback,		NULL,				12,	NULL,	0,	1	},
-	{	__("Input 14"),			sensorInputCallback,		NULL,				13,	NULL,	0,	1	},
-	{	__("Input 15"),			sensorInputCallback,		NULL,				14,	NULL,	0,	1	},
+	{	__("Input 1"),			sensorInputCallback,		NULL,				0,	NULL,	0,	1	},	/* C:00 */
+	{	__("Input 2"),			sensorInputCallback,		NULL,				1,	NULL,	0,	1	},	/* C:01 */
+	{	__("Input 3"),			sensorInputCallback,		NULL,				2,	NULL,	0,	1	},	/* C:02 */
+	{	__("Input 4"),			sensorInputCallback,		NULL,				3,	NULL,	0,	1	},	/* C:03 */
+	{	__("Input 5"),			sensorInputCallback,		NULL,				4,	NULL,	0,	1	},	/* C:04 */
+	{	__("Input 6"),			sensorInputCallback,		NULL,				5,	NULL,	0,	1	},	/* C:05 */
+	{	__("Input 7"),			sensorInputCallback,		NULL,				6,	NULL,	0,	1	},	/* C:06 */
+	{	__("Input 8"),			sensorInputCallback,		NULL,				7,	NULL,	0,	1	},	/* C:07 */
+	{	__("Input 9"),			sensorInputCallback,		NULL,				8,	NULL,	0,	1	},	/* C:08 */
+	{	__("Input 10"),			sensorInputCallback,		NULL,				9,	NULL,	0,	1	},	/* C:09 */
+	{	__("Input 11"),			sensorInputCallback,		NULL,				10, NULL,	0,	1	},	/* C:10 */
+	{	__("Input 12"),			sensorInputCallback,		NULL,				11, NULL,	0,	1	},	/* C:11 */
+	{	__("Input 13"),			sensorInputCallback,		NULL,				12, NULL,	0,	1	},	/* C:12 */
+	{	__("Input 14"),			sensorInputCallback,		NULL,				13, NULL,	0,	1	},	/* C:13 */
+	{	__("Input 15"),			sensorInputCallback,		NULL,				14, NULL,	0,	1	},	/* C:14 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC sensorMenuDesc[] =
 {
-	{	__("Temperature"),		NULL,					sTempMenuDesc,		0,	NULL,	0,	1	},
-	{	__("Fan Speed"),		NULL,					sFanMenuDesc,		0,	NULL,	0,	1	},
-	{	__("Input Voltage"),	NULL,					sInputMenuDesc,		0,	NULL,	0,	1	},
+	{	__("Temperature"),		NULL,					sTempMenuDesc,		0,	NULL,	0,	1	},	/* D:00 */
+	{	__("Fan Speed"),		NULL,					sFanMenuDesc,		0,	NULL,	0,	1	},	/* D:01 */
+	{	__("Input Voltage"),	NULL,					sInputMenuDesc,		0,	NULL,	0,	1	},	/* D:02 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC networkDevDesc[] =
 {
-	{	__("All"),				networkCallback,		NULL,				0x1000	},
-	{	NULL,					networkCallback,		NULL,				0x1001, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1002, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1003, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1004, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1005, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1006, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1007, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1008, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x1009, NULL,	0,	1	},
-	{	NULL,					networkCallback,		NULL,				0x100A, NULL,	0,	1	},
+	{	__("All"),				networkCallback,		NULL,				0x1000	},	/* E:00 */
+	{	NULL,					networkCallback,		NULL,				0x1001, NULL,	0,	1	},	/* E:01 */
+	{	NULL,					networkCallback,		NULL,				0x1002, NULL,	0,	1	},	/* E:02 */
+	{	NULL,					networkCallback,		NULL,				0x1003, NULL,	0,	1	},	/* E:03 */
+	{	NULL,					networkCallback,		NULL,				0x1004, NULL,	0,	1	},	/* E:04 */
+	{	NULL,					networkCallback,		NULL,				0x1005, NULL,	0,	1	},	/* E:05 */
+	{	NULL,					networkCallback,		NULL,				0x1006, NULL,	0,	1	},	/* E:06 */
+	{	NULL,					networkCallback,		NULL,				0x1007, NULL,	0,	1	},	/* E:07 */
+	{	NULL,					networkCallback,		NULL,				0x1008, NULL,	0,	1	},	/* E:08 */
+	{	NULL,					networkCallback,		NULL,				0x1009, NULL,	0,	1	},	/* E:09 */
+	{	NULL,					networkCallback,		NULL,				0x100A, NULL,	0,	1	},	/* E:10 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC networkMenuDesc[] =
 {
-	{	__("Bytes Sent"),		networkCallback,		NULL,				0x0000	},
-	{	__("Bytes Received"),	networkCallback,		NULL,				0x0100	},
-	{	"-",					NULL,					NULL,				0		},
-	{	__("Which Interface"),	NULL,					networkDevDesc,		0		},
+	{	__("Bytes Sent"),		networkCallback,		NULL,				0x0000	},	/* F:00 */
+	{	__("Bytes Received"),	networkCallback,		NULL,				0x0100	},	/* F:01 */
+	{	"-",					NULL,					NULL,				0		},	/* F:02 */
+	{	__("Which Interface"),	NULL,					networkDevDesc,		0		},	/* F:03 */
 	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC memoryMenuDesc[] =
 {
-	{	__("Programs"),			memoryCallback,			NULL,				0	},
-	{	__("Free"),				memoryCallback,			NULL,				1	},
-	{	__("Buffers"),			memoryCallback,			NULL,				2	},
-	{	__("Cached"),			memoryCallback,			NULL,				3	},
-	{	__("Swap"),				memoryCallback,			NULL,				4	},
+	{	__("Programs"),			memoryCallback,			NULL,				0	},	/* G:00 */
+	{	__("Free"),				memoryCallback,			NULL,				1	},	/* G:01 */
+	{	__("Buffers"),			memoryCallback,			NULL,				2	},	/* G:02 */
+	{	__("Cached"),			memoryCallback,			NULL,				3	},	/* G:03 */
+	{	__("Swap"),				memoryCallback,			NULL,				4	},	/* G:04 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC pickCPUMenuDesc[] =
 {
-	{	__("All"),				loadCallback,			NULL,				0x1000	},
-	{	__("CPU1"),				loadCallback,			NULL,				0x1001	},
-	{	__("CPU2"),				loadCallback,			NULL,				0x1002, NULL,	0,	1	},
-	{	__("CPU3"),				loadCallback,			NULL,				0x1003, NULL,	0,	1	},
-	{	__("CPU4"),				loadCallback,			NULL,				0x1004, NULL,	0,	1	},
-	{	__("CPU5"),				loadCallback,			NULL,				0x1005, NULL,	0,	1	},
-	{	__("CPU6"),				loadCallback,			NULL,				0x1006, NULL,	0,	1	},
-	{	__("CPU7"),				loadCallback,			NULL,				0x1007, NULL,	0,	1	},
-	{	__("CPU8"),				loadCallback,			NULL,				0x1008, NULL,	0,	1	},
-	{	__("CPU9"),				loadCallback,			NULL,				0x1009,	NULL,	0,	1	},
-	{	__("CPU10"),			loadCallback,			NULL,				0x100A, NULL,	0,	1	},
-	{	__("CPU11"),			loadCallback,			NULL,				0x100B, NULL,	0,	1	},
-	{	__("CPU12"),			loadCallback,			NULL,				0x100C, NULL,	0,	1	},
-	{	__("CPU13"),			loadCallback,			NULL,				0x100D, NULL,	0,	1	},
-	{	__("CPU14"),			loadCallback,			NULL,				0x100E, NULL,	0,	1	},
-	{	__("CPU15"),			loadCallback,			NULL,				0x100F, NULL,	0,	1	},
-	{	__("CPU16"),			loadCallback,			NULL,				0x1010, NULL,	0,	1	},
-	{	__("CPU17"),			loadCallback,			NULL,				0x1011, NULL,	0,	1	},
-	{	__("CPU18"),			loadCallback,			NULL,				0x1012, NULL,	0,	1	},
-	{	__("CPU19"),			loadCallback,			NULL,				0x1013, NULL,	0,	1	},
-	{	__("CPU20"),			loadCallback,			NULL,				0x1014, NULL,	0,	1	},
-	{	__("CPU21"),			loadCallback,			NULL,				0x1015, NULL,	0,	1	},
-	{	__("CPU22"),			loadCallback,			NULL,				0x1016, NULL,	0,	1	},
-	{	__("CPU23"),			loadCallback,			NULL,				0x1017, NULL,	0,	1	},
-	{	__("CPU24"),			loadCallback,			NULL,				0x1018, NULL,	0,	1	},
-	{	__("CPU25"),			loadCallback,			NULL,				0x1019, NULL,	0,	1	},
-	{	__("CPU26"),			loadCallback,			NULL,				0x101A, NULL,	0,	1	},
-	{	__("CPU27"),			loadCallback,			NULL,				0x101B, NULL,	0,	1	},
-	{	__("CPU28"),			loadCallback,			NULL,				0x101C, NULL,	0,	1	},
-	{	__("CPU29"),			loadCallback,			NULL,				0x101D, NULL,	0,	1	},
-	{	__("CPU30"),			loadCallback,			NULL,				0x101E, NULL,	0,	1	},
-	{	__("CPU31"),			loadCallback,			NULL,				0x101F, NULL,	0,	1	},
-	{	__("CPU32"),			loadCallback,			NULL,				0x1020, NULL,	0,	1	},
-
+	{	__("All"),				loadCallback,			NULL,				0x1000	},	/* H:00 */
+	{	__("CPU1"),				loadCallback,			NULL,				0x1001	},	/* H:01 */
+	{	__("CPU2"),				loadCallback,			NULL,				0x1002, NULL,	0,	1	},	/* H:02 */
+	{	__("CPU3"),				loadCallback,			NULL,				0x1003, NULL,	0,	1	},	/* H:03 */
+	{	__("CPU4"),				loadCallback,			NULL,				0x1004, NULL,	0,	1	},	/* H:04 */
+	{	__("CPU5"),				loadCallback,			NULL,				0x1005, NULL,	0,	1	},	/* H:05 */
+	{	__("CPU6"),				loadCallback,			NULL,				0x1006, NULL,	0,	1	},	/* H:06 */
+	{	__("CPU7"),				loadCallback,			NULL,				0x1007, NULL,	0,	1	},	/* H:07 */
+	{	__("CPU8"),				loadCallback,			NULL,				0x1008, NULL,	0,	1	},	/* H:08 */
+	{	__("CPU9"),				loadCallback,			NULL,				0x1009, NULL,	0,	1	},	/* H:09 */
+	{	__("CPU10"),			loadCallback,			NULL,				0x100A, NULL,	0,	1	},	/* H:10 */
+	{	__("CPU11"),			loadCallback,			NULL,				0x100B, NULL,	0,	1	},	/* H:11 */
+	{	__("CPU12"),			loadCallback,			NULL,				0x100C, NULL,	0,	1	},	/* H:12 */
+	{	__("CPU13"),			loadCallback,			NULL,				0x100D, NULL,	0,	1	},	/* H:13 */
+	{	__("CPU14"),			loadCallback,			NULL,				0x100E, NULL,	0,	1	},	/* H:14 */
+	{	__("CPU15"),			loadCallback,			NULL,				0x100F, NULL,	0,	1	},	/* H:15 */
+	{	__("CPU16"),			loadCallback,			NULL,				0x1010, NULL,	0,	1	},	/* H:16 */
+	{	__("CPU17"),			loadCallback,			NULL,				0x1011, NULL,	0,	1	},	/* H:17 */
+	{	__("CPU18"),			loadCallback,			NULL,				0x1012, NULL,	0,	1	},	/* H:18 */
+	{	__("CPU19"),			loadCallback,			NULL,				0x1013, NULL,	0,	1	},	/* H:19 */
+	{	__("CPU20"),			loadCallback,			NULL,				0x1014, NULL,	0,	1	},	/* H:20 */
+	{	__("CPU21"),			loadCallback,			NULL,				0x1015, NULL,	0,	1	},	/* H:21 */
+	{	__("CPU22"),			loadCallback,			NULL,				0x1016, NULL,	0,	1	},	/* H:22 */
+	{	__("CPU23"),			loadCallback,			NULL,				0x1017, NULL,	0,	1	},	/* H:23 */
+	{	__("CPU24"),			loadCallback,			NULL,				0x1018, NULL,	0,	1	},	/* H:24 */
+	{	__("CPU25"),			loadCallback,			NULL,				0x1019, NULL,	0,	1	},	/* H:25 */
+	{	__("CPU26"),			loadCallback,			NULL,				0x101A, NULL,	0,	1	},	/* H:26 */
+	{	__("CPU27"),			loadCallback,			NULL,				0x101B, NULL,	0,	1	},	/* H:27 */
+	{	__("CPU28"),			loadCallback,			NULL,				0x101C, NULL,	0,	1	},	/* H:28 */
+	{	__("CPU29"),			loadCallback,			NULL,				0x101D, NULL,	0,	1	},	/* H:29 */
+	{	__("CPU30"),			loadCallback,			NULL,				0x101E, NULL,	0,	1	},	/* H:30 */
+	{	__("CPU31"),			loadCallback,			NULL,				0x101F, NULL,	0,	1	},	/* H:31 */
+	{	__("CPU32"),			loadCallback,			NULL,				0x1020, NULL,	0,	1	},	/* H:32 */
 	{	NULL,					NULL,					NULL,				0x1000	}
 };
 
 MENU_DESC cpuMenuDesc[] =
 {
-	{	__("Average"),			loadCallback,			NULL,				0x2000	},
-	{	__("Clock Speed"),			loadCallback,			NULL,				0x4000	},
-	{	"-",					NULL,					NULL,				0		},
-	{	__("Total"),			loadCallback,			NULL,				0x0000	},
-	{	__("User"),				loadCallback,			NULL,				0x0100	},
-	{	__("Nice"),				loadCallback,			NULL,				0x0200	},
-	{	__("System"),			loadCallback,			NULL,				0x0300	},
-	{	__("Idle"),				loadCallback,			NULL,				0x0400	},
-	{	__("ioWait"),			loadCallback,			NULL,				0x0500	},
-	{	"-",					NULL,					NULL,				0		},
-	{	__("Which CPU"),		NULL,					pickCPUMenuDesc,	0		},
+	{	__("Average"),			loadCallback,			NULL,				0x2000	},	/* I:00 */
+	{	__("Clock Speed"),		loadCallback,			NULL,				0x4000	},	/* I:01 */
+	{	"-",					NULL,					NULL,				0		},	/* I:02 */
+	{	__("Total"),			loadCallback,			NULL,				0x0000	},	/* I:03 */
+	{	__("User"),				loadCallback,			NULL,				0x0100	},	/* I:04 */
+	{	__("Nice"),				loadCallback,			NULL,				0x0200	},	/* I:05 */
+	{	__("System"),			loadCallback,			NULL,				0x0300	},	/* I:06 */
+	{	__("Idle"),				loadCallback,			NULL,				0x0400	},	/* I:07 */
+	{	__("ioWait"),			loadCallback,			NULL,				0x0500	},	/* I:08 */
+	{	"-",					NULL,					NULL,				0		},	/* I:09 */
+	{	__("Which CPU"),		NULL,					pickCPUMenuDesc,	0		},	/* I:10 */
 	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC gaugeMenuDesc[] =
 {
-	{	__("Battery"),			batteryCallback,		NULL,				0,	NULL,	0,	1	},	/*  00  */
-	{	__("CPU Load"),			NULL,					cpuMenuDesc,		0,	NULL,	0,	1	},	/*  01  */
-	{	__("Entropy"),			entropyCallback,		NULL,				0,	NULL,	0,	1	},	/*  02  */
-	{	__("Hard Disk"),		NULL,					harddiskMenuDesc,	0,	NULL,	0,	1	},	/*  03  */
-	{	__("Memory"),			NULL,					memoryMenuDesc,		0,	NULL,	0,	1	},	/*  04  */
-	{	__("Moon Phase"),		moonPhaseCallback,		NULL,				0,	NULL,	0,	1	},	/*  05  */
-	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/*  06  */
-	{	__("Power"),			NULL,					powerMenuDesc,		1,	NULL,	0,	1	},	/*  07  */
-	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/*  08  */
-	{	__("Thermometer"),		NULL,					thermoMenuDesc,		1,	NULL,	0,	1	},	/*  09  */
-	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/*  10  */
-	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/*  11  */
-	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/*  12  */
-	{	NULL,					NULL,					NULL,				0	}					/*  13  */
+	{	__("Battery"),			batteryCallback,		NULL,				0,	NULL,	0,	1	},	/* J:00 */
+	{	__("CPU Load"),			NULL,					cpuMenuDesc,		0,	NULL,	0,	1	},	/* J:01 */
+	{	__("Entropy"),			entropyCallback,		NULL,				0,	NULL,	0,	1	},	/* J:02 */
+	{	__("Hard Disk"),		NULL,					harddiskMenuDesc,	0,	NULL,	0,	1	},	/* J:03 */
+	{	__("Memory"),			NULL,					memoryMenuDesc,		0,	NULL,	0,	1	},	/* J:04 */
+	{	__("Moon Phase"),		moonPhaseCallback,		NULL,				0,	NULL,	0,	1	},	/* J:05 */
+	{	__("Network"),			NULL,					networkMenuDesc,	0,	NULL,	0,	1	},	/* J:06 */
+	{	__("Power"),			NULL,					powerMenuDesc,		1,	NULL,	0,	1	},	/* J:07 */
+	{	__("Sensor"),			NULL,					sensorMenuDesc,		0,	NULL,	0,	1	},	/* J:08 */
+	{	__("Thermometer"),		NULL,					thermoMenuDesc,		1,	NULL,	0,	1	},	/* J:09 */
+	{	__("Tide"),				NULL,					tideMenuDesc,		0,	NULL,	0,	1	},	/* J:10 */
+	{	__("Weather"),			NULL,					weatherMenuDesc,	0,	NULL,	0,	1	},	/* J:11 */
+	{	__("Wifi Quality"),		wifiCallback,			NULL,				0,	NULL,	0,	1	},	/* J:12 */
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC prefMenuDesc[] =
 {
-	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  00  */
-	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  01  */
-	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*  02  */
-	{	"-",					NULL,					NULL,				0	},					/*  03  */
-	{	__("Markers"),			NULL,					markerMenuDesc,		0	},					/*  04  */
-	{	__("View"),				NULL,					viewMenuDesc,		0	},					/*  05  */
-	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},					/*  06  */
-	{	__("Change Colour..."),	dialColourCallback,		NULL,				0	},					/*  07  */
-	{	"-",					NULL,					NULL,				0	},					/*  08  */
-	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
-	{	__("Save Display..."),	dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  10  */
+	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/* K:00 */
+	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/* K:01 */
+	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/* K:02 */
+	{	"-",					NULL,					NULL,				0	},	/* K:03 */
+	{	__("Markers"),			NULL,					markerMenuDesc,		0	},	/* K:04 */
+	{	__("View"),				NULL,					viewMenuDesc,		0	},	/* K:05 */
+	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},	/* K:06 */
+	{	__("Change Colour..."), dialColourCallback,		NULL,				0	},	/* K:07 */
+	{	"-",					NULL,					NULL,				0	},	/* K:08 */
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/* K:09 */
+	{	__("Save Display..."),	dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/* K:10 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC mainMenuDesc[] =
 {
-	{	__("Gauge"),			NULL,					gaugeMenuDesc,		0	},
-	{	__("Preferences"),		NULL,					prefMenuDesc,		0	},
-	{	__("About"),			aboutCallback,			NULL,				0	},
-	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},
+	{	__("Gauge"),			NULL,					gaugeMenuDesc,		0	},	/* L:00 */
+	{	__("Preferences"),		NULL,					prefMenuDesc,		0	},	/* L:01 */
+	{	__("About"),			aboutCallback,			NULL,				0	},	/* L:02 */
+	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q}, /* L:03 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
@@ -456,7 +455,7 @@ GAUGE_ENABLED gaugeEnabled[FACE_TYPE_MAX + 1] =
 	{	"weather",		1	},	{	"memory",		1	},	{	"battery",		1	},
 	{	"network",		1	},	{	"entropy",		0	},	{	"tide",			1	},
 	{	"harddisk",		1	},	{	"thermo",		0	},	{	"power",		0	},
-	{	"moonphase",	1	},	{	"wifi",			1,	},	{	"sensor_input",	1	},
+	{	"moonphase",	1	},	{	"wifi",			1,	},	{	"sensor_input", 1	},
 	{	NULL,			0	}
 };
 
@@ -1578,7 +1577,7 @@ thermometerCallback (guint data)
 	{
 		/* Called from the menu so select server */
 		thermometerSettings (0);
-	}	
+	}
 	gaugeReset (currentFace, FACE_TYPE_THERMO, data);
 	faceSettings[currentFace] -> faceFlags |= (FACE_MAX_MIN | FACE_HOT_COLD);
 	faceSettings[currentFace] -> savedMaxMin.maxMinCount = 10;
@@ -2526,7 +2525,7 @@ main (int argc, char *argv[])
      * OK all ready lets run it!                                                                      *
      *------------------------------------------------------------------------------------------------*/
 	gtk_widget_show_all (GTK_WIDGET (dialConfig.mainWindow));
-	
+
 	/*------------------------------------------------------------------------------------------------*
      * Complete stuff left over from the command line                                                 *
      *------------------------------------------------------------------------------------------------*/
