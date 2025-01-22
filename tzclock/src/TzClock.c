@@ -28,31 +28,31 @@
 
 COLOUR_DETAILS colourNames[MAX__COLOURS + 1] =
 {
-	{	"blk", __("Black"),					"#000000"	},	//  00
-	{	"wht", __("White"),					"#FFFFFF"	},	//  01
+	{	"blk", __("Black"),					"#000000"	},	/* Z:00 */
+	{	"wht", __("White"),					"#FFFFFF"	},	/* Z:01 */
 
-	{	"fce", __("Main face colour"),		"#141414"	},	//  02  T
-	{	"bri", __("Border inner circle"),	"#000000"	},	//  03  T
-	{	"brf", __("Border when focused"),	"#505050"	},	//  04  T
-	{	"brn", __("Border not focused"),	"#6E6E6E"	},	//  05  T
-	{	"txt", __("Information text"),		"#858585"	},	//  06  T
-	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	//  07  T
-	{	"quf", __("Quarter markers fill"),	"#646464"	},	//  08  T
-	{	"hom", __("Hour markers"),			"#646464"	},	//  09  T
+	{	"fce", __("Main face colour"),		"#141414"	},	/* Z:02 */
+	{	"bri", __("Border inner circle"),	"#000000"	},	/* Z:03 */
+	{	"brf", __("Border when focused"),	"#505050"	},	/* Z:04 */
+	{	"brn", __("Border not focused"),	"#6E6E6E"	},	/* Z:05 */
+	{	"txt", __("Information text"),		"#858585"	},	/* Z:06 */
+	{	"qum", __("Quarter markers"),		"#AAAAAA"	},	/* Z:07 */
+	{	"quf", __("Quarter markers fill"),	"#646464"	},	/* Z:08 */
+	{	"hom", __("Hour markers"),			"#646464"	},	/* Z:09 */
 
-	{	"fsw", __("Stopwatch dial"),		"#000000"	},	//  10
-	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	//  11
-	{	"hof", __("Hour hand fill"),		"#202020"	},	//  12
-	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	//  13
-	{	"mif", __("Minute hand fill"),		"#202020"	},	//  14
-	{	"seh", __("Second hand outer"),		"#FF0000"	},	//  15
-	{	"sef", __("Second hand fill"),		"#800000"	},	//  16
-	{	"alh", __("Alarm hand outer"),		"#008000"	},	//  17
-	{	"alf", __("Alarm hand fill"),		"#004000"	},	//  18
-	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	//  19
-	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	//  20
-	{	"mim", __("Minute markers"),		"#3C3C3C"	},	//  21
-	{	"stm", __("Stopwatch markers"),		"#828282"	},	//  22
+	{	"fsw", __("Stopwatch dial"),		"#000000"	},	/* Z:10 */
+	{	"hoh", __("Hour hand outer"),		"#E1E1E1"	},	/* Z:11 */
+	{	"hof", __("Hour hand fill"),		"#202020"	},	/* Z:12 */
+	{	"mih", __("Minute hand outer"),		"#E1E1E1"	},	/* Z:13 */
+	{	"mif", __("Minute hand fill"),		"#202020"	},	/* Z:14 */
+	{	"seh", __("Second hand outer"),		"#FF0000"	},	/* Z:15 */
+	{	"sef", __("Second hand fill"),		"#800000"	},	/* Z:16 */
+	{	"alh", __("Alarm hand outer"),		"#008000"	},	/* Z:17 */
+	{	"alf", __("Alarm hand fill"),		"#004000"	},	/* Z:18 */
+	{	"sth", __("Stopwatch hand outer"),	"#FF0000"	},	/* Z:19 */
+	{	"stf", __("Stopwatch hand fill"),	"#800000"	},	/* Z:20 */
+	{	"mim", __("Minute markers"),		"#3C3C3C"	},	/* Z:21 */
+	{	"stm", __("Stopwatch markers"),		"#828282"	},	/* Z:22 */
 	{	NULL, NULL, ""	}
 };
 
@@ -71,34 +71,34 @@ char *nameFormats[TXT_COUNT] =
 
 char displayString[TXT_COUNT][101] =
 {
-	"%a. %e %b.",					/* Clock top        (localtime)     00 */
-	"%#",							/* Clock top        (timezone)      01 */
-	"%e %b.%n%a.",					/* Clock SW top     (localtime)     02 */
-	"%#%n",							/* Clock SW top     (timezone)      03 */
-	"- %Z -",						/* Clock bottom     (localtime)     04 */
-	"- %p -",						/* Clock bottom     (timezone)      05 */
-	"%Z",							/* Clock SW bottom  (localtime)     06 */
-	"%p",							/* Clock SW bottom  (timezone)      07 */
-	"%R, %A %e %B",					/* Window title     (localtime)     08 */
-	"%*, %R, %A %e %B",				/* Window title     (timezone)      09 */
-	"%A, %e %B %Y, %X",				/* Copy date time   (localtime)     10 */
-	"%A, %e %B %Y, %X, %*",			/* Copy date time   (timezone)      11 */
-	"%A, %e %B %Y",					/* Copy date        (localtime)     12 */
-	"%A, %e %B %Y, %*",				/* Copy date        (timezone)      13 */
-	"%X",							/* Copy time        (localtime)     14 */
-	"%X, %Z",						/* Copy time        (timezone)      15 */
+	"%a. %e %b.",					/* Clock top        (localtime) */ /* Y:00 */
+	"%#",							/* Clock top        (timezone)  */ /* Y:01 */
+	"%e %b.%n%a.",					/* Clock SW top     (localtime) */ /* Y:02 */
+	"%#%n",							/* Clock SW top     (timezone)  */ /* Y:03 */
+	"- %Z -",						/* Clock bottom     (localtime) */ /* Y:04 */
+	"- %p -",						/* Clock bottom     (timezone)  */ /* Y:05 */
+	"%Z",							/* Clock SW bottom  (localtime) */ /* Y:06 */
+	"%p",							/* Clock SW bottom  (timezone)  */ /* Y:07 */
+	"%R, %A %e %B",					/* Window title     (localtime) */ /* Y:08 */
+	"%*, %R, %A %e %B",				/* Window title     (timezone)  */ /* Y:09 */
+	"%A, %e %B %Y, %X",				/* Copy date time   (localtime) */ /* Y:10 */
+	"%A, %e %B %Y, %X, %*",			/* Copy date time   (timezone)  */ /* Y:11 */
+	"%A, %e %B %Y",					/* Copy date        (localtime) */ /* Y:12 */
+	"%A, %e %B %Y, %*",				/* Copy date        (timezone)  */ /* Y:13 */
+	"%X",							/* Copy time        (localtime) */ /* Y:14 */
+	"%X, %Z",						/* Copy time        (timezone)  */ /* Y:15 */
 	"<b>Time</b>: %X%n"
 	"<b>Date</b>: %A, %e %B%n"
 	"<b>Timer</b>: %&%n"
-	"<b>Alarm</b>: %$",				/* Tool tip         (localtime)     16 */
+	"<b>Alarm</b>: %$",				/* Tool tip         (localtime) */ /* Y:16 */
 	"<b>City</b>: %*%n"
 	"<b>Time</b>: %X%n"
-	"<b>Date</b>: %A, %e %B",		/* Tool tip         (timezone)      17 */
-	"1Sec",							/* Left stopwatch                   18 */
-	"30Min",						/* Right stopwatch                  19 */
-	"6Hour",						/* Left timer                       20 */
-	"30Min",						/* Right timer                      21 */
-	"1Min"							/* Sub second                       22 */
+	"<b>Date</b>: %A, %e %B",		/* Tool tip         (timezone)  */ /* Y:17 */
+	"1Sec",							/* Left stopwatch               */ /* Y:18 */
+	"30Min",						/* Right stopwatch              */ /* Y:19 */
+	"6Hour",						/* Left timer                   */ /* Y:20 */
+	"30Min",						/* Right timer                  */ /* Y:21 */
+	"1Min"							/* Sub second                   */ /* Y:22 */
 };
 
 /*----------------------------------------------------------------------------------------------------*
@@ -130,115 +130,115 @@ MENU_DESC *timeZoneMenu;
 
 MENU_DESC stopWMenuDesc[] =
 {
-	{	__("Enable"),			stopwatchCallback,		NULL,				0,	NULL,	0,	0,	1	},
-	{	__("Start+Stop"),		swStartCallback,		NULL,				0,	NULL,	GDK_KEY_A	},
-	{	__("Reset"),			swResetCallback,		NULL,				0,	NULL,	GDK_KEY_Z	},
+	{	__("Enable"),			stopwatchCallback,		NULL,				0,	NULL,	0,	0,	1	},	/* 1:00 */
+	{	__("Start+Stop"),		swStartCallback,		NULL,				0,	NULL,	GDK_KEY_A	},	/* 1:01 */
+	{	__("Reset"),			swResetCallback,		NULL,				0,	NULL,	GDK_KEY_Z	},	/* 1:02 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC timerMenuDesc[] =
 {
-	{	__("Enable"),			timerCallback,			NULL,				0,	NULL,	0,	0,	1	},
-	{	__("Start+Stop"),		tmStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},
-	{	__("Reset"),			tmResetCallback,		NULL,				0,	NULL,	GDK_KEY_X},
+	{	__("Enable"),			timerCallback,			NULL,				0,	NULL,	0,	0,	1	},	/* 2:00 */
+	{	__("Start+Stop"),		tmStartCallback,		NULL,				0,	NULL,	GDK_KEY_D	},	/* 2:01 */
+	{	__("Reset"),			tmResetCallback,		NULL,				0,	NULL,	GDK_KEY_X},		/* 2:02 */
 	{	__("Set Up Timer..."),	timerSetCallback,		NULL,				0	},
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC alarmMenuDesc[] =
 {
-	{	__("Enable"),			alarmCallback,			NULL,				0,	NULL,	0,	0,	1	},
-	{	__("Set Up Alarm..."),	alarmSetCallback,		NULL,				0	},
+	{	__("Enable"),			alarmCallback,			NULL,				0,	NULL,	0,	0,	1	},	/* 3:00 */
+	{	__("Set Up Alarm..."),	alarmSetCallback,		NULL,				0	},						/* 3:01 */
 	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC editMenuDesc[] =
 {
 #if GTK_MINOR_VERSION >= 10
-	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	NULL,	GDK_KEY_C	},
+	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	NULL,	GDK_KEY_C	},	/* 4:00 */
 #else
-	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	GTK_STOCK_COPY	},
+	{	__("Copy Date & Time"), copyCallback,			NULL,				0,	GTK_STOCK_COPY	},		/* 5:00 */
 #endif
-	{	__("Copy Date"),		copyCallback,			NULL,				1	},
-	{	__("Copy Time"),		copyCallback,			NULL,				2	},
-	{	NULL,					NULL,					NULL,				0	}
+	{	__("Copy Date"),		copyCallback,			NULL,				1	},						/* 5:01 */
+	{	__("Copy Time"),		copyCallback,			NULL,				2	},						/* 5:02 */
+	{	NULL,					NULL,					NULL,				0	}						/* 5:03 */
 };
 
 MENU_DESC viewMenuDesc[] =
 {
-	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},	/*  00  */
-	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},	/*  01  */
-	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},	/*  02  */
-	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},	/*  03  */
-	{	"-",					NULL,					NULL,				0	},	/*  04  */
+	{	__("Add Column"),		dialAddDelCallback,		NULL,				1	},			/* 6:00 */
+	{	__("Remove Column"),	dialAddDelCallback,		NULL,				2	},			/* 6:01 */
+	{	__("Add Row"),			dialAddDelCallback,		NULL,				3	},			/* 6:02 */
+	{	__("Remove Row"),		dialAddDelCallback,		NULL,				4	},			/* 6:03 */
+	{	"-",					NULL,					NULL,				0	},			/* 6:04 */
 #if GTK_MINOR_VERSION >= 10
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/*  05  */
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/*  06  */
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/*  07  */
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	NULL,	GDK_KEY_I	},	/* 6:05 */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	NULL,	GDK_KEY_O	},	/* 6:06 */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	NULL,	GDK_KEY_X	},	/* 6:07 */
 #else
-	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/*  05  */
-	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/*  06  */
-	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/*  07  */
+	{	__("Zoom In"),			dialZoomCallback,		NULL,				1,	GTK_STOCK_ZOOM_IN	},	/* 7:05 */
+	{	__("Zoom Out"),			dialZoomCallback,		NULL,				2,	GTK_STOCK_ZOOM_OUT	},	/* 7:06 */
+	{	__("Zoom Max"),			dialZoomCallback,		NULL,				3,	GTK_STOCK_ZOOM_FIT	},	/* 7:07 */
 #endif
-	{	NULL,					NULL,					NULL,				0	}	/*  08  */
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC markerMenuDesc[] =
 {
-	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/*  00  */
-	{	__("Triangles"),		dialMarkerCallback,		NULL,				1,		NULL,	0,	0,	1	},	/*  01  */
-	{	__("Circles"),			dialMarkerCallback,		NULL,				2,		NULL,	0,	0,	1	},	/*  02  */
-	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/*  03  */
-	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/*  04  */
-	{	"-",					NULL,					NULL,				0		},
-	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/*  06  */
-	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/*  07  */
-	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/*  08  */
-	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/*  09  */
-	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/*  10  */
-	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/*  11  */
+	{	__("No Markers"),		dialMarkerCallback,		NULL,				0,		NULL,	0,	0,	1	},	/* 8:00 */
+	{	__("Triangles"),		dialMarkerCallback,		NULL,				1,		NULL,	0,	0,	1	},	/* 8:01 */
+	{	__("Circles"),			dialMarkerCallback,		NULL,				2,		NULL,	0,	0,	1	},	/* 8:02 */
+	{	__("Numbers"),			dialMarkerCallback,		NULL,				3,		NULL,	0,	0,	1	},	/* 8:03 */
+	{	__("Roman"),			dialMarkerCallback,		NULL,				4,		NULL,	0,	0,	1	},	/* 8:04 */
+	{	"-",					NULL,					NULL,				0		},						/* 8:05 */
+	{	__("Step 1"),			dialStepCallback,		NULL,				100,	NULL,	0,	0,	1	},	/* 8:06 */
+	{	__("Step 2"),			dialStepCallback,		NULL,				200,	NULL,	0,	0,	1	},	/* 8:07 */
+	{	__("Step 3"),			dialStepCallback,		NULL,				300,	NULL,	0,	0,	1	},	/* 8:08 */
+	{	__("Step 4"),			dialStepCallback,		NULL,				400,	NULL,	0,	0,	1	},	/* 8:09 */
+	{	__("Step 6"),			dialStepCallback,		NULL,				600,	NULL,	0,	0,	1	},	/* 8:10 */
+	{	__("Step 12"),			dialStepCallback,		NULL,				1200,	NULL,	0,	0,	1	},	/* 8:11 */
 	{	NULL,					NULL,					NULL,				0		}
 };
 
 MENU_DESC prefMenuDesc[] =
 {
-	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  00  */
-	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/*  01  */
-	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/*  02  */
-	{	__("Show Time"),		showTimeCallback,		NULL,				1,	NULL,	0,	0,	1	},	/*  03  */
-	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/*  04  */
-	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/*  05  */
-	{	"-",					NULL,					NULL,				0	},			/*  06  */
-	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/*  07  */
-	{	__("View"),				NULL,					viewMenuDesc,		0	},			/*  08  */
-	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},			/*  09  */
-	{	__("Change Colour..."),	dialColourCallback,		NULL,				0	},			/*  10  */
-	{	"-",					NULL,					NULL,				0	},			/*  11  */
+	{	__("Always on Top"),	onTopCallback,			NULL,				1,	NULL,	0,	0,	1	},	/* 9:00 */
+	{	__("Always Visible"),	stickCallback,			NULL,				1,	NULL,	0,	0,	1	},	/* 9:01 */
+	{	__("Lock Position"),	lockCallback,			NULL,				1,	NULL,	0,	1,	1	},	/* 9:02 */
+	{	__("Show Time"),		showTimeCallback,		NULL,				1,	NULL,	0,	0,	1	},	/* 9:03 */
+	{	__("Show Seconds"),		showSecondsCallback,	NULL,				0,	NULL,	0,	0,	1	},	/* 9:04 */
+	{	__("Sub Seconds"),		subSecondCallback,		NULL,				0,	NULL,	0,	0,	1	},	/* 9:05 */
+	{	"-",					NULL,					NULL,				0	},			/* 9:06 */
+	{	__("Markers"),			NULL,					markerMenuDesc,		0	},			/* 9:07 */
+	{	__("View"),				NULL,					viewMenuDesc,		0	},			/* 9:08 */
+	{	__("Change Font..."),	dialFontCallback,		NULL,				0	},			/* 9:09 */
+	{	__("Change Colour..."),	dialColourCallback,		NULL,				0	},			/* 9:10 */
+	{	"-",					NULL,					NULL,				0	},			/* 9:11 */
 #if GTK_MINOR_VERSION >= 10
-	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/*  12  */
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	NULL,	GDK_KEY_S	},	/* 9:12 */
 #else
-	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},	/*  12  */
+	{	__("Save Preferences"), configSaveCallback,		NULL,				0,	GTK_STOCK_SAVE	},		/* A:12 */
 #endif
-	{	__("Save Display..."),	dialSaveCallback,		NULL,				0,	NULL,	0,	1	},	/*  13  */
-	{	NULL,					NULL,					NULL,				0	}			/*  14  */
+	{	__("Save Display..."),	dialSaveCallback,		NULL,				0,	NULL,	0,	1	},		/* A:13 */
+	{	NULL,					NULL,					NULL,				0	}
 };
 
 MENU_DESC mainMenuDesc[] =
 {
-	{	__("Time-zone"),		NULL,					NULL,				0	},
-	{	__("Alarm"),			NULL,					alarmMenuDesc,		0	},
-	{	__("Stopwatch"),		NULL,					stopWMenuDesc,		0	},
-	{	__("Timer"),			NULL,					timerMenuDesc,		0	},
-	{	__("Edit"),				NULL,					editMenuDesc,		0	},
-	{	__("Calendar"),			calendarCallback,		NULL,				0	},
-	{	"-",					NULL,					NULL,				0	},
-	{	__("Preferences"),		NULL,					prefMenuDesc,		0	},
+	{	__("Time-zone"),		NULL,					NULL,				0	},						/* B:00 */
+	{	__("Alarm"),			NULL,					alarmMenuDesc,		0	},						/* B:01 */
+	{	__("Stopwatch"),		NULL,					stopWMenuDesc,		0	},						/* B:02 */
+	{	__("Timer"),			NULL,					timerMenuDesc,		0	},						/* B:03 */
+	{	__("Edit"),				NULL,					editMenuDesc,		0	},						/* B:04 */
+	{	__("Calendar"),			calendarCallback,		NULL,				0	},						/* B:05 */
+	{	"-",					NULL,					NULL,				0	},						/* B:06 */
+	{	__("Preferences"),		NULL,					prefMenuDesc,		0	},						/* B:07 */
 #if GTK_MINOR_VERSION >= 10
-	{	__("About"),			aboutCallback,			NULL,				0	},
-	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},
+	{	__("About"),			aboutCallback,			NULL,				0	},						/* B:08 */
+	{	__("Quit"),				quitCallback,			NULL,				0,	NULL,	GDK_KEY_Q},		/* B:09 */
 #else
-	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT },
-	{	__("Quit"),				quitCallback,			NULL,				0,	GTK_STOCK_QUIT	},
+	{	__("About"),			aboutCallback,			NULL,				0,	GTK_STOCK_ABOUT },		/* C:08 */
+	{	__("Quit"),				quitCallback,			NULL,				0,	GTK_STOCK_QUIT	},		/* C:09 */
 #endif
 	{	NULL,					NULL,					NULL,				0	}
 };
