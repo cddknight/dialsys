@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.69])
-AC_INIT([TzClock],[4.6],[chris@theknight.co.uk])
+AC_INIT([TzClock],[4.7],[chris@theknight.co.uk])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/TzClock.c])
 AC_CONFIG_HEADERS([config.h])
