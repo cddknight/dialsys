@@ -23,8 +23,12 @@ do
 		if [ -e buildpkg.sh ]
 		then
 			./buildpkg.sh
+		else
+			echo "No ${DIR}/buildpkg.sh found."
 		fi
 		cd ${START_PWD}
+	else
+		echo "No ${DIR} directory found."
 	fi
 done
 
