@@ -235,7 +235,7 @@ static void processBuffer (char *buffer, size_t size)
  *  \brief Read the current tempature from the powermeter.
  *  \result None.
  */
-void *readPowerMeterInfo ()
+void *readPowerMeterInfo (void *notUsed)
 {
 	char buffer[512] = "";
 	int bytesRead = 0;
