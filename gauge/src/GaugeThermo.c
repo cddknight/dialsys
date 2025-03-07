@@ -211,7 +211,7 @@ static void processBuffer (char *buffer, size_t size)
  *  \brief Read the current tempature from the thermometer.
  *  \result None.
  */
-void *readThermometerInfo ()
+void *readThermometerInfo (void *notUsed)
 {
 	char buffer[512] = "";
 	int bytesRead = 0;
