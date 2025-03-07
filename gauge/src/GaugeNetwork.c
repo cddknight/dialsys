@@ -97,7 +97,7 @@ SPEED_INFO speedInfo[] =
 void setDeviceScale (struct devValues *values)
 {
 	unsigned long kr = (values -> rate * 8) / 1024;
-	int scale = 0, i;
+	int scale = 0;
 	while (kr > speedInfo[scale].kiloBitsPerSec)
 	{
 		if (speedInfo[scale + 1].kiloBitsPerSec == 0)
@@ -233,7 +233,7 @@ void readNetworkInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_NETWORK].enabled)
 	{
-		readDeviceValues(0);
+		readDeviceValues();
 	}
 }
 
@@ -256,7 +256,6 @@ void readNetworkValues (int face)
 		int device = faceSetting -> faceSubType & 0x000F, scale;
 		int faceType = (faceSetting -> faceSubType >> 8) & 1;
 		unsigned long value = 0;
-		unsigned short shift;
 		char *nameT, *nameD;
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)

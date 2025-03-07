@@ -99,7 +99,7 @@ void readPowerMeterInit (void)
 {
 	if (gaugeEnabled[FACE_TYPE_POWER].enabled)
 	{
-		int i, clientSock = ConnectClientSocket (powerServer, powerPort, 3, USE_ANY, NULL);
+		int clientSock = ConnectClientSocket (powerServer, powerPort, 3, USE_ANY, NULL);
 		if (SocketValid (clientSock))
 		{
 			gaugeMenuDesc[MENU_GAUGE_POWER].disable = 0;
@@ -302,7 +302,6 @@ void readPowerMeterValues (int face)
 	{
 		FACE_SETTINGS *faceSetting = faceSettings[face];
 		char readTimeStr[81] = "Never";
-		int i;
 
 		if (faceSetting -> faceFlags & FACE_REDRAW)
 		{
