@@ -2921,6 +2921,7 @@ void updateClock (void)
 		{
 			clockInst.faceSettings[i] = malloc (sizeof (FACE_SETTINGS));
 			memset (clockInst.faceSettings[i], 0, sizeof (FACE_SETTINGS));
+			clockInst.faceSettings[i] -> showTime = 1;
 		}
 	}
 	i = 0;
